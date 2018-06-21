@@ -124,7 +124,8 @@ Xephyr :2 -host-cursor -screen 800x480x16 -dpi 96 -ac
 
 Con este comando se arranca un servidor X xephyr para maemo.
 Aparecerá un servidor X con la resolución de 800x480 como en la captura de pantalla.
-![Servidor X xephyr]("./imagenes/xephyr.png")
+
+![Servidor X xephyr](./imagenes/xephyr.png)
 
 
 7. Visualizar maemo en el servidor X xephyr.
@@ -136,7 +137,8 @@ af-sb-init.sh start
 ```
 
 En la siguiente captura de pantalla se muestra el entorno de maemo.
-![Servidor X xephyr]("./imagenes/maemo.png")
+
+![Servidor X xephyr](./imagenes/maemo.png)
 
 
 Ya con este entorno en los siguientes post explicaré como crear un programa para maemo usando python.

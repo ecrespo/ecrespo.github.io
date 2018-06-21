@@ -1,5 +1,5 @@
 Title: Instalando Maemo-SDK shinook en Debian
-Date: 2010-23-03 10:20
+Date: 2008-23-03 10:20
 Category: Debian, maemo, Nokia N810
 
 Continuando con los post sobre el Nokia N810, ahora a explicar 

@@ -1,5 +1,5 @@
 Title: Actualizando el firmware al Nokia N810
-Date: 2010-23-03 10:10
+Date: 2008-23-03 10:10
 Category: Nokia N810
 
 En esta Semana Santa me dedique a actualizar mis dispositivos 

@@ -51,3 +51,14 @@ localhost - - [24/Mar/2008 00:14:36] "POST /RPC2 HTTP/1.0" 200 -
 Son las respuestas a la conexiones del cliente.
 Este programa se puede mejorar evaluando el tipo de datos que envia el 
 cliente para así evitar errores al mandar un string en vez de un número.
+
+===
+
+¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC) 
+usando la billetera digital de tu preferencia a la siguiente 
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV
+
+O Escaneando el código QR desde billetera:
+
+![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./imagenes/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)

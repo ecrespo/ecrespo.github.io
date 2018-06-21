@@ -143,3 +143,13 @@ En la siguiente captura de pantalla se muestra el entorno de maemo.
 
 Ya con este entorno en los siguientes post explicaré como crear un programa para maemo usando python.
 
+===
+
+¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC) 
+usando la billetera digital de tu preferencia a la siguiente 
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV
+
+O Escaneando el código QR desde billetera:
+
+![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./imagenes/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)

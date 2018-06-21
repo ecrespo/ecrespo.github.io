@@ -27,3 +27,14 @@ Los pasos son los siguientes:
 8. Encienda el Nokia y se iniciará el proceso de actualización del firmware, en el tablet aparecerá el símbolo de conectado por USB.
 9. Al terminar se muestra en la consola el mensaje: you're done now!
 10. Ya el equipo está actualizado, ahora si la actualización no se hace cuando el equipo está recien comprado es necesario realizar un respaldo del mismo con las herramienta de recuperación y respaldo
+
+===
+
+¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC) 
+usando la billetera digital de tu preferencia a la siguiente 
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV
+
+O Escaneando el código QR desde billetera:
+
+![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./imagenes/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)

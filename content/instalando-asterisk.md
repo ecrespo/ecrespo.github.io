@@ -175,3 +175,14 @@ tar -xvzf /usr/local/src/asterisk-voces-es-v1_2-moh-voipnovatos.tar.gz
 Luego de esto se tiene el asterisk totalmente instalado.
 En próximo post publicare la configuración de la tarjeta X100P y configuración 
 base de asterisk.
+
+===
+
+¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC) 
+usando la billetera digital de tu preferencia a la siguiente 
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV
+
+O Escaneando el código QR desde billetera:
+
+![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./imagenes/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)

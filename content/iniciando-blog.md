@@ -1,5 +1,5 @@
 Title: Iniciando el blog
-Date: 2008-26-02 10:20
+Date: 2008-26-02 10:00
 Category: General
 
 Saludos a todos. El día de hoy inicio el blog desde blogger.com mientras 

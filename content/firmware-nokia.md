@@ -1,6 +1,9 @@
 Title: Actualizando el firmware al Nokia N810
-Date: 2008-23-03 10:10
-Category: Nokia N810
+Date: 2008-03-23 10:10
+Category: Nokia, N810
+Tags: Nokia, N810 
+lang: es
+translation: true
 
 En esta Semana Santa me dedique a actualizar mis dispositivos 
 que manejan Linux (nslu2 y nokia n810). Sólo me falta comprar 

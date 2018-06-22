@@ -1,6 +1,9 @@
 Title: Instalación de Debian en un mac Book. Primera parte
-Date: 2008-08-06 10:00
-Category: Debian, Linux, Mac Book
+Date: 2008-06-08 10:00
+Category: Debian, Linux, MacBook
+Tags: Debian, MacBook
+lang: es
+translation: true
 
 ### Preparativos 
 

@@ -1,6 +1,9 @@
 Title: Creando el primer programa para Maemo-sdk
-Date: 2008-23-03 10:30
-Category: Debian, maemo, Nokia N810, Python
+Date: 2008-03-23 10:30
+Category: Debian, Maemo, Nokia, N810, Python
+Tags: Maemo,N810,Python 
+lang: es
+translation: true
 
 Continuando con los post sobre el Nokia N810, ahora a explicar 
 el proceso de instalación del kit de desarrollo en Debian.

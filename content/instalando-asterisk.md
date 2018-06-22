@@ -1,6 +1,9 @@
-Title: Hola mundo 2da versión con hildon y python
-Date: 2008-13-04 10:00
-Category: Asterisk, Debian, Linux
+Title: Instalando asterisk 
+Date: 2008-04-13 10:00
+Category: Asterisk Debian Linux
+Tags: Debian, Asterisk 
+lang: es
+translation: true
 
 Desde hace un año me ha tocado trabajar con asterisk y es ahora que 
 he logrado comprar una tarjeta Motorola X100P, podre crear un 

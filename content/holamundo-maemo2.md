@@ -1,6 +1,9 @@
 Title: Hola mundo 2da versión con hildon y python
-Date: 2008-23-03 10:40
-Category: Debian, maemo, Nokia N810, Python
+Date: 2008-03-23 10:40
+Category: Debian, Maemo, Nokia, N810, Python
+Tags: Maemo, Nokia, Python,N810
+lang: es
+translation: true
 
 La segunda versión del hola mundo se basará en el framework 
 hildon el cual permite manejar el look,temas del entorno de 

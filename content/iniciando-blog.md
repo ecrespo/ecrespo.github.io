@@ -1,6 +1,9 @@
 Title: Iniciando el blog
-Date: 2008-26-02 10:00
+Date: 2008-02-26 10:00
 Category: General
+Tags: Blog 
+lang: es
+translation: true
 
 Saludos a todos. El día de hoy inicio el blog desde blogger.com mientras 
 resuelva el problema del servidor que maneja mi dominio.

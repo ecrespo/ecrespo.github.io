@@ -1,5 +1,5 @@
 Title: Prueba desde el Nokia N810
-Date: 2008-02-26 10:00
+Date: 2009-03-15 08:00
 Category: Movil, Nokia
 Tags: Nokia, N810
 lang: es

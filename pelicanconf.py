@@ -11,6 +11,7 @@ PATH = 'content'
 TIMEZONE = 'America/Caracas'
 
 DEFAULT_LANG = 'es'
+THEME = "notebook"
 
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
@@ -26,8 +27,16 @@ LINKS = (('Pelican', 'http://getpelican.com/'),
          ('You can modify those links in your config file', '#'),)
 
 # Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+#SOCIAL = (('You can add links in your config file', '#'),
+#          ('Another social link', '#'),)
+
+SOCIAL = (('twitter', 'https://twitter.com/_seraph1'),
+        ('medium', 'https://medium.com/@_seraph1'),
+        ('linkedin','http://ve.linkedin.com/in/ernestocrespo'),
+        ('gitlab','https://gitlab.com/ecrespo'),
+        ('google+','https://plus.google.com/u/0/+ErnestoCrespo'),
+        ('github', 'https://github.com/ecrespo'),)
+
 
 DEFAULT_PAGINATION = 10
 

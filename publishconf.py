@@ -14,11 +14,18 @@ SITEURL = 'ecrespo.github.io'
 RELATIVE_URLS = False
 
 FEED_ALL_ATOM = 'feeds/all.atom.xml'
+FEED_ALL_RSS = 'feeds/all.rss.xml'
 CATEGORY_FEED_ATOM = 'feeds/%s.atom.xml'
+CATEGORY_FEED_RSS = 'feeds/%s.rss.xml'
+TAG_FEED_ATOM = 'feeds/%s.atom.xml'
+TAG_FEED_RSS = 'feeds/%s.rss.xml'
+
 
 DELETE_OUTPUT_DIRECTORY = True
 
+
+
 # Following items are often useful when publishing
 
-#DISQUS_SITENAME = ""
-#GOOGLE_ANALYTICS = ""
+DISQUS_SITENAME = "https://seraph-2.disqus.com/"
+GOOGLE_ANALYTICS = "UA-26330861-1"

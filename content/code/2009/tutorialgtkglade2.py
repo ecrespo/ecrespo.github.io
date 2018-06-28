@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import pygtk
 pygtk.require('2.0')
 import gtk, gtk.glade, inspect, sys
-
 class ej3:
     def __init__(self):
         #Se captura el archivo glade
         self.w_tree = gtk.glade.XML('ej3.glade')
-       #Se asocian los widgets ventana, etiqueta1, etiqueta2, entrada, boton1 y     #boton2 a unas variables del objeto
+       #Se asocian los widgets ventana, etiqueta1, etiqueta2, entrada, boton1 y
+       #boton2 a unas variables del objeto
         self.ventana = self.w_tree.get_widget('ventana')
         self.etiqueta1 = self.w_tree.get_widget('etiqueta1')
         self.etiqueta2 = self.w_tree.get_widget('etiqueta2')
@@ -19,7 +18,6 @@ class ej3:
         #Se asocia las señales de los widgets con funciones.
         self.w_tree.signal_autoconnect(dict(inspect.getmembers(self)))
         self.texto = ""
-
     #Se define la función salir del boton2
     def on_boton2(self,*args):
         gtk.main_quit()
@@ -30,14 +28,10 @@ class ej3:
     #Se finaliza la aplicación al darle clip en cerrar ventana.
     def on_ventana_destroy(self,*args):
         gtk.main_quit()
-
      #Se muestra la ventana
     def main(self,*args):
         self.ventana.show()
         gtk.main()
-
-
 if __name__ == "__main__":
     app = ej3()
     app.main()
-    

@@ -1,3 +1,0 @@
-# seraph
-
-Página de seraph

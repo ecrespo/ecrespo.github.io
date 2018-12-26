@@ -3,10 +3,14 @@
 from __future__ import unicode_literals
 
 AUTHOR = 'Ernesto Crespo'
-SITENAME = "Seraph's Homepage"
+SITENAME = "Página de Seraph"
 SITEURL = ''
-
+SITETITLE = AUTHOR
+SITESUBTITLE = 'Data Science'
+SITEDESCRIPTION = ' Software Libre, Ciencia de Datos y Python'
 PATH = 'content'
+BROWSER_COLOR = '#333333'
+
 
 TIMEZONE = 'America/Caracas'
 
@@ -38,12 +42,17 @@ SOCIAL = (('linkedin', 'http://ve.linkedin.com/in/ernestocrespo'),
           ('facebook', 'https://www.facebook.com/ernesto.crespo'),
           ('gitlab', 'https://gitlab.com/ecrespo'),
           ('soundcloud','https://soundcloud.com/ernesto-crespo'),
-          ('rss', '//blog.alexandrevicenzi.com/feeds/all.atom.xml'))
+          ('rss', '//www.seraph.to/feeds/all.atom.xml'))
 
 
 MENUITEMS = (('Archives', '/archives.html'),
              ('Categories', '/categories.html'),
              ('Tags', '/tags.html'),)
+
+
+
+DISPLAY_PAGES_ON_MENU = True
+
 
 
 DEFAULT_PAGINATION = 10

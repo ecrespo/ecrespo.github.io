@@ -8,9 +8,10 @@ SITEURL = ''
 SITETITLE = AUTHOR
 SITESUBTITLE = 'Data Science'
 SITEDESCRIPTION = ' Software Libre, Ciencia de Datos y Python'
+SITELOGO = '//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120'
 PATH = 'content'
-BROWSER_COLOR = '#333333'
-
+#BROWSER_COLOR = '#333333'
+BROWSER_COLOR = '#e5e5ff'
 
 TIMEZONE = 'America/Caracas'
 

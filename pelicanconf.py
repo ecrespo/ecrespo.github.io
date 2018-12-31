@@ -10,8 +10,8 @@ SITESUBTITLE = 'Data Science'
 SITEDESCRIPTION = ' Software Libre, Ciencia de Datos y Python'
 SITELOGO = '//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120'
 PATH = 'content'
-#BROWSER_COLOR = '#333333'
-BROWSER_COLOR = '#e5e5ff'
+BROWSER_COLOR = '#333333'
+#BROWSER_COLOR = '#e5e5ff'
 
 TIMEZONE = 'America/Caracas'
 
@@ -44,7 +44,8 @@ LINKS = (('Pelican', 'http://getpelican.com/'),
 #SOCIAL = (('You can add links in your config file', '#'),
 #          ('Another social link', '#'),)
 
-SOCIAL = (('linkedin', 'http://ve.linkedin.com/in/ernestocrespo'),
+SOCIAL = (('envelope-o','mailto://ecrespo@seraph.to'),
+          ('linkedin', 'http://ve.linkedin.com/in/ernestocrespo'),
           ('github', 'https://github.com/ecrespo'),
           ('google', 'https://google.com/+ErnestoCrespo'),
           ('twitter', 'https://twitter.com/_seraph1'),

@@ -141,3 +141,5 @@ En la siguiente captura de pantalla se muestra el entorno de maemo.
 
 
 Ya con este entorno en los siguientes post explicaré como crear un programa para maemo usando python.
+
+

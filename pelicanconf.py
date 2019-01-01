@@ -74,4 +74,10 @@ DEFAULT_PAGINATION = 10
 THEME='/home/ernesto/proyectos/ecrespo.github.io/themes/Flex'
 PYGMENTS_STYLE = 'monokai'
 
+GOOGLE_ANALYTICS = 'UA-131517246-1'
+DISQUS_SITENAME = 'seraphto'
 
+PLUGIN_PATHS = ['plugins']
+PLUGINS = ['pelican-js'] # You may have more plugins
+
+COPYRIGHT_YEAR = 2006

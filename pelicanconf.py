@@ -81,3 +81,9 @@ PLUGIN_PATHS = ['plugins']
 #PLUGINS = ['pelican-js'] # You may have more plugins
 
 COPYRIGHT_YEAR = 2006
+
+SIDEBAR_LINKS = [
+    '<a href="/about/">About</a>',
+    '<a href="/contact/">Contact</a>',
+]
+

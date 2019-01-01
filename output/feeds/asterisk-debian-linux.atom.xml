@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Asterisk, Debian, Linux</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/asterisk-debian-linux.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2008-04-14T10:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Crear extensiones SIP</title><link href="https://ecrespo.github.io/crear-extensiones-sip.html" rel="alternate"></link><published>2008-04-14T10:00:00-05:30</published><updated>2008-04-14T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2008-04-14:/crear-extensiones-sip.html</id><summary type="html">&lt;p&gt;Para crear las extensiones sip es necesario modificar el 
+archivo /etc/asterisk/sip.conf. Se crearan 10 extensiones. &lt;/p&gt;
+&lt;p&gt;Estas extensiones comienzan desde 1000 hasta 1010.&lt;/p&gt;
+&lt;p&gt;Antes de empezar a crear las extensiones se explicará la estructura 
+del archivo sip.conf.&lt;/p&gt;
+&lt;h3&gt;Archivo sip.conf&lt;/h3&gt;
+&lt;p&gt;El archivo sip.conf se lee de …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Para crear las extensiones sip es necesario modificar el 
+archivo /etc/asterisk/sip.conf. Se crearan 10 extensiones. &lt;/p&gt;
+&lt;p&gt;Estas extensiones comienzan desde 1000 hasta 1010.&lt;/p&gt;
+&lt;p&gt;Antes de empezar a crear las extensiones se explicará la estructura 
+del archivo sip.conf.&lt;/p&gt;
+&lt;h3&gt;Archivo sip.conf&lt;/h3&gt;
+&lt;p&gt;El archivo sip.conf se lee de arriba hacía abajo.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;La sección [general] contiene las opciones globales, estas opciones son :&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;allow: Habilita que un determinado codec sea usado. Puede usarse la opción all.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;bindaddr: Dirección IP donde el asterisj usará para escuchar.&lt;/li&gt;
+&lt;li&gt;disallow: Prohíbe un determinado codec. Puede usarse la opción all.&lt;/li&gt;
+&lt;li&gt;bindport: Puerto donde asterisk espera por las conexiones.&lt;/li&gt;
+&lt;li&gt;maxexpirey: Tiempo máximo para registros en segundos.&lt;/li&gt;
+&lt;li&gt;defaultexpirey: Tiempo por defecto para registrarse en segundos.&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;register: Registra Asterisk con otro host. El formato es una dirección SIP opcionalmente seguido por una barra / y una extensión.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;language: Define el idioma a usar.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;A continuación se muestra un ejemplo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[general]&lt;/span&gt;
+&lt;span class="na"&gt;bindport&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;5060&lt;/span&gt;
+&lt;span class="na"&gt;bindaddr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;10.1.30.45&lt;/span&gt;
+&lt;span class="na"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;default&lt;/span&gt;
+&lt;span class="na"&gt;disallow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;all&lt;/span&gt;
+&lt;span class="na"&gt;allow&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;ulaw&lt;/span&gt;
+&lt;span class="na"&gt;maxexpirey&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;120&lt;/span&gt;
+&lt;span class="na"&gt;defaultexpirey&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;80&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Opciones de cada teléfono.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Las opciones para cada teléfono son:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;[name]: Es la parte del nombre del usuario de SIP.&lt;/li&gt;
+&lt;li&gt;peer: Entidad para la cual asterisk envia llamadas.&lt;/li&gt;
+&lt;li&gt;user: Entidad que realiza llamadas a través de asterisk.&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;type: Configurar la clase de conexión; las opciones son peer(recibe llamadas del asterisk), user(hace llamadas para el asterisk) y friend(recibe y hace llamadas).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;host: Dirección IP o el nombre del host del equipo a conectarse a asterisk. Se puede usar también la opción dinamic donde se espera que el teléfono se registre.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;secret: Es una clave compartida entre el teléfono y el servidor asterisk para autenticar los peers y los users al hacer una llamada.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A continuación se muestra un ejemplo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[polycom]&lt;/span&gt;
+&lt;span class="na"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;friend&lt;/span&gt;
+&lt;span class="na"&gt;secret&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1234&lt;/span&gt;
+&lt;span class="na"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;10.58.254.15&lt;/span&gt;
+&lt;span class="na"&gt;context&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;trusted&lt;/span&gt;
+&lt;span class="k"&gt;[ekiga]&lt;/span&gt;
+&lt;span class="na"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;friend&lt;/span&gt;
+&lt;span class="na"&gt;secret&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1234&lt;/span&gt;
+&lt;span class="na"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;dynamic&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Plan de discado.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;El plan de discado permite definir como asterisk gestionará las 
+llamadas. El plan de discado se configura en el archivo 
+/etc/asterisk/extensions.conf, está estructurado en 4 partes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Aplicaciones. Las aplicaciones son parte importante de asterisk. 
+Estas tratan al canal de voz, tocando sonidos, aceptando dígitos o 
+cortando una llamada.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Contextos: Permiten organizar y mejorar la seguridad del plan de discado. Los contextos están ligados con los canales.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;Extensiones: Es un string que dispara un evento.tiene 3 tipos: literal, estándar o especial.&lt;/li&gt;
+&lt;li&gt;Prioridad: Son pasos numerados de ejecución de cada extensión. Cada prioridad llama a una aplicación en específico. Comienzan en 1 y aumenta de 1 en 1.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A continuación se muestra un ejemplo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;exten=&amp;gt;8580,1,Dial(SIP/8580,20)
+exten=&amp;gt;8580,2,voicemail(u8580)
+exten=&amp;gt;8580,101,voicemail(b8580)
+exten=&amp;gt; número (nombre), prioridad, aplicación
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Archivos de configuración&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Archivo /etc/asterisk/sip.conf&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[1000] 
+type=friend
+username=1000
+secret=1234
+host=dynamic
+context=sip
+mailbox=100
+
+[1001] 
+type=friend
+username=1001
+secret=1234
+host=dynamic
+context=sip
+mailbox=101
+
+[1002] 
+type=friend
+username=1002
+secret=1234
+host=dynamic
+context=sip
+mailbox=102
+
+[1003] 
+type=friend
+username=1003
+secret=1234
+host=dynamic
+context=sip
+mailbox=103
+
+[1004] 
+type=friend
+username=1004
+secret=1234
+host=dynamic
+context=sip
+mailbox=104
+
+[1005] 
+type=friend
+username=1005
+secret=1234
+host=dynamic
+context=sip
+mailbox=105
+
+[1006] 
+type=friend
+username=1006
+secret=1234
+host=dynamic
+context=sip
+mailbox=106
+
+[1007] 
+type=friend
+username=1007
+secret=1234
+host=dynamic
+context=sip
+mailbox=107
+
+[1008] 
+type=friend
+username=1008
+secret=1234
+host=dynamic
+context=sip
+mailbox=108
+
+[1009] 
+type=friend
+username=1009
+secret=1234
+host=dynamic
+context=sip
+mailbox=109
+
+[1010] 
+type=friend
+username=1010
+secret=1234
+host=dynamic
+context=sip
+mailbox=110
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Archivo extensions.conf&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sip] #; aqui defino la seccion sip
+exten =&amp;gt; 1000,1,Dial(SIP/1000,20); Si el número a llamar es 1000, se llama al usuario 1000, mediante canal sip, dejar que suene por 20 segundos, si no hay respuesta se procede a la prioridad 2.
+exten =&amp;gt; 1000,2,Voicemail(u1000); La prioridad 2 llama al buzon de voz. y se da el mensaje que el usuario 1000 no está disponible. La única forma de salir de acá es colgando la llamada.
+exten =&amp;gt; 1000,102,Voicemail(b1000); Si el número de marcado en la prioridad 1 devuelve un estado &amp;quot;busy&amp;quot; entonces el dial saltará a la prioridad 101+ prioridad actual, resultando 102.
+exten =&amp;gt; 1000,103,Hangup
+
+exten =&amp;gt; 1001,1,Dial(SIP/1001,20)
+exten =&amp;gt; 1001,2,Voicemail(u1001)
+exten =&amp;gt; 1001,102,Voicemail(b1001)
+exten =&amp;gt; 1001,103,Hangup
+
+exten =&amp;gt; 1002,1,Dial(SIP/1002,20)
+exten =&amp;gt; 1002,2,Voicemail(u1002)
+exten =&amp;gt; 1002,102,Voicemail(b1002)
+exten =&amp;gt; 1002,103,Hangup
+
+exten =&amp;gt; 1003,1,Dial(SIP/1003,20)
+exten =&amp;gt; 1003,2,Voicemail(u1003)
+exten =&amp;gt; 1003,102,Voicemail(b1003)
+exten =&amp;gt; 1003,103,Hangup
+
+exten =&amp;gt; 1004,1,Dial(SIP/1004,20)
+exten =&amp;gt; 1004,2,Voicemail(u1004)
+exten =&amp;gt; 1004,102,Voicemail(b1004)
+exten =&amp;gt; 1004,103,Hangup
+
+exten =&amp;gt; 1005,1,Dial(SIP/1005,20)
+exten =&amp;gt; 1005,2,Voicemail(u1005)
+exten =&amp;gt; 1005,102,Voicemail(b1005)
+exten =&amp;gt; 1005,103,Hangup
+
+exten =&amp;gt; 1006,1,Dial(SIP/1006,20)
+exten =&amp;gt; 1006,2,Voicemail(u1006)
+exten =&amp;gt; 1006,102,Voicemail(b1006)
+exten =&amp;gt; 1006,103,Hangup
+
+exten =&amp;gt; 1007,1,Dial(SIP/1007,20)
+exten =&amp;gt; 1007,2,Voicemail(u1007)
+exten =&amp;gt; 1007,102,Voicemail(b1007)
+exten =&amp;gt; 1007,103,Hangup
+
+exten =&amp;gt; 1008,1,Dial(SIP/1008,20)
+exten =&amp;gt; 1008,2,Voicemail(u1008)
+exten =&amp;gt; 1008,102,Voicemail(b1008)
+exten =&amp;gt; 1008,103,Hangup
+
+exten =&amp;gt; 1009,1,Dial(SIP/1009,20)
+exten =&amp;gt; 1009,2,Voicemail(u1009)
+exten =&amp;gt; 1009,102,Voicemail(b1009)
+exten =&amp;gt; 1009,103,Hangup
+
+exten =&amp;gt; 1010,1,Dial(SIP/1010,20)
+exten =&amp;gt; 1010,2,Voicemail(u1010)
+exten =&amp;gt; 1010,102,Voicemail(b1010)
+exten =&amp;gt; 1010,103,Hangup
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Imaginense tener que crear 100 extensiones!!!!!&lt;/p&gt;
+&lt;p&gt;Para solucionar esto se puede definir un conjunto de extensiones usando estándares.&lt;/p&gt;
+&lt;p&gt;Un nombre de extensión es un estándar, si este se inicia con un carácter 
+subrayado "_".&lt;/p&gt;
+&lt;p&gt;Los siguientes carácteres tienen un significado especial:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;X: Corresponde a cualquier dígito de 0-9.&lt;/li&gt;
+&lt;li&gt;Z: Corresponde a cualquier dígito de 1-9.&lt;/li&gt;
+&lt;li&gt;N: Corresponde a cualquier dígito de 2-9.&lt;/li&gt;
+&lt;li&gt;1237-9]: Corresponde a cualquier dígito entre el rango.&lt;/li&gt;
+&lt;li&gt;. : Corresponde a uno o más caracteres.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Asterisk también usa algunos nombres de extensión para propósitos especiales:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;¡ : Invalido.&lt;/li&gt;
+&lt;li&gt;s: Inicio.&lt;/li&gt;
+&lt;li&gt;h: Colgó.&lt;/li&gt;
+&lt;li&gt;t: Tiempo de espera.&lt;/li&gt;
+&lt;li&gt;T: Tiempo de espera absoluto.&lt;/li&gt;
+&lt;li&gt;o: Operador.&lt;/li&gt;
+&lt;li&gt;a: Llamado cuando el usuario presiona "*" durante un mensaje inicial del buzón de voz.&lt;/li&gt;
+&lt;li&gt;fax: Usado para la detección de fax en los canales zap.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Adicionalmente se usará variables para simplificar las extensiones.&lt;/p&gt;
+&lt;p&gt;Este ejemplo es para las extensiones 1000 hasta 1019. Se está usando la variable 
+EXTEND el cual guarda el número de extensión.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;exten =&amp;gt; _10[0-1]X,1,Dial(SIP/&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;EXTEND&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;,20)
+exten =&amp;gt; _10[0-1]X,2,Voicemail(u&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;EXTEN&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;)
+exten =&amp;gt; _10[0-1]X,102,Voicemail(b&lt;span class="cp"&gt;${&lt;/span&gt;&lt;span class="n"&gt;EXTEN&lt;/span&gt;&lt;span class="cp"&gt;}&lt;/span&gt;)
+exten =&amp;gt; _10[0-1]X,103,Hangup
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC) 
+usando la billetera digital de tu preferencia a la siguiente 
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content></entry><entry><title>La consola de asterisk</title><link href="https://ecrespo.github.io/la-consola-de-asterisk.html" rel="alternate"></link><published>2008-04-13T10:20:00-05:30</published><updated>2008-04-13T10:20:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2008-04-13:/la-consola-de-asterisk.html</id><summary type="html">&lt;p&gt;Ya se tiene el asterisk funcionando, solo queda probar entrar a la consola.&lt;/p&gt;
+&lt;h3&gt;Consola de asterisk&lt;/h3&gt;
+&lt;p&gt;Desde root ejecutar asterisk -r.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;jewel:~# asterisk -r
+Asterisk 1.6.0-beta7.1, Copyright (C) 1999 - 2008 Digium, Inc. and others.
+Created by Mark Spencer 
+Asterisk comes with ABSOLUTELY NO WARRANTY; type &amp;#39;core show …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Ya se tiene el asterisk funcionando, solo queda probar entrar a la consola.&lt;/p&gt;
+&lt;h3&gt;Consola de asterisk&lt;/h3&gt;
+&lt;p&gt;Desde root ejecutar asterisk -r.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;jewel:~# asterisk -r
+Asterisk 1.6.0-beta7.1, Copyright (C) 1999 - 2008 Digium, Inc. and others.
+Created by Mark Spencer 
+Asterisk comes with ABSOLUTELY NO WARRANTY; type &amp;#39;core show warranty&amp;#39; for details.
+This is free software, with components licensed under the GNU General Public
+License version 2 and other licenses; you are welcome to redistribute it under
+certain conditions. Type &amp;#39;core show license&amp;#39; for details.
+=========================================================================
+Connected to Asterisk 1.6.0-beta7.1 currently running on jewel (pid = 3138)
+jewel*CLI&amp;gt;
+
+Se muestra la versión de asterisk que se está usando (en el ejemplo la versión beta7.1 de la 1.6.0). Luego el creador de asterisk y la licencia que usa; al final muestra el nombre del equipo y cli.
+
+Para ver la lista de comandos se ejecuta help:
+jewel*CLI&amp;gt; help
+ael reload Reload AEL configuration
+ael set debug {read|tokens|mac Enable AEL debugging flags
+agent logoff Sets an agent offline
+agent show Show status of agents
+agent show online Show all online agents
+agi dump html Dumps a list of AGI commands in HTML format
+agi exec Add AGI command to a channel in Async AGI
+agi set debug [on|off] Enable/Disable AGI debugging
+agi show List AGI commands or specific help
+cdr show status Display the CDR status
+console active Sets/displays active console
+console answer Answer an incoming console call
+console autoanswer [on|off] Sets/displays autoanswer
+console boost Sets/displays mic boost in dB
+console dial Dial an extension on the console
+console flash Flash a call on the console
+console hangup Hangup a call on the console
+console {mute|unmute} Disable/Enable mic input
+console send text Send text to the remote device
+console transfer Transfer a call to a different extension
+console {device} Generic console command
+core abort shutdown Cancel a running shutdown
+core clear profile Clear profiling info
+core restart gracefully Restart Asterisk gracefully
+core restart now Restart Asterisk immediately
+core restart when convenient Restart Asterisk at empty call volume
+core set chanvar Set a channel variable
+core set debug channel Enable/disable debugging on a channel
+core set {debug|verbose} [off| Set level of debug/verbose chattiness
+core set global Set global dialplan variable
+core show applications [like|d Shows registered dialplan applications
+core show application Describe a specific dialplan application
+core show calls [uptime] Display information on calls
+core show channels [concise|ve Display information on channels
+core show channel Display information on a specific channel
+core show channeltypes List available channel types
+core show channeltype Give more details on that channel type
+core show codecs [audio|video| Displays a list of codecs
+core show codec Shows a specific codec
+core show config mappings Display config mappings (file names to config engines)
+core show file formats Displays file formats
+core show file version [like] List versions of files used to build Asterisk
+core show functions [like] Shows registered dialplan functions
+core show function Describe a specific dialplan function
+core show globals Show global dialplan variables
+core show hints Show dialplan hints
+core show hint Show dialplan hint
+core show image formats Displays image formats
+core show license Show the license(s) for this copy of Asterisk
+core show profile Display profiling info
+core show settings Show some core settings
+core show switches Show alternative switches
+core show sysinfo Show System Information
+core show threads Show running threads
+core show translation [recalc] Display translation matrix
+core show uptime [seconds] Show uptime information
+core show version Display version info
+core show warranty Show the warranty (if any) for this copy of Asterisk
+core stop gracefully Gracefully shut down Asterisk
+core stop now Shut down Asterisk immediately
+core stop when convenient Shut down Asterisk at empty call volume
+database del Removes database key/value
+database deltree Removes database keytree/values
+database get Gets database value
+database put Adds/updates database value
+database show Shows database contents
+database showkey Shows database contents
+devstate change Change a custom device state
+devstate list List currently known custom device states
+dialplan add extension Add new extension into context
+dialplan add ignorepat Add new ignore pattern
+dialplan add include Include context in other context
+dialplan reload Reload extensions and *only* extensions
+dialplan remove extension Remove a specified extension
+dialplan remove ignorepat Remove ignore pattern from context
+dialplan remove include Remove a specified include from context
+dialplan save Save dialplan
+dialplan set extenpatternmatch Use the Old extension pattern matching algorithm.
+dialplan set extenpatternmatch Use the New extension pattern matching algorithm.
+dialplan show Show dialplan
+dnsmgr refresh Performs an immediate refresh
+dnsmgr reload Reloads the DNS manager configuration
+dnsmgr status Display the DNS manager status
+dundi flush [stats] Flush DUNDi cache
+dundi lookup Lookup a number in DUNDi
+dundi precache Precache a number in DUNDi
+dundi query Query a DUNDi EID
+dundi set debug {on|off} Enable/Disable DUNDi debugging
+dundi show entityid Display Global Entity ID
+dundi show mappings Show DUNDi mappings
+dundi show peers [registered|i Show defined DUNDi peers
+dundi show peer Show info on a specific DUNDi peer
+dundi show precache Show DUNDi precache
+dundi show requests Show DUNDi requests
+dundi show trans Show active DUNDi transactions
+dundi store history {on|off} Enable/Disable DUNDi historic records
+feature show channels List status of feature channels
+features reload Reloads configured features
+features show Lists configured features
+file convert Convert audio file
+group show channels Display active channels with group(s)
+help Display help list, or specific help on a command
+http show status Display HTTP server status
+iax2 provision Provision an IAX device
+iax2 prune realtime Prune a cached realtime lookup
+iax2 reload Reload IAX configuration
+iax2 set debug {on|off} Enable/Disable IAX debugging
+iax2 set debug jb {on|off} Enable/Disable IAX jitterbuffer debugging
+iax2 set debug trunk {on|off} Enable/Disable IAX trunk debugging
+iax2 set mtu Set the IAX systemwide trunking MTU
+iax2 show cache Display IAX cached dialplan
+iax2 show channels List active IAX channels
+iax2 show firmware List available IAX firmware
+iax2 show netstats List active IAX channel netstats
+iax2 show peer Show details on specific IAX peer
+iax2 show peers List defined IAX peers
+iax2 show provisioning Display iax provisioning
+iax2 show registry Display IAX registration status
+iax2 show stats Display IAX statistics
+iax2 show threads Display IAX helper thread info
+iax2 show users [like] List defined IAX users
+iax2 test losspct Set IAX2 incoming frame loss percentage
+iax2 unregister Unregister (force expiration) an IAX2 peer from the registry
+indication add Add the given indication to the country
+indication remove Remove the given indication from the country
+indication show Display a list of all countries/indications
+jabber reload Reload Jabber configuration
+jabber set debug {on|off} Enable/Disable Jabber debug
+jabber show buddies Show buddy lists of our clients
+jabber show connected Show state of clients and components
+jabber test Shows roster, but is generally used for mog&amp;#39;s debugging.
+keys init Initialize RSA key passcodes
+keys show Displays RSA key information
+local show channels List status of local channels
+logger mute Toggle logging output to a console
+logger reload Reopens the log files
+logger rotate Rotates and reopens the log files
+logger show channels List configured log channels
+manager debug [on|off] Show, enable, disable debugging of the manager code
+manager reload Reload manager configurations
+manager show command Show a manager interface command
+manager show commands List manager interface commands
+manager show connected List connected manager interface users
+manager show eventq List manager interface queued events
+manager show users List configured manager users
+manager show user Display information on a specific manager user
+meetme Execute a command on a conference or conferee
+mgcp audit endpoint Audit specified MGCP endpoint
+mgcp reload Reload MGCP configuration
+mgcp set debug {on|off} Enable/Disable MGCP debugging
+mgcp show endpoints List defined MGCP endpoints
+minivm list accounts List defined mini-voicemail boxes
+minivm list templates List message templates
+minivm list zones List zone message formats
+minivm reload Reload Mini-voicemail configuration
+minivm show settings Show mini-voicemail general settings
+minivm show stats Show some mini-voicemail statistics
+mixmonitor [start|stop] Execute a MixMonitor command
+mobile rfcomm Send commands to the rfcomm port for debugging
+mobile search Search for Bluetooth Cell / Mobile devices
+mobile show devices Show Bluetooth Cell / Mobile devices
+module load Load a module by name
+module reload Reload configuration
+module show [like] List modules and info
+module unload Unload a module by name
+moh reload Reload MusicOnHold
+moh show classes List MusicOnHold classes
+moh show files List MusicOnHold file-based classes
+no debug channel Disable debugging on channel(s)
+ooh323 set debug [off] Enable/Disable OOH323 debugging
+ooh323 show config Show details on global configuration of H.323 channel driver
+ooh323 show peer Show details on specific OOH323 peer
+ooh323 show peers Show defined OOH323 peers
+ooh323 show user Show details on specific OOH323 user
+ooh323 show users Show defined OOH323 users
+originate Originate a call
+parkedcalls show List currently parked calls
+phoneprov show routes Show registered phoneprov http routes
+pri debug span Enables PRI debugging on a span
+pri intensive debug span Enables REALLY INTENSE PRI debugging
+pri no debug span Disables PRI debugging on a span
+pri set debug file Sends PRI debug output to the specified file
+pri show debug Displays current PRI debug settings
+pri show spans Displays PRI Information
+pri show span Displays PRI Information
+pri unset debug file Ends PRI debug output to file
+queue add member Add a channel to a specified queue
+queue remove member Removes a channel from a specified queue
+queue rules reload Reload the rules defined in queuerules.conf
+queue rules show Show the rules defined in queuerules.conf
+queue set penalty Set penalty for a channel of a specified queue
+queue show Show status of a specified queue
+queue {pause|unpause} member Pause or unpause a queue member
+realtime load Used to print out RealTime variables.
+realtime mysql status Shows connection information for the MySQL RealTime driver
+realtime update Used to update RealTime variables.
+rpt debug level Enable app_rpt debuggin
+rpt dump Dump app_rpt structs for debugging
+rpt lstats Dump link statistics
+rpt reload Reload app_rpt config
+rpt restart Restart app_rpt
+rpt stats Dump node statistics
+rtcp set debug {on|off|ip} Enable/Disable RTCP debugging
+rtcp set stats {on|off} Enable/Disable RTCP stats
+rtp set debug {on|off|ip} Enable/Disable RTP debugging
+say load [new|old] Set or show the say mode
+sip notify Send a notify packet to a SIP peer
+sip prune realtime [peer|user| Prune cached Realtime users/peers
+sip reload Reload SIP configuration
+sip set debug {on|off|ip|peer} Enable/Disable SIP debugging
+sip set history {on|off} Enable/Disable SIP history
+sip show {channels|subscriptio List active SIP channels/subscriptions
+sip show channel Show detailed SIP channel info
+sip show domains List our local SIP domains.
+sip show history Show SIP dialog history
+sip show inuse List all inuse/limits
+sip show objects List all SIP object allocations
+sip show peers List defined SIP peers
+sip show peer Show details on specific SIP peer
+sip show registry List SIP registration status
+sip show settings Show SIP global settings
+sip show tcp List TCP Connections
+sip show users List defined SIP users
+sip show user Show details on specific SIP user
+sip unregister Unregister (force expiration) a SIP peer from the registery
+
+skinny reset Reset Skinny device(s)
+skinny set debug {on|off} Enable/Disable Skinny debugging
+skinny show devices List defined Skinny devices
+skinny show device List Skinny device information
+skinny show lines List defined Skinny lines per device
+skinny show line List Skinny line information
+skinny show settings List global Skinny settings
+sla show stations Show SLA Stations
+sla show trunks Show SLA Trunks
+soft hangup Request a hangup on a given channel
+stun set debug {on|off} Enable/Disable STUN debugging
+transcoder show Display Zaptel transcoder utilization.
+udptl set debug {on|off|ip} Enable/Disable UDPTL debugging
+ulimit Set or show process resource limits
+unistim info Show UNISTIM info
+unistim reload Reload UNISTIM configuration
+unistim set debug {on|off} Toggle UNITSTIM debugging
+unistim sp Send packet (for reverse engineering)
+voicemail reload Reload voicemail configuration
+voicemail show users List defined voicemail boxes
+voicemail show zones List zone message formats
+zap destroy channel Destroy a channel
+zap restart Fully restart Zaptel channels
+zap set dnd Set software gain on a channel
+zap set hwgain Set hardware gain on a channel
+zap set swgain Set software gain on a channel
+zap show cadences List cadences
+zap show channels [trunkgroup| Show active zapata channels
+zap show channel Show information on a channel
+zap show status Show all Zaptel cards status
+zap show version Show the Zaptel version in use
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ver los módulos instalados de asterisk se ejecuta module show:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;jewel&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;CLI&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;show&lt;/span&gt;
+&lt;span class="k"&gt;Module&lt;/span&gt; &lt;span class="nn"&gt;Description&lt;/span&gt; &lt;span class="n"&gt;Use&lt;/span&gt; &lt;span class="n"&gt;Count&lt;/span&gt; 
+&lt;span class="n"&gt;res_speech&lt;/span&gt; &lt;span class="n"&gt;Generic&lt;/span&gt; &lt;span class="n"&gt;Speech&lt;/span&gt; &lt;span class="n"&gt;Recognition&lt;/span&gt; &lt;span class="n"&gt;API&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_smdi&lt;/span&gt; &lt;span class="n"&gt;Simplified&lt;/span&gt; &lt;span class="n"&gt;Message&lt;/span&gt; &lt;span class="n"&gt;Desk&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SMDI&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_realtime&lt;/span&gt; &lt;span class="n"&gt;Realtime&lt;/span&gt; &lt;span class="n"&gt;Data&lt;/span&gt; &lt;span class="n"&gt;Lookup&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Rewrite&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_phoneprov&lt;/span&gt; &lt;span class="n"&gt;HTTP&lt;/span&gt; &lt;span class="n"&gt;Phone&lt;/span&gt; &lt;span class="n"&gt;Provisioning&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_musiconhold&lt;/span&gt; &lt;span class="n"&gt;Music&lt;/span&gt; &lt;span class="k"&gt;On&lt;/span&gt; &lt;span class="n"&gt;Hold&lt;/span&gt; &lt;span class="n"&gt;Resource&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_monitor&lt;/span&gt; &lt;span class="k"&gt;Call&lt;/span&gt; &lt;span class="n"&gt;Monitoring&lt;/span&gt; &lt;span class="n"&gt;Resource&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_limit&lt;/span&gt; &lt;span class="n"&gt;Resource&lt;/span&gt; &lt;span class="n"&gt;limits&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_jabber&lt;/span&gt; &lt;span class="n"&gt;AJI&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="n"&gt;Jabber&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_indications&lt;/span&gt; &lt;span class="n"&gt;Region&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;specific&lt;/span&gt; &lt;span class="n"&gt;tones&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_crypto&lt;/span&gt; &lt;span class="n"&gt;Cryptographic&lt;/span&gt; &lt;span class="n"&gt;Digital&lt;/span&gt; &lt;span class="n"&gt;Signatures&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_convert&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;format&lt;/span&gt; &lt;span class="n"&gt;conversion&lt;/span&gt; &lt;span class="n"&gt;CLI&lt;/span&gt; &lt;span class="n"&gt;command&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_config_sqlite&lt;/span&gt; &lt;span class="n"&gt;Realtime&lt;/span&gt; &lt;span class="n"&gt;SQLite&lt;/span&gt; &lt;span class="n"&gt;configuration&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_config_ldap&lt;/span&gt; &lt;span class="n"&gt;LDAP&lt;/span&gt; &lt;span class="n"&gt;realtime&lt;/span&gt; &lt;span class="k"&gt;interface&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_clioriginate&lt;/span&gt; &lt;span class="k"&gt;Call&lt;/span&gt; &lt;span class="n"&gt;origination&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;CLI&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_agi&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="n"&gt;Gateway&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;AGI&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_ael_share&lt;/span&gt; &lt;span class="n"&gt;share&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;able&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;AEL&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_adsi&lt;/span&gt; &lt;span class="n"&gt;ADSI&lt;/span&gt; &lt;span class="n"&gt;Resource&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;pbx_spool&lt;/span&gt; &lt;span class="n"&gt;Outgoing&lt;/span&gt; &lt;span class="n"&gt;Spool&lt;/span&gt; &lt;span class="n"&gt;Support&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;pbx_realtime&lt;/span&gt; &lt;span class="n"&gt;Realtime&lt;/span&gt; &lt;span class="n"&gt;Switch&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;pbx_lua&lt;/span&gt; &lt;span class="n"&gt;Lua&lt;/span&gt; &lt;span class="n"&gt;PBX&lt;/span&gt; &lt;span class="n"&gt;Switch&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;pbx_loopback&lt;/span&gt; &lt;span class="n"&gt;Loopback&lt;/span&gt; &lt;span class="n"&gt;Switch&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;pbx_dundi&lt;/span&gt; &lt;span class="n"&gt;Distributed&lt;/span&gt; &lt;span class="n"&gt;Universal&lt;/span&gt; &lt;span class="n"&gt;Number&lt;/span&gt; &lt;span class="n"&gt;Discovery&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;pbx_config&lt;/span&gt; &lt;span class="n"&gt;Text&lt;/span&gt; &lt;span class="n"&gt;Extension&lt;/span&gt; &lt;span class="n"&gt;Configuration&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;pbx_ael&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="n"&gt;Extension&lt;/span&gt; &lt;span class="n"&gt;Language&lt;/span&gt; &lt;span class="n"&gt;Compiler&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_volume&lt;/span&gt; &lt;span class="n"&gt;Technology&lt;/span&gt; &lt;span class="n"&gt;independent&lt;/span&gt; &lt;span class="n"&gt;volume&lt;/span&gt; &lt;span class="n"&gt;control&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_vmcount&lt;/span&gt; &lt;span class="n"&gt;Indicator&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;whether&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;voice&lt;/span&gt; &lt;span class="n"&gt;mailbox&lt;/span&gt; &lt;span class="n"&gt;ha&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_version&lt;/span&gt; &lt;span class="k"&gt;Get&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="n"&gt;Version&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Build&lt;/span&gt; &lt;span class="n"&gt;Info&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_uri&lt;/span&gt; &lt;span class="n"&gt;URI&lt;/span&gt; &lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_timeout&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;timeout&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_sysinfo&lt;/span&gt; &lt;span class="n"&gt;System&lt;/span&gt; &lt;span class="n"&gt;information&lt;/span&gt; &lt;span class="n"&gt;related&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_strings&lt;/span&gt; &lt;span class="kt"&gt;String&lt;/span&gt; &lt;span class="n"&gt;handling&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_shell&lt;/span&gt; &lt;span class="n"&gt;Returns&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;shell&lt;/span&gt; &lt;span class="n"&gt;command&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_sha1&lt;/span&gt; &lt;span class="n"&gt;SHA&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;computation&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="k"&gt;function&lt;/span&gt; &lt;span class="err"&gt;0 &lt;/span&gt;
+&lt;span class="n"&gt;func_realtime&lt;/span&gt; &lt;span class="n"&gt;Read&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Write&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Store&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Destroy&lt;/span&gt; &lt;span class="n"&gt;values&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;R&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_rand&lt;/span&gt; &lt;span class="n"&gt;Random&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="k"&gt;function&lt;/span&gt; &lt;span class="err"&gt;0 &lt;/span&gt;
+&lt;span class="n"&gt;func_module&lt;/span&gt; &lt;span class="n"&gt;Checks&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;is&lt;/span&gt; &lt;span class="n"&gt;loaded&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_md5&lt;/span&gt; &lt;span class="n"&gt;MD5&lt;/span&gt; &lt;span class="n"&gt;digest&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_math&lt;/span&gt; &lt;span class="n"&gt;Mathematical&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="k"&gt;function&lt;/span&gt; &lt;span class="err"&gt;0 &lt;/span&gt;
+&lt;span class="n"&gt;func_logic&lt;/span&gt; &lt;span class="n"&gt;Logical&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_lock&lt;/span&gt; &lt;span class="n"&gt;Dialplan&lt;/span&gt; &lt;span class="n"&gt;mutexes&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_iconv&lt;/span&gt; &lt;span class="n"&gt;Charset&lt;/span&gt; &lt;span class="n"&gt;conversions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_groupcount&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;group&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_global&lt;/span&gt; &lt;span class="n"&gt;Variable&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_extstate&lt;/span&gt; &lt;span class="n"&gt;Gets&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;extension&lt;/span&gt;&lt;span class="c"&gt;&amp;#39;s state in the dialpla 0 &lt;/span&gt;
+&lt;span class="n"&gt;func_env&lt;/span&gt; &lt;span class="n"&gt;Environment&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;filesystem&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="k"&gt;function&lt;/span&gt; &lt;span class="err"&gt;0 &lt;/span&gt;
+&lt;span class="n"&gt;func_enum&lt;/span&gt; &lt;span class="k"&gt;ENUM&lt;/span&gt; &lt;span class="nc"&gt;related&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_dialplan&lt;/span&gt; &lt;span class="n"&gt;Dialplan&lt;/span&gt; &lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Extension&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Priority&lt;/span&gt; &lt;span class="n"&gt;Chec&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_dialgroup&lt;/span&gt; &lt;span class="n"&gt;Dialgroup&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="k"&gt;function&lt;/span&gt; &lt;span class="err"&gt;0 &lt;/span&gt;
+&lt;span class="n"&gt;func_devstate&lt;/span&gt; &lt;span class="n"&gt;Gets&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="n"&gt;sets&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;device&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;dialp&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_db&lt;/span&gt; &lt;span class="n"&gt;Database&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;astdb&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;related&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functi&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_cut&lt;/span&gt; &lt;span class="n"&gt;Cut&lt;/span&gt; &lt;span class="n"&gt;out&lt;/span&gt; &lt;span class="n"&gt;information&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_channel&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;information&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="k"&gt;function&lt;/span&gt; &lt;span class="err"&gt;0 &lt;/span&gt;
+&lt;span class="n"&gt;func_cdr&lt;/span&gt; &lt;span class="k"&gt;Call&lt;/span&gt; &lt;span class="n"&gt;Detail&lt;/span&gt; &lt;span class="n"&gt;Record&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CDR&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functi&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_callerid&lt;/span&gt; &lt;span class="n"&gt;Caller&lt;/span&gt; &lt;span class="n"&gt;ID&lt;/span&gt; &lt;span class="n"&gt;related&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_blacklist&lt;/span&gt; &lt;span class="n"&gt;Look&lt;/span&gt; &lt;span class="n"&gt;up&lt;/span&gt; &lt;span class="n"&gt;Caller&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;ID&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;black&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;func_base64&lt;/span&gt; &lt;span class="n"&gt;base64&lt;/span&gt; &lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;decode&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_wav_gsm&lt;/span&gt; &lt;span class="n"&gt;Microsoft&lt;/span&gt; &lt;span class="n"&gt;WAV&lt;/span&gt; &lt;span class="n"&gt;format&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Proprietary&lt;/span&gt; &lt;span class="n"&gt;GSM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_wav&lt;/span&gt; &lt;span class="n"&gt;Microsoft&lt;/span&gt; &lt;span class="n"&gt;WAV&lt;/span&gt; &lt;span class="n"&gt;format&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8000&lt;/span&gt;&lt;span class="n"&gt;Hz&lt;/span&gt; &lt;span class="n"&gt;Signed&lt;/span&gt; &lt;span class="n"&gt;Line&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_vox&lt;/span&gt; &lt;span class="n"&gt;Dialogic&lt;/span&gt; &lt;span class="n"&gt;VOX&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ADPCM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;Format&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_sln&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt; &lt;span class="n"&gt;Signed&lt;/span&gt; &lt;span class="n"&gt;Linear&lt;/span&gt; &lt;span class="n"&gt;Audio&lt;/span&gt; &lt;span class="n"&gt;support&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SLN&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_sln16&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt; &lt;span class="n"&gt;Signed&lt;/span&gt; &lt;span class="n"&gt;Linear&lt;/span&gt; &lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="n"&gt;KHz&lt;/span&gt; &lt;span class="n"&gt;Audio&lt;/span&gt; &lt;span class="n"&gt;support&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;S&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_pcm&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Sun&lt;/span&gt; &lt;span class="n"&gt;uLaw&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ALaw&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;KHz&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PCM&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;PCMA&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;AU&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;G&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_ogg_vorbis&lt;/span&gt; &lt;span class="n"&gt;OGG&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Vorbis&lt;/span&gt; &lt;span class="n"&gt;audio&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_jpeg&lt;/span&gt; &lt;span class="n"&gt;JPEG&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Joint&lt;/span&gt; &lt;span class="n"&gt;Picture&lt;/span&gt; &lt;span class="n"&gt;Experts&lt;/span&gt; &lt;span class="n"&gt;Group&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Image&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_ilbc&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt; &lt;span class="n"&gt;iLBC&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_h264&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;264&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_h263&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt; &lt;span class="n"&gt;H&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;263&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_gsm&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt; &lt;span class="n"&gt;GSM&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_g729&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt; &lt;span class="n"&gt;G729&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_g726&lt;/span&gt; &lt;span class="n"&gt;Raw&lt;/span&gt; &lt;span class="n"&gt;G&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;726&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;40&lt;/span&gt;&lt;span class="n"&gt;kbps&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_g723&lt;/span&gt; &lt;span class="n"&gt;G&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;723.1&lt;/span&gt; &lt;span class="n"&gt;Simple&lt;/span&gt; &lt;span class="n"&gt;Timestamp&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;Format&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_zap&lt;/span&gt; &lt;span class="n"&gt;Generic&lt;/span&gt; &lt;span class="n"&gt;Zaptel&lt;/span&gt; &lt;span class="n"&gt;Transcoder&lt;/span&gt; &lt;span class="n"&gt;Codec&lt;/span&gt; &lt;span class="n"&gt;Translat&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_ulaw&lt;/span&gt; &lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Law&lt;/span&gt; &lt;span class="n"&gt;Coder&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Decoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_speex&lt;/span&gt; &lt;span class="n"&gt;Speex&lt;/span&gt; &lt;span class="n"&gt;Coder&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Decoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_resample&lt;/span&gt; &lt;span class="n"&gt;SLIN&lt;/span&gt; &lt;span class="n"&gt;Resampling&lt;/span&gt; &lt;span class="n"&gt;Codec&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_lpc10&lt;/span&gt; &lt;span class="n"&gt;LPC10&lt;/span&gt; &lt;span class="mf"&gt;2.4&lt;/span&gt;&lt;span class="n"&gt;kbps&lt;/span&gt; &lt;span class="n"&gt;Coder&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Decoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_gsm&lt;/span&gt; &lt;span class="n"&gt;GSM&lt;/span&gt; &lt;span class="n"&gt;Coder&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Decoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_g726&lt;/span&gt; &lt;span class="n"&gt;ITU&lt;/span&gt; &lt;span class="n"&gt;G&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;726&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="n"&gt;kbps&lt;/span&gt; &lt;span class="n"&gt;G726&lt;/span&gt; &lt;span class="n"&gt;Transcoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_g722&lt;/span&gt; &lt;span class="n"&gt;ITU&lt;/span&gt; &lt;span class="n"&gt;G&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;722&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;64&lt;/span&gt;&lt;span class="n"&gt;kbps&lt;/span&gt; &lt;span class="n"&gt;G722&lt;/span&gt; &lt;span class="n"&gt;Transcoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_a_mu&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;law&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;Mulaw&lt;/span&gt; &lt;span class="n"&gt;direct&lt;/span&gt; &lt;span class="n"&gt;Coder&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Decoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_alaw&lt;/span&gt; &lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;law&lt;/span&gt; &lt;span class="n"&gt;Coder&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Decoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;codec_adpcm&lt;/span&gt; &lt;span class="n"&gt;Adaptive&lt;/span&gt; &lt;span class="n"&gt;Differential&lt;/span&gt; &lt;span class="n"&gt;PCM&lt;/span&gt; &lt;span class="n"&gt;Coder&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Decoder&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_zap&lt;/span&gt; &lt;span class="n"&gt;Zapata&lt;/span&gt; &lt;span class="n"&gt;Telephony&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_unistim&lt;/span&gt; &lt;span class="n"&gt;UNISTIM&lt;/span&gt; &lt;span class="n"&gt;Protocol&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;USTM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_skinny&lt;/span&gt; &lt;span class="n"&gt;Skinny&lt;/span&gt; &lt;span class="n"&gt;Client&lt;/span&gt; &lt;span class="n"&gt;Control&lt;/span&gt; &lt;span class="n"&gt;Protocol&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Skinny&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_sip&lt;/span&gt; &lt;span class="n"&gt;Session&lt;/span&gt; &lt;span class="n"&gt;Initiation&lt;/span&gt; &lt;span class="n"&gt;Protocol&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SIP&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_phone&lt;/span&gt; &lt;span class="n"&gt;Linux&lt;/span&gt; &lt;span class="n"&gt;Telephony&lt;/span&gt; &lt;span class="n"&gt;API&lt;/span&gt; &lt;span class="n"&gt;Support&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_oss&lt;/span&gt; &lt;span class="n"&gt;OSS&lt;/span&gt; &lt;span class="n"&gt;Console&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;Driver&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_mgcp&lt;/span&gt; &lt;span class="n"&gt;Media&lt;/span&gt; &lt;span class="n"&gt;Gateway&lt;/span&gt; &lt;span class="n"&gt;Control&lt;/span&gt; &lt;span class="n"&gt;Protocol&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MGCP&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_local&lt;/span&gt; &lt;span class="n"&gt;Local&lt;/span&gt; &lt;span class="n"&gt;Proxy&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Note&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;used&lt;/span&gt; &lt;span class="n"&gt;internal&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_jingle&lt;/span&gt; &lt;span class="n"&gt;Jingle&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;Driver&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_iax2&lt;/span&gt; &lt;span class="n"&gt;Inter&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="n"&gt;eXchange&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Ver&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_gtalk&lt;/span&gt; &lt;span class="n"&gt;Gtalk&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;Driver&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_features&lt;/span&gt; &lt;span class="n"&gt;Feature&lt;/span&gt; &lt;span class="n"&gt;Proxy&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_console&lt;/span&gt; &lt;span class="n"&gt;Console&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;Driver&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_alsa&lt;/span&gt; &lt;span class="n"&gt;ALSA&lt;/span&gt; &lt;span class="n"&gt;Console&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;Driver&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_agent&lt;/span&gt; &lt;span class="n"&gt;Agent&lt;/span&gt; &lt;span class="n"&gt;Proxy&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;cdr_sqlite&lt;/span&gt; &lt;span class="n"&gt;SQLite&lt;/span&gt; &lt;span class="n"&gt;CDR&lt;/span&gt; &lt;span class="n"&gt;Backend&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;cdr_sqlite3_custom&lt;/span&gt; &lt;span class="n"&gt;SQLite3&lt;/span&gt; &lt;span class="n"&gt;Custom&lt;/span&gt; &lt;span class="n"&gt;CDR&lt;/span&gt; &lt;span class="k"&gt;Module&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;cdr_manager&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="n"&gt;Manager&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="n"&gt;CDR&lt;/span&gt; &lt;span class="n"&gt;Backend&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;cdr_custom&lt;/span&gt; &lt;span class="n"&gt;Customizable&lt;/span&gt; &lt;span class="n"&gt;Comma&lt;/span&gt; &lt;span class="n"&gt;Separated&lt;/span&gt; &lt;span class="n"&gt;Values&lt;/span&gt; &lt;span class="n"&gt;CDR&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;cdr_csv&lt;/span&gt; &lt;span class="n"&gt;Comma&lt;/span&gt; &lt;span class="n"&gt;Separated&lt;/span&gt; &lt;span class="n"&gt;Values&lt;/span&gt; &lt;span class="n"&gt;CDR&lt;/span&gt; &lt;span class="n"&gt;Backend&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_zapscan&lt;/span&gt; &lt;span class="n"&gt;Scan&lt;/span&gt; &lt;span class="n"&gt;Zap&lt;/span&gt; &lt;span class="n"&gt;channels&lt;/span&gt; &lt;span class="n"&gt;application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_zapras&lt;/span&gt; &lt;span class="n"&gt;Zaptel&lt;/span&gt; &lt;span class="n"&gt;ISDN&lt;/span&gt; &lt;span class="n"&gt;Remote&lt;/span&gt; &lt;span class="n"&gt;Access&lt;/span&gt; &lt;span class="n"&gt;Server&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_zapbarge&lt;/span&gt; &lt;span class="n"&gt;Barge&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="k"&gt;on&lt;/span&gt; &lt;span class="n"&gt;Zap&lt;/span&gt; &lt;span class="n"&gt;channel&lt;/span&gt; &lt;span class="n"&gt;application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_zapateller&lt;/span&gt; &lt;span class="n"&gt;Block&lt;/span&gt; &lt;span class="n"&gt;Telemarketers&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;Special&lt;/span&gt; &lt;span class="n"&gt;Informa&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_while&lt;/span&gt; &lt;span class="k"&gt;While&lt;/span&gt; &lt;span class="n"&gt;Loops&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;Conditional&lt;/span&gt; &lt;span class="n"&gt;Execution&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_waituntil&lt;/span&gt; &lt;span class="n"&gt;Wait&lt;/span&gt; &lt;span class="n"&gt;until&lt;/span&gt; &lt;span class="n"&gt;specified&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_waitforsilence&lt;/span&gt; &lt;span class="n"&gt;Wait&lt;/span&gt; &lt;span class="k"&gt;For&lt;/span&gt; &lt;span class="n"&gt;Silence&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_waitforring&lt;/span&gt; &lt;span class="n"&gt;Waits&lt;/span&gt; &lt;span class="n"&gt;until&lt;/span&gt; &lt;span class="n"&gt;first&lt;/span&gt; &lt;span class="n"&gt;ring&lt;/span&gt; &lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_voicemail&lt;/span&gt; &lt;span class="n"&gt;Comedian&lt;/span&gt; &lt;span class="n"&gt;Mail&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Voicemail&lt;/span&gt; &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_verbose&lt;/span&gt; &lt;span class="n"&gt;Send&lt;/span&gt; &lt;span class="n"&gt;verbose&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_userevent&lt;/span&gt; &lt;span class="n"&gt;Custom&lt;/span&gt; &lt;span class="n"&gt;User&lt;/span&gt; &lt;span class="k"&gt;Event&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_url&lt;/span&gt; &lt;span class="n"&gt;Send&lt;/span&gt; &lt;span class="n"&gt;URL&lt;/span&gt; &lt;span class="n"&gt;Applications&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_transfer&lt;/span&gt; &lt;span class="n"&gt;Transfers&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;caller&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="n"&gt;another&lt;/span&gt; &lt;span class="n"&gt;extension&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_test&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="n"&gt;Test&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_talkdetect&lt;/span&gt; &lt;span class="n"&gt;Playback&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;Talk&lt;/span&gt; &lt;span class="n"&gt;Detection&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_system&lt;/span&gt; &lt;span class="n"&gt;Generic&lt;/span&gt; &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="n"&gt;application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_stack&lt;/span&gt; &lt;span class="n"&gt;Dialplan&lt;/span&gt; &lt;span class="n"&gt;subroutines&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;Gosub&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;Return&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;etc&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_speech_utils&lt;/span&gt; &lt;span class="n"&gt;Dialplan&lt;/span&gt; &lt;span class="n"&gt;Speech&lt;/span&gt; &lt;span class="n"&gt;Applications&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_softhangup&lt;/span&gt; &lt;span class="n"&gt;Hangs&lt;/span&gt; &lt;span class="n"&gt;up&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;requested&lt;/span&gt; &lt;span class="n"&gt;channel&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_sms&lt;/span&gt; &lt;span class="n"&gt;SMS&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;PSTN&lt;/span&gt; &lt;span class="n"&gt;handler&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_skel&lt;/span&gt; &lt;span class="n"&gt;Skeleton&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_setcallerid&lt;/span&gt; &lt;span class="k"&gt;Set&lt;/span&gt; &lt;span class="n"&gt;CallerID&lt;/span&gt; &lt;span class="n"&gt;Presentation&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_sendtext&lt;/span&gt; &lt;span class="n"&gt;Send&lt;/span&gt; &lt;span class="n"&gt;Text&lt;/span&gt; &lt;span class="n"&gt;Applications&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_senddtmf&lt;/span&gt; &lt;span class="n"&gt;Send&lt;/span&gt; &lt;span class="n"&gt;DTMF&lt;/span&gt; &lt;span class="n"&gt;digits&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_sayunixtime&lt;/span&gt; &lt;span class="n"&gt;Say&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_rpt&lt;/span&gt; &lt;span class="n"&gt;Radio&lt;/span&gt; &lt;span class="n"&gt;Repeater&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;Remote&lt;/span&gt; &lt;span class="n"&gt;Base&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_record&lt;/span&gt; &lt;span class="n"&gt;Trivial&lt;/span&gt; &lt;span class="n"&gt;Record&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_readfile&lt;/span&gt; &lt;span class="n"&gt;Stores&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;variable&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_readexten&lt;/span&gt; &lt;span class="n"&gt;Read&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;evaluate&lt;/span&gt; &lt;span class="n"&gt;extension&lt;/span&gt; &lt;span class="n"&gt;validity&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_read&lt;/span&gt; &lt;span class="n"&gt;Read&lt;/span&gt; &lt;span class="n"&gt;Variable&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_queue&lt;/span&gt; &lt;span class="k"&gt;True&lt;/span&gt; &lt;span class="k"&gt;Call&lt;/span&gt; &lt;span class="n"&gt;Queueing&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_privacy&lt;/span&gt; &lt;span class="n"&gt;Require&lt;/span&gt; &lt;span class="n"&gt;phone&lt;/span&gt; &lt;span class="n"&gt;number&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;entered&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_playback&lt;/span&gt; &lt;span class="n"&gt;Sound&lt;/span&gt; &lt;span class="n"&gt;File&lt;/span&gt; &lt;span class="n"&gt;Playback&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_pickupchan&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;Pickup&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_parkandannounce&lt;/span&gt; &lt;span class="k"&gt;Call&lt;/span&gt; &lt;span class="n"&gt;Parking&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;Announce&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_page&lt;/span&gt; &lt;span class="n"&gt;Page&lt;/span&gt; &lt;span class="n"&gt;Multiple&lt;/span&gt; &lt;span class="n"&gt;Phones&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_nbscat&lt;/span&gt; &lt;span class="n"&gt;Silly&lt;/span&gt; &lt;span class="n"&gt;NBS&lt;/span&gt; &lt;span class="n"&gt;Stream&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_mp3&lt;/span&gt; &lt;span class="n"&gt;Silly&lt;/span&gt; &lt;span class="n"&gt;MP3&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_morsecode&lt;/span&gt; &lt;span class="n"&gt;Morse&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_mixmonitor&lt;/span&gt; &lt;span class="n"&gt;Mixed&lt;/span&gt; &lt;span class="n"&gt;Audio&lt;/span&gt; &lt;span class="n"&gt;Monitoring&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_minivm&lt;/span&gt; &lt;span class="n"&gt;Mini&lt;/span&gt; &lt;span class="n"&gt;VoiceMail&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;minimal&lt;/span&gt; &lt;span class="n"&gt;Voicemail&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ma&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_milliwatt&lt;/span&gt; &lt;span class="n"&gt;Digital&lt;/span&gt; &lt;span class="n"&gt;Milliwatt&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;law&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Test&lt;/span&gt; &lt;span class="n"&gt;Applicat&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_meetme&lt;/span&gt; &lt;span class="n"&gt;MeetMe&lt;/span&gt; &lt;span class="n"&gt;conference&lt;/span&gt; &lt;span class="n"&gt;bridge&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_macro&lt;/span&gt; &lt;span class="n"&gt;Extension&lt;/span&gt; &lt;span class="n"&gt;Macros&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_jack&lt;/span&gt; &lt;span class="n"&gt;JACK&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_ivrdemo&lt;/span&gt; &lt;span class="n"&gt;IVR&lt;/span&gt; &lt;span class="n"&gt;Demo&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_image&lt;/span&gt; &lt;span class="n"&gt;Image&lt;/span&gt; &lt;span class="n"&gt;Transmission&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_ices&lt;/span&gt; &lt;span class="n"&gt;Encode&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;Stream&lt;/span&gt; &lt;span class="n"&gt;via&lt;/span&gt; &lt;span class="n"&gt;icecast&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;ices&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_getcpeid&lt;/span&gt; &lt;span class="k"&gt;Get&lt;/span&gt; &lt;span class="n"&gt;ADSI&lt;/span&gt; &lt;span class="n"&gt;CPE&lt;/span&gt; &lt;span class="n"&gt;ID&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_forkcdr&lt;/span&gt; &lt;span class="n"&gt;Fork&lt;/span&gt; &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;CDR&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="n"&gt;separate&lt;/span&gt; &lt;span class="n"&gt;entities&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_followme&lt;/span&gt; &lt;span class="n"&gt;Find&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;Me&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Follow&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;Me&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_flash&lt;/span&gt; &lt;span class="n"&gt;Flash&lt;/span&gt; &lt;span class="n"&gt;channel&lt;/span&gt; &lt;span class="n"&gt;application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_festival&lt;/span&gt; &lt;span class="n"&gt;Simple&lt;/span&gt; &lt;span class="n"&gt;Festival&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_externalivr&lt;/span&gt; &lt;span class="n"&gt;External&lt;/span&gt; &lt;span class="n"&gt;IVR&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_exec&lt;/span&gt; &lt;span class="n"&gt;Executes&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="n"&gt;applications&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_echo&lt;/span&gt; &lt;span class="n"&gt;Simple&lt;/span&gt; &lt;span class="n"&gt;Echo&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_dumpchan&lt;/span&gt; &lt;span class="n"&gt;Dump&lt;/span&gt; &lt;span class="n"&gt;Info&lt;/span&gt; &lt;span class="n"&gt;About&lt;/span&gt; &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;Calling&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_disa&lt;/span&gt; &lt;span class="n"&gt;DISA&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Direct&lt;/span&gt; &lt;span class="n"&gt;Inward&lt;/span&gt; &lt;span class="n"&gt;System&lt;/span&gt; &lt;span class="n"&gt;Access&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Appli&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_directory&lt;/span&gt; &lt;span class="n"&gt;Extension&lt;/span&gt; &lt;span class="n"&gt;Directory&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_directed_pickup&lt;/span&gt; &lt;span class="n"&gt;Directed&lt;/span&gt; &lt;span class="k"&gt;Call&lt;/span&gt; &lt;span class="n"&gt;Pickup&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_dictate&lt;/span&gt; &lt;span class="n"&gt;Virtual&lt;/span&gt; &lt;span class="n"&gt;Dictation&lt;/span&gt; &lt;span class="n"&gt;Machine&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_dial&lt;/span&gt; &lt;span class="n"&gt;Dialing&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_db&lt;/span&gt; &lt;span class="n"&gt;Database&lt;/span&gt; &lt;span class="n"&gt;Access&lt;/span&gt; &lt;span class="n"&gt;Functions&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_controlplayback&lt;/span&gt; &lt;span class="n"&gt;Control&lt;/span&gt; &lt;span class="n"&gt;Playback&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_chanspy&lt;/span&gt; &lt;span class="n"&gt;Listen&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;audio&lt;/span&gt; &lt;span class="k"&gt;of&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;active&lt;/span&gt; &lt;span class="n"&gt;channel&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_channelredirect&lt;/span&gt; &lt;span class="n"&gt;Redirects&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;given&lt;/span&gt; &lt;span class="n"&gt;channel&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;dialplan&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_chanisavail&lt;/span&gt; &lt;span class="n"&gt;Check&lt;/span&gt; &lt;span class="n"&gt;channel&lt;/span&gt; &lt;span class="n"&gt;availability&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_cdr&lt;/span&gt; &lt;span class="n"&gt;Tell&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="k"&gt;not&lt;/span&gt; &lt;span class="n"&gt;maintain&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;CDR&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_authenticate&lt;/span&gt; &lt;span class="n"&gt;Authentication&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_amd&lt;/span&gt; &lt;span class="n"&gt;Answering&lt;/span&gt; &lt;span class="n"&gt;Machine&lt;/span&gt; &lt;span class="n"&gt;Detection&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_alarmreceiver&lt;/span&gt; &lt;span class="n"&gt;Alarm&lt;/span&gt; &lt;span class="n"&gt;Receiver&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_adsiprog&lt;/span&gt; &lt;span class="n"&gt;Asterisk&lt;/span&gt; &lt;span class="n"&gt;ADSI&lt;/span&gt; &lt;span class="n"&gt;Programming&lt;/span&gt; &lt;span class="n"&gt;Application&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;res_config_mysql&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;MySQL&lt;/span&gt; &lt;span class="n"&gt;RealTime&lt;/span&gt; &lt;span class="n"&gt;Configuration&lt;/span&gt; &lt;span class="n"&gt;Driver&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_mobile&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;Bluetooth&lt;/span&gt; &lt;span class="n"&gt;Mobile&lt;/span&gt; &lt;span class="n"&gt;Device&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="n"&gt;Driver&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;format_mp3&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;MP3&lt;/span&gt; &lt;span class="n"&gt;format&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Any&lt;/span&gt; &lt;span class="n"&gt;rate&lt;/span&gt; &lt;span class="n"&gt;but&lt;/span&gt; &lt;span class="mi"&gt;8000&lt;/span&gt;&lt;span class="n"&gt;hz&lt;/span&gt; &lt;span class="n"&gt;mono&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;test_skel&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;Skeleton&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sample&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Test&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_addon_sql_mysql&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;Simple&lt;/span&gt; &lt;span class="n"&gt;Mysql&lt;/span&gt; &lt;span class="k"&gt;Interface&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;chan_ooh323&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;Objective&lt;/span&gt; &lt;span class="n"&gt;Systems&lt;/span&gt; &lt;span class="n"&gt;H323&lt;/span&gt; &lt;span class="n"&gt;Channel&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;cdr_addon_mysql&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;MySQL&lt;/span&gt; &lt;span class="n"&gt;CDR&lt;/span&gt; &lt;span class="n"&gt;Backend&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="n"&gt;app_saycountpl&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;Say&lt;/span&gt; &lt;span class="n"&gt;polish&lt;/span&gt; &lt;span class="n"&gt;counting&lt;/span&gt; &lt;span class="n"&gt;words&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; 
+&lt;span class="mi"&gt;182&lt;/span&gt; &lt;span class="n"&gt;modules&lt;/span&gt; &lt;span class="n"&gt;loaded&lt;/span&gt;
+&lt;span class="n"&gt;jewel&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;CLI&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al final se muestra la cantidad de módulos cargados.&lt;/p&gt;
+&lt;p&gt;Para ver los canales que se están usando se ejecuta:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;jewel*CLI&amp;gt; sip show channels
+Peer User/ANR Call ID Format Hold Last Message 
+0 active SIP dialogs
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Actualmente como no se tiene configurado completamente el asterisk no se muestra canal alguno.&lt;/p&gt;
+&lt;p&gt;Para listar los usuarios sip definidos se tiene el comando sip show users:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;jewel*CLI&amp;gt; sip show users
+Username Secret Accountcode Def.Context ACL NAT 
+jewel*CLI&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Devuelve el nombre de usuario la clave, el cual contexto se encuentra, la lista de acceso y si usa NAT&lt;/p&gt;
+&lt;p&gt;Muestra el estatus de la interfaz zapata&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;jewel*CLI&amp;gt; zap show status
+Description Alarms IRQ bpviol CRC4 Fra Codi Options LBO
+ZTDUMMY/1 (source: HRtimer) 1 UNCONFI 0 0 0 CAS Unk YEL 0 db (CSU)/0-133 feet (DSX-1)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ver los buzones de voz:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;jewel*CLI&amp;gt; voicemail show users
+Context Mbox User Zone NewMsg
+default general New User 0
+default 1234 Example Mailbox 0
+other 1234 Company2 User 0
+3 voicemail users configured.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para buscar dispositivos moviles se ejecuta:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;jewel*CLI&amp;gt; mobile search
+Address Name Usable Type Port
+00:19:2C:2C:29:33 Motorola A1200 No Headset 0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Hay muchos comandos para la consola de asterisk y en futuros post se mostrarán&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC) 
+usando la billetera digital de tu preferencia a la siguiente 
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content></entry><entry><title>Configuración de una tarjeta Motorola X100P</title><link href="https://ecrespo.github.io/configuracion-de-una-tarjeta-motorola-x100p.html" rel="alternate"></link><published>2008-04-13T10:10:00-05:30</published><updated>2008-04-13T10:10:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2008-04-13:/configuracion-de-una-tarjeta-motorola-x100p.html</id><summary type="html">&lt;p&gt;Ya se tiene asterisk instalado y ahora viene la configuración 
+de la tarjeta Motorola X100P.&lt;/p&gt;
+&lt;h3&gt;Procedimiento de configuración:&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Editar el archivo /etc/default/zaptel para que solo maneje 
+el módulo que se debe utilizar ( wcfxo). Esto se logra comentando 
+todos los módulos que no se van a utilizar.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Visualizar el …&lt;/p&gt;&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;p&gt;Ya se tiene asterisk instalado y ahora viene la configuración 
+de la tarjeta Motorola X100P.&lt;/p&gt;
+&lt;h3&gt;Procedimiento de configuración:&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Editar el archivo /etc/default/zaptel para que solo maneje 
+el módulo que se debe utilizar ( wcfxo). Esto se logra comentando 
+todos los módulos que no se van a utilizar.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Visualizar el dispositivo&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;zaptel_hardware -v
+pci:0000:01:00.0 wcfxo- 1057:5608 Wildcard X100P
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Verificar funcionamiento de la tarjeta&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ztcfg -vvvvvvvvvvvvvv
+Zaptel Version: 1.4.9.2
+Echo Canceller: MG2
+Configuration
+======================
+
+
+Channel map:
+
+Channel 01: FXS Kewlstart (Default) (Slaves: 01)
+
+1 channels to configure.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Editar el archivo /etc/asterisk/zapata.conf. Colocar las siguientes líneas:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[channels]&lt;/span&gt;
+&lt;span class="na"&gt;language&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;es&lt;/span&gt;
+&lt;span class="na"&gt;context&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;entrantes&lt;/span&gt;
+&lt;span class="na"&gt;signalling&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;fxs_ks&lt;/span&gt;
+&lt;span class="na"&gt;usecallerid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;hidecallerid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;no&lt;/span&gt;
+&lt;span class="na"&gt;callwaiting&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;callwaitingcallerid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;threewaycalling&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;transfer&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;cancallforward&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;callreturn&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;echocancel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;echocancelwhenbridged&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;rxgain&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0.0&lt;/span&gt;
+&lt;span class="na"&gt;txgain&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;0.0&lt;/span&gt;
+&lt;span class="na"&gt;group&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1&lt;/span&gt;
+&lt;span class="na"&gt;pickupgroup&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1&lt;/span&gt;
+&lt;span class="na"&gt;immediate&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
+&lt;span class="na"&gt;musiconhold&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;default channel =&amp;gt; 1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Recargar módulos&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;asterisk -rx &amp;quot;module reload&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Añadir extensión que permita a llamar por la tarjeta. Editar /etc/asterisk/extension.conf&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[entrantes]&lt;/span&gt;
+&lt;span class="na"&gt;exten&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;gt; s,1,Dial(SIP/1000,60,tr)&lt;/span&gt;
+&lt;span class="na"&gt;exten&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;gt; s,2,Voicemail,u1000&lt;/span&gt;
+&lt;span class="na"&gt;exten&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;gt; s,102,Voicemail,b1000 &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Esta lineas le dice al Asterisk que todas las llamadas que recibe la tarjeta 
+las dirija al telefono "1000", y despues de 60 segundos salta el buzon de voz.&lt;/p&gt;
+&lt;p&gt;Para realizar llamadas añadiremos las siguientes lineas:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[salientes]&lt;/span&gt;
+&lt;span class="na"&gt;exten&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;gt; _[9]XXXXXXXX,1,Dial,Zap/1/${EXTEN}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Todas las numeros que comienzan con 9 se hacen usando la tarjeta.&lt;/p&gt;
+&lt;p&gt;Ahora falta configurar las extenxiones, llamada en espera, llamada en conferencia 
+entre otras cosas.&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC) 
+usando la billetera digital de tu preferencia a la siguiente 
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content></entry><entry><title>Instalando asterisk</title><link href="https://ecrespo.github.io/instalando-asterisk.html" rel="alternate"></link><published>2008-04-13T10:00:00-05:30</published><updated>2008-04-13T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2008-04-13:/instalando-asterisk.html</id><summary type="html">&lt;p&gt;Desde hace un año me ha tocado trabajar con asterisk y es ahora que 
+he logrado comprar una tarjeta Motorola X100P, podre crear un 
+gateway a la telefonía Pública.&lt;/p&gt;
+&lt;h3&gt;Instalación de asterisk.&lt;/h3&gt;
+&lt;p&gt;Para realizar la instalación de asterisk desde las fuentes es necesario 
+instalar algunos paquetes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install libnewt0.52 …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Desde hace un año me ha tocado trabajar con asterisk y es ahora que 
+he logrado comprar una tarjeta Motorola X100P, podre crear un 
+gateway a la telefonía Pública.&lt;/p&gt;
+&lt;h3&gt;Instalación de asterisk.&lt;/h3&gt;
+&lt;p&gt;Para realizar la instalación de asterisk desde las fuentes es necesario 
+instalar algunos paquetes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install libnewt0.52 libnewt-pic libnewt-dev zlib1g zlib1g-dev dcmtk libdcmtk1 libdcmtk1-dev libssl-dev libssl0.9.8 libssl0.9.8-dbg initramfs-tools libnewt0.52 libnewt-pic libnewt-dev
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Procedimiento:
+1. Instalación de zaptel: Al ejecutar lspci se ve que se tiene instalado 
+la tarjeta motorola:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;00.0&lt;/span&gt; &lt;span class="n"&gt;Communication&lt;/span&gt; &lt;span class="n"&gt;controller&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Motorola&lt;/span&gt; &lt;span class="n"&gt;Wildcard&lt;/span&gt; &lt;span class="n"&gt;X100P&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;1.1. Desempaquetar zaptel&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar ­-zxvf zaptel­1.4.9.2.tar.gz
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;1.2. Cambiarse al directorio de zaptel&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd zaptel-1.4.9.2/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;1.3. Configurar zaptel&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./configure
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;1.4.Ejecutar make menuselect
+1.5. Ejecutar make
+1.6. Ejecutar make install
+1.7. Ejecutar make config
+1.8. Crear el archivo udev para zaptel&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make install-udev
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Esto creará un demonio para levantar automáticamente la tarjeta X100P.&lt;/p&gt;
+&lt;p&gt;1.9. Revisar que zaptel detecta la tarjeta.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;zaptel_hardware
+pci:0000:01:00.0 wcfxo- 1057:5608 Wildcard X100P
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;1.10. Editar /etc/zaptel.conf y agregar fxsks=1
+1.11. Cargar el módulo /etc/init.d/zaptel restart&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Instalación de libpri.
+2.1. Desempaquetar libpri&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar -xvzf libpri-1.4.3.tar.gz
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;2.2. Cambiar al directorio&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd libpri-1.4.3/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;2.3. Ejecutar make
+2.4. Ejecutar make install
+3. Instalar asterisk
+3.1. Desempaquetar asterisk
+```tar -xvzf asterisk-1.4.19.tar.gz&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;3.2. Cambiar al directorio
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;cd asterisk-1.4.19/&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;3.3. Configurar
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;./configure&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;3.4. Seleccionar módulos
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make menuselect&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;3.5. Compilar
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;3.6. Instalar
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make install&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;3.7. Instalar ejemplos
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make samples&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;3.8. Instalar documentación
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make progdocs&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;3.9. Instalar script para arranque automatico de asterisk
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make config&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4. Instalar asterisk-addons
+
+4.1 Desempaquetar asterisk-addons
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;tar -xvzf asterisk-addons-1.4.6.tar.gz&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4.2. Cambiar de directorio
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;cd asterisk-addons-1.4.6/&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4.3. Configurar
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;./configure&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4.4. Seleccionar módulos
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make menuselect&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4.5. Compilar
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4.6. Instalar
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make install&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4.7. Instalar ejemplos
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;make samples&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;5. Instalación de voces en español adicionales de la página de VoIPnovatos.
+5.1. Cambiar al directorio donde se encuentran los sonidos
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;cd /var/lib/asterisk/sounds/&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;5.2 Instalar el core de gsm
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;tar -xvzf /usr/local/src/voipnovatos-core-sounds-es-gsm-1.4.tar.gz&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;5.3. Instalar el core de g729
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;tar -xvzf /usr/local/src/voipnovatos-core-sounds-es-g729-1.4.tar.gz&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;5.4. Instalar las extras de gsm
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;tar -xvzf /usr/local/src/voipnovatos-extra-sounds-es-gsm-1.4.tar.gz&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;5.5. Instalar las extras de g729
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;tar -xvzf /usr/local/src/voipnovatos-extra-sounds-es-g729-1.4.tar.gz&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;5.6. Instalar Music on Hold en español
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;tar -xvzf /usr/local/src/asterisk-voces-es-v1_2-moh-voipnovatos.tar.gz
+```&lt;/p&gt;
+&lt;p&gt;Luego de esto se tiene el asterisk totalmente instalado.
+En próximo post publicare la configuración de la tarjeta X100P y configuración 
+base de asterisk.&lt;/p&gt;</content></entry></feed>

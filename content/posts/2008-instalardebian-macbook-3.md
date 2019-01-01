@@ -1,5 +1,5 @@
 Title: Instalación de Debian en un mac Book. Tercera parte (configuración)
-Date: 2008-08-06 10:30
+Date: 2008-06-08 10:30
 Category: Debian, Linux, Mac Book
 
 Continuación de la configuración de la Mac Book.

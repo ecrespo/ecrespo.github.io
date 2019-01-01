@@ -1,5 +1,5 @@
 Title: La consola de asterisk
-Date: 2008-13-04 10:20
+Date: 2008-04-13 10:20
 Category: Asterisk, Debian, Linux
 
 Ya se tiene el asterisk funcionando, solo queda probar entrar a la consola.

@@ -1,5 +1,5 @@
 Title: Crear extensiones SIP
-Date: 2008-14-04 10:00
+Date: 2008-04-14 10:00
 Category: Asterisk, Debian, Linux
 
 Para crear las extensiones sip es necesario modificar el 

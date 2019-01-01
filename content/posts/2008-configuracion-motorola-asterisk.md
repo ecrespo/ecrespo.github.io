@@ -1,5 +1,5 @@
 Title: Configuración de una tarjeta Motorola X100P
-Date: 2008-13-04 10:10
+Date: 2008-04-13 10:10
 Category: Asterisk, Debian, Linux
 
 Ya se tiene asterisk instalado y ahora viene la configuración 

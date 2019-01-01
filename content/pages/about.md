@@ -1,7 +1,7 @@
 Title: Acerca
 Date: 2018-01-01 12:29
 Modified: 2018-01-01 12:29
-Slug: about 
+Slug: About 
 
 ### Quién soy yo?
 

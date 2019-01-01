@@ -1,7 +1,7 @@
 Title: Contacto
 Date: 2018-01-01 11:20
 Modified: 2018-01-01 11:20
-Slug: contacto
+Slug: Contacto
 
 Sí estas interesado en mi trabajo o tienes una pregunta o comentario, por favor me puedes contactar vía `ecrespo[at]seraph[dot]to`.
 

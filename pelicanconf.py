@@ -78,6 +78,6 @@ GOOGLE_ANALYTICS = 'UA-131517246-1'
 DISQUS_SITENAME = 'seraphto'
 
 PLUGIN_PATHS = ['plugins']
-PLUGINS = ['pelican-js'] # You may have more plugins
+#PLUGINS = ['pelican-js'] # You may have more plugins
 
 COPYRIGHT_YEAR = 2006

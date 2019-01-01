@@ -1,5 +1,5 @@
 Title: Ejemplo XML-RPC en python
-Date: 2008-23-03 10:50
+Date: 2008-03-23 10:50
 Category: XML-RPC,Python
 
 XML-RPC permite crear un webservice que recibe unos parámetros 

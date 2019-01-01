@@ -44,7 +44,7 @@ AUTHOR_FEED_RSS = None
 #SOCIAL = (('You can add links in your config file', '#'),
 #          ('Another social link', '#'),)
 
-SOCIAL = (('envelope-o','mailto://ecrespo@seraph.to'),
+SOCIAL = (('medium', 'https://medium.com/@_seraph1'),
           ('linkedin', 'http://ve.linkedin.com/in/ernestocrespo'),
           ('github', 'https://github.com/ecrespo'),
           ('google', 'https://google.com/+ErnestoCrespo'),
@@ -75,8 +75,8 @@ THEME='/home/ernesto/proyectos/ecrespo.github.io/themes/Flex'
 PYGMENTS_STYLE = 'monokai'
 
 GOOGLE_ANALYTICS = 'UA-131517246-1'
-DISQUS_SITENAME = 'seraphto'
-
+#DISQUS_SITENAME = 'seraphto'
+DISQUS_SITENAME = "https://seraphto.disqus.com"
 PLUGIN_PATHS = ['plugins']
 #PLUGINS = ['pelican-js'] # You may have more plugins
 
@@ -91,3 +91,4 @@ GOOGLE_FONTS = [
     'Nunito Sans:300,700',
     'Source Code Pro',
 ]
+

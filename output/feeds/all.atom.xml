@@ -1,5 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2010-05-29T12:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Conectarse a Internet por medio de un celular con android (proxoid)</title><link href="https://ecrespo.github.io/conectarse-a-internet-por-medio-de-un-celular-con-android-proxoid.html" rel="alternate"></link><published>2010-05-29T12:00:00-05:30</published><updated>2010-05-29T12:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-29:/conectarse-a-internet-por-medio-de-un-celular-con-android-proxoid.html</id><summary type="html">&lt;p&gt;Como mencioné en el artículo anterior iniciaré una serie de artículos sobre distintas aplicaciones para conectarse a internet desde el celular.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2010-05-29T13:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Conectarse a internet por medio de un celular con android (AziLink)</title><link href="https://ecrespo.github.io/conectarse-a-internet-por-medio-de-un-celular-con-android-azilink.html" rel="alternate"></link><published>2010-05-29T13:00:00-05:30</published><updated>2010-05-29T13:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-29:/conectarse-a-internet-por-medio-de-un-celular-con-android-azilink.html</id><summary type="html">&lt;p&gt;A diferencia de las aplicaciones que usan http proxy AziLink permite conectarse por celular usando openvpn.&lt;/p&gt;
+&lt;p&gt;La página del proyecto AziLink lo puedes conseguir en este e&lt;a href="http://code.google.com/p/azilink/"&gt;nlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El enlace para bajar openvpn es openvpn.net. En Debian y Ubuntu con ejecutar un aptitude es suficiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install openvpn-blacklist openvpn …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;A diferencia de las aplicaciones que usan http proxy AziLink permite conectarse por celular usando openvpn.&lt;/p&gt;
+&lt;p&gt;La página del proyecto AziLink lo puedes conseguir en este e&lt;a href="http://code.google.com/p/azilink/"&gt;nlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El enlace para bajar openvpn es openvpn.net. En Debian y Ubuntu con ejecutar un aptitude es suficiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install openvpn-blacklist openvpn
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Los pasos son los siguientes:
+1. Habilitar el modo depuración del USB en el teléfono. En el home de las apliaciones del celular ir a Configuración-&amp;gt;Aplicaciones-&amp;gt;Desarrollo-&amp;gt;USB debugging.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Instale el SDK de Android, el procedimiento lo consigue en este &lt;a href="http://ernesto-ecrespo.blogspot.com/2010/05/instalacion-del-sdk-de-android-en-linux.html"&gt;enlace&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Instalar AziLink desde el market del celular.&lt;/li&gt;
+&lt;li&gt;En el computador hacer el redireccionamiento de puertos:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;adb forward tcp:41927 tcp:41927
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;En el celular ejecutar AziLink y verificar que su servicio esté activo.&lt;/li&gt;
+&lt;li&gt;Bajar y descomprimir azilink.zip donde se encuentra el archivo de configuración.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;La configuración de openvpn es la siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#Define tun como dispositivo
+dev tun
+#Define la IP y puerto remoto, el que se configuro en la redirección con adb
+remote 127.0.0.1 41927 tcp-client
+#Define la IP punto a punto de la conexión openvpn
+ifconfig 192.168.56.2 192.168.56.1
+#Define rutas
+route 0.0.0.0 128.0.0.0
+route 128.0.0.0 128.0.0.0
+#Define flags del socket.
+socket-flags TCP_NODELAY
+#keepalive 10 30
+ping 10
+#Define el DNS por medio de las opciones de dhcp
+dhcp-option DNS 192.168.56.1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Agregar en /etc/resolv.conf el siguiente DNS:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nameserver 192.168.56.1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Iniciar openvpn con el archivo de configuración:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo openvpn --config azilink.ovpn 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Sat May 29 23:28:18 2010 OpenVPN 2.1.0 i486-pc-linux-gnu [SSL] [LZO2] [EPOLL] [PKCS11] [MH] [PF_INET6] [eurephia] built on Apr 10 2010
+Sat May 29 23:28:18 2010 WARNING: --ping should normally be used with --ping-restart or --ping-exit
+Sat May 29 23:28:18 2010 NOTE: OpenVPN 2.1 requires &amp;#39;--script-security 2&amp;#39; or higher to call user-defined scripts or executables
+Sat May 29 23:28:18 2010 ******* WARNING *******: all encryption and authentication features disabled -- all data will be tunnelled as cleartext
+Sat May 29 23:28:18 2010 TUN/TAP device tun0 opened
+Sat May 29 23:28:18 2010 /sbin/ifconfig tun0 192.168.56.2 pointopoint 192.168.56.1 mtu 1500
+Sat May 29 23:28:18 2010 Attempting to establish TCP connection with [AF_INET]127.0.0.1:41927 [nonblock]
+Sat May 29 23:28:18 2010 TCP connection established with [AF_INET]127.0.0.1:41927
+Sat May 29 23:28:18 2010 TCPv4_CLIENT link local: [undef]
+Sat May 29 23:28:18 2010 TCPv4_CLIENT link remote: [AF_INET]127.0.0.1:41927
+Sat May 29 23:28:21 2010 Peer Connection Initiated with [AF_INET]127.0.0.1:41927
+Sat May 29 23:28:22 2010 Initialization Sequence Completed
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al revisar en whatismyip.com la IP que se está usando es la siguiente 201.239.27.224.&lt;/p&gt;
+&lt;p&gt;Personalmente prefiero está opción que usar http proxy, el archivo de configuración de openvpn se puede mejorar como permitir que copie el archivo de resolv.conf al momento de levantar el vpn y colocar el archivo anterior al detener el vpn.&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Android"></category><category term="Debian"></category></entry><entry><title>Conectarse a Internet por medio de un celular con android (proxoid)</title><link href="https://ecrespo.github.io/conectarse-a-internet-por-medio-de-un-celular-con-android-proxoid.html" rel="alternate"></link><published>2010-05-29T12:00:00-05:30</published><updated>2010-05-29T12:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-29:/conectarse-a-internet-por-medio-de-un-celular-con-android-proxoid.html</id><summary type="html">&lt;p&gt;Como mencioné en el artículo anterior iniciaré una serie de artículos sobre distintas aplicaciones para conectarse a internet desde el celular.&lt;/p&gt;
 &lt;p&gt;La primera aplicación se llama proxoid, es un proxy http y el sitio de la aplicación lo pueden encontrar en el &lt;a href="http://code.google.com/p/proxoid/"&gt;siguiente enlace&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;La guía de instalación general lo …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Como mencioné en el artículo anterior iniciaré una serie de artículos sobre distintas aplicaciones para conectarse a internet desde el celular.&lt;/p&gt;
 &lt;p&gt;La primera aplicación se llama proxoid, es un proxy http y el sitio de la aplicación lo pueden encontrar en el &lt;a href="http://code.google.com/p/proxoid/"&gt;siguiente enlace&lt;/a&gt;.&lt;/p&gt;

@@ -1,5 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Linux</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-linux.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2010-05-27T10:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Instalación del SDK de Android en Linux</title><link href="https://ecrespo.github.io/instalacion-del-sdk-de-android-en-linux.html" rel="alternate"></link><published>2010-05-27T10:00:00-05:30</published><updated>2010-05-27T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-27:/instalacion-del-sdk-de-android-en-linux.html</id><summary type="html">&lt;p&gt;Para poder acceder desde Debian en el celular con Android lo primero que se tiene que hacer es bajar el SDK de Android desde el siguiente &lt;a href="http://developer.android.com/sdk/index.html"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Linux</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-linux.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2010-05-29T10:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Comandos básicos de adb (Android Debug Bridge) para acceder al motorola milestone A853</title><link href="https://ecrespo.github.io/comandos-basicos-de-adb-android-debug-bridge-para-acceder-al-motorola-milestone-a853.html" rel="alternate"></link><published>2010-05-29T10:00:00-05:30</published><updated>2010-05-29T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-29:/comandos-basicos-de-adb-android-debug-bridge-para-acceder-al-motorola-milestone-a853.html</id><summary type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/instalacion-del-sdk-de-android-en-linux.html#instalacion-del-sdk-de-android-en-linux"&gt;artículo anterior&lt;/a&gt; se explico como instalar el SDK de Android en Debian, a continuación se explicará el comando que permite dar acceso al celular como ver la microsd, instalar aplicaciones en el celular desde el computador entre otras cosas. &lt;/p&gt;
+&lt;p&gt;Cambiarse al directorio tools del SDK de Android. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/instalacion-del-sdk-de-android-en-linux.html#instalacion-del-sdk-de-android-en-linux"&gt;artículo anterior&lt;/a&gt; se explico como instalar el SDK de Android en Debian, a continuación se explicará el comando que permite dar acceso al celular como ver la microsd, instalar aplicaciones en el celular desde el computador entre otras cosas. &lt;/p&gt;
+&lt;p&gt;Cambiarse al directorio tools del SDK de Android. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd android-sdk_r06-linux_86/tools 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Crear un enlace de la aplicación adb a /usr/bin . &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ln -s /home/ernesto/android-sdk-linux_86/tools/adb /usr/bin/adb 
+
+ls -l /usr/bin/adb 
+lrwxrwxrwx 1 root root 44 may 27 20:12 /usr/bin/adb -&amp;gt; /home/ernesto/android-sdk-linux_86/tools/adb 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Crear el archivo 50-android.rules en el directorio /etc/udev/rules.d &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim /etc/udev/rules.d/50-android.rules 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Agregar el siguiente contenido al archivo: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;SUBSYSTEMS==&amp;quot;usb&amp;quot;, ATTRS{idVendor}==&amp;quot;0bb4&amp;quot;, ATTRS{idProduct}==&amp;quot;0c02&amp;quot;, GROUP=&amp;quot;androiddev&amp;quot;, SYMLINK+=&amp;quot;android%n&amp;quot; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea el grupo androiddev. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo addgroup --system androiddev 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se cambia los permisos del archivo y se recarga las reglas udev. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo chmod a+rx /etc/udev/rules.d/50-android.rules 
+sudo /etc/init.d/udev reload 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En el celular asegurarse que está en modo depuración de la conexión USB. Esto es: 
+Ajustes-&amp;gt;Aplicaciones-&amp;gt;Desarrollo. &lt;/p&gt;
+&lt;p&gt;Iniciar adb como servidor: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ./adb start-server 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Luego se verifica que se tiene acceso al celular con el comando adb devices. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;adb devices 
+* daemon not running. starting it now * 
+* daemon started successfully * 
+List of devices attached 
+0403725B09015010 device 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Cuando aparece está información y no caracteres raros o ??? o no aparece nada es que ya se tiene conectado el celular al computador. &lt;/p&gt;
+&lt;p&gt;El comando adb shell nos crea un shell desde el celular y se ejecuta el comando ls -l: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ls -l 
+drwxrwxrwt root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:01 tmp 
+drwxrwxr-x system system &lt;span class="m"&gt;2010&lt;/span&gt;-02-23 &lt;span class="m"&gt;07&lt;/span&gt;:41 pds 
+drwxrwxrwt root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;13&lt;/span&gt;:21 sqlite_stmt_journals 
+dr-x------ root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:00 config 
+drwxrwx--- system cache &lt;span class="m"&gt;2010&lt;/span&gt;-05-27 &lt;span class="m"&gt;11&lt;/span&gt;:00 cache 
+d---rwxr-x system sdcard_rw &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:01 sdcard 
+lrwxrwxrwx root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:00 d -&amp;gt; /sys/kernel/debug 
+lrwxrwxrwx root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:00 etc -&amp;gt; /system/etc 
+drwxr-xr-x root root &lt;span class="m"&gt;2010&lt;/span&gt;-01-06 &lt;span class="m"&gt;09&lt;/span&gt;:29 system 
+drwxr-xr-x root root &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 sys 
+drwxr-x--- root root &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 sbin 
+dr-xr-xr-x root root &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 proc 
+-rwxr-x--- root root &lt;span class="m"&gt;453&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init_prep_keypad.sh 
+-rwxr-x--- root root &lt;span class="m"&gt;13218&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init.rc 
+-rwxr-x--- root root &lt;span class="m"&gt;14824&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init.mapphone_umts.rc 
+-rwxr-x--- root root &lt;span class="m"&gt;6840&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init.mapphone_cdma.rc 
+-rwxr-x--- root root &lt;span class="m"&gt;1677&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init.goldfish.rc 
+-rwxr-x--- root root &lt;span class="m"&gt;104324&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init 
+-rw-r--r-- root root &lt;span class="m"&gt;118&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 default.prop 
+drwxrwx--x system system &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:01 data 
+drwx------ root root &lt;span class="m"&gt;2009&lt;/span&gt;-11-19 &lt;span class="m"&gt;15&lt;/span&gt;:42 root 
+drwxr-xr-x root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:01 dev 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Este comando muestra los archivos y directorios que se tienen en el celular. Noten que son comandos unix/Linux así que si se cambian de directorio al system y luego app en el encontrarán los paquetes apk que se encuentran instalados en el celular. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$cd /system/app 
+pwd 
+$pwd 
+/system/app 
+$ls -l 
+-rw-r--r-- root root 1500786 2010-01-06 09:28 MotoID.apk 
+-rw-r--r-- root root 433280 2010-01-06 09:28 MovilnetContainer.apk 
+-rw-r--r-- root root 2624470 2010-01-06 09:28 Maps.apk 
+-rw-r--r-- root root 677433 2010-01-06 09:28 Talk.apk 
+-rw-r--r-- root root 50410 2010-01-06 09:28 GoogleContactsSyncAdapter.apk 
+-rw-r--r-- root root 327750 2010-01-06 09:28 MediaUploader.apk 
+-rw-r--r-- root root 1310501 2010-01-06 09:28 Vending.apk 
+-rw-r--r-- root root 735409 2010-01-06 09:28 Gmail.apk 
+-rw-r--r-- root root 380550 2010-01-06 09:28 GoogleApps.apk 
+-rw-r--r-- root root 778098 2010-01-06 09:28 SetupWizard.apk 
+-rw-r--r-- root root 53777 2010-01-06 09:28 TalkProvider.apk 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Estos son algunos programas que se tienen instalados en el celular. &lt;/p&gt;
+&lt;p&gt;Los comandos que se pueden utilizar en el shell son los siguientes: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ls Lista los directorios y carpetas existentes en la ruta que estemos.&lt;/li&gt;
+&lt;li&gt;reboot Reinicia el terminal&lt;/li&gt;
+&lt;li&gt;rm Borra un archivo&lt;/li&gt;
+&lt;li&gt;rmdir Borra un directorio&lt;/li&gt;
+&lt;li&gt;cd Cambia de directorio&lt;/li&gt;
+&lt;li&gt;mkdir Crea un directorio&lt;/li&gt;
+&lt;li&gt;mkswapp Crea un sistema de intercambio&lt;/li&gt;
+&lt;li&gt;mount Monta una unidad o partición&lt;/li&gt;
+&lt;li&gt;umount Desmonta una unidad&lt;/li&gt;
+&lt;li&gt;mv Mueve o renombra un archivo &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Se puede ejecutar un ls dentro del sdcard/Videos y se muestra lo siguiente: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$adb shell ls /sdcard/Videos/ 
+How.I.Met.Your.Mother.S05E21.HDTV.XviD-LOL.[VTV].avi 
+The.Big.Bang.Theory.S03E20.The.Spaghetti.Catalyst.HDTV.XviD-FQM.avi 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para Borrar los archivos se ejecuta adb shell rm y luego se vuelve a ejecutar el ls para demostrar que se han borrado los archivos de la tarjeta sd del celular: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~$ adb shell rm sdcard/Videos/*.avi 
+ernesto@jewel:~$ adb shell ls sdcard/Videos 
+ernesto@jewel:~$ 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;También se puede instalar aplicaciones en el celular desde el computador con el comando adb install rutapaquete.apk: &lt;/p&gt;
+&lt;p&gt;A continuación se instala una aplicación de Sudoku desde el computador al celular. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~$ adb install /home/ernesto/Descargas/OpenSudoku-1.1.1-02.apk 
+603 KB/s (223640 bytes in 0.361s) 
+pkg: /data/local/tmp/OpenSudoku-1.1.1-02.apk 
+Success 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;También se puede copiar archivos del celular al computador y del computador al celular: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~$ adb push /home/ernesto/varios.mp3 /sdcard/mp3z/ 
+1944 KB/s (7768607 bytes in 3.901s) 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En este ejemplo se coloca un archivo mp3 del computador al celular. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~$ adb pull /sdcard/python_scripts_r0.zip ./ 
+52 KB/s (4280 bytes in 0.078s)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Este comando se trae un archivo de la memoria sdcard del celular al computador. &lt;/p&gt;
+&lt;p&gt;EL próximo artículo explicará como conectarse a internet desde un celular con android. &lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Android"></category><category term="Debian"></category></entry><entry><title>Instalación del SDK de Android en Linux</title><link href="https://ecrespo.github.io/instalacion-del-sdk-de-android-en-linux.html" rel="alternate"></link><published>2010-05-27T10:00:00-05:30</published><updated>2010-05-27T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-27:/instalacion-del-sdk-de-android-en-linux.html</id><summary type="html">&lt;p&gt;Para poder acceder desde Debian en el celular con Android lo primero que se tiene que hacer es bajar el SDK de Android desde el siguiente &lt;a href="http://developer.android.com/sdk/index.html"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Luego hay que descomprimir el android-sdk_r06-linux_86.tgz.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar -xvzf android-sdk_r06-linux_86.tgz
 &lt;/pre&gt;&lt;/div&gt;

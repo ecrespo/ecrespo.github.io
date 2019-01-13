@@ -9,6 +9,10 @@ Ya publique en slideshare la charla que dicte en el día  Debian en Barquisimeto
 Lo pueden bajar por acá: [http://www.slideshare.net/ecrespo/empaquetar-un-paquete-debian-por-medio-de-mercurial](http://www.slideshare.net/ecrespo/empaquetar-un-paquete-debian-por-medio-de-mercurial)
 
 
+
+![Charla día Debian 2010](./images/charladiadebian.png
+
+
 ===
 
 ¡Haz tu donativo!

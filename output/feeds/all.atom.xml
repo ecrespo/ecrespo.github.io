@@ -1,5 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2010-12-15T10:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Ejecución remota de scripts python desde Linux a un celular con Android (versión conectado el celular por USB)</title><link href="https://ecrespo.github.io/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html" rel="alternate"></link><published>2010-12-15T10:00:00-05:30</published><updated>2010-12-15T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-12-15:/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html</id><summary type="html">&lt;p&gt;En el post anterior explique como ejecutar script python en un celular con Android de forma remota desde Linux por wifi, ahora explicaré como hacerlo por cable USB, en realidad es más sencillo que el artículo anterior.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2010-12-16T09:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Manejar los mensajes de Texto del celular desde Linux (Android)</title><link href="https://ecrespo.github.io/manejar-los-mensajes-de-texto-del-celular-desde-linux-android.html" rel="alternate"></link><published>2010-12-16T09:00:00-05:30</published><updated>2010-12-16T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-12-16:/manejar-los-mensajes-de-texto-del-celular-desde-linux-android.html</id><summary type="html">&lt;p&gt;Para continuar con los scripts que se ejecutan de forma remota en el celular, ahora mostraré como se maneja los mensajes de texto, buscar mensajes y borrarlos.&lt;/p&gt;
+&lt;p&gt;La idea es buscar todos los mensajes de un número celular dado, presentar el mensaje en la consola y borrar dichos mensajes.&lt;/p&gt;
+&lt;p&gt;Se …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Para continuar con los scripts que se ejecutan de forma remota en el celular, ahora mostraré como se maneja los mensajes de texto, buscar mensajes y borrarlos.&lt;/p&gt;
+&lt;p&gt;La idea es buscar todos los mensajes de un número celular dado, presentar el mensaje en la consola y borrar dichos mensajes.&lt;/p&gt;
+&lt;p&gt;Se sigue el procedimiento de ejecución remota explicado en el &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html#ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb"&gt;post anterior&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El código es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python2.6&lt;/span&gt;
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+&lt;span class="c1"&gt;#Script que permite manejar los SMS del celular con android desde Linux.&lt;/span&gt;
+&lt;span class="c1"&gt;#Autor: Ernesto Crespo&lt;/span&gt;
+&lt;span class="c1"&gt;#Correo:ecrespo@gmail.com&lt;/span&gt;
+&lt;span class="c1"&gt;#Licencia: GPLv3&lt;/span&gt;
+&lt;span class="c1"&gt;#Versión:0.1&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Importando el módulo android,sys y re&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;android&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Función de envio de mensajes&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;Contactos&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea la instancia de la clase Android&lt;/span&gt;
+    &lt;span class="n"&gt;droid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Android&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se captura la cantidad de mensajes de texto )como en mi caso todos los &lt;/span&gt;
+    &lt;span class="c1"&gt;#mensajes han sido leídos coloco 0, si quiero los no leídos coloco 1.&lt;/span&gt;
+    &lt;span class="n"&gt;cantidad&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsGetMessageCount&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="c1"&gt;#El número de celular a buscar&lt;/span&gt;
+    &lt;span class="n"&gt;numero&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;0xxxyyyzzww&amp;quot;&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se recorren todos los mensajes.&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cantidad&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;#Si el mensaje es del número dado se captura el identificador&lt;/span&gt;
+        &lt;span class="c1"&gt;#del mensaje, se imprime un mensaje  en pantalla con la información:&lt;/span&gt;
+        &lt;span class="c1"&gt;#read:Si mensaje ya fue leído&lt;/span&gt;
+        &lt;span class="c1"&gt;#date: la fecha del mensaje&lt;/span&gt;
+        &lt;span class="c1"&gt;#_id:identificador del mensaje.&lt;/span&gt;
+        &lt;span class="c1"&gt;#address: número celular.&lt;/span&gt;
+        &lt;span class="c1"&gt;#body:cuerpo del mensaje.&lt;/span&gt;
+        &lt;span class="c1"&gt;#Toda está información se maneja desde un diccionario.&lt;/span&gt;
+        &lt;span class="c1"&gt;#Si el celular no es de la persona buscada se continua con la &lt;/span&gt;
+        &lt;span class="c1"&gt;#siguiente iteración. &lt;/span&gt;
+        &lt;span class="c1"&gt;#A la función de borrar se le pasa el identificador del mensaje&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsGetMessages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;address&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;numero&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;identificador&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsGetMessages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Borrando mensaje&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsGetMessages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;read&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsGetMessages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsGetMessages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;address&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsGetMessages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;body&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsDeleteMessage&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;identificador&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;continue&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Ejecución de la función&lt;/span&gt;
+    &lt;span class="n"&gt;Contactos&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La salida del programa es la siguiente:&lt;/p&gt;
+&lt;p&gt;Devuelve el mensaje que se ha borrado el SMS, el número del mensaje, si está leído, la fecha, el número y el cuerpo del mensaje.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Borrando mensaje 296 1 1285030227398 0xxxyyyzzww Ah bueno... Yo les aviso.
+Borrando mensaje 358 1 1283635867054 0xxxyyyzzww Ok. Ahi voy.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Android"></category><category term="Linux"></category><category term="Python"></category><category term="SMS"></category></entry><entry><title>Ejecución remota de scripts python desde Linux a un celular con Android (versión conectado el celular por USB)</title><link href="https://ecrespo.github.io/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html" rel="alternate"></link><published>2010-12-15T10:00:00-05:30</published><updated>2010-12-15T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-12-15:/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html</id><summary type="html">&lt;p&gt;En el post anterior explique como ejecutar script python en un celular con Android de forma remota desde Linux por wifi, ahora explicaré como hacerlo por cable USB, en realidad es más sencillo que el artículo anterior.
 Me basaré en lo explicado en el post &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android.html#ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android"&gt;anterior&lt;/a&gt; y en el post …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el post anterior explique como ejecutar script python en un celular con Android de forma remota desde Linux por wifi, ahora explicaré como hacerlo por cable USB, en realidad es más sencillo que el artículo anterior.
 Me basaré en lo explicado en el post &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android.html#ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android"&gt;anterior&lt;/a&gt; y en el post sobre &lt;a href="https://www.seraph.to/enviar-mensajes-de-texto-desde-android-con-python.html"&gt;envío de mensajes de texto&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Lo primero que se necesita hacer es conectar el celular al computador por USB, activar el modo depuración y la conexión USB a Portal y Herramientas.&lt;/p&gt;

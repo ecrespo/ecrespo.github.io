@@ -1,5 +1,5 @@
 Title: Mejorado el script en python que configura los accesos rápidos de teclado a aplicaciones en gnome con gconf
-Date: 2009-08-07 10:00
+Date: 2009-08-07 10:10
 Category: Tutorial de Python y Linux
 Tags: Python,Gnome, Gconf, Accesibilidad
 lang: es

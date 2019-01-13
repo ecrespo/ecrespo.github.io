@@ -33,19 +33,19 @@ Hay que tomar en cuenta que los scripts tienen que ser pequeños ya que QR sólo
 
 A continuación agrego los códigos QR de los scripts explicados en los artículos anteriores:
 
-1. Enviar mensajes de texto desde Android con python
+* Enviar mensajes de texto desde Android con python
 
 ![chart1](./images/chart1.png)
 
-2. Envío de correos desde Android con python.
+* Envío de correos desde Android con python.
 
 ![Correo](./images/chart_correo.png)
 
-3. Lector de código de barras hecho en python.
+* Lector de código de barras hecho en python.
 
 ![Código de Barras](./images/codigobarras.png)
 
-4. Escaneado de redes inalámbricas con python desde Android. 
+* Escaneado de redes inalámbricas con python desde Android. 
 
 ![Scan wifi](./images/scan_wifi.png)
 

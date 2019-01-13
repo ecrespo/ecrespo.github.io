@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial de Python en Android</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-de-python-en-android.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2010-10-23T10:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Ejecución remota de scripts python desde Linux a un celular con Android</title><link href="https://ecrespo.github.io/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android.html" rel="alternate"></link><published>2010-10-23T10:00:00-05:30</published><updated>2010-10-23T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-10-23:/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android.html</id><summary type="html">&lt;p&gt;Existe la forma  de ejecutar scripts así sea de python,perl, ruby, bash,etc de forma remota (desde Linux) a un celular con Android.&lt;/p&gt;
+&lt;p&gt;Al instalar SL4A y python se tiene la posibilidad de iniciar un servicio de SL4A para escuchar en un puerto específico del celular Android, se tiene …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Existe la forma  de ejecutar scripts así sea de python,perl, ruby, bash,etc de forma remota (desde Linux) a un celular con Android.&lt;/p&gt;
+&lt;p&gt;Al instalar SL4A y python se tiene la posibilidad de iniciar un servicio de SL4A para escuchar en un puerto específico del celular Android, se tiene la opción pública o privada, para el primer caso se tiene que tener conectado el celular a una red wifi donde levanta el servicio en un puerto específico, para el caso de conexión privada el celular debe estar conectado vía puerto USB con la opción de depuración USB conectada y el celular en modo Portal y Herramientas.&lt;/p&gt;
+&lt;p&gt;Este post se basa en el artículo de control remoto de SL4A que se encuentra &lt;a href="http://code.google.com/p/android-scripting/wiki/RemoteControl"&gt;aquí&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;En este momento explicaré la conexión remota pública, primero se tiene que conectar el celular a una red wifi.&lt;/p&gt;
+&lt;p&gt;En el equipo que estoy utilizando le asigno la IP 192.168.10.19.&lt;/p&gt;
+&lt;p&gt;Luego ejecutar SL4A en el celular, luego se le da menú, se selecciona ver, luego a interpretes, luego otra vez al menú, se selecciona iniciar servidor, en este momento se le pide seleccionar entre servidor público o privado, se selecciona al primero.&lt;/p&gt;
+&lt;p&gt;El celular coloca un mensaje en el área de notificación de Android mencionando que el servidor se ha iniciado, se despliega la información y este dice se arranco un servidor SL4A en la IP 192.168.10.19 con puerto 52834.&lt;/p&gt;
+&lt;p&gt;A continuación se utilizará el sdk de android en Linux ejecutando adb.
+Se inicia el servidor adb.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./adb start-server
+* daemon not running. starting it now on port 5037 *
+* daemon started successfully *
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note que el servidor levanta en el puerto 5037.&lt;/p&gt;
+&lt;p&gt;Ahora se redirecciona los puertos del servicio adb.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./adb forward tcp:9999 tcp:52834
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Donde el puerto 9999 se redirecciona al puerto donde escucha el celular que es el 52834 en este caso.&lt;/p&gt;
+&lt;p&gt;A continuación se configura la variable de ambiente de la IP y puerto del celular con Android que tiene funcionan el servidor SL4A.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;export AP_PORT=52834
+export AP_HOST=192.168.10.19
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Asegurarse que tiene en el path de python2.6 la ruta del módulo de python para android. Este lo puede bajar en este &lt;a href="http://android-scripting.googlecode.com/hg/python/ase/android.py"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A continuación se muestra un script en python que pide escriba el nombre de usuario en el celular y lo muestra en Linux y en el celular:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Importar módulo android&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;android&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea el objeto droid de la clase Android con la IP y puerto del servicio iniciado en el celular.&lt;/span&gt;
+&lt;span class="n"&gt;droid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Android&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;192.168.10.19&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;52834&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="c1"&gt;#Se solicita al usuario que escriba su nombre&lt;/span&gt;
+&lt;span class="n"&gt;texto&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getInput&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Escriba su nombre&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Nombre:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se imprime el nombre del usuario en la consola de Linux&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;El nombre escrito en el celular es: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;texto&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="c1"&gt;#Se presenta un saludo al usuario en el celular&lt;/span&gt;
+&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeToast&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Hola &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;texto&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar el programa se coloca el script prueba-remota.py donde se encuentra el módulo de SL4A android.py en el mismo directorio o se coloca en el path de python2.6.
+Se ejecuta con python2.6:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python2.6 prueba-remota.py 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El nombre escrito en el celular es: ernesto&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Android"></category><category term="Python"></category><category term="Debian"></category><category term="Linux"></category></entry></feed>

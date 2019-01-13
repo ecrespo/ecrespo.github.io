@@ -1,5 +1,5 @@
 Title: Charla del día Debian en Barquisimeto
-Date: 2010-08-24 09:00
+Date: 2010-08-24 10:00
 Category: Charla
 Tags: Debian, Control de versiones, Empaquetado
 lang: es
@@ -9,7 +9,7 @@ Ya publique en slideshare la charla que dicte en el día  Debian en Barquisimeto
 Lo pueden bajar por acá: [http://www.slideshare.net/ecrespo/empaquetar-un-paquete-debian-por-medio-de-mercurial](http://www.slideshare.net/ecrespo/empaquetar-un-paquete-debian-por-medio-de-mercurial)
 
 
-![Charla día Debian 2010](./images/charladiadebian.png
+![Charla día Debian 2010](./images/charladiadebian.png)
 
 
 ===

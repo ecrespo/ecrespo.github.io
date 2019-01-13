@@ -1,6 +1,6 @@
 Title: Manejar los mensajes de Texto del celular desde Linux (Android)
 Date: 2010-12-16 09:00
-Category: Tutorial Python
+Category: Tutorial Python en Android
 Tags: Android, Linux, Python, SMS
 lang: es
 translation: true

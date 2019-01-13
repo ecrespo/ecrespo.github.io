@@ -44,16 +44,16 @@
     <meta name="msapplication-TileColor" content="#333333">
 
 <meta name="author" content="Ernesto Crespo" />
-<meta name="description" content="Para continuar con los scripts que se ejecutan de forma remota en el celular, ahora mostraré como se maneja los mensajes de texto, buscar mensajes y borrarlos. La idea es buscar todos los mensajes de un número celular dado, presentar el mensaje en la consola y borrar dichos mensajes. Se …" />
+<meta name="description" content="En este post se mostrará las funciones que permiten obtener información del estado de la bateria del celular con Android desde Linux. Para poder monitorear el estado de la bateria primero se inicia la función de inicio de monitoreo y luego se puede obtener la información siguiente: Salud de la …" />
 <meta name="keywords" content="Android, Linux, Python, SMS">
 
 <meta property="og:site_name" content="Página de Seraph"/>
-<meta property="og:title" content="Manejar los mensajes de Texto del celular desde Linux (Android)"/>
-<meta property="og:description" content="Para continuar con los scripts que se ejecutan de forma remota en el celular, ahora mostraré como se maneja los mensajes de texto, buscar mensajes y borrarlos. La idea es buscar todos los mensajes de un número celular dado, presentar el mensaje en la consola y borrar dichos mensajes. Se …"/>
+<meta property="og:title" content="Obtener información del estado de la bateria de un celular con Android desde Linux"/>
+<meta property="og:description" content="En este post se mostrará las funciones que permiten obtener información del estado de la bateria del celular con Android desde Linux. Para poder monitorear el estado de la bateria primero se inicia la función de inicio de monitoreo y luego se puede obtener la información siguiente: Salud de la …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://ecrespo.github.io/manejar-los-mensajes-de-texto-del-celular-desde-linux-android.html"/>
+<meta property="og:url" content="https://ecrespo.github.io/obtener-informacion-del-estado-de-la-bateria-de-un-celular-con-android-desde-linux.html"/>
 <meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2010-12-16 09:00:00-04:30"/>
+<meta property="article:published_time" content="2010-12-16 10:00:00-04:30"/>
 <meta property="article:modified_time" content=""/>
 <meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
 <meta property="article:section" content="Tutorial Python en Android"/>
@@ -63,7 +63,7 @@
 <meta property="article:tag" content="SMS"/>
 <meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
 
-  <title>Página de Seraph &ndash; Manejar los mensajes de Texto del celular desde Linux (Android)</title>
+  <title>Página de Seraph &ndash; Obtener información del estado de la bateria de un celular con Android desde Linux</title>
 
 </head>
 <body>
@@ -152,7 +152,7 @@
 <article class="single">
   <header>
       
-    <h1 id="manejar-los-mensajes-de-texto-del-celular-desde-linux-android">Manejar los mensajes de Texto del celular desde Linux (Android)</h1>
+    <h1 id="obtener-informacion-del-estado-de-la-bateria-de-un-celular-con-android-desde-linux">Obtener información del estado de la bateria de un celular con Android desde Linux</h1>
     <p>
           Posted on jue 16 diciembre 2010 in <a href="https://ecrespo.github.io/category/tutorial-python-en-android.html">Tutorial Python en Android</a>
 
@@ -162,64 +162,97 @@
 
 
   <div>
-    <p>Para continuar con los scripts que se ejecutan de forma remota en el celular, ahora mostraré como se maneja los mensajes de texto, buscar mensajes y borrarlos.</p>
-<p>La idea es buscar todos los mensajes de un número celular dado, presentar el mensaje en la consola y borrar dichos mensajes.</p>
-<p>Se sigue el procedimiento de ejecución remota explicado en el <a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html#ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb">post anterior</a>.</p>
-<p>El código es el siguiente:</p>
+    <p>En este post se mostrará las funciones que permiten obtener información del estado de la bateria del celular con Android desde Linux.</p>
+<p>Para poder monitorear el estado de la bateria primero se inicia la función de inicio de monitoreo y luego se puede obtener la información siguiente:</p>
+<ul>
+<li>Salud de la batería</li>
+<li>Tipo de conexión que se usa para cargar la batería</li>
+<li>Estatus de la batería</li>
+<li>Tipo de tecnología usada en la batería</li>
+<li>Temperatura de la batería</li>
+<li>Voltaje de la batería</li>
+</ul>
+<p>El programa es el siguiente:</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python2.6</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1">#Script que permite manejar los SMS del celular con android desde Linux.</span>
+<span class="c1">#Script que muestra la información de la bateria del celular con Android.</span>
 <span class="c1">#Autor: Ernesto Crespo</span>
 <span class="c1">#Correo:ecrespo@gmail.com</span>
 <span class="c1">#Licencia: GPLv3</span>
 <span class="c1">#Versión:0.1</span>
 
 
-<span class="c1">#Importando el módulo android,sys y re</span>
+<span class="c1">#Importando el módulo android</span>
 <span class="kn">import</span> <span class="nn">android</span>
 
 
-<span class="c1">#Función de envio de mensajes</span>
-<span class="k">def</span> <span class="nf">Contactos</span><span class="p">():</span>
-    <span class="c1">#Se crea la instancia de la clase Android</span>
+<span class="k">def</span> <span class="nf">Bateria</span><span class="p">():</span>
+
     <span class="n">droid</span> <span class="o">=</span> <span class="n">android</span><span class="o">.</span><span class="n">Android</span><span class="p">()</span>
-    <span class="c1">#Se captura la cantidad de mensajes de texto )como en mi caso todos los </span>
-    <span class="c1">#mensajes han sido leídos coloco 0, si quiero los no leídos coloco 1.</span>
-    <span class="n">cantidad</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessageCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1">#El número de celular a buscar</span>
-    <span class="n">numero</span> <span class="o">=</span> <span class="s2">&quot;0xxxyyyzzww&quot;</span>
-    <span class="c1">#Se recorren todos los mensajes.</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cantidad</span><span class="p">):</span>
-        <span class="c1">#Si el mensaje es del número dado se captura el identificador</span>
-        <span class="c1">#del mensaje, se imprime un mensaje  en pantalla con la información:</span>
-        <span class="c1">#read:Si mensaje ya fue leído</span>
-        <span class="c1">#date: la fecha del mensaje</span>
-        <span class="c1">#_id:identificador del mensaje.</span>
-        <span class="c1">#address: número celular.</span>
-        <span class="c1">#body:cuerpo del mensaje.</span>
-        <span class="c1">#Toda está información se maneja desde un diccionario.</span>
-        <span class="c1">#Si el celular no es de la persona buscada se continua con la </span>
-        <span class="c1">#siguiente iteración. </span>
-        <span class="c1">#A la función de borrar se le pasa el identificador del mensaje</span>
-        <span class="k">if</span> <span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">numero</span><span class="p">:</span>
-            <span class="n">identificador</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;_id&quot;</span><span class="p">]</span>
-            <span class="k">print</span> <span class="s2">&quot;Borrando mensaje</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;read&quot;</span><span class="p">],</span><span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;date&quot;</span><span class="p">],</span><span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;address&quot;</span><span class="p">],</span><span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;body&quot;</span><span class="p">]</span>
-            <span class="n">droid</span><span class="o">.</span><span class="n">smsDeleteMessage</span><span class="p">(</span><span class="n">identificador</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">continue</span>
+    <span class="c1">#Se inicia el monitoreo de la bateria</span>
+    <span class="n">droid</span><span class="o">.</span><span class="n">batteryStartMonitoring</span><span class="p">()</span>
+    <span class="c1">#Se captura la información de la salud de la bateria y se presenta un </span>
+    <span class="c1">#mensaje por la consola.</span>
+    <span class="n">bateriaSalud</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">batteryGetHealth</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">bateriaSalud</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;La bateria está bien&quot;</span>
+    <span class="k">elif</span> <span class="n">bateriaSalud</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Salud de la Bateria desconocido&quot;</span>
+    <span class="k">elif</span> <span class="n">bateriaSalud</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;La bateria tiene sobrecarga&quot;</span>
+    <span class="k">elif</span> <span class="n">bateriaSalud</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;La bateria está muerta&quot;</span>
+    <span class="k">elif</span> <span class="n">bateriaSalud</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;La bateria tiene sobrevoltaje&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;falla desconocida&quot;</span>
+    <span class="c1">#Se captura la información del tipo de conexión que usa el celular</span>
+    <span class="c1">#Se despliega la información por la consola.</span>
+    <span class="n">tipoConexion</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">batteryGetPlugType</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">tipoConexion</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Cable desconectado&quot;</span>
+    <span class="k">elif</span> <span class="n">tipoConexion</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Fuente de alimentación: cargador AC&quot;</span>
+    <span class="k">elif</span> <span class="n">tipoConexion</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Fuente de alimentación: cable USB&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Desconocido&quot;</span>
+    <span class="c1">#Se captura la información del estatus de la bateria y se presenta en la</span>
+    <span class="c1">#consola.</span>
+    <span class="n">estatus</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">batteryGetStatus</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">estatus</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Bateria cargandose&quot;</span>
+    <span class="k">elif</span> <span class="n">estatus</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Bateria descargandose&quot;</span>
+    <span class="k">elif</span> <span class="n">estatus</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Bateria no se está cargando&quot;</span>
+    <span class="k">elif</span> <span class="n">estatus</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s2">&quot;Bateria full de carga&quot;</span>
+    <span class="k">print</span> <span class="s2">&quot;Tipo de tecnología de la bateria: &quot;</span><span class="p">,</span><span class="n">droid</span><span class="o">.</span><span class="n">batteryGetTechnology</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">print</span> <span class="s2">&quot;Temperatura de la bateria: &quot;</span><span class="p">,</span><span class="n">droid</span><span class="o">.</span><span class="n">batteryGetTemperature</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">print</span> <span class="s2">&quot;voltaje de la bateria: &quot;</span><span class="p">,</span><span class="n">droid</span><span class="o">.</span><span class="n">batteryGetVoltage</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">#Se detiene el monitoreo de la bateria</span>
+    <span class="n">droid</span><span class="o">.</span><span class="n">batteryStopMonitoring</span><span class="p">()</span>
+
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="c1">#Ejecución de la función</span>
-    <span class="n">Contactos</span><span class="p">()</span>
+    <span class="n">Bateria</span><span class="p">()</span>
 </pre></div>
 
 
-<p>La salida del programa es la siguiente:</p>
-<p>Devuelve el mensaje que se ha borrado el SMS, el número del mensaje, si está leído, la fecha, el número y el cuerpo del mensaje.</p>
-<div class="highlight"><pre><span></span>Borrando mensaje 296 1 1285030227398 0xxxyyyzzww Ah bueno... Yo les aviso.
-Borrando mensaje 358 1 1283635867054 0xxxyyyzzww Ok. Ahi voy.
+<p>Al ejecutar el programa se muestra lo siguiente:</p>
+<div class="highlight"><pre><span></span>bateria.py
+La bateria está bien
+Fuente de alimentación: cable USB
+Bateria cargandose
+Tipo de tecnología de la bateria:  Li-ion
+Temperatura de la bateria:  370
+voltaje de la bateria:  4003
 </pre></div>
 
 
+<p>Con respecto a la temperatura espero sea 37 grados y el voltaje sea medido en miliVoltios.</p>
 <p>===</p>
 <p>¡Haz tu donativo!
 Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)

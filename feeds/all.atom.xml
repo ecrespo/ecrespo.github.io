@@ -1,5 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2010-12-21T10:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Capturar la ubicación del celular (Android) desde Linux.</title><link href="https://ecrespo.github.io/capturar-la-ubicacion-del-celular-android-desde-linux.html" rel="alternate"></link><published>2010-12-21T10:00:00-05:30</published><updated>2010-12-21T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-12-21:/capturar-la-ubicacion-del-celular-android-desde-linux.html</id><summary type="html">&lt;p&gt;Me tome unos días para realizar la actualización de mi Milestone a Froyo gracias a la gente de androive que liberaron una versión venezolanizada de froyo que se llama &lt;a href="http://androidve.blogspot.com/2010/12/navidad-antes-del-24-froyove-152-la.html"&gt;FroyoVE&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-01-04T09:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Crear un Navegador web básico con python+gtk+webkit</title><link href="https://ecrespo.github.io/crear-un-navegador-web-basico-con-pythongtkwebkit.html" rel="alternate"></link><published>2011-01-04T09:00:00-05:30</published><updated>2011-01-04T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-01-04:/crear-un-navegador-web-basico-con-pythongtkwebkit.html</id><summary type="html">&lt;p&gt;Volviendo a la programación con python, glade y gtk; ahora explicare como hacer un navegador sencillo usando webkit en python.&lt;/p&gt;
+&lt;p&gt;Este post se basa en el artículo del &lt;a href="http://blog.marcelofernandez.info/2009/11/navegador-simple-con-pywebkitgtk/"&gt;Blog de Marcelo&lt;/a&gt;, la diferencia es que el programo sin glade la interfaz gráfica.&lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra la interfaz …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Volviendo a la programación con python, glade y gtk; ahora explicare como hacer un navegador sencillo usando webkit en python.&lt;/p&gt;
+&lt;p&gt;Este post se basa en el artículo del &lt;a href="http://blog.marcelofernandez.info/2009/11/navegador-simple-con-pywebkitgtk/"&gt;Blog de Marcelo&lt;/a&gt;, la diferencia es que el programo sin glade la interfaz gráfica.&lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra la interfaz gráfica de la aplicación.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Glade webkit - Navegador" src="./images/tutorialpythongtkglade11-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;La aplicación simplemente tiene una entrada de texto para el URL donde se le puede dar enter para cargar la página o al botón de "ir"; la página se cargará en el frame con barras deslizantes en el centro de la interfaz y se tiene un botón para salir del navegador. Por defecto se carga una página al iniciar la aplicación.&lt;/p&gt;
+&lt;p&gt;El código de la aplicación se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+&lt;span class="c1"&gt;#Importar los módulos gtl y webkit&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;gtk&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;webkit&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#La clase App hereda threading.Thread&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;App&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+     &lt;span class="c1"&gt;#Método constructor, asociando los widgets&lt;/span&gt;
+        &lt;span class="c1"&gt;#Asociar el archivo glade al objeto Builder.&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;navegador.glade&amp;quot;&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Builder&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_from_file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade_file&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Asociando la ventana del navegador&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ventana&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_object&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;navegador&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Asociando el boton salir&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bsalir&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_object&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;bsalir&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Asociando el boton navegar&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;navegar&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_object&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;navegar&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Asociando la entrada de texto del url a navegar&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;enlace&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_object&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;url&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Asociando la ventana con las barras deslizantes&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;scrolledwindow1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;glade&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_object&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;scrolledwindow1&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Conectores&lt;/span&gt;
+        &lt;span class="c1"&gt;#Conectar de destruir la ventana principal&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ventana&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;destroy&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on_navegador_destroy&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Conectar del boton salir&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bsalir&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;clicked&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on_bsalir_clicked&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Conector del boton navegar&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;navegar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;clicked&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on_navegar_clicked&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Conector de dar enter a la entrada de texto&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;enlace&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;activate&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;on_url_activate&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Asociando página por defecto.&lt;/span&gt;
+        &lt;span class="c1"&gt;#Instanciando la clase webview&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;webview&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;webkit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;WebView&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="c1"&gt;#Agregando webview a la ventana con barras deslizantes&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;scrolledwindow1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;webview&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Abriendo una página por defecto&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__navegacion&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;http://www.debian.org&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="c1"&gt;#Se muestra la ventana principal del programa&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ventana&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Si se da enter a la entrada de texto se captura el url y se navega&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_url_activate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;enlace&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_text&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__navegacion&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se abre el url con webview&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__navegacion&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;webview&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_navegador_destroy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se cierra la aplicación&lt;/span&gt;
+        &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main_quit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_bsalir_clicked&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+     &lt;span class="c1"&gt;#Se cierra la aplicación al darle clip al boton salir.&lt;/span&gt;
+        &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main_quit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_navegar_clicked&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se navega el url al darle clip al boton&lt;/span&gt;
+        &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;enlace&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_text&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__navegacion&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+     &lt;span class="c1"&gt;#Inicia la aplicación&lt;/span&gt;
+        &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;App&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En la siguiente figura se muestra el navegador en funcionamiento.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Navegador " src="./images/tutorialpythongtkglade11-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Python"></category><category term="gtk"></category><category term="glade"></category><category term="webkit"></category></entry><entry><title>Capturar la ubicación del celular (Android) desde Linux.</title><link href="https://ecrespo.github.io/capturar-la-ubicacion-del-celular-android-desde-linux.html" rel="alternate"></link><published>2010-12-21T10:00:00-05:30</published><updated>2010-12-21T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-12-21:/capturar-la-ubicacion-del-celular-android-desde-linux.html</id><summary type="html">&lt;p&gt;Me tome unos días para realizar la actualización de mi Milestone a Froyo gracias a la gente de androive que liberaron una versión venezolanizada de froyo que se llama &lt;a href="http://androidve.blogspot.com/2010/12/navidad-antes-del-24-froyove-152-la.html"&gt;FroyoVE&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Hoy escribire sobre como sacar la información que maneja el GPS desde Linux.&lt;/p&gt;
 &lt;p&gt;Lo primero que se necesita hacer es …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Me tome unos días para realizar la actualización de mi Milestone a Froyo gracias a la gente de androive que liberaron una versión venezolanizada de froyo que se llama &lt;a href="http://androidve.blogspot.com/2010/12/navidad-antes-del-24-froyove-152-la.html"&gt;FroyoVE&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Hoy escribire sobre como sacar la información que maneja el GPS desde Linux.&lt;/p&gt;

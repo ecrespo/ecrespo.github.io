@@ -1,5 +1,5 @@
 Title: Subir un paquete Debian (pyching) al repositorio
-Date: 2000-04-09 10:00
+Date: 2009-04-09 10:00
 Category: Linux,Empaquetado
 Tags: Debian,Paquetes
 lang: es

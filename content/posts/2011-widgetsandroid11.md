@@ -24,9 +24,11 @@ Al iniciar tesla en el celular le pedirá la dirección IP de su computador, el 
 
 Se puede seleccionar otros reproductores que funcionan en Linux antes de darle conectar a la aplicación.
 
+![App tesla - control](./images/tesla2.png)
+
 La siguiente imagen muestra a tesla funcionando en el celular y luego el productor Rhythmbox.
 
-![App tesla - control](./images/reproductormusica.png)
+![Reproductor de musica Rhythmbox](./images/reproductormusica.png)
 
 
 ===

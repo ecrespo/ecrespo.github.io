@@ -1,5 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-02-09T09:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Ejecutar comandos de forma remota y transferencia de archivos con python</title><link href="https://ecrespo.github.io/ejecutar-comandos-de-forma-remota-y-transferencia-de-archivos-con-python.html" rel="alternate"></link><published>2011-02-09T09:00:00-05:30</published><updated>2011-02-09T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-02-09:/ejecutar-comandos-de-forma-remota-y-transferencia-de-archivos-con-python.html</id><summary type="html">&lt;p&gt;Este artículo explicará como realizar conexiones ssh de forma automática  y realizar transferencias de archivos por medio de python.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-03-05T09:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Configurando un agente snmp en linux, haciendo consultas y scripts en python para manejar información snmp</title><link href="https://ecrespo.github.io/configurando-un-agente-snmp-en-linux-haciendo-consultas-y-scripts-en-python-para-manejar-informacion-snmp.html" rel="alternate"></link><published>2011-03-05T09:00:00-05:30</published><updated>2011-03-05T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-03-05:/configurando-un-agente-snmp-en-linux-haciendo-consultas-y-scripts-en-python-para-manejar-informacion-snmp.html</id><summary type="html">&lt;p&gt;En este artículo explicaré como configurar un agente snmp. El equipo es un BSD  Debian squeeze instalado en una máquina virtual  en mi Debian con Virtual Box.&lt;/p&gt;
+&lt;p&gt;Ejecuta el comando uname -a para ver que kernel tiene el equipo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;GNU/kFreeBSD bsd 8.1-1-686 #0 Tue Jan  4 17:59 …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;En este artículo explicaré como configurar un agente snmp. El equipo es un BSD  Debian squeeze instalado en una máquina virtual  en mi Debian con Virtual Box.&lt;/p&gt;
+&lt;p&gt;Ejecuta el comando uname -a para ver que kernel tiene el equipo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;GNU/kFreeBSD bsd 8.1-1-686 #0 Tue Jan  4 17:59:05 UTC 2011 i686 i386 Intel(R) Atom(TM) CPU N270   @ 1.60GHz GNU/kFreeBSD
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Tiene un Kernel FreeBSD 8.1 para 686.&lt;/p&gt;
+&lt;p&gt;La IP del equipo con la interfaz se toma del comando ifconfig em0:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;em0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;8843&lt;/span&gt; &lt;span class="n"&gt;metric&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="n"&gt;mtu&lt;/span&gt; &lt;span class="mi"&gt;1500&lt;/span&gt;
+ &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;
+ &lt;span class="n"&gt;ether&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;d0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;71&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;
+ &lt;span class="n"&gt;inet6&lt;/span&gt; &lt;span class="n"&gt;fe80&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;a00&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="n"&gt;ff&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;fed0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;717&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;em0&lt;/span&gt; &lt;span class="n"&gt;prefixlen&lt;/span&gt; &lt;span class="mi"&gt;64&lt;/span&gt; &lt;span class="n"&gt;scopeid&lt;/span&gt; &lt;span class="mh"&gt;0x1&lt;/span&gt;
+ &lt;span class="n"&gt;inet&lt;/span&gt; &lt;span class="mf"&gt;192.168&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.103&lt;/span&gt; &lt;span class="n"&gt;netmask&lt;/span&gt; &lt;span class="mh"&gt;0xffffff00&lt;/span&gt; &lt;span class="n"&gt;broadcast&lt;/span&gt; &lt;span class="mf"&gt;192.168&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.255&lt;/span&gt;
+ &lt;span class="n"&gt;nd6&lt;/span&gt; &lt;span class="n"&gt;options&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;
+ &lt;span class="n"&gt;media&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Ethernet&lt;/span&gt; &lt;span class="n"&gt;autoselect&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="n"&gt;baseT&lt;/span&gt; &lt;span class="o"&gt;)&lt;/span&gt;
+ &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;active&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La IP es la 192.168.0.103, acá se nota claramente que la información de la interfaz la maneja de forma diferente a como la maneja Linux.&lt;/p&gt;
+&lt;p&gt;Se instalará  varias aplicaciones de snmp y python con snmp:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install snmptrapfmt snmptt python-twisted-snmp python-pysnmp4 python-pysnmp4-doc python-pysnmp-common python-pysnmp4-mibs python-pysnmp4-apps python-pysnmp2 python-pysnmp-se python-pynetsnmp python-pyasn1 scli snimpy snmpd snmp libsnmp-python
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se edita el archivo /etc/snmp/snmpd.conf . Para agregar la información de contacto.&lt;/p&gt;
+&lt;p&gt;SNMP escucha localhost nada más:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;agentAddress  udp:127.0.0.1:161
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Acceso solamente a la información del sistema para el community public.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;rocommunity public  default    -V systemonly
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Información del sistema:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sysLocation    Servidor BSD en maquina virtual de pruebas
+sysContact     Ernesto Crespo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Monitoreo de la partición raíz si sólo queda 10MB levanta un alarma.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;disk       /     10000
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Carga del sistema:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;load   12 10 5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se reinicia el servicio del agente snmp.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@bsd:/home/ernesto# /etc/init.d/snmpd restart
+Restarting network management services: snmpd.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para verificar el funcionamiento de snmp se realiza una consulta con snmpwalk.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;snmpwalk -v 2c -c public  localhost
+iso.3.6.1.2.1.1.1.0 = STRING: &amp;quot;GNU/kFreeBSD bsd 8.1-1-686 #0 Tue Jan  4 17:59:05 UTC 2011 i686&amp;quot;
+iso.3.6.1.2.1.1.2.0 = OID: iso.3.6.1.4.1.8072.3.2.255
+iso.3.6.1.2.1.1.3.0 = Timeticks: (178) 0:00:01.78
+iso.3.6.1.2.1.1.4.0 = STRING: &amp;quot;Ernesto Crespo &amp;quot;
+iso.3.6.1.2.1.1.5.0 = STRING: &amp;quot;bsd&amp;quot;
+iso.3.6.1.2.1.1.6.0 = STRING: &amp;quot;Servidor BSD en maquina virtual de pruebas&amp;quot;
+iso.3.6.1.2.1.1.7.0 = INTEGER: 72
+iso.3.6.1.2.1.1.8.0 = Timeticks: (25) 0:00:00.25
+iso.3.6.1.2.1.1.9.1.2.1 = OID: iso.3.6.1.6.3.10.3.1.1
+iso.3.6.1.2.1.1.9.1.2.2 = OID: iso.3.6.1.6.3.11.3.1.1
+iso.3.6.1.2.1.1.9.1.2.3 = OID: iso.3.6.1.6.3.15.2.1.1
+iso.3.6.1.2.1.1.9.1.2.4 = OID: iso.3.6.1.6.3.1
+iso.3.6.1.2.1.1.9.1.2.5 = OID: iso.3.6.1.2.1.49
+iso.3.6.1.2.1.1.9.1.2.6 = OID: iso.3.6.1.2.1.4
+iso.3.6.1.2.1.1.9.1.2.7 = OID: iso.3.6.1.2.1.50
+iso.3.6.1.2.1.1.9.1.2.8 = OID: iso.3.6.1.6.3.16.2.2.1
+iso.3.6.1.2.1.1.9.1.3.1 = STRING: &amp;quot;The SNMP Management Architecture MIB.&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.2 = STRING: &amp;quot;The MIB for Message Processing and Dispatching.&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.3 = STRING: &amp;quot;The management information definitions for the SNMP User-based Security Model.&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.4 = STRING: &amp;quot;The MIB module for SNMPv2 entities&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.5 = STRING: &amp;quot;The MIB module for managing TCP implementations&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.6 = STRING: &amp;quot;The MIB module for managing IP and ICMP implementations&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.7 = STRING: &amp;quot;The MIB module for managing UDP implementations&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.8 = STRING: &amp;quot;View-based Access Control Model for SNMP.&amp;quot;
+iso.3.6.1.2.1.1.9.1.4.1 = Timeticks: (9) 0:00:00.09
+iso.3.6.1.2.1.1.9.1.4.2 = Timeticks: (9) 0:00:00.09
+iso.3.6.1.2.1.1.9.1.4.3 = Timeticks: (9) 0:00:00.09
+iso.3.6.1.2.1.1.9.1.4.4 = Timeticks: (18) 0:00:00.18
+iso.3.6.1.2.1.1.9.1.4.5 = Timeticks: (18) 0:00:00.18
+iso.3.6.1.2.1.1.9.1.4.6 = Timeticks: (20) 0:00:00.20
+iso.3.6.1.2.1.1.9.1.4.7 = Timeticks: (22) 0:00:00.22
+iso.3.6.1.2.1.1.9.1.4.8 = Timeticks: (24) 0:00:00.24
+iso.3.6.1.2.1.25.1.1.0 = Timeticks: (653703) 1:48:57.03
+iso.3.6.1.2.1.25.1.2.0 = Hex-STRING: 07 DB 03 05 0A 11 37 00 2D 04 1E
+iso.3.6.1.2.1.25.1.3.0 = INTEGER: 1536
+iso.3.6.1.2.1.25.1.5.0 = Gauge32: 11
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se le da full acceso al community public para revisar toda la información que maneja el agente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;rocommunity public  localhost
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al consultar con snmpwalk ahora devuelve más información como la interfaz de red por ejemplo.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;iso.3.6.1.2.1.1.1.0 = STRING: &amp;quot;GNU/kFreeBSD bsd 8.1-1-686 #0 Tue Jan  4 17:59:05 UTC 2011 i686&amp;quot;
+iso.3.6.1.2.1.1.2.0 = OID: iso.3.6.1.4.1.8072.3.2.255
+iso.3.6.1.2.1.1.3.0 = Timeticks: (632) 0:00:06.32
+iso.3.6.1.2.1.1.4.0 = STRING: &amp;quot;Ernesto Crespo &amp;quot;
+iso.3.6.1.2.1.1.5.0 = STRING: &amp;quot;bsd&amp;quot;
+iso.3.6.1.2.1.1.6.0 = STRING: &amp;quot;Servidor BSD en maquina virtual de pruebas&amp;quot;
+iso.3.6.1.2.1.1.7.0 = INTEGER: 72
+iso.3.6.1.2.1.1.8.0 = Timeticks: (10) 0:00:00.10
+iso.3.6.1.2.1.1.9.1.2.1 = OID: iso.3.6.1.6.3.10.3.1.1
+iso.3.6.1.2.1.1.9.1.2.2 = OID: iso.3.6.1.6.3.11.3.1.1
+iso.3.6.1.2.1.1.9.1.2.3 = OID: iso.3.6.1.6.3.15.2.1.1
+iso.3.6.1.2.1.1.9.1.2.4 = OID: iso.3.6.1.6.3.1
+iso.3.6.1.2.1.1.9.1.2.5 = OID: iso.3.6.1.2.1.49
+iso.3.6.1.2.1.1.9.1.2.6 = OID: iso.3.6.1.2.1.4
+iso.3.6.1.2.1.1.9.1.2.7 = OID: iso.3.6.1.2.1.50
+iso.3.6.1.2.1.1.9.1.2.8 = OID: iso.3.6.1.6.3.16.2.2.1
+iso.3.6.1.2.1.1.9.1.3.1 = STRING: &amp;quot;The SNMP Management Architecture MIB.&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.2 = STRING: &amp;quot;The MIB for Message Processing and Dispatching.&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.3 = STRING: &amp;quot;The management information definitions for the SNMP User-based Security Model.&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.4 = STRING: &amp;quot;The MIB module for SNMPv2 entities&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.5 = STRING: &amp;quot;The MIB module for managing TCP implementations&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.6 = STRING: &amp;quot;The MIB module for managing IP and ICMP implementations&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.7 = STRING: &amp;quot;The MIB module for managing UDP implementations&amp;quot;
+iso.3.6.1.2.1.1.9.1.3.8 = STRING: &amp;quot;View-based Access Control Model for SNMP.&amp;quot;
+iso.3.6.1.2.1.1.9.1.4.1 = Timeticks: (5) 0:00:00.05
+iso.3.6.1.2.1.1.9.1.4.2 = Timeticks: (5) 0:00:00.05
+iso.3.6.1.2.1.1.9.1.4.3 = Timeticks: (5) 0:00:00.05
+iso.3.6.1.2.1.1.9.1.4.4 = Timeticks: (7) 0:00:00.07
+iso.3.6.1.2.1.1.9.1.4.5 = Timeticks: (7) 0:00:00.07
+iso.3.6.1.2.1.1.9.1.4.6 = Timeticks: (8) 0:00:00.08
+iso.3.6.1.2.1.1.9.1.4.7 = Timeticks: (9) 0:00:00.09
+iso.3.6.1.2.1.1.9.1.4.8 = Timeticks: (10) 0:00:00.10
+iso.3.6.1.2.1.2.1.0 = INTEGER: 2
+iso.3.6.1.2.1.2.2.1.1.1 = INTEGER: 1
+iso.3.6.1.2.1.2.2.1.1.2 = INTEGER: 2
+iso.3.6.1.2.1.2.2.1.2.1 = STRING: &amp;quot;em0&amp;quot;
+iso.3.6.1.2.1.2.2.1.2.2 = STRING: &amp;quot;lo0&amp;quot;
+iso.3.6.1.2.1.2.2.1.3.1 = INTEGER: 6
+iso.3.6.1.2.1.2.2.1.3.2 = INTEGER: 24
+iso.3.6.1.2.1.2.2.1.4.1 = INTEGER: 1500
+iso.3.6.1.2.1.2.2.1.4.2 = INTEGER: 16384
+iso.3.6.1.2.1.2.2.1.5.1 = Gauge32: 1000000000
+iso.3.6.1.2.1.2.2.1.5.2 = Gauge32: 0
+iso.3.6.1.2.1.2.2.1.6.1 = Hex-STRING: 00 00 27 D0 71 7E
+iso.3.6.1.2.1.2.2.1.6.2 = &amp;quot;&amp;quot;
+iso.3.6.1.2.1.2.2.1.7.1 = INTEGER: 1
+iso.3.6.1.2.1.2.2.1.7.2 = INTEGER: 1
+iso.3.6.1.2.1.2.2.1.8.1 = INTEGER: 1
+iso.3.6.1.2.1.2.2.1.8.2 = INTEGER: 1
+iso.3.6.1.2.1.2.2.1.9.1 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.2.2.1.9.2 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.2.2.1.10.1 = Counter32: 17335697
+iso.3.6.1.2.1.2.2.1.10.2 = Counter32: 67940
+iso.3.6.1.2.1.2.2.1.11.1 = Counter32: 18045
+iso.3.6.1.2.1.2.2.1.11.2 = Counter32: 905
+iso.3.6.1.2.1.2.2.1.12.1 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.12.2 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.13.1 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.13.2 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.14.1 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.14.2 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.15.1 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.15.2 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.16.1 = Counter32: 1328839
+iso.3.6.1.2.1.2.2.1.16.2 = Counter32: 67940
+iso.3.6.1.2.1.2.2.1.17.1 = Counter32: 12837
+iso.3.6.1.2.1.2.2.1.17.2 = Counter32: 905
+iso.3.6.1.2.1.2.2.1.18.1 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.18.2 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.19.1 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.19.2 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.20.1 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.20.2 = Counter32: 0
+iso.3.6.1.2.1.2.2.1.21.1 = Gauge32: 0
+iso.3.6.1.2.1.2.2.1.21.2 = Gauge32: 0
+iso.3.6.1.2.1.2.2.1.22.1 = OID: ccitt.0
+iso.3.6.1.2.1.2.2.1.22.2 = OID: ccitt.0
+iso.3.6.1.2.1.3.1.1.1.1.1.192.168.0.1 = INTEGER: 1
+iso.3.6.1.2.1.3.1.1.1.1.1.192.168.0.101 = INTEGER: 1
+iso.3.6.1.2.1.3.1.1.1.1.1.192.168.0.103 = INTEGER: 1
+iso.3.6.1.2.1.3.1.1.2.1.1.192.168.0.1 = Hex-STRING: F0 7D 68 52 BB 8E
+iso.3.6.1.2.1.3.1.1.2.1.1.192.168.0.101 = Hex-STRING: 00 26 82 54 FE 89
+iso.3.6.1.2.1.3.1.1.2.1.1.192.168.0.103 = Hex-STRING: 08 00 27 D0 71 7E
+iso.3.6.1.2.1.3.1.1.3.1.1.192.168.0.1 = IpAddress: 192.168.0.1
+iso.3.6.1.2.1.3.1.1.3.1.1.192.168.0.101 = IpAddress: 192.168.0.101
+iso.3.6.1.2.1.3.1.1.3.1.1.192.168.0.103 = IpAddress: 192.168.0.103
+iso.3.6.1.2.1.4.1.0 = INTEGER: 2
+iso.3.6.1.2.1.4.2.0 = INTEGER: 64
+iso.3.6.1.2.1.4.3.0 = Counter32: 18972
+iso.3.6.1.2.1.4.4.0 = Counter32: 0
+iso.3.6.1.2.1.4.5.0 = Counter32: 36
+iso.3.6.1.2.1.4.6.0 = Counter32: 0
+iso.3.6.1.2.1.4.7.0 = Counter32: 179
+iso.3.6.1.2.1.4.8.0 = Counter32: 0
+iso.3.6.1.2.1.4.9.0 = Counter32: 18757
+iso.3.6.1.2.1.4.10.0 = Counter32: 13866
+iso.3.6.1.2.1.4.11.0 = Counter32: 0
+iso.3.6.1.2.1.4.13.0 = INTEGER: 60
+iso.3.6.1.2.1.4.14.0 = Counter32: 0
+iso.3.6.1.2.1.4.15.0 = Counter32: 0
+iso.3.6.1.2.1.4.16.0 = Counter32: 0
+iso.3.6.1.2.1.4.17.0 = Counter32: 0
+iso.3.6.1.2.1.4.18.0 = Counter32: 0
+iso.3.6.1.2.1.4.19.0 = Counter32: 0
+iso.3.6.1.2.1.4.20.1.1.127.0.0.1 = IpAddress: 127.0.0.1
+iso.3.6.1.2.1.4.20.1.1.192.168.0.103 = IpAddress: 192.168.0.103
+iso.3.6.1.2.1.4.20.1.2.127.0.0.1 = INTEGER: 2
+iso.3.6.1.2.1.4.20.1.2.192.168.0.103 = INTEGER: 1
+iso.3.6.1.2.1.4.20.1.3.127.0.0.1 = IpAddress: 255.0.0.0
+iso.3.6.1.2.1.4.20.1.3.192.168.0.103 = IpAddress: 255.255.255.0
+iso.3.6.1.2.1.4.20.1.4.127.0.0.1 = INTEGER: 1
+iso.3.6.1.2.1.4.20.1.4.192.168.0.103 = INTEGER: 1
+iso.3.6.1.2.1.4.21.1.1.0.0.0.0 = IpAddress: 0.0.0.0
+iso.3.6.1.2.1.4.21.1.1.127.0.0.1 = IpAddress: 127.0.0.1
+iso.3.6.1.2.1.4.21.1.1.192.168.0.0 = IpAddress: 192.168.0.0
+iso.3.6.1.2.1.4.21.1.1.192.168.0.103 = IpAddress: 192.168.0.103
+iso.3.6.1.2.1.4.21.1.2.0.0.0.0 = INTEGER: 1
+iso.3.6.1.2.1.4.21.1.2.127.0.0.1 = INTEGER: 2
+iso.3.6.1.2.1.4.21.1.2.192.168.0.0 = INTEGER: 1
+iso.3.6.1.2.1.4.21.1.2.192.168.0.103 = INTEGER: 2
+iso.3.6.1.2.1.4.21.1.3.0.0.0.0 = INTEGER: 1
+iso.3.6.1.2.1.4.21.1.3.127.0.0.1 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.3.192.168.0.0 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.3.192.168.0.103 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.4.0.0.0.0 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.4.127.0.0.1 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.4.192.168.0.0 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.4.192.168.0.103 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.5.0.0.0.0 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.5.127.0.0.1 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.5.192.168.0.0 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.5.192.168.0.103 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.6.0.0.0.0 = INTEGER: 0
+iso.3.6.1.2.1.4.21.1.6.127.0.0.1 = INTEGER: 0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se hará una consulta snmp desde el interprete de comandos de python.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se importa el módulo de pysnmp que genera el comando.&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pysnmp.entity.rfc3413.oneliner&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;cmdgen&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea la instancia del generador de comandos snmp&lt;/span&gt;
+&lt;span class="n"&gt;cg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cmdgen&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CommandGenerator&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Se captura los datos del community public.&lt;/span&gt;
+&lt;span class="n"&gt;comm_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cmdgen&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CommunityData&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;my-manager&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;public&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se conecta al agente snmp desde localhost puerto 161.&lt;/span&gt;
+&lt;span class="n"&gt;transport&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cmdgen&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;UdpTransportTarget&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;127.0.0.1&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;161&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="c1"&gt;#Se asocia la variable que tiene la información del sistema operativo&lt;/span&gt;
+&lt;span class="n"&gt;variables&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se ejecuta el comando capturando el resultado y los mensajes de error.&lt;/span&gt;
+&lt;span class="n"&gt;errIndication&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;errStatus&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;errIndex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cg&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getCmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;comm_data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;transport&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;variables&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se presenta en pantalla los mensajes de error.&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;errIndication&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;errStatus&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;errIndex&lt;/span&gt;
+&lt;span class="c1"&gt;#Como no hay mensaje de error se presenta en pantalla el resultado del comando.&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El resultado es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;None 0 0
+[(ObjectName(&amp;#39;1.3.6.1.2.1.1.1.0&amp;#39;), OctetString(&amp;#39;GNU/kFreeBSD bsd 8.1-1-686 #0 Tue Jan  4 17:59:05 UTC 2011 i686&amp;#39;))]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="FreeBSD"></category><category term="Debian"></category><category term="snmp"></category><category term="Python"></category><category term="Redes"></category></entry><entry><title>Ejecutar comandos de forma remota y transferencia de archivos con python</title><link href="https://ecrespo.github.io/ejecutar-comandos-de-forma-remota-y-transferencia-de-archivos-con-python.html" rel="alternate"></link><published>2011-02-09T09:00:00-05:30</published><updated>2011-02-09T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-02-09:/ejecutar-comandos-de-forma-remota-y-transferencia-de-archivos-con-python.html</id><summary type="html">&lt;p&gt;Este artículo explicará como realizar conexiones ssh de forma automática  y realizar transferencias de archivos por medio de python.&lt;/p&gt;
 &lt;p&gt;Lo primero que se tiene que hacer es crear la clave pública y privada para ssh y así poder ejecutar comandos remotos sin necesidad de clave, una guía de como hacerlo …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Este artículo explicará como realizar conexiones ssh de forma automática  y realizar transferencias de archivos por medio de python.&lt;/p&gt;
 &lt;p&gt;Lo primero que se tiene que hacer es crear la clave pública y privada para ssh y así poder ejecutar comandos remotos sin necesidad de clave, una guía de como hacerlo la tiene &lt;a href="http://rafael.bonifaz.ec/blog/2011/01/ssh-con-claves-publicas-y-privadas/"&gt;Rafael Bonifaz en su blog&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;El primer ejemplo permite establecer una conexión remota ssh y ejecutar un comando en el equipo remoto.&lt;/p&gt;
@@ -5056,7 +5332,201 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Empaquetado"></category><category term="Mercurial"></category></entry><entry><title>Control de Versiones con mercurial</title><link href="https://ecrespo.github.io/control-de-versiones-con-mercurial.html" rel="alternate"></link><published>2009-04-08T08:00:00-05:30</published><updated>2009-04-08T08:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2009-04-08:/control-de-versiones-con-mercurial.html</id><summary type="html">&lt;p&gt;Mercurial es un sistema de control de versiones distribuido similar a git o
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Empaquetado"></category><category term="Mercurial"></category></entry><entry><title>Subir un paquete Debian (pyching) al repositorio</title><link href="https://ecrespo.github.io/subir-un-paquete-debian-pyching-al-repositorio.html" rel="alternate"></link><published>2009-04-09T10:00:00-05:30</published><updated>2009-04-09T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2009-04-09:/subir-un-paquete-debian-pyching-al-repositorio.html</id><summary type="html">&lt;p&gt;Como la intención es utilizar el comando hg-buildpackage para construir un paquete
+Debian, pero como en Debian muy pocos usan mercurial como repositorio. Tuve que crear
+un repositorio en bitbucket.org para mis paquetes.&lt;/p&gt;
+&lt;p&gt;Para ello es necesario crear el repositorio en bitbucket.org.&lt;/p&gt;
+&lt;p&gt;Luego su equipo crear el directorio …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Como la intención es utilizar el comando hg-buildpackage para construir un paquete
+Debian, pero como en Debian muy pocos usan mercurial como repositorio. Tuve que crear
+un repositorio en bitbucket.org para mis paquetes.&lt;/p&gt;
+&lt;p&gt;Para ello es necesario crear el repositorio en bitbucket.org.&lt;/p&gt;
+&lt;p&gt;Luego su equipo crear el directorio del paquete:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir pyching
+cd pyching
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Bajarse las fuentes de pyching:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get source pyching
+Leyendo lista de paquetes... Hecho
+Creando árbol de dependencias
+Leyendo la información de estado... Hecho
+Necesito descargar 139kB de archivos fuente.
+Des:1 http://debian.velug.org.ve sid/main pyching 1.2.2-5 (dsc) [1092B]
+Des:2 http://debian.velug.org.ve sid/main pyching 1.2.2-5 (tar) [134kB]
+Des:3 http://debian.velug.org.ve sid/main pyching 1.2.2-5 (diff) [3931B]
+Descargados 139kB en 5s (27,8kB/s)
+dpkg-source: extracting pyching in pyching-1.2.2
+dpkg-source: info: unpacking pyching_1.2.2.orig.tar.gz
+dpkg-source: info: applying pyching_1.2.2-5.diff.gz
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Cambiarse al directorio pyching-1.2.2:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd pyching-1.2.2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Crear el repositorio:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/pyching-1.2.2$ hg init
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Agregar las fuentes al repositorio:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/pyching-1.2.2$ hg add
+adding #smgHtmlView.py#
+adding BUGS
+adding CHANGES
+adding COPYING
+adding COPYRIGHT
+adding CREDITS
+adding INSTALL
+adding NEWS
+adding README
+adding debian/changelog
+adding debian/compat
+adding debian/control
+adding debian/copyright
+adding debian/dirs
+adding debian/docs
+adding debian/menu
+adding debian/pyching-small.xpm
+adding debian/pycompat
+adding debian/rules
+adding debian/watch
+adding icon.xbm
+adding pyching.1
+adding pyching.png
+adding pyching.py
+adding pyching.pyw
+adding pyching.sh
+adding pyching_cimages.py
+adding pyching_engine.py
+adding pyching_hlhtx_data.py
+adding pyching_idimage_data.py
+adding pyching_int_data.py
+adding pyching_interface_tkinter.py
+adding smgAbout.py
+adding smgAnimate.py
+adding smgDialog.py
+adding smgHtmlView.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se hace el commit:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/pyching-1.2.2$ hg commit -m&amp;quot;Subir el paquete pyching al repositorio&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Subir al repositorio:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/pyching-1.2.2$ hg push http://bitbucket.org/ecrespo/pyching/
+pushing to http://bitbucket.org/ecrespo/pyching/
+searching for changes
+http authorization required
+realm: Bitbucket.org HTTP
+user: ecrespo
+password:
+bb/acl: ecrespo is allowed. accepted payload.
+quota: 340.8 KB in use, 150.0 MB available (0.22% used)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ya en este punto el paquete se encuentra en el servidor de repositorios mercurial.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="pyching" src="./imagenes/pyching.png"&gt;&lt;/p&gt;
+&lt;p&gt;Ahora se crea un directorio temporal para trabajar con los fuentes para empaquetarlo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/temporal$ hg clone http://bitbucket.org/ecrespo/pyching/
+destination directory: pyching
+requesting all changes
+adding changesets
+adding manifests
+adding file changes
+added 1 changesets with 36 changes to 36 files
+updating working directory
+36 files updated, 0 files merged, 0 files removed, 0 files unresolved
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para finalizar se ejecuta el comando para empaquetar:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;ecrespo&lt;/span&gt;&lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="k"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;:~/&lt;/span&gt;&lt;span class="nt"&gt;paquetes&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;temporal&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching-1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="nt"&gt;hg-buildpackage&lt;/span&gt; &lt;span class="nt"&gt;-us&lt;/span&gt; &lt;span class="nt"&gt;-uc&lt;/span&gt; &lt;span class="nt"&gt;-rfakeroot&lt;/span&gt;
+&lt;span class="nt"&gt;Upstream&lt;/span&gt; &lt;span class="nt"&gt;file&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;directory&lt;/span&gt; &lt;span class="nt"&gt;already&lt;/span&gt; &lt;span class="nt"&gt;exists&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;building&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt; &lt;span class="nt"&gt;-rfakeroot&lt;/span&gt; &lt;span class="nt"&gt;-D&lt;/span&gt; &lt;span class="nt"&gt;-us&lt;/span&gt; &lt;span class="nt"&gt;-uc&lt;/span&gt; &lt;span class="nt"&gt;-i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;hg&lt;/span&gt; &lt;span class="nt"&gt;-I&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;hg&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;CFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;-g&lt;/span&gt; &lt;span class="nt"&gt;-O2&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;CPPFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;LDFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;FFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;-g&lt;/span&gt; &lt;span class="nt"&gt;-O2&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;CXXFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;-g&lt;/span&gt; &lt;span class="nt"&gt;-O2&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;package&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;version&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2-5&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;changed&lt;/span&gt; &lt;span class="nt"&gt;by&lt;/span&gt; &lt;span class="nt"&gt;Ernesto&lt;/span&gt; &lt;span class="nt"&gt;Nadir&lt;/span&gt; &lt;span class="nt"&gt;Crespo&lt;/span&gt; &lt;span class="nt"&gt;Avila&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;host&lt;/span&gt; &lt;span class="nt"&gt;architecture&lt;/span&gt; &lt;span class="nt"&gt;i386&lt;/span&gt;
+&lt;span class="nt"&gt;fakeroot&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;rules&lt;/span&gt; &lt;span class="nt"&gt;clean&lt;/span&gt;
+&lt;span class="nt"&gt;dh_testdir&lt;/span&gt;
+&lt;span class="nt"&gt;dh_testroot&lt;/span&gt;
+&lt;span class="nt"&gt;dh_clean&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-source&lt;/span&gt; &lt;span class="nt"&gt;-i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;hg&lt;/span&gt; &lt;span class="nt"&gt;-I&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;hg&lt;/span&gt; &lt;span class="nt"&gt;-b&lt;/span&gt; &lt;span class="nt"&gt;pyching-1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;info&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;using&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;format&lt;/span&gt; &lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;dpkg-source: info: building pyching using existing pyching_1.2.2.orig.tar.gz&lt;/span&gt;
+&lt;span class="s1"&gt;dpkg-source: info: building pyching in pyching_1.2.2-5.diff.gz&lt;/span&gt;
+&lt;span class="s1"&gt;dpkg-source: warning: ignoring deletion of file #smgHtmlView.py#&lt;/span&gt;
+&lt;span class="s1"&gt;dpkg-source: info: building pyching in pyching_1.2.2-5.dsc&lt;/span&gt;
+&lt;span class="s1"&gt;debian/rules build&lt;/span&gt;
+&lt;span class="s1"&gt;make: No se hace nada para `build&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;fakeroot&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;rules&lt;/span&gt; &lt;span class="nt"&gt;binary&lt;/span&gt;
+&lt;span class="nt"&gt;dh_testdir&lt;/span&gt;
+&lt;span class="nt"&gt;dh_testroot&lt;/span&gt;
+&lt;span class="nt"&gt;dh_prep&lt;/span&gt;
+&lt;span class="nt"&gt;dh_installdirs&lt;/span&gt;
+&lt;span class="nt"&gt;install&lt;/span&gt; &lt;span class="nt"&gt;-m&lt;/span&gt; &lt;span class="nt"&gt;644&lt;/span&gt; &lt;span class="nt"&gt;pyching_cimages&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;pyching_engine&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
+&lt;span class="nt"&gt;pyching_hlhtx_data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;pyching_idimage_data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
+&lt;span class="nt"&gt;pyching_int_data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;pyching_interface_tkinter&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
+&lt;span class="nt"&gt;smgAbout&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;smgAnimate&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;smgDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;smgHtmlView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
+&lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;span class="nt"&gt;install&lt;/span&gt; &lt;span class="nt"&gt;-m&lt;/span&gt; &lt;span class="nt"&gt;755&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;span class="nt"&gt;install&lt;/span&gt; &lt;span class="nt"&gt;-m&lt;/span&gt; &lt;span class="nt"&gt;644&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;png&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching-small&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;xpm&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pixmaps&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;span class="nt"&gt;install&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;sh&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;games&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;
+&lt;span class="nt"&gt;ln&lt;/span&gt; &lt;span class="nt"&gt;-s&lt;/span&gt; &lt;span class="o"&gt;../&lt;/span&gt;&lt;span class="nt"&gt;doc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;CREDITS&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;CREDITS&lt;/span&gt;
+&lt;span class="nt"&gt;dh_testdir&lt;/span&gt;
+&lt;span class="nt"&gt;dh_testroot&lt;/span&gt;
+&lt;span class="nt"&gt;dh_installchangelogs&lt;/span&gt; &lt;span class="nt"&gt;CHANGES&lt;/span&gt;
+&lt;span class="nt"&gt;dh_installdocs&lt;/span&gt;
+&lt;span class="nt"&gt;dh_installmenu&lt;/span&gt;
+&lt;span class="nt"&gt;dh_installman&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;1&lt;/span&gt;
+&lt;span class="nt"&gt;dh_link&lt;/span&gt;
+&lt;span class="nt"&gt;dh_compress&lt;/span&gt;
+&lt;span class="nt"&gt;dh_fixperms&lt;/span&gt;
+&lt;span class="nt"&gt;dh_pycentral&lt;/span&gt;
+&lt;span class="nt"&gt;dh_python&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;
+&lt;span class="nt"&gt;dh_python&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;Doing&lt;/span&gt; &lt;span class="nt"&gt;nothing&lt;/span&gt; &lt;span class="nt"&gt;since&lt;/span&gt; &lt;span class="nt"&gt;dh_pycompat&lt;/span&gt; &lt;span class="nt"&gt;exists&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;dh_pysupport&lt;/span&gt; &lt;span class="nt"&gt;or&lt;/span&gt; &lt;span class="nt"&gt;dh_pycentral&lt;/span&gt; &lt;span class="nt"&gt;should&lt;/span&gt; &lt;span class="nt"&gt;do&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;work&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nt"&gt;You&lt;/span&gt; &lt;span class="nt"&gt;can&lt;/span&gt; &lt;span class="nt"&gt;remove&lt;/span&gt; &lt;span class="nt"&gt;dh_python&lt;/span&gt; &lt;span class="nt"&gt;from&lt;/span&gt; &lt;span class="nt"&gt;your&lt;/span&gt; &lt;span class="nt"&gt;rules&lt;/span&gt; &lt;span class="nt"&gt;file&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;dh_installdeb&lt;/span&gt;
+&lt;span class="nt"&gt;dh_gencontrol&lt;/span&gt;
+&lt;span class="nt"&gt;dh_md5sums&lt;/span&gt;
+&lt;span class="nt"&gt;dh_builddeb&lt;/span&gt;
+&lt;span class="nt"&gt;atención&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;DEBIAN&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;control&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; contiene un campo `Python-Version&amp;#39;&lt;/span&gt; &lt;span class="nt"&gt;definido&lt;/span&gt; &lt;span class="nt"&gt;por&lt;/span&gt; &lt;span class="nt"&gt;el&lt;/span&gt; &lt;span class="nt"&gt;usuario&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-deb&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;no&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt; &lt;span class="nt"&gt;tendrán&lt;/span&gt; &lt;span class="nt"&gt;en&lt;/span&gt; &lt;span class="nt"&gt;cuenta&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt; &lt;span class="nt"&gt;avisos&lt;/span&gt; &lt;span class="nt"&gt;sobre&lt;/span&gt; &lt;span class="nt"&gt;los&lt;/span&gt; &lt;span class="nt"&gt;ficheros&lt;/span&gt; &lt;span class="nt"&gt;de&lt;/span&gt; &lt;span class="nt"&gt;control&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-deb&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;construyendo&lt;/span&gt; &lt;span class="nt"&gt;el&lt;/span&gt; &lt;span class="nt"&gt;paquete&lt;/span&gt; &lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; en `../pyching_1.2.2-5_all.deb&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-genchanges&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;../&lt;/span&gt;&lt;span class="nt"&gt;pyching_1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2-5_i386&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;changes&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-genchanges&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;including&lt;/span&gt; &lt;span class="nt"&gt;original&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;code&lt;/span&gt; &lt;span class="nt"&gt;in&lt;/span&gt; &lt;span class="nt"&gt;upload&lt;/span&gt;
+&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;binary&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;diff&lt;/span&gt; &lt;span class="nt"&gt;upload&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;original&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;NOT&lt;/span&gt; &lt;span class="nt"&gt;included&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="nt"&gt;Now&lt;/span&gt; &lt;span class="nt"&gt;running&lt;/span&gt; &lt;span class="nt"&gt;lintian&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="nt"&gt;Finished&lt;/span&gt; &lt;span class="nt"&gt;running&lt;/span&gt; &lt;span class="nt"&gt;lintian&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Luego se revisa el directorio donde se creo el paquete:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/temporal/pyching-1.2.2$ cd ..
+ecrespo@canaima:~/paquetes/pyching/temporal$ ls
+pyching-1.2.2 pyching_1.2.2-5.diff.gz pyching_1.2.2-5_i386.build pyching_1.2.2.orig.tar.gz
+pyching_1.2.2-5_all.deb pyching_1.2.2-5.dsc pyching_1.2.2-5_i386.changes
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Paquetes"></category></entry><entry><title>Control de Versiones con mercurial</title><link href="https://ecrespo.github.io/control-de-versiones-con-mercurial.html" rel="alternate"></link><published>2009-04-08T08:00:00-05:30</published><updated>2009-04-08T08:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2009-04-08:/control-de-versiones-con-mercurial.html</id><summary type="html">&lt;p&gt;Mercurial es un sistema de control de versiones distribuido similar a git o
 bazaar. Es una mezcla de la facilidad de subversion con la potencia de git.&lt;/p&gt;
 &lt;p&gt;Para instalar mercurial en Debian se ejecuta un aptitude:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install mercurial mercurial-common
@@ -7523,198 +7993,4 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Nokia"></category><category term="N810"></category></entry><entry><title>Subir un paquete Debian (pyching) al repositorio</title><link href="https://ecrespo.github.io/subir-un-paquete-debian-pyching-al-repositorio.html" rel="alternate"></link><published>2000-04-09T10:00:00-04:00</published><updated>2000-04-09T10:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2000-04-09:/subir-un-paquete-debian-pyching-al-repositorio.html</id><summary type="html">&lt;p&gt;Como la intención es utilizar el comando hg-buildpackage para construir un paquete
-Debian, pero como en Debian muy pocos usan mercurial como repositorio. Tuve que crear
-un repositorio en bitbucket.org para mis paquetes.&lt;/p&gt;
-&lt;p&gt;Para ello es necesario crear el repositorio en bitbucket.org.&lt;/p&gt;
-&lt;p&gt;Luego su equipo crear el directorio …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Como la intención es utilizar el comando hg-buildpackage para construir un paquete
-Debian, pero como en Debian muy pocos usan mercurial como repositorio. Tuve que crear
-un repositorio en bitbucket.org para mis paquetes.&lt;/p&gt;
-&lt;p&gt;Para ello es necesario crear el repositorio en bitbucket.org.&lt;/p&gt;
-&lt;p&gt;Luego su equipo crear el directorio del paquete:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir pyching
-cd pyching
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Bajarse las fuentes de pyching:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get source pyching
-Leyendo lista de paquetes... Hecho
-Creando árbol de dependencias
-Leyendo la información de estado... Hecho
-Necesito descargar 139kB de archivos fuente.
-Des:1 http://debian.velug.org.ve sid/main pyching 1.2.2-5 (dsc) [1092B]
-Des:2 http://debian.velug.org.ve sid/main pyching 1.2.2-5 (tar) [134kB]
-Des:3 http://debian.velug.org.ve sid/main pyching 1.2.2-5 (diff) [3931B]
-Descargados 139kB en 5s (27,8kB/s)
-dpkg-source: extracting pyching in pyching-1.2.2
-dpkg-source: info: unpacking pyching_1.2.2.orig.tar.gz
-dpkg-source: info: applying pyching_1.2.2-5.diff.gz
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Cambiarse al directorio pyching-1.2.2:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd pyching-1.2.2
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Crear el repositorio:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/pyching-1.2.2$ hg init
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Agregar las fuentes al repositorio:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/pyching-1.2.2$ hg add
-adding #smgHtmlView.py#
-adding BUGS
-adding CHANGES
-adding COPYING
-adding COPYRIGHT
-adding CREDITS
-adding INSTALL
-adding NEWS
-adding README
-adding debian/changelog
-adding debian/compat
-adding debian/control
-adding debian/copyright
-adding debian/dirs
-adding debian/docs
-adding debian/menu
-adding debian/pyching-small.xpm
-adding debian/pycompat
-adding debian/rules
-adding debian/watch
-adding icon.xbm
-adding pyching.1
-adding pyching.png
-adding pyching.py
-adding pyching.pyw
-adding pyching.sh
-adding pyching_cimages.py
-adding pyching_engine.py
-adding pyching_hlhtx_data.py
-adding pyching_idimage_data.py
-adding pyching_int_data.py
-adding pyching_interface_tkinter.py
-adding smgAbout.py
-adding smgAnimate.py
-adding smgDialog.py
-adding smgHtmlView.py
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Se hace el commit:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/pyching-1.2.2$ hg commit -m&amp;quot;Subir el paquete pyching al repositorio&amp;quot;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Subir al repositorio:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/pyching-1.2.2$ hg push http://bitbucket.org/ecrespo/pyching/
-pushing to http://bitbucket.org/ecrespo/pyching/
-searching for changes
-http authorization required
-realm: Bitbucket.org HTTP
-user: ecrespo
-password:
-bb/acl: ecrespo is allowed. accepted payload.
-quota: 340.8 KB in use, 150.0 MB available (0.22% used)
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Ya en este punto el paquete se encuentra en el servidor de repositorios mercurial.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="pyching" src="./imagenes/pyching.png"&gt;&lt;/p&gt;
-&lt;p&gt;Ahora se crea un directorio temporal para trabajar con los fuentes para empaquetarlo:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/temporal$ hg clone http://bitbucket.org/ecrespo/pyching/
-destination directory: pyching
-requesting all changes
-adding changesets
-adding manifests
-adding file changes
-added 1 changesets with 36 changes to 36 files
-updating working directory
-36 files updated, 0 files merged, 0 files removed, 0 files unresolved
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Para finalizar se ejecuta el comando para empaquetar:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;ecrespo&lt;/span&gt;&lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="k"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;:~/&lt;/span&gt;&lt;span class="nt"&gt;paquetes&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;temporal&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching-1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="nt"&gt;hg-buildpackage&lt;/span&gt; &lt;span class="nt"&gt;-us&lt;/span&gt; &lt;span class="nt"&gt;-uc&lt;/span&gt; &lt;span class="nt"&gt;-rfakeroot&lt;/span&gt;
-&lt;span class="nt"&gt;Upstream&lt;/span&gt; &lt;span class="nt"&gt;file&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;directory&lt;/span&gt; &lt;span class="nt"&gt;already&lt;/span&gt; &lt;span class="nt"&gt;exists&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;building&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt; &lt;span class="nt"&gt;-rfakeroot&lt;/span&gt; &lt;span class="nt"&gt;-D&lt;/span&gt; &lt;span class="nt"&gt;-us&lt;/span&gt; &lt;span class="nt"&gt;-uc&lt;/span&gt; &lt;span class="nt"&gt;-i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;hg&lt;/span&gt; &lt;span class="nt"&gt;-I&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;hg&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;CFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;-g&lt;/span&gt; &lt;span class="nt"&gt;-O2&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;CPPFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;LDFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;FFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;-g&lt;/span&gt; &lt;span class="nt"&gt;-O2&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;CXXFLAGS&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;-g&lt;/span&gt; &lt;span class="nt"&gt;-O2&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;package&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;version&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2-5&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;changed&lt;/span&gt; &lt;span class="nt"&gt;by&lt;/span&gt; &lt;span class="nt"&gt;Ernesto&lt;/span&gt; &lt;span class="nt"&gt;Nadir&lt;/span&gt; &lt;span class="nt"&gt;Crespo&lt;/span&gt; &lt;span class="nt"&gt;Avila&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;host&lt;/span&gt; &lt;span class="nt"&gt;architecture&lt;/span&gt; &lt;span class="nt"&gt;i386&lt;/span&gt;
-&lt;span class="nt"&gt;fakeroot&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;rules&lt;/span&gt; &lt;span class="nt"&gt;clean&lt;/span&gt;
-&lt;span class="nt"&gt;dh_testdir&lt;/span&gt;
-&lt;span class="nt"&gt;dh_testroot&lt;/span&gt;
-&lt;span class="nt"&gt;dh_clean&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-source&lt;/span&gt; &lt;span class="nt"&gt;-i&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;hg&lt;/span&gt; &lt;span class="nt"&gt;-I&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;hg&lt;/span&gt; &lt;span class="nt"&gt;-b&lt;/span&gt; &lt;span class="nt"&gt;pyching-1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;info&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;using&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;format&lt;/span&gt; &lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
-&lt;span class="s1"&gt;dpkg-source: info: building pyching using existing pyching_1.2.2.orig.tar.gz&lt;/span&gt;
-&lt;span class="s1"&gt;dpkg-source: info: building pyching in pyching_1.2.2-5.diff.gz&lt;/span&gt;
-&lt;span class="s1"&gt;dpkg-source: warning: ignoring deletion of file #smgHtmlView.py#&lt;/span&gt;
-&lt;span class="s1"&gt;dpkg-source: info: building pyching in pyching_1.2.2-5.dsc&lt;/span&gt;
-&lt;span class="s1"&gt;debian/rules build&lt;/span&gt;
-&lt;span class="s1"&gt;make: No se hace nada para `build&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
-&lt;span class="nt"&gt;fakeroot&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;rules&lt;/span&gt; &lt;span class="nt"&gt;binary&lt;/span&gt;
-&lt;span class="nt"&gt;dh_testdir&lt;/span&gt;
-&lt;span class="nt"&gt;dh_testroot&lt;/span&gt;
-&lt;span class="nt"&gt;dh_prep&lt;/span&gt;
-&lt;span class="nt"&gt;dh_installdirs&lt;/span&gt;
-&lt;span class="nt"&gt;install&lt;/span&gt; &lt;span class="nt"&gt;-m&lt;/span&gt; &lt;span class="nt"&gt;644&lt;/span&gt; &lt;span class="nt"&gt;pyching_cimages&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;pyching_engine&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
-&lt;span class="nt"&gt;pyching_hlhtx_data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;pyching_idimage_data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
-&lt;span class="nt"&gt;pyching_int_data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;pyching_interface_tkinter&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
-&lt;span class="nt"&gt;smgAbout&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;smgAnimate&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;smgDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;smgHtmlView&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;
-&lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
-&lt;span class="nt"&gt;install&lt;/span&gt; &lt;span class="nt"&gt;-m&lt;/span&gt; &lt;span class="nt"&gt;755&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;py&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
-&lt;span class="nt"&gt;install&lt;/span&gt; &lt;span class="nt"&gt;-m&lt;/span&gt; &lt;span class="nt"&gt;644&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;png&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching-small&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;xpm&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pixmaps&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
-&lt;span class="nt"&gt;install&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;sh&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;games&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;
-&lt;span class="nt"&gt;ln&lt;/span&gt; &lt;span class="nt"&gt;-s&lt;/span&gt; &lt;span class="o"&gt;../&lt;/span&gt;&lt;span class="nt"&gt;doc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;CREDITS&lt;/span&gt; &lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;CREDITS&lt;/span&gt;
-&lt;span class="nt"&gt;dh_testdir&lt;/span&gt;
-&lt;span class="nt"&gt;dh_testroot&lt;/span&gt;
-&lt;span class="nt"&gt;dh_installchangelogs&lt;/span&gt; &lt;span class="nt"&gt;CHANGES&lt;/span&gt;
-&lt;span class="nt"&gt;dh_installdocs&lt;/span&gt;
-&lt;span class="nt"&gt;dh_installmenu&lt;/span&gt;
-&lt;span class="nt"&gt;dh_installman&lt;/span&gt; &lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;1&lt;/span&gt;
-&lt;span class="nt"&gt;dh_link&lt;/span&gt;
-&lt;span class="nt"&gt;dh_compress&lt;/span&gt;
-&lt;span class="nt"&gt;dh_fixperms&lt;/span&gt;
-&lt;span class="nt"&gt;dh_pycentral&lt;/span&gt;
-&lt;span class="nt"&gt;dh_python&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;
-&lt;span class="nt"&gt;dh_python&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;Doing&lt;/span&gt; &lt;span class="nt"&gt;nothing&lt;/span&gt; &lt;span class="nt"&gt;since&lt;/span&gt; &lt;span class="nt"&gt;dh_pycompat&lt;/span&gt; &lt;span class="nt"&gt;exists&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;dh_pysupport&lt;/span&gt; &lt;span class="nt"&gt;or&lt;/span&gt; &lt;span class="nt"&gt;dh_pycentral&lt;/span&gt; &lt;span class="nt"&gt;should&lt;/span&gt; &lt;span class="nt"&gt;do&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;work&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nt"&gt;You&lt;/span&gt; &lt;span class="nt"&gt;can&lt;/span&gt; &lt;span class="nt"&gt;remove&lt;/span&gt; &lt;span class="nt"&gt;dh_python&lt;/span&gt; &lt;span class="nt"&gt;from&lt;/span&gt; &lt;span class="nt"&gt;your&lt;/span&gt; &lt;span class="nt"&gt;rules&lt;/span&gt; &lt;span class="nt"&gt;file&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
-&lt;span class="nt"&gt;dh_installdeb&lt;/span&gt;
-&lt;span class="nt"&gt;dh_gencontrol&lt;/span&gt;
-&lt;span class="nt"&gt;dh_md5sums&lt;/span&gt;
-&lt;span class="nt"&gt;dh_builddeb&lt;/span&gt;
-&lt;span class="nt"&gt;atención&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="nt"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;DEBIAN&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;control&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; contiene un campo `Python-Version&amp;#39;&lt;/span&gt; &lt;span class="nt"&gt;definido&lt;/span&gt; &lt;span class="nt"&gt;por&lt;/span&gt; &lt;span class="nt"&gt;el&lt;/span&gt; &lt;span class="nt"&gt;usuario&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-deb&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;no&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt; &lt;span class="nt"&gt;tendrán&lt;/span&gt; &lt;span class="nt"&gt;en&lt;/span&gt; &lt;span class="nt"&gt;cuenta&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt; &lt;span class="nt"&gt;avisos&lt;/span&gt; &lt;span class="nt"&gt;sobre&lt;/span&gt; &lt;span class="nt"&gt;los&lt;/span&gt; &lt;span class="nt"&gt;ficheros&lt;/span&gt; &lt;span class="nt"&gt;de&lt;/span&gt; &lt;span class="nt"&gt;control&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-deb&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;construyendo&lt;/span&gt; &lt;span class="nt"&gt;el&lt;/span&gt; &lt;span class="nt"&gt;paquete&lt;/span&gt; &lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="nt"&gt;pyching&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; en `../pyching_1.2.2-5_all.deb&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-genchanges&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;../&lt;/span&gt;&lt;span class="nt"&gt;pyching_1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2-5_i386&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;changes&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-genchanges&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;including&lt;/span&gt; &lt;span class="nt"&gt;original&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;code&lt;/span&gt; &lt;span class="nt"&gt;in&lt;/span&gt; &lt;span class="nt"&gt;upload&lt;/span&gt;
-&lt;span class="nt"&gt;dpkg-buildpackage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;binary&lt;/span&gt; &lt;span class="nt"&gt;and&lt;/span&gt; &lt;span class="nt"&gt;diff&lt;/span&gt; &lt;span class="nt"&gt;upload&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;original&lt;/span&gt; &lt;span class="nt"&gt;source&lt;/span&gt; &lt;span class="nt"&gt;NOT&lt;/span&gt; &lt;span class="nt"&gt;included&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
-&lt;span class="nt"&gt;Now&lt;/span&gt; &lt;span class="nt"&gt;running&lt;/span&gt; &lt;span class="nt"&gt;lintian&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
-&lt;span class="nt"&gt;Finished&lt;/span&gt; &lt;span class="nt"&gt;running&lt;/span&gt; &lt;span class="nt"&gt;lintian&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Luego se revisa el directorio donde se creo el paquete:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@canaima:~/paquetes/pyching/temporal/pyching-1.2.2$ cd ..
-ecrespo@canaima:~/paquetes/pyching/temporal$ ls
-pyching-1.2.2 pyching_1.2.2-5.diff.gz pyching_1.2.2-5_i386.build pyching_1.2.2.orig.tar.gz
-pyching_1.2.2-5_all.deb pyching_1.2.2-5.dsc pyching_1.2.2-5_i386.changes
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;===&lt;/p&gt;
-&lt;p&gt;¡Haz tu donativo!
-Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
-usando la billetera digital de tu preferencia a la siguiente
-dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
-&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Paquetes"></category></entry></feed>
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Nokia"></category><category term="N810"></category></entry></feed>

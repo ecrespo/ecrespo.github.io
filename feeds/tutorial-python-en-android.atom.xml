@@ -1,5 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python en Android</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python-en-android.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-04-23T09:10:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Tomar una foto desde android con un temporizador desde python</title><link href="https://ecrespo.github.io/tomar-una-foto-desde-android-con-un-temporizador-desde-python.html" rel="alternate"></link><published>2011-04-23T09:10:00-05:30</published><updated>2011-04-23T09:10:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-04-23:/tomar-una-foto-desde-android-con-un-temporizador-desde-python.html</id><summary type="html">&lt;p&gt;La idea es decirle a un programa el tiempo en que se tomará una foto, al cumplirse el tiempo se toma la foto y se guarda en un directorio donde luego se abre una página web en el celular que muestra la foto en el celular.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python en Android</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python-en-android.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-04-30T09:10:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Reproducir una canción en un Celular con Android desde python</title><link href="https://ecrespo.github.io/reproducir-una-cancion-en-un-celular-con-android-desde-python.html" rel="alternate"></link><published>2011-04-30T09:10:00-05:30</published><updated>2011-04-30T09:10:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-04-30:/reproducir-una-cancion-en-un-celular-con-android-desde-python.html</id><summary type="html">&lt;p&gt;Pensaba escribir primero como crear opciones a un  menú pero recordé que existe la posibilidad de reproducir una canción mp3 desde python con el API de SL4A.&lt;/p&gt;
+&lt;p&gt;Las opciones que tiene el API de SL4A para reproducir música son las siguientes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;mediaIsPlaying: Consulta si la canción se está reproduciendo en …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Pensaba escribir primero como crear opciones a un  menú pero recordé que existe la posibilidad de reproducir una canción mp3 desde python con el API de SL4A.&lt;/p&gt;
+&lt;p&gt;Las opciones que tiene el API de SL4A para reproducir música son las siguientes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;mediaIsPlaying: Consulta si la canción se está reproduciendo en ese momento.&lt;/li&gt;
+&lt;li&gt;mediaPlayInfo: Retorna información de la canción.&lt;/li&gt;
+&lt;li&gt;mediaPlay: Se reproduce la canción.&lt;/li&gt;
+&lt;li&gt;mediaPlayList:&lt;/li&gt;
+&lt;li&gt;mediaPlayPause: Se pausa la canción.&lt;/li&gt;
+&lt;li&gt;mediaPlaySeek: Se reproduce la canción en un tiempo determinado.&lt;/li&gt;
+&lt;li&gt;mediaPlaySetLooping: Se define si se reproduce de nuevo la canción automáticamente.&lt;/li&gt;
+&lt;li&gt;mediaPlayStart: Inicia la reproducción del archivo&lt;/li&gt;
+&lt;li&gt;mediaPlayClose: Se cierra el archivo de la canción.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Solamente se utilizará en este post las funciones mediaPlay y mediaPlayInfo.&lt;/p&gt;
+&lt;p&gt;La idea es listar los archivos mp3 en el widget de selección simple y luego reproducir la canción seleccionada.&lt;/p&gt;
+&lt;p&gt;Antes de reproducir la canción, se toma información de la canción, principalmente la duración de la canción, ese tiempo es luego manejado por una barra de progreso que avanza  mientras se reproduce la canción.&lt;/p&gt;
+&lt;p&gt;El código del programa se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Importar el modulo android,path, la funcion sleep,listdir y exit.&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;android&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;listdir&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#La ruta donde se encuentran los mp3s&lt;/span&gt;
+&lt;span class="n"&gt;ruta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/sdcard/mp3z/&amp;quot;&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se crea la instancia de android&lt;/span&gt;
+&lt;span class="n"&gt;droid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Android&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Se muestra un mensaje si se desea reproducir una cancion.si es si, se reproduce si no se sale del programa.&lt;/span&gt;
+&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogCreateAlert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Reproducir una cancion&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Desea reproducir una cancion?&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogSetPositiveButtonText&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Si&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogSetNegativeButtonText&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;No&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogShow&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se captura la respuesta.&lt;/span&gt;
+&lt;span class="n"&gt;respuesta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogGetResponse&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;respuesta&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;which&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;positive&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se busca los archivos y directorios de la ruta definida.&lt;/span&gt;
+    &lt;span class="n"&gt;archivos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;listdir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ruta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea una lista vacia donde se agregaran los nombres de archivos mp3s&lt;/span&gt;
+    &lt;span class="n"&gt;listado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se agregan los archivos mp3 a la lista&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;archivos&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c1"&gt;#Si es un archivo se agrega a listado, se pasa la ruta y el archivo.&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isfile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ruta&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+            &lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se muestra un mensaje con la lista de canciones que se pueden reproducir.&lt;/span&gt;
+    &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogCreateAlert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Reproducir una cancion&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogSetSingleChoiceItems&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogSetPositiveButtonText&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Seleccione&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogSetNegativeButtonText&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Salir&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogShow&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se captura la respuesta y el item seleccionado&lt;/span&gt;
+    &lt;span class="n"&gt;respuesta&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogGetResponse&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;
+    &lt;span class="n"&gt;item&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogGetSelectedItems&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Si la respuesta es positiva se reproduce la cancion&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt;  &lt;span class="n"&gt;respuesta&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;which&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;positive&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeToast&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;La cancion selecionada es: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])])&lt;/span&gt;
+        &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeToast&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Reproduciendo la cancion&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se agrega a cancion la cancion seleccionada segun la variable item.&lt;/span&gt;
+        &lt;span class="n"&gt;cancion&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])]&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se reproduce la cancion pasando la ruta donde esta el archivo y el archivo.&lt;/span&gt;
+        &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mediaPlay&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ruta&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;cancion&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se captura la duracion de la cancion representado en milisegundos&lt;/span&gt;
+        &lt;span class="n"&gt;tiempo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mediaPlayInfo&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;duration&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se pasa la duracion de la cancion de milisegundos a segundos&lt;/span&gt;
+        &lt;span class="n"&gt;duracion&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tiempo&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se crea una barra de progreso con el titulo reproduciendo, mensaje el nombre de la cancion y la duracion.&lt;/span&gt;
+        &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogCreateHorizontalProgress&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Reproduciendo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;cancion&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;duracion&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se muestra el widget.&lt;/span&gt;
+        &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogShow&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se incrementa el valor de la barra de progreso cada 1 seg.&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;duracion&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogSetCurrentProgress&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Al finalizar la cancion se muestra un mensaje de fin de la cancion y se sale de la aplicacion.&lt;/span&gt;
+        &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeToast&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Fin de la reproduccion de la cancion&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dialogDismiss&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c1"&gt;#Si no se selecciono una cancion se sale del programa&lt;/span&gt;
+        &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeToast&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;No se selecciono una cancion-Se sale de la aplicacion&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se selecciono que no se desea reproducir una cancion&lt;/span&gt;
+    &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeToast&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Fin del programa&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La siguiente figura muestra la ventana donde se pregunta si se desea reproducir una canción:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Ejecutar script " src="./images/reproductorandroid1.png"&gt;&lt;/p&gt;
+&lt;p&gt;La siguiente figura muestra la lista de canciones que se puede reproducir, se selecciona una y luego se le da al botón seleccione.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Seleccionar mp3" src="./images/reproductorandroid2.png"&gt;&lt;/p&gt;
+&lt;p&gt;La última figura muestra el proceso de reproducción de la canción:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Reproduciendo el mp3" src="./images/reproductorandroid3.png"&gt;&lt;/p&gt;
+&lt;p&gt;A continuación se muestra el código QR del programa:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Código QR del programa" src="./images/reproducir.png"&gt;&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Android"></category><category term="Python"></category><category term="Reproductor Música"></category></entry><entry><title>Tomar una foto desde android con un temporizador desde python</title><link href="https://ecrespo.github.io/tomar-una-foto-desde-android-con-un-temporizador-desde-python.html" rel="alternate"></link><published>2011-04-23T09:10:00-05:30</published><updated>2011-04-23T09:10:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-04-23:/tomar-una-foto-desde-android-con-un-temporizador-desde-python.html</id><summary type="html">&lt;p&gt;La idea es decirle a un programa el tiempo en que se tomará una foto, al cumplirse el tiempo se toma la foto y se guarda en un directorio donde luego se abre una página web en el celular que muestra la foto en el celular.&lt;/p&gt;
 &lt;p&gt;El artículo se basa …&lt;/p&gt;</summary><content type="html">&lt;p&gt;La idea es decirle a un programa el tiempo en que se tomará una foto, al cumplirse el tiempo se toma la foto y se guarda en un directorio donde luego se abre una página web en el celular que muestra la foto en el celular.&lt;/p&gt;
 &lt;p&gt;El artículo se basa en un programa hecho en  ruby donde crea se crea un script que toma fotos de manera remota con el celular;  el artículo del programa en ruby se encuentra   &lt;a href="http://leone.panopticdev.com/2010/08/turn-your-android-phone-into-remote-spy.html"&gt;acá&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Se usará la función cameraCapturePicture pasandole el archivo donde se va a guardar la foto.&lt;/p&gt;

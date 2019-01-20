@@ -1,5 +1,5 @@
 Title: Visualización de las coordenadas del gps del celular desde Android
-Date: 2011-04-18 09:00
+Date: 2011-04-18 09:10
 Category: Tutorial Python en Android
 Tags: Android, Python
 lang: es

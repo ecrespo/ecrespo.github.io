@@ -1,5 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-07-23T09:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Tutorial de PyQt. checkbutton, pixmap, QFileDialog y Código QR. Parte 8.</title><link href="https://ecrespo.github.io/tutorial-de-pyqt-checkbutton-pixmap-qfiledialog-y-codigo-qr-parte-8.html" rel="alternate"></link><published>2011-07-23T09:00:00-05:30</published><updated>2011-07-23T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-07-23:/tutorial-de-pyqt-checkbutton-pixmap-qfiledialog-y-codigo-qr-parte-8.html</id><summary type="html">&lt;p&gt;Este post trata de un formulario en PyQt que se ingresa los datos, una foto, los días que desea por ejemplo apoyar en un evento y genera un código QR con dicha información.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-07-26T09:00:00-05:30</updated><subtitle>Data Science</subtitle><entry><title>Iniciar sesión de usuario autenticando vía pendrive</title><link href="https://ecrespo.github.io/iniciar-sesion-de-usuario-autenticando-via-pendrive.html" rel="alternate"></link><published>2011-07-26T09:00:00-05:30</published><updated>2011-07-26T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-07-26:/iniciar-sesion-de-usuario-autenticando-via-pendrive.html</id><summary type="html">&lt;p&gt;Cuando no se pasa uno a modo paranoico se le ocurren ideas de como validar usuarios al ingresar en una sesión de escritorio vía GDM.&lt;/p&gt;
+&lt;p&gt;En Debian/Ubuntu/Canaima existe los paquetes libpam-usb y pamusb-tools, estos permiten crear una llave, dicha llave se guarda en el pendrive. Luego se configura …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Cuando no se pasa uno a modo paranoico se le ocurren ideas de como validar usuarios al ingresar en una sesión de escritorio vía GDM.&lt;/p&gt;
+&lt;p&gt;En Debian/Ubuntu/Canaima existe los paquetes libpam-usb y pamusb-tools, estos permiten crear una llave, dicha llave se guarda en el pendrive. Luego se configura pam para que se pida la llave al momento de ingresar usuario y clave en el GDM del equipo; si no se conecta el pendrive el GDM colocará un mensaje que clave invalida.&lt;/p&gt;
+&lt;p&gt;Para instalar estos paquetes se ejecuta aptitude:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install libpam-usb pamusb-tools
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Luego se conecta el pendrive en el equipo y se agrega el dispositivo en /etc/pamusb.conf con el comando pamusb-conf:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pamusb-conf --add-device /media/F060-785C/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Donde /media/F060-785C/ es la ruta del pendrive.&lt;/p&gt;
+&lt;p&gt;Se agrega el usuario en /etc/pamusb.conf el cual iniciará sesión en el equipo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pamusb-conf --add-user ecrespo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se verifica la configuración de pamusb con el usuario agregado:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pamusb-check ecrespo
+* Authentication request for user &amp;quot;ecrespo&amp;quot; (pamusb-check)
+* Device &amp;quot;/media/F060-785C/&amp;quot; is connected (good).
+* Performing one time pad verification...
+* Regenerating new pads...
+* Unable to update pads.
+* Access granted.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al devolver el programa acceso garantizado ya se tiene todo listo para usar el pendrive en el momento de inicio de sesión, sólo falta modificar pam para que permita la autenticación con el pendrive.&lt;/p&gt;
+&lt;p&gt;Se edita el archivo /etc/pam.d/common-aut y se agrega la siguiente línea:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;auth sufficient pam_usb.so
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Con esta línea el GDM verifica el token de la llave, si se quiere que pida tanto la contraseña como el token se cambia sufficient a required.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;auth required pam_usb.so
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A partir de ahora al iniciar sesión se necesita la contraseña y el token.&lt;/p&gt;
+&lt;p&gt;A continuación se muestra el mensaje que envía la consola al ejecutar sudo -s :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sudo] password for ecrespo: 
+* pam_usb v0.4.2
+* Authentication request for user &amp;quot;ecrespo&amp;quot; (sudo)
+* Device &amp;quot;/media/F060-785C/&amp;quot; is connected (good).
+* Performing one time pad verification...
+* Regenerating new pads...
+* Unable to update pads.
+* Access granted.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Debian"></category><category term="Ubuntu"></category><category term="Canaima"></category><category term="libpam"></category><category term="gnome"></category><category term="usb"></category></entry><entry><title>Tutorial de PyQt. checkbutton, pixmap, QFileDialog y Código QR. Parte 8.</title><link href="https://ecrespo.github.io/tutorial-de-pyqt-checkbutton-pixmap-qfiledialog-y-codigo-qr-parte-8.html" rel="alternate"></link><published>2011-07-23T09:00:00-05:30</published><updated>2011-07-23T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-07-23:/tutorial-de-pyqt-checkbutton-pixmap-qfiledialog-y-codigo-qr-parte-8.html</id><summary type="html">&lt;p&gt;Este post trata de un formulario en PyQt que se ingresa los datos, una foto, los días que desea por ejemplo apoyar en un evento y genera un código QR con dicha información.&lt;/p&gt;
 &lt;p&gt;Los widgets nuevos que se utilizarán son:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;QCheckButton: Permite crear botones check, se pueden seleccionar varios opciones …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Este post trata de un formulario en PyQt que se ingresa los datos, una foto, los días que desea por ejemplo apoyar en un evento y genera un código QR con dicha información.&lt;/p&gt;

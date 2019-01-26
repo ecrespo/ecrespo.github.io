@@ -1,7 +1,7 @@
 Title: Gestionar los archivos de configuración en /etc con etckeeper y mercurial
 Date: 2011-07-27 09:00
 Category: Tutorial de Linux
-Tags: Linux,Debian, Ubuntu, Canaima,libpam,gnome, usb
+Tags: Linux,Debian, Ubuntu, Canaima,etckeeper, mercurial
 lang: es
 translation: true
 

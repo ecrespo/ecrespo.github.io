@@ -48,7 +48,7 @@ A continuación se va a crear la gráfica de la misma ecuación utilizando pyQT.
 La gráfica se muestra en la siguiente figura:
 
 
-![Gráfica coordenadas polares - matplotlib 2 ](./images/matplotlib11-2.png)
+![Gráfica coordenadas polares - matplotlib 2 ](./images/matplotlib12-2.png)
 
 La figura muestra la ventana ahora con un título, la barra inferior de herramienta de navegación.
 

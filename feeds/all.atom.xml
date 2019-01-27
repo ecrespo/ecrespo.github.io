@@ -144,7 +144,100 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Debian"></category><category term="Ubuntu"></category><category term="Canaima"></category><category term="Seguridad"></category><category term="eCryptfs"></category></entry><entry><title>Manejando contactos y realizando una llamada con python en Android</title><link href="https://ecrespo.github.io/manejando-contactos-y-realizando-una-llamada-con-python-en-android.html" rel="alternate"></link><published>2011-08-15T09:10:00-05:30</published><updated>2011-08-15T09:10:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-08-15:/manejando-contactos-y-realizando-una-llamada-con-python-en-android.html</id><summary type="html">&lt;p&gt;Retornando a los artículos sobre Android.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Debian"></category><category term="Ubuntu"></category><category term="Canaima"></category><category term="Seguridad"></category><category term="eCryptfs"></category></entry><entry><title>Usar dnsmasq como servidor DNS cache y local</title><link href="https://ecrespo.github.io/usar-dnsmasq-como-servidor-dns-cache-y-local.html" rel="alternate"></link><published>2011-08-20T09:00:00-05:30</published><updated>2011-08-20T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-08-20:/usar-dnsmasq-como-servidor-dns-cache-y-local.html</id><summary type="html">&lt;p&gt;En el &lt;a href="https://ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html"&gt;artículo anterior&lt;/a&gt; explicaba como mejorar las consultas de DNS del equipo con dnsmaq.&lt;/p&gt;
+&lt;p&gt;También se puede agregar equipos con su IP como de un servidor de DNS con Bind9 en funcionamiento.&lt;/p&gt;
+&lt;p&gt;Se tiene una máquina virtual de nombre grievous e IP 192.168.10.53.&lt;/p&gt;
+&lt;p&gt;Para instalr dnsmasq …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el &lt;a href="https://ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html"&gt;artículo anterior&lt;/a&gt; explicaba como mejorar las consultas de DNS del equipo con dnsmaq.&lt;/p&gt;
+&lt;p&gt;También se puede agregar equipos con su IP como de un servidor de DNS con Bind9 en funcionamiento.&lt;/p&gt;
+&lt;p&gt;Se tiene una máquina virtual de nombre grievous e IP 192.168.10.53.&lt;/p&gt;
+&lt;p&gt;Para instalr dnsmasq se ejecuta apt-get.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install dnsmasq
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Configurar dnsmasq como DNS cache y local.&lt;/p&gt;
+&lt;p&gt;Se define la ruta del archivo resolv.conf que hace consultas al servidor de DNS externo.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;resolv-file=/etc/resolv-orig.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Definir respuestas de peticiones locales dadas por el archivo /etc/hosts.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; local=/localnet/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Y eso es todo lo que hay que cambiarse en el archivo /etc/dnsmasq.conf para resolver nombres de equipos locales por medio de /etc/hosts.&lt;/p&gt;
+&lt;p&gt;Agregar los equipos en el archivo /etc/hosts.&lt;/p&gt;
+&lt;p&gt;En este caso se tiene el equipo grievous:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;192.168.10.53   grievous        grievous
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Si se necesita agregar más equipos al servidor de DNS simplemente se edita el archivo /etc/hosts agregando los equipos en dicho archivo.&lt;/p&gt;
+&lt;p&gt;Se crea el archivo /etc/resolv-orig.conf donde se encuentra las IPs de los servidores de DNS externos.
+En este caso se está usando los servidores de DNS de Google, OpenDNS y de la red del trabajo.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nameserver 8.8.8.8 
+nameserver 8.8.4.4
+nameserver 208.67.222.222
+nameserver 208.67.220.220
+nameserver 192.168.32.254
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ya se tiene configurado el servidor de DNS, sólo falta que el equipo realice las consultas por medio del archivo /etc/resolv.conf, el cual debe apuntar al servidor local de DNS (127.0.0.1).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nameserver 127.0.0.1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se puede probar la resolución de nombres en el equipo.&lt;/p&gt;
+&lt;p&gt;Probar que devuelve respuestas el servidor DNS al consultar el nombre del equipo grievous:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;host&lt;/span&gt; &lt;span class="nt"&gt;grievous&lt;/span&gt;
+&lt;span class="nt"&gt;grievous&lt;/span&gt; &lt;span class="nt"&gt;has&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;192&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;168&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;10&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;53&lt;/span&gt;
+
+
+&lt;span class="nt"&gt;dig&lt;/span&gt; &lt;span class="nt"&gt;grievous&lt;/span&gt;
+
+&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nt"&gt;DiG&lt;/span&gt; &lt;span class="nt"&gt;9&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;7&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;3&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nt"&gt;grievous&lt;/span&gt;
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;global&lt;/span&gt; &lt;span class="nt"&gt;options&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nt"&gt;cmd&lt;/span&gt;
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;Got&lt;/span&gt; &lt;span class="nt"&gt;answer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;-&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="nt"&gt;HEADER&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;opcode&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;QUERY&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;status&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;NOERROR&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;19819&lt;/span&gt;
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;qr&lt;/span&gt; &lt;span class="nt"&gt;aa&lt;/span&gt; &lt;span class="nt"&gt;rd&lt;/span&gt; &lt;span class="nt"&gt;ra&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;QUERY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ANSWER&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;AUTHORITY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ADDITIONAL&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;
+
+
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;QUESTION&lt;/span&gt; &lt;span class="nt"&gt;SECTION&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;grievous&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;          &lt;span class="nt"&gt;IN&lt;/span&gt;  &lt;span class="nt"&gt;A&lt;/span&gt;
+
+
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;ANSWER&lt;/span&gt; &lt;span class="nt"&gt;SECTION&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="nt"&gt;grievous&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;       &lt;span class="nt"&gt;0&lt;/span&gt;   &lt;span class="nt"&gt;IN&lt;/span&gt;  &lt;span class="nt"&gt;A&lt;/span&gt;   &lt;span class="nt"&gt;192&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;168&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;10&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;53&lt;/span&gt;
+
+
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;Query&lt;/span&gt; &lt;span class="nt"&gt;time&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;6&lt;/span&gt; &lt;span class="nt"&gt;msec&lt;/span&gt;
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;SERVER&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;127&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;1&lt;/span&gt;&lt;span class="p"&gt;#&lt;/span&gt;&lt;span class="nn"&gt;53&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;127&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;WHEN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;Sat&lt;/span&gt; &lt;span class="nt"&gt;Aug&lt;/span&gt; &lt;span class="nt"&gt;20&lt;/span&gt; &lt;span class="nt"&gt;10&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;06&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;45&lt;/span&gt; &lt;span class="nt"&gt;2011&lt;/span&gt;
+&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;MSG&lt;/span&gt; &lt;span class="nt"&gt;SIZE&lt;/span&gt;  &lt;span class="nt"&gt;rcvd&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;42&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se puede verificar los rendimientos de los servidores de DNS con NameBench. Para instalarlo se ejecuta apt-get.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install  namebench
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En la siguiente figura se muestra la ejecución de namebench donde se le define el servidor de Nombres a utilizar.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="namebench" src="./images/namebench.png"&gt;&lt;/p&gt;
+&lt;p&gt;A continuación se muestra las figuras del resultado de Namebench.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Resultado namebench 1" src="./images/namebench1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Resultado namebench 2" src="./images/namebench2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Resultado namebench 3" src="./images/namebench3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Resultado namebench 4" src="./images/namebench4.png"&gt;&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Debian"></category><category term="Ubuntu"></category><category term="Canaima"></category><category term="dnsmasq"></category></entry><entry><title>Manejando contactos y realizando una llamada con python en Android</title><link href="https://ecrespo.github.io/manejando-contactos-y-realizando-una-llamada-con-python-en-android.html" rel="alternate"></link><published>2011-08-15T09:10:00-05:30</published><updated>2011-08-15T09:10:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-08-15:/manejando-contactos-y-realizando-una-llamada-con-python-en-android.html</id><summary type="html">&lt;p&gt;Retornando a los artículos sobre Android.&lt;/p&gt;
 &lt;p&gt;Este artículo toca el tema de como capturar la información del telefono y contacto del celular. Se crea una lista de contactos y telefonos, se despliega la información en un widget de selección simple, luego de seleccionar al contacto se captura la selección, se …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Retornando a los artículos sobre Android.&lt;/p&gt;
 &lt;p&gt;Este artículo toca el tema de como capturar la información del telefono y contacto del celular. Se crea una lista de contactos y telefonos, se despliega la información en un widget de selección simple, luego de seleccionar al contacto se captura la selección, se despliega la información del contacto y al final se realiza la llamada a dicho contacto.&lt;/p&gt;
 &lt;p&gt;Las clases nuevas utilizadas en el programa son:&lt;/p&gt;

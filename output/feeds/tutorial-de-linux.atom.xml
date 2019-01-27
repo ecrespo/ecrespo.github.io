@@ -144,7 +144,67 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Debian"></category><category term="Ubuntu"></category><category term="Canaima"></category><category term="Seguridad"></category><category term="eCryptfs"></category></entry><entry><title>Usar dnsmasq como servidor DNS cache y local</title><link href="https://ecrespo.github.io/usar-dnsmasq-como-servidor-dns-cache-y-local.html" rel="alternate"></link><published>2011-08-20T09:00:00-05:30</published><updated>2011-08-20T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-08-20:/usar-dnsmasq-como-servidor-dns-cache-y-local.html</id><summary type="html">&lt;p&gt;En el &lt;a href="https://ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html"&gt;artículo anterior&lt;/a&gt; explicaba como mejorar las consultas de DNS del equipo con dnsmaq.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Debian"></category><category term="Ubuntu"></category><category term="Canaima"></category><category term="Seguridad"></category><category term="eCryptfs"></category></entry><entry><title>Compartir repositorios de Mercurial con mercurial-server</title><link href="https://ecrespo.github.io/compartir-repositorios-de-mercurial-con-mercurial-server.html" rel="alternate"></link><published>2011-08-20T09:00:00-05:30</published><updated>2011-08-20T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-08-20:/compartir-repositorios-de-mercurial-con-mercurial-server.html</id><summary type="html">&lt;p&gt;Se tienen varios artículos sobre mercurial en este blog, un &lt;a href="https://www.seraph.to/control-de-versiones-con-mercurial.html"&gt;tutorial de mercurial&lt;/a&gt; (viene una actualización), &lt;a href="https://www.seraph.to/manteniendo-un-paquete-debian-con-mercurial.html"&gt;como empaquetar para Debian con mercurial&lt;/a&gt; (viene una actualización) y el último &lt;a href="https://www.seraph.to/gestionar-los-archivos-de-configuracion-en-etc-con-etckeeper-y-mercurial.html"&gt;como gestionar la configuración con mercurial&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Este artículo explicará como compartir repositorios de Mercurial con mercurial-server, este artículo se basa en el …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Se tienen varios artículos sobre mercurial en este blog, un &lt;a href="https://www.seraph.to/control-de-versiones-con-mercurial.html"&gt;tutorial de mercurial&lt;/a&gt; (viene una actualización), &lt;a href="https://www.seraph.to/manteniendo-un-paquete-debian-con-mercurial.html"&gt;como empaquetar para Debian con mercurial&lt;/a&gt; (viene una actualización) y el último &lt;a href="https://www.seraph.to/gestionar-los-archivos-de-configuracion-en-etc-con-etckeeper-y-mercurial.html"&gt;como gestionar la configuración con mercurial&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Este artículo explicará como compartir repositorios de Mercurial con mercurial-server, este artículo se basa en el &lt;a href="http://dev.lshift.net/paul/mercurial-server/docbook.html"&gt;tutorial en inglés&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Mercurial-server no se autentica usando claves pero si llaves públicas con ssh. Todos los usuarios que quieran acceder al repositorio mercurial necesitan una llave pública. &lt;/p&gt;
+&lt;p&gt;En el siguiente enlace tienen una guía de como crear las &lt;a href="http://rafael.bonifaz.ec/blog/2011/01/ssh-con-claves-publicas-y-privadas/"&gt;llaves públicas&lt;/a&gt;.&lt;/p&gt;
+&lt;h3&gt;Acceso inicial al mercurial-server.&lt;/h3&gt;
+&lt;p&gt;Instalar mercurial-server:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install mercurial-server 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Conectarse al servidor grievous habilitando el forwarding.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~$ ssh -A grievous
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Agregar llave privada al agente de autenticación. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@grievous:~$ ssh-add -L &amp;gt; my-key
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Crear el directorio para el usuario ernesto en el mercurial-server, copiar la llave y actualizar el repositorio de autenticación. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@grievous:~$ sudo mkdir -p /etc/mercurial-server/keys/root/ernesto
+ernesto@grievous:~$ sudo cp my-key /etc/mercurial-server/keys/root/ernesto/jewel
+ernesto@grievous:~$ sudo -u hg /usr/share/mercurial-server/refresh-auth
+ernesto@grievous:~$ exit
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Crear un repositorio.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; cd proyectos/pysms-send
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Clonar el proyecto en el servidor grievous: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~/proyectos/pysms-send$ hg clone . ssh://hg@grievous/ernesto/pysms-send
+searching for changes
+27 changesets found
+remote: adding changesets
+remote: adding manifests
+remote: adding file changes
+remote: added 27 changesets with 52 changes to 24 files
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Revisar si hay cambios en el repositorio.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~/proyectos/pysms-send$ hg pull ssh://hg@grievous/ernesto/pysms-send
+pulling from ssh://hg@grievous/ernesto/pysms-send
+searching for changes
+no changes found
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Siguiente artículo se explicará como agregar usuarios al repositorio, controlar el acceso al repositorio&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Debian"></category><category term="Ubuntu"></category><category term="Canaima"></category><category term="mercurial"></category></entry><entry><title>Usar dnsmasq como servidor DNS cache y local</title><link href="https://ecrespo.github.io/usar-dnsmasq-como-servidor-dns-cache-y-local.html" rel="alternate"></link><published>2011-08-20T09:00:00-05:30</published><updated>2011-08-20T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-08-20:/usar-dnsmasq-como-servidor-dns-cache-y-local.html</id><summary type="html">&lt;p&gt;En el &lt;a href="https://ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html"&gt;artículo anterior&lt;/a&gt; explicaba como mejorar las consultas de DNS del equipo con dnsmaq.&lt;/p&gt;
 &lt;p&gt;También se puede agregar equipos con su IP como de un servidor de DNS con Bind9 en funcionamiento.&lt;/p&gt;
 &lt;p&gt;Se tiene una máquina virtual de nombre grievous e IP 192.168.10.53.&lt;/p&gt;
 &lt;p&gt;Para instalr dnsmasq …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el &lt;a href="https://ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html"&gt;artículo anterior&lt;/a&gt; explicaba como mejorar las consultas de DNS del equipo con dnsmaq.&lt;/p&gt;

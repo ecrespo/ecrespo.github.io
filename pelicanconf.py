@@ -6,7 +6,8 @@ AUTHOR = 'Ernesto Crespo'
 SITENAME = "Página de Seraph"
 SITEURL = 'http://localhost:8000'
 SITETITLE = AUTHOR
-SITESUBTITLE = 'Data Science'
+SITESUBTITLE = 'Data Scientist '
+EMAIL = 'ecrespo@gmail.com'
 SITEDESCRIPTION = ' Software Libre, Ciencia de Datos y Python'
 SITELOGO = '//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120'
 PATH = 'content'
@@ -33,6 +34,9 @@ CATEGORY_FEED_ATOM = 'feeds/{slug}.atom.xml'
 TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
+
+MARKUP = ('md', 'ipynb')
+
 
 # Blogroll
 #LINKS = (('Pelican', 'http://getpelican.com/'),
@@ -77,11 +81,21 @@ PYGMENTS_STYLE = 'monokai'
 GOOGLE_ANALYTICS = 'UA-131517246-1'
 #DISQUS_SITENAME = 'seraphto'
 DISQUS_SITENAME = "https://seraphto.disqus.com"
-PLUGIN_PATHS = ['plugins']
-#PLUGINS = ['pelican-js'] # You may have more plugins
-
+PLUGIN_PATHS = ['./plugins','/home/ernesto/proyectos/pelican-plugins']
+PLUGINS = ['i18n_subsites',
+           'related_posts',
+           'tag_cloud',
+           #'github_activity',
+           #'pelican-gist',
+           #'pelican-githubprojects',
+           #'pelican-ipynb',
+           'post_stats'] # You may have more plugins
+IGNORE_FILES = [".ipynb_checkpoints"]
+# Show my last activity on GitHub
+GITHUB_USER = 'ecrespo'
 COPYRIGHT_YEAR = 2006
-
+GITHUB_ACTIVITY_FEED = ''
+GITHUB_ACTIVITY_MAX_ENTRIES = 10
 SIDEBAR_LINKS = [
     '<a href="/about/">About</a>',
     '<a href="/contact/">Contact</a>',
@@ -91,4 +105,3 @@ GOOGLE_FONTS = [
     'Nunito Sans:300,700',
     'Source Code Pro',
 ]
-

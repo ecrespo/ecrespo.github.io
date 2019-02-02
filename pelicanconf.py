@@ -95,7 +95,7 @@ PLUGINS = ['i18n_subsites',
            'post_stats'] # You may have more plugins
 IGNORE_FILES = [".ipynb_checkpoints"]
 # Show my last activity on GitHub
-GITHUB_USER = 'ecrespo'
+GITHUB_USER = 'ecrespo@gmail.com'
 COPYRIGHT_YEAR = 2006
 GITHUB_ACTIVITY_FEED = ''
 GITHUB_ACTIVITY_MAX_ENTRIES = 10

@@ -85,10 +85,13 @@ PLUGIN_PATHS = ['./plugins','/home/ernesto/proyectos/pelican-plugins']
 PLUGINS = ['i18n_subsites',
            'related_posts',
            'tag_cloud',
+           'pelican-ert',
            #'github_activity',
            #'pelican-gist',
            #'pelican-githubprojects',
-           #'pelican-ipynb',
+           #'ipynb.markup',
+           'pelican-toc',
+           #'ipynb.liquid',
            'post_stats'] # You may have more plugins
 IGNORE_FILES = [".ipynb_checkpoints"]
 # Show my last activity on GitHub
@@ -96,6 +99,10 @@ GITHUB_USER = 'ecrespo'
 COPYRIGHT_YEAR = 2006
 GITHUB_ACTIVITY_FEED = ''
 GITHUB_ACTIVITY_MAX_ENTRIES = 10
+GITHUB_USER_TYPE = "owner"
+GITHUB_SORT_BY = "created"
+GITHUB_DIRECTION = "desc"
+
 SIDEBAR_LINKS = [
     '<a href="/about/">About</a>',
     '<a href="/contact/">Contact</a>',
@@ -105,3 +112,23 @@ GOOGLE_FONTS = [
     'Nunito Sans:300,700',
     'Source Code Pro',
 ]
+#https://github.com/getpelican/pelican-plugins/tree/master/tag_cloud
+TAG_CLOUD_STEPS = 4
+TAG_CLOUD_MAX_ITEMS = 100
+TAG_CLOUD_SORTING = 'random'
+TAG_CLOUD_BADGE = True
+
+ERT_WPM = 200
+ERT_FORMAT = '{time} read'
+
+TOC = {
+    'TOC_HEADERS'       : '^h[1-6]', # What headers should be included in
+                                     # the generated toc
+                                     # Expected format is a regular expression
+
+    'TOC_RUN'           : 'true',    # Default value for toc generation,
+                                     # if it does not evaluate
+                                     # to 'true' no toc will be generated
+
+    'TOC_INCLUDE_TITLE': 'true',     # If 'true' include title in toc
+}

@@ -132,6 +132,9 @@
       </ul>
     </div>
 
+        <h1>Projects</h1>
+    
+
 
   </aside>
   <main>
@@ -163,63 +166,53 @@
 
 
   <div>
-    <p>Existe la forma  de ejecutar scripts así sea de python,perl, ruby, bash,etc de forma remota (desde Linux) a un celular con Android.</p>
-<p>Al instalar SL4A y python se tiene la posibilidad de iniciar un servicio de SL4A para escuchar en un puerto específico del celular Android, se tiene la opción pública o privada, para el primer caso se tiene que tener conectado el celular a una red wifi donde levanta el servicio en un puerto específico, para el caso de conexión privada el celular debe estar conectado vía puerto USB con la opción de depuración USB conectada y el celular en modo Portal y Herramientas.</p>
-<p>Este post se basa en el artículo de control remoto de SL4A que se encuentra <a href="http://code.google.com/p/android-scripting/wiki/RemoteControl">aquí</a> .</p>
-<p>En este momento explicaré la conexión remota pública, primero se tiene que conectar el celular a una red wifi.</p>
+    <p>Existe la forma  de ejecutar scripts as&iacute; sea de python,perl, ruby, bash,etc de forma remota (desde Linux) a un celular con Android.</p>
+<p>Al instalar SL4A y python se tiene la posibilidad de iniciar un servicio de SL4A para escuchar en un puerto espec&iacute;fico del celular Android, se tiene la opci&oacute;n p&uacute;blica o privada, para el primer caso se tiene que tener conectado el celular a una red wifi donde levanta el servicio en un puerto espec&iacute;fico, para el caso de conexi&oacute;n privada el celular debe estar conectado v&iacute;a puerto USB con la opci&oacute;n de depuraci&oacute;n USB conectada y el celular en modo Portal y Herramientas.</p>
+<p>Este post se basa en el art&iacute;culo de control remoto de SL4A que se encuentra <a href="http://code.google.com/p/android-scripting/wiki/RemoteControl">aqu&iacute;</a> .</p>
+<p>En este momento explicar&eacute; la conexi&oacute;n remota p&uacute;blica, primero se tiene que conectar el celular a una red wifi.</p>
 <p>En el equipo que estoy utilizando le asigno la IP 192.168.10.19.</p>
-<p>Luego ejecutar SL4A en el celular, luego se le da menú, se selecciona ver, luego a interpretes, luego otra vez al menú, se selecciona iniciar servidor, en este momento se le pide seleccionar entre servidor público o privado, se selecciona al primero.</p>
-<p>El celular coloca un mensaje en el área de notificación de Android mencionando que el servidor se ha iniciado, se despliega la información y este dice se arranco un servidor SL4A en la IP 192.168.10.19 con puerto 52834.</p>
-<p>A continuación se utilizará el sdk de android en Linux ejecutando adb.
+<p>Luego ejecutar SL4A en el celular, luego se le da men&uacute;, se selecciona ver, luego a interpretes, luego otra vez al men&uacute;, se selecciona iniciar servidor, en este momento se le pide seleccionar entre servidor p&uacute;blico o privado, se selecciona al primero.</p>
+<p>El celular coloca un mensaje en el &aacute;rea de notificaci&oacute;n de Android mencionando que el servidor se ha iniciado, se despliega la informaci&oacute;n y este dice se arranco un servidor SL4A en la IP 192.168.10.19 con puerto 52834.</p>
+<p>A continuaci&oacute;n se utilizar&aacute; el sdk de android en Linux ejecutando adb.
 Se inicia el servidor adb.</p>
 <div class="highlight"><pre><span></span>./adb start-server
 * daemon not running. starting it now on port 5037 *
 * daemon started successfully *
 </pre></div>
-
-
 <p>Note que el servidor levanta en el puerto 5037.</p>
 <p>Ahora se redirecciona los puertos del servicio adb.</p>
 <div class="highlight"><pre><span></span>./adb forward tcp:9999 tcp:52834
 </pre></div>
-
-
 <p>Donde el puerto 9999 se redirecciona al puerto donde escucha el celular que es el 52834 en este caso.</p>
-<p>A continuación se configura la variable de ambiente de la IP y puerto del celular con Android que tiene funcionan el servidor SL4A.</p>
+<p>A continuaci&oacute;n se configura la variable de ambiente de la IP y puerto del celular con Android que tiene funcionan el servidor SL4A.</p>
 <div class="highlight"><pre><span></span>export AP_PORT=52834
 export AP_HOST=192.168.10.19
 </pre></div>
-
-
-<p>Asegurarse que tiene en el path de python2.6 la ruta del módulo de python para android. Este lo puede bajar en este <a href="http://android-scripting.googlecode.com/hg/python/ase/android.py">enlace</a>.</p>
-<p>A continuación se muestra un script en python que pide escriba el nombre de usuario en el celular y lo muestra en Linux y en el celular:</p>
-<div class="highlight"><pre><span></span><span class="c1">#Importar módulo android</span>
+<p>Asegurarse que tiene en el path de python2.6 la ruta del m&oacute;dulo de python para android. Este lo puede bajar en este <a href="http://android-scripting.googlecode.com/hg/python/ase/android.py">enlace</a>.</p>
+<p>A continuaci&oacute;n se muestra un script en python que pide escriba el nombre de usuario en el celular y lo muestra en Linux y en el celular:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Importar m&oacute;dulo android</span>
 <span class="kn">import</span> <span class="nn">android</span>
 <span class="c1">#Se crea el objeto droid de la clase Android con la IP y puerto del servicio iniciado en el celular.</span>
-<span class="n">droid</span> <span class="o">=</span> <span class="n">android</span><span class="o">.</span><span class="n">Android</span><span class="p">((</span><span class="s1">&#39;192.168.10.19&#39;</span><span class="p">,</span> <span class="mi">52834</span><span class="p">))</span>
+<span class="n">droid</span> <span class="o">=</span> <span class="n">android</span><span class="o">.</span><span class="n">Android</span><span class="p">((</span><span class="s1">'192.168.10.19'</span><span class="p">,</span> <span class="mi">52834</span><span class="p">))</span>
 <span class="c1">#Se solicita al usuario que escriba su nombre</span>
-<span class="n">texto</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">getInput</span><span class="p">(</span><span class="s2">&quot;Escriba su nombre&quot;</span><span class="p">,</span><span class="s2">&quot;Nombre:&quot;</span><span class="p">)</span>
+<span class="n">texto</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">getInput</span><span class="p">(</span><span class="s2">"Escriba su nombre"</span><span class="p">,</span><span class="s2">"Nombre:"</span><span class="p">)</span>
 <span class="c1">#Se imprime el nombre del usuario en la consola de Linux</span>
-<span class="k">print</span> <span class="s2">&quot;El nombre escrito en el celular es: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="n">texto</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span> <span class="s2">"El nombre escrito en el celular es: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">texto</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="c1">#Se presenta un saludo al usuario en el celular</span>
-<span class="n">droid</span><span class="o">.</span><span class="n">makeToast</span><span class="p">(</span><span class="s1">&#39;Hola </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="n">texto</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">droid</span><span class="o">.</span><span class="n">makeToast</span><span class="p">(</span><span class="s1">'Hola </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span><span class="n">texto</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
-
-
-<p>Para ejecutar el programa se coloca el script prueba-remota.py donde se encuentra el módulo de SL4A android.py en el mismo directorio o se coloca en el path de python2.6.
+<p>Para ejecutar el programa se coloca el script prueba-remota.py donde se encuentra el m&oacute;dulo de SL4A android.py en el mismo directorio o se coloca en el path de python2.6.
 Se ejecuta con python2.6:</p>
 <div class="highlight"><pre><span></span>$ python2.6 prueba-remota.py 
 </pre></div>
-
-
 <p>El nombre escrito en el celular es: ernesto</p>
 <p>===</p>
-<p>¡Haz tu donativo!
-Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
-dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
-<p>O Escaneando el código QR desde billetera:</p>
-<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
   </div>
   <div class="tag-cloud">
     <p>

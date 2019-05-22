@@ -282,7 +282,174 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Control de versiones"></category><category term="Debian"></category><category term="Linux"></category><category term="mercurial"></category><category term="ssh"></category><category term="Ubuntu"></category></entry><entry><title>Como crear un metapaquete de configuración con config-package-dev</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html" rel="alternate"></link><published>2011-11-13T09:00:00-05:30</published><updated>2011-11-13T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-11-13:/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html</id><summary type="html">&lt;p&gt;Anteriormente se explic&amp;oacute; como crear un metapaquete con &lt;code&gt;equivs&lt;/code&gt;, se tiene tambi&amp;eacute;n el paquete &lt;code&gt;config-package-dev&lt;/code&gt; el cual permite crear paquetes de configuraci&amp;oacute;n donde se puede cambiar la configuraci&amp;oacute;n de otros archivos dentro del directorio &lt;code&gt;/etc/&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Control de versiones"></category><category term="Debian"></category><category term="Linux"></category><category term="mercurial"></category><category term="ssh"></category><category term="Ubuntu"></category></entry><entry><title>Creación de paquete Debian que contiene un archivo cron con config-package-dev</title><link href="https://ecrespo.github.io/creacion-de-paquete-debian-que-contiene-un-archivo-cron-con-config-package-dev.html" rel="alternate"></link><published>2011-11-14T09:00:00-05:30</published><updated>2011-11-14T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-11-14:/creacion-de-paquete-debian-que-contiene-un-archivo-cron-con-config-package-dev.html</id><summary type="html">&lt;p&gt;El paquete &lt;code&gt;config-package-dev&lt;/code&gt; facilita la creaci&amp;oacute;n de un paquete Debian que contenga un archivo de configuraci&amp;oacute;n de cron.&lt;/p&gt;
+&lt;p&gt;Para este caso se crear&amp;aacute; un archivo cron para el programa &lt;code&gt;logcheck&lt;/code&gt;. Este programa estar&amp;aacute; como Pre-Depends para que est&amp;eacute; instalado y configurado antes de instalar el paquete con la configuraci&amp;oacute;n de …&lt;/p&gt;</summary><content type="html">&lt;p&gt;El paquete &lt;code&gt;config-package-dev&lt;/code&gt; facilita la creaci&amp;oacute;n de un paquete Debian que contenga un archivo de configuraci&amp;oacute;n de cron.&lt;/p&gt;
+&lt;p&gt;Para este caso se crear&amp;aacute; un archivo cron para el programa &lt;code&gt;logcheck&lt;/code&gt;. Este programa estar&amp;aacute; como Pre-Depends para que est&amp;eacute; instalado y configurado antes de instalar el paquete con la configuraci&amp;oacute;n de &lt;code&gt;logcheck&lt;/code&gt; en el cron.&lt;/p&gt;
+&lt;p&gt;Instalar &lt;code&gt;logcheck&lt;/code&gt;:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install logcheck
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El archivo cron para &lt;code&gt;logcheck&lt;/code&gt; contendr&amp;aacute; lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# /etc/cron.d/logcheck: crontab entries for the logcheck package
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+@reboot logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck -R; fi
+* * * * *   logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck; fi
+
+# EOF
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id="procedimiento para la creacion del paquete:"&gt;Procedimiento para la creaci&amp;oacute;n del paquete:&lt;/h2&gt;
+&lt;h4 id="1. creacion del directorio de trabajo y del directorio debian"&gt;1. Creaci&amp;oacute;n del directorio de trabajo y del directorio Debian&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p canaima-cron-logcheck-0.1
+
+mkdir -p canaima-cron-logcheck-0.1/debian
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="2. se crea el archivo debian/changelog."&gt;2. Se crea el archivo &lt;code&gt;debian/changelog&lt;/code&gt;.&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;canaima-cron-logcheck (0.1) unstable; urgency=low
+
+* Initial release.
+
+-- Ernesto Nadir Crespo Avila &amp;lt;ecrespo@gmail.com&amp;gt;  Mon, 14 Nov 2011 21:48:20 -0430
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="3. se crea el archivo compat con el valor de 7."&gt;3. Se crea el archivo &lt;code&gt;compat&lt;/code&gt; con el valor de 7.&lt;/h4&gt;
+&lt;h4 id="4. se crea el archivo control y control.in con lo siguiente:"&gt;4. Se crea el archivo &lt;code&gt;control&lt;/code&gt; y &lt;code&gt;control.in&lt;/code&gt; con lo siguiente:&lt;/h4&gt;
+&lt;p&gt;Se coloca &lt;code&gt;logcheck&lt;/code&gt; como predependencia, se define el &lt;code&gt;standar version&lt;/code&gt; con valor &lt;code&gt;3.9.2&lt;/code&gt;.  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;cron&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;logcheck&lt;/span&gt;
+&lt;span class="n"&gt;Section&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;config&lt;/span&gt;
+&lt;span class="n"&gt;Priority&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;extra&lt;/span&gt;
+&lt;span class="n"&gt;Maintainer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Ernesto&lt;/span&gt; &lt;span class="n"&gt;Nadir&lt;/span&gt; &lt;span class="n"&gt;Crespo&lt;/span&gt; &lt;span class="n"&gt;Avila&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ecrespo&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;gmail&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;com&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="n"&gt;Build&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;cdbs&lt;/span&gt; &lt;span class="o"&gt;(&amp;gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.4&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;1.1&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="o"&gt;(&amp;gt;=&lt;/span&gt; &lt;span class="mf"&gt;4.2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="kd"&gt;package&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="o"&gt;(&amp;gt;=&lt;/span&gt; &lt;span class="mf"&gt;4.5&lt;/span&gt;&lt;span class="o"&gt;~)&lt;/span&gt;
+&lt;span class="n"&gt;Standards&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Version&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.9&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;
+
+&lt;span class="n"&gt;Package&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;cron&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;logcheck&lt;/span&gt;
+&lt;span class="n"&gt;Architecture&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt;
+&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;cdbs&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;misc&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;Pre&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;logcheck&lt;/span&gt;
+&lt;span class="n"&gt;Provides&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;diverted&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;Conflicts&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;diverted&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;Description&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Configuracion&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;cron&lt;/span&gt; &lt;span class="n"&gt;para&lt;/span&gt; &lt;span class="n"&gt;logcheck&lt;/span&gt;
+&lt;span class="n"&gt;Configuracion&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;cron&lt;/span&gt; &lt;span class="n"&gt;para&lt;/span&gt; &lt;span class="n"&gt;logcheck&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="5. se crea el archivo debian/copyright:"&gt;5. Se crea el archivo &lt;code&gt;debian/copyright&lt;/code&gt;:&lt;/h4&gt;
+&lt;p&gt;Se mantiene el autor del paquete ya que se est&amp;aacute; usando tal cual el ejemplo de cron para logcheck de &lt;code&gt;config-package-dev&lt;/code&gt;.  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;canaima-cron-logcheck.
+Example config-package-dev package.
+
+Author: Tim Abbott &amp;lt;tabbott@mit.edu&amp;gt;
+
+Copyright &amp;copy; 2008 Tim Abbott &amp;lt;tabbott@mit.edu&amp;gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="6. se crea el archivo debian/canaima-cron-logcheck.cron.d con el contenido del cron para logcheck:"&gt;6. Se crea el archivo &lt;code&gt;debian/canaima-cron-logcheck.cron.d&lt;/code&gt; con el contenido del cron para &lt;code&gt;logcheck&lt;/code&gt;:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# /etc/cron.d/logcheck: crontab entries for the logcheck package
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+@reboot logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck -R; fi
+* * * * *   logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck; fi
+
+# EOF
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="7. se crea el archivo debian/rules con el siguiente contenido:"&gt;7. Se crea el archivo &lt;code&gt;debian/rules&lt;/code&gt; con el siguiente contenido:&lt;/h4&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#!/usr/bin/make -f
+
+DEB_DIVERT_EXTENSION = .canaima
+
+ # This will remove /etc/cron.d/logcheck
+  DEB_REMOVE_FILES_canaima-cron-logcheck += \
+/etc/cron.d/logcheck
+
+ # We will install (using dh_installcron, by placing the new cron job
+ # at debian/canaima-cron-logcheck.cron.d) a new version that runs
+ # every minute, rather than every 30 minutes.  This will generate a
+ # lot of mail.  Note that we cannot install a new file to the path
+ # /etc/cron.d/logcheck from which a file was removed using
+ # DEB_REMOVE_FILES.
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/config-package.mk
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;h4 id="8. se le agrega permiso de ejecucion al archivo debian/rules:"&gt;8. Se le agrega permiso de ejecuci&amp;oacute;n al archivo &lt;code&gt;debian/rules&lt;/code&gt;:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chmod a+x debian/rules
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="9. al final se tienen los siguientes archivos:"&gt;9. Al final se tienen los siguientes archivos:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ecrespo@jewel:~/canaima/canaima-cron-logcheck-0.1$ ls -l debian/
+total 28
+-rw-r--r-- 1 ecrespo ecrespo  347 nov 14 22:02 canaima-cron-logcheck.cron.d
+-rw-r--r-- 1 ecrespo ecrespo  157 nov 14 21:50 changelog
+-rw-r--r-- 1 ecrespo ecrespo2 nov 14 21:50 compat
+-rw-r--r-- 1 ecrespo ecrespo  481 nov 14 21:55 control
+-rw-r--r-- 1 ecrespo ecrespo  481 nov 14 21:55 control.in
+-rw-r--r-- 1 ecrespo ecrespo 1169 nov 14 22:01 copyright
+-rwxr-xr-x 1 ecrespo ecrespo  612 nov 14 22:06 rules
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="10. se crea y se firma el paquete canaima-cron-logcheck-0.1:"&gt;10. Se crea y se firma el paquete &lt;code&gt;canaima-cron-logcheck-0.1&lt;/code&gt;:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dpkg-buildpackage -rfakeroot -kC97E7015
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="11. al final se crean los siguientes archivos:"&gt;11. Al final se cre&amp;aacute;n los siguientes archivos:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls -l canaima-cron-logcheck*
+-rw-r--r-- 1 ecrespo ecrespo 2902 nov 14 22:08 canaima-cron-logcheck_0.1_all.deb
+-rw-r--r-- 1 ecrespo ecrespo  876 nov 14 22:08 canaima-cron-logcheck_0.1.dsc
+-rw-r--r-- 1 ecrespo ecrespo 1551 nov 14 22:09 canaima-cron-logcheck_0.1_i386.changes
+-rw-r--r-- 1 ecrespo ecrespo 1807 nov 14 22:08 canaima-cron-logcheck_0.1.tar.gz
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="12. se verifica si el paquete cumple con las politicas de debian con lintian:"&gt;12. Se verifica si el paquete cumple con las pol&amp;iacute;ticas de Debian con &lt;code&gt;lintian&lt;/code&gt;:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lintian -i canaima-cron-logcheck_0.1.dsc
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="13. se instala el paquete:"&gt;13. Se instala el paquete:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dpkg -i canaima-cron-logcheck_0.1_all.deb
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h4 id="14. el archivo del cron se encuentra ya instalado:"&gt;14. El archivo del cron se encuentra ya instalado:&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls -l /etc/cron.d
+total 12
+-rw-r--r-- 1 root root 244 nov  1  2009 anacron
+-rw-r--r-- 1 root root 347 nov 14 22:08 canaima-cron-logcheck
+-rw-r--r-- 1 root root 544 sep 13 05:59 php5
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id="_2"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Empaquetado"></category><category term="General"></category><category term="Ubuntu"></category></entry><entry><title>Como crear un metapaquete de configuración con config-package-dev</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html" rel="alternate"></link><published>2011-11-13T09:00:00-05:30</published><updated>2011-11-13T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-11-13:/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html</id><summary type="html">&lt;p&gt;Anteriormente se explic&amp;oacute; como crear un metapaquete con &lt;code&gt;equivs&lt;/code&gt;, se tiene tambi&amp;eacute;n el paquete &lt;code&gt;config-package-dev&lt;/code&gt; el cual permite crear paquetes de configuraci&amp;oacute;n donde se puede cambiar la configuraci&amp;oacute;n de otros archivos dentro del directorio &lt;code&gt;/etc/&lt;/code&gt; .&lt;/p&gt;
 &lt;p&gt;Este art&amp;iacute;culo se basa en el &lt;a href="https://debathena.mit.edu/config-package-dev/"&gt;tutorial del MIT sobre creaci&amp;oacute;n de paquetes de configuraci&amp;oacute;n …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Anteriormente se explic&amp;oacute; como crear un metapaquete con &lt;code&gt;equivs&lt;/code&gt;, se tiene tambi&amp;eacute;n el paquete &lt;code&gt;config-package-dev&lt;/code&gt; el cual permite crear paquetes de configuraci&amp;oacute;n donde se puede cambiar la configuraci&amp;oacute;n de otros archivos dentro del directorio &lt;code&gt;/etc/&lt;/code&gt; .&lt;/p&gt;
 &lt;p&gt;Este art&amp;iacute;culo se basa en el &lt;a href="https://debathena.mit.edu/config-package-dev/"&gt;tutorial del MIT sobre creaci&amp;oacute;n de paquetes de configuraci&amp;oacute;n para Debian y una gu&amp;iacute;a en el wiki de Debian&lt;/a&gt; y una gu&amp;iacute;a en el &lt;a href="https://wiki.debian.org/ConfigPackages"&gt;wiki de Debian&lt;/a&gt;. El proceso de como adoptar un paquete y empaquetar se explica en una gu&amp;iacute;a que se encuentra en el &lt;a href="https://wiki.debian.org/AdoptarUnPaquete"&gt;wiki de Debian&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Como ejemplo se usar&amp;aacute; el paquete &lt;code&gt;openssh-server&lt;/code&gt; que crea un archivo con el nombre  &lt;code&gt;/etc/ssh/sshd_config&lt;/code&gt; . Este archivo contiene la configuraci&amp;oacute;n necesaria para arrancar un servidor &lt;code&gt;ssh&lt;/code&gt;.&lt;/p&gt;
@@ -578,7 +745,129 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Accesibilidad"></category><category term="Debian"></category><category term="Empaquetado"></category><category term="General"></category><category term="Linux"></category><category term="tiflotecnologia"></category><category term="Ubuntu"></category></entry><entry><title>Como crear un metapaquete (versión 2)</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-version-2.html" rel="alternate"></link><published>2011-09-21T09:00:00-05:30</published><updated>2011-09-21T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-09-21:/como-crear-un-metapaquete-version-2.html</id><summary type="html">&lt;p&gt;Este art&amp;iacute;culo es una actualizaci&amp;oacute;n del art&amp;iacute;culo sobre &lt;strong&gt;como crear un metapaquete&lt;/strong&gt; que lo pueden leer &lt;a href="http://blog.crespo.org.ve/2009/03/como-crear-un-metapaquete.html"&gt;ac&amp;aacute;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Accesibilidad"></category><category term="Debian"></category><category term="Empaquetado"></category><category term="General"></category><category term="Linux"></category><category term="tiflotecnologia"></category><category term="Ubuntu"></category></entry><entry><title>Corrigiendo los reportes generados por lintian de un metapaquete</title><link href="https://ecrespo.github.io/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html" rel="alternate"></link><published>2011-09-22T09:00:00-05:30</published><updated>2011-09-22T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-09-22:/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html</id><summary type="html">&lt;p&gt;Este art&amp;iacute;culo explicar&amp;aacute; como corregir los mensajes generados por &lt;code&gt;lintian&lt;/code&gt;, estos mensajes son debido a que el programa empaquetado o metapaquete no cumple con el &lt;a href="http://www.debian.org/doc/debian-policy/"&gt;policy de Debian&lt;/a&gt; y para subir dicho programa es necesario que est&amp;eacute; sin errores ni warning.&lt;/p&gt;
+&lt;p&gt;El archivo que se va a verificar es el …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Este art&amp;iacute;culo explicar&amp;aacute; como corregir los mensajes generados por &lt;code&gt;lintian&lt;/code&gt;, estos mensajes son debido a que el programa empaquetado o metapaquete no cumple con el &lt;a href="http://www.debian.org/doc/debian-policy/"&gt;policy de Debian&lt;/a&gt; y para subir dicho programa es necesario que est&amp;eacute; sin errores ni warning.&lt;/p&gt;
+&lt;p&gt;El archivo que se va a verificar es el &lt;a href="https://gitorious.org/sierra-nevada/canaima-caribay-radio/blobs/master/canaima-caribay-radio_1.0.dsc"&gt;.dsc del metapaquete creado al empaquetar canaima-caribay-radio&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Al ejecutar &lt;code&gt;lintian&lt;/code&gt; con el archivo &lt;code&gt;dsc&lt;/code&gt; devuelve el siguiente mensaje:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lintian -i canaima-caribay-radio_1.0.dsc
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;W&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;caribay&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;radio&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;but&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;no&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;misc&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;depends&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;caribay&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;radio&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt; &lt;span class="k"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;uses&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;but&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="n"&gt;does&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="k"&gt;include&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;misc&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;given&lt;/span&gt; &lt;span class="n"&gt;binary&lt;/span&gt; &lt;span class="kd"&gt;package&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;control&lt;/span&gt; &lt;span class="n"&gt;entry&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Any&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="n"&gt;command&lt;/span&gt; &lt;span class="n"&gt;may&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;dependencies&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;misc&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;required&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;work&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="n"&gt;does&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;so&lt;/span&gt; &lt;span class="n"&gt;recommended&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="n"&gt;practice&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;always&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;misc&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;dependencies&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="k"&gt;each&lt;/span&gt; &lt;span class="n"&gt;binary&lt;/span&gt; &lt;span class="k"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;if&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;use&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Refer&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;manual&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Severity&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;normal&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Certainty&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;possible&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;W&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;caribay&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;radio&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kd"&gt;package&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;uses&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;deprecated&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;debhelper&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;compat&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="n"&gt;used&lt;/span&gt; &lt;span class="n"&gt;by&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt; &lt;span class="k"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;is&lt;/span&gt; &lt;span class="n"&gt;marked&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;deprecated&lt;/span&gt; &lt;span class="n"&gt;by&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="n"&gt;developer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;You&lt;/span&gt; &lt;span class="n"&gt;should&lt;/span&gt; &lt;span class="n"&gt;really&lt;/span&gt; &lt;span class="n"&gt;consider&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;newer&lt;/span&gt; &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="kd"&gt;set&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;preferred&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;compat&lt;/span&gt; &lt;span class="n"&gt;or&lt;/span&gt; &lt;span class="n"&gt;by&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;setting&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;exporting&lt;/span&gt; &lt;span class="n"&gt;DH_COMPAT&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;rules&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;If&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="kd"&gt;set&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;either&lt;/span&gt; &lt;span class="n"&gt;place&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="n"&gt;defaults&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;deprecated&lt;/span&gt; &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Refer&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;manual&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Severity&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;normal&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Certainty&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;certain&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;W&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;caribay&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;radio&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;binary&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;arch&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rules&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;but&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;pkg&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;arch&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;indep&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;It&lt;/span&gt; &lt;span class="n"&gt;looks&lt;/span&gt; &lt;span class="n"&gt;like&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="n"&gt;code&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;binary&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;arch&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;rules&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;even&lt;/span&gt; &lt;span class="n"&gt;though&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="k"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;is&lt;/span&gt; &lt;span class="n"&gt;architecture&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;independent&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Severity&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;normal&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Certainty&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;certain&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El primer warning es que hace falta agregar &lt;code&gt;${misc:Depends]&lt;/code&gt; en las dependencias.  Adicionalmente se tiene que cambiar el par&amp;aacute;metro &lt;code&gt;Standards-Version&lt;/code&gt; a la versi&amp;oacute;n &lt;code&gt;3.9.1&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Section&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;misc&lt;/span&gt;
+&lt;span class="n"&gt;Priority&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;optional&lt;/span&gt;
+&lt;span class="n"&gt;Homepage&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;softwarelibre&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;gob&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ve&lt;/span&gt;
+&lt;span class="n"&gt;Standards&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Version&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.9&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+
+&lt;span class="n"&gt;Package&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;caribay&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;radio&lt;/span&gt;
+&lt;span class="n"&gt;Version&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.0&lt;/span&gt;
+&lt;span class="n"&gt;Maintainer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Ernesto&lt;/span&gt; &lt;span class="n"&gt;Nadir&lt;/span&gt; &lt;span class="n"&gt;Crespo&lt;/span&gt; &lt;span class="n"&gt;Avila&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ecrespo&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;cenditel&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;gob&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ve&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;misc&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;},&lt;/span&gt;&lt;span class="n"&gt;jackd2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libjack&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;jackd2&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libjack&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;jackd2&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pulseaudio&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;jack&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;qjackctl&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;  
+&lt;span class="n"&gt;libjack&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;jackd2&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libjack&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;jackd2&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vorbis&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;tools&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libvorbis&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libogg&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libmad0&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libsamplerate0&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;  
+&lt;span class="n"&gt;libflac&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libsndfile1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libavcodec&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libavformat&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libspeex&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;gtk2&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;  
+&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;mutagen&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libdbus&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ffmpeg&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libshout3&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;libtwolame&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;twolame&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+&lt;span class="n"&gt;idjc&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;audacity&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;audacity&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;audacity&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dbg&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;icecast2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;easytag&lt;/span&gt;
+&lt;span class="n"&gt;Architecture&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt;
+&lt;span class="n"&gt;Copyright&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;copyright&lt;/span&gt;
+&lt;span class="n"&gt;Changelog&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;changelog&lt;/span&gt; 
+&lt;span class="n"&gt;Description&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Metapaquete&lt;/span&gt; &lt;span class="n"&gt;para&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;instalacion&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;radio&lt;/span&gt; &lt;span class="n"&gt;streaming&lt;/span&gt;
+&lt;span class="n"&gt;Metapaquete&lt;/span&gt; &lt;span class="n"&gt;para&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;instalacion&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;radio&lt;/span&gt; &lt;span class="n"&gt;streaming&lt;/span&gt; &lt;span class="n"&gt;con&lt;/span&gt; &lt;span class="n"&gt;icecast2&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt; &lt;span class="n"&gt;idjc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El segundo warning menciona que el archivo &lt;code&gt;debian/compat&lt;/code&gt; tiene dentro el n&amp;uacute;mero 4 y es necesario que se actualice a la versi&amp;oacute;n de &lt;code&gt;debhelper&lt;/code&gt; que se est&amp;aacute; usando para empaquetar, en este caso debe cambiar a 8. Esto se tiene que cambiar en la plantilla de &lt;code&gt;equivs&lt;/code&gt;.  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim /usr/share/equivs/template/debian/compat
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Cambiar 4 por 8.&lt;/p&gt;
+&lt;p&gt;El siguiente warning menciona un problema en la definici&amp;oacute;n de la arquitectura, que es necesario quitar &lt;code&gt;binary-arch&lt;/code&gt; y nuestro paquete es independiente de la plataforma. Esto se resuelve modificando &lt;code&gt;canaima-caribay-radio&lt;/code&gt; cambian el par&amp;aacute;metro &lt;code&gt;Architecture: all&lt;/code&gt; por &lt;code&gt;any&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Luego de realizar esos cambios se vuelve a crear el metapaquete y a ejecutar &lt;code&gt;lintian&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lintian -i canaima-caribay-radio_1.0.dsc
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;W&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;caribay&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;radio&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;dh&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;clean&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;deprecated&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="k"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;calls&lt;/span&gt; &lt;span class="n"&gt;dh_clean&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;its&lt;/span&gt; &lt;span class="n"&gt;debian&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;rules&lt;/span&gt; &lt;span class="n"&gt;file&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;declares&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="n"&gt;compatibility&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;least&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="n"&gt;deprecated&lt;/span&gt; &lt;span class="n"&gt;dh_clean&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;favour&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;dh_prep&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Refer&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;dh_clean&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;manual&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Severity&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;normal&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Certainty&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;certain&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;W&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;caribay&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;radio&lt;/span&gt; &lt;span class="n"&gt;source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kd"&gt;package&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;lacks&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;versioned&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;build&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;depends&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;on&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="k"&gt;package&lt;/span&gt; &lt;span class="nn"&gt;either&lt;/span&gt; &lt;span class="n"&gt;doesn&lt;/span&gt;&lt;span class="s1"&gt;'t declare a versioned build dependency on&lt;/span&gt;
+&lt;span class="s1"&gt;N:debhelper or does not declare a versioned build dependency on a new&lt;/span&gt;
+&lt;span class="s1"&gt;N:enough version of debhelper to satisfy the declared compatibility level.&lt;/span&gt;
+&lt;span class="s1"&gt;N:&lt;/span&gt;
+&lt;span class="s1"&gt;N:Recommended practice is to always declare an explicit versioned&lt;/span&gt;
+&lt;span class="s1"&gt;N:dependency on debhelper equal to or greater than the compatibility level&lt;/span&gt;
+&lt;span class="s1"&gt;N:used by the package, even if the versioned dependency isn'&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="n"&gt;strictly&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;necessary&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Having&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;versioned&lt;/span&gt; &lt;span class="n"&gt;dependency&lt;/span&gt; &lt;span class="n"&gt;also&lt;/span&gt; &lt;span class="n"&gt;helps&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;backports&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;older&lt;/span&gt; &lt;span class="n"&gt;releases&lt;/span&gt; &lt;span class="n"&gt;and&lt;/span&gt; &lt;span class="n"&gt;correct&lt;/span&gt; &lt;span class="n"&gt;builds&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;partially&lt;/span&gt; &lt;span class="n"&gt;updated&lt;/span&gt; &lt;span class="n"&gt;systems&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Refer&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;manual&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Severity&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;minor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Certainty&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;certain&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Luego de cambiar el archivo &lt;code&gt;compat&lt;/code&gt; y la versi&amp;oacute;n del &lt;code&gt;standards-version&lt;/code&gt; aparece un warning sobre el comando &lt;code&gt;dh_clean -k&lt;/code&gt; que se tiene que sustituir por &lt;code&gt;dh_prep&lt;/code&gt; en el archivo &lt;code&gt;debian/rules&lt;/code&gt; de la plantilla:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim /usr/share/equivs/template/debian/rules
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;install&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;build&lt;/span&gt;
+&lt;span class="n"&gt;dh_testdir&lt;/span&gt;
+&lt;span class="n"&gt;dh_testroot&lt;/span&gt;
+&lt;span class="n"&gt;dh_prep&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El otro warning menciona que &lt;code&gt;debhelper&lt;/code&gt; tiene un n&amp;uacute;mero de versi&amp;oacute;n viejo. Para cambiarlo se busca el archivo &lt;code&gt;control.in&lt;/code&gt; en las plantillas y se modifica la &lt;code&gt;dep&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim /usr/share/equivs/template/debian/control.in
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se modifica la siguiente l&amp;iacute;nea:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Build-Depends: debhelper (&amp;gt;= 8)
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se vuelve a empaquetar y a ejecutar &lt;code&gt;lintian&lt;/code&gt;:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lintian -i canaima-caribay-radio_1.0.dsc
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Listo, no m&amp;aacute;s mensajes de error o warnings.  &lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Empaquetado"></category><category term="General"></category><category term="Linux"></category><category term="Ubuntu"></category></entry><entry><title>Como crear un metapaquete (versión 2)</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-version-2.html" rel="alternate"></link><published>2011-09-21T09:00:00-05:30</published><updated>2011-09-21T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-09-21:/como-crear-un-metapaquete-version-2.html</id><summary type="html">&lt;p&gt;Este art&amp;iacute;culo es una actualizaci&amp;oacute;n del art&amp;iacute;culo sobre &lt;strong&gt;como crear un metapaquete&lt;/strong&gt; que lo pueden leer &lt;a href="http://blog.crespo.org.ve/2009/03/como-crear-un-metapaquete.html"&gt;ac&amp;aacute;&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;En este art&amp;iacute;culo se agregar&amp;aacute; el archivo &lt;code&gt;changelog&lt;/code&gt; y &lt;code&gt;copyright&lt;/code&gt; para el metapaquete &lt;code&gt;canaima-caribay-radio&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Se crea un directorio de trabajo:  &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir canaima-caribay-radio
@@ -832,7 +1121,84 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Empaquetado"></category><category term="General"></category><category term="Linux"></category><category term="Ubuntu"></category></entry><entry><title>Día Debian en Mérida.</title><link href="https://ecrespo.github.io/dia-debian-en-merida.html" rel="alternate"></link><published>2011-08-27T10:00:00-05:30</published><updated>2011-08-27T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-08-27:/dia-debian-en-merida.html</id><summary type="html">&lt;p&gt;El d&amp;iacute;a de hoy se celebrar&amp;aacute; en Fundacite M&amp;eacute;rida el D&amp;iacute;a Debian por motivo del cumplea&amp;ntilde;os n&amp;uacute;mero 18.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Empaquetado"></category><category term="General"></category><category term="Linux"></category><category term="Ubuntu"></category></entry><entry><title>Crear llave ssh para la autenticación en Github, gitorius y bitbucket.</title><link href="https://ecrespo.github.io/crear-llave-ssh-para-la-autenticacion-en-github-gitorius-y-bitbucket.html" rel="alternate"></link><published>2011-09-20T09:00:00-05:30</published><updated>2011-09-20T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-09-20:/crear-llave-ssh-para-la-autenticacion-en-github-gitorius-y-bitbucket.html</id><summary type="html">&lt;p&gt;Este art&amp;iacute;culo explicar&amp;aacute; como crear una llave p&amp;uacute;blica RSA para usarla en los sitios github, gitorius y bitbucket y as&amp;iacute; poder subir c&amp;oacute;digo con git y mercurial a dichos repositorios.&lt;/p&gt;
+&lt;p&gt;Lo primero que se tiene que hacer es generar la llave ssh. El comando para hacerlo es &lt;code&gt;ssh-keygen&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh-keygen -t …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Este art&amp;iacute;culo explicar&amp;aacute; como crear una llave p&amp;uacute;blica RSA para usarla en los sitios github, gitorius y bitbucket y as&amp;iacute; poder subir c&amp;oacute;digo con git y mercurial a dichos repositorios.&lt;/p&gt;
+&lt;p&gt;Lo primero que se tiene que hacer es generar la llave ssh. El comando para hacerlo es &lt;code&gt;ssh-keygen&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh-keygen -t rsa -C "ecrespo@cenditel.gob.ve
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ernesto/.ssh/id_rsa):  &amp;lt;Ruta donde se va a guardar la llave RSA&amp;gt;
+Enter passphrase (empty for no passphrase): &amp;lt;colocar la frase a usar con la llave&amp;gt;
+Enter same passphrase again:  &amp;lt;colocar la frase a usar con la llave&amp;gt;
+Your identification has been saved in /home/ernesto/.ssh/id_rsa.
+Your public key has been saved in /home/ernesto/.ssh/id_rsa.pub.
+The key fingerprint is:
+f2:09:cf:fe:53:1d:d3:d9:25:96:c9:11:68:5e:3e:bc ecrespo@cenditel.gob.ve
+The key's randomart image is:
++--[ RSA 2048]----+
+|             .o. |
+|            o..+ |
+|        o  o +* .|
+|         C  ..+o+|
+|        S +   o+o|
+|         .   .Do |
+|          . o .  |
+|           +     |
+|            .    |
++-----------------+
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Agregar la llave a github:&lt;/p&gt;
+&lt;p&gt;En github seleccione &lt;strong&gt;Account settings&lt;/strong&gt;, luego seleccione &lt;strong&gt;ssh public keys&lt;/strong&gt; y luego &lt;strong&gt;Add another public key&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Despliegue el contenido del archivo  &lt;code&gt;id_rsa.pub&lt;/code&gt;:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat less id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPW48GvjuwVMHdlU6kRqniKDNwDrz  
+12YPL1Sdi9AEn4uuRxs34+NH3UfarjweKFXMqkFRZaR9woV21GxvfF+eRnAfCWFI0Unzpxh1LaaLaDcBfNZ  
+x1PwkaR6zmaNKjwhAS2N4K3Rd+gCtPl57CoFQPNY7ZsZSJcn0iTn1jtQi3I3JpeQDTq0yf1nsjJFTSC/n23TROj2mvaHVsUB86ezAsia  
+JXJd8aZWJsyAEdBxn6dAxxxAtGRzQCq8oNqhWhqmbzf6C3zKARwCbbdo7UB  
+M/StTkb3aYnBbTLhHGnY8vm5n/aP7/1GZNqTbWxfmH5hm/2mDfT8hPK2eCCklGsnF+qlxpPu7 ecrespo@cenditel.gob.ve
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;La siguiente imagen muestra la informaci&amp;oacute;n desplegada en github:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Texto alternativo" src="./images/crearllavesshparalaautenticacionengithubgitoriusybitbucket-1.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Validar la comunicaci&amp;oacute;n con github.
+Para validar la comunicaci&amp;oacute;n con la llave p&amp;uacute;blica se ejecuta lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh -T git@github.com
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Aparecer&amp;aacute; la siguiente informaci&amp;oacute;n:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The authenticity of host 'github.com (207.97.227.239)' can't be established.
+RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'github.com,207.97.227.239' (RSA) to the list of known hosts.
+Hi ecrespo! You've successfully authenticated, but GitHub does not provide shell access.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Configurar la informaci&amp;oacute;n del usuario y correo en git:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git config --global user.name "Ernesto Crespo"  
+git config --global user.email "ecrespo@cenditel.gob.ve"
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Configurar el token github.&lt;/p&gt;
+&lt;p&gt;Seleccione &lt;strong&gt;Account settings&lt;/strong&gt;, luego &lt;strong&gt;Account Admin&lt;/strong&gt;. Ah&amp;iacute; aparecer&amp;aacute; lo que se muestra en la siguiente figura:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Texto alternativo" src="./images/crearllavesshparalaautenticacionengithubgitoriusybitbucket-2.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Agregar al usuario github y el token:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git config --global github.user ecrespo
+git config --global github.token cf0fe21f4ff7fb51b686bb712347043e
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ya se tiene github configurado con la llave RSA del equipo asociado al correo.&lt;/p&gt;
+&lt;p&gt;Para el caso de &lt;strong&gt;gitorius&lt;/strong&gt; se selecciona el &lt;strong&gt;dashboard&lt;/strong&gt;, luego se le da click a &lt;strong&gt;Manage SSH keys&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Texto alternativo" src="./images/crearllavesshparalaautenticacionengithubgitoriusybitbucket-3.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Le dan click a &lt;strong&gt;Add ssh keys&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Texto alternativo" src="./images/crearllavesshparalaautenticacionengithubgitoriusybitbucket-4.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Agregar la llave en &lt;strong&gt;bitbucket&lt;/strong&gt;.
+Le dan click al &lt;strong&gt;Account&lt;/strong&gt; al ingresar a su cuenta en bitbucket.org: 
+Se va al campo de &lt;strong&gt;ssh keys&lt;/strong&gt; y se agrega la llave como lo muestra la figura:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Texto alternativo" src="./images/crearllavesshparalaautenticacionengithubgitoriusybitbucket-5.png"/&gt;&lt;/p&gt;
+&lt;p&gt;En el siguiente art&amp;iacute;culo se explicar&amp;aacute; como usar los comandos para clonar, hacer commit  y actualizar los controles de versiones distribuidos de github, gitorius y bitbucket.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Control de versiones"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Mercurial"></category><category term="ssh"></category></entry><entry><title>Día Debian en Mérida.</title><link href="https://ecrespo.github.io/dia-debian-en-merida.html" rel="alternate"></link><published>2011-08-27T10:00:00-05:30</published><updated>2011-08-27T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-08-27:/dia-debian-en-merida.html</id><summary type="html">&lt;p&gt;El d&amp;iacute;a de hoy se celebrar&amp;aacute; en Fundacite M&amp;eacute;rida el D&amp;iacute;a Debian por motivo del cumplea&amp;ntilde;os n&amp;uacute;mero 18.&lt;/p&gt;
 &lt;p&gt;Lugas: Av. Alberto Carnevali v&amp;iacute;a La Hechicera, detr&amp;aacute;s del MINFRA, Edificio B de Fundacite M&amp;eacute;rida. &lt;/p&gt;
 &lt;p&gt;Adicionalmente como en esta semana se cumplio los 20 a&amp;ntilde;os de Linux lo celebraremos tambi&amp;eacute;n.&lt;/p&gt;
 &lt;p&gt;Ac&amp;aacute; un …&lt;/p&gt;</summary><content type="html">&lt;p&gt;El d&amp;iacute;a de hoy se celebrar&amp;aacute; en Fundacite M&amp;eacute;rida el D&amp;iacute;a Debian por motivo del cumplea&amp;ntilde;os n&amp;uacute;mero 18.&lt;/p&gt;

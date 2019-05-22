@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="El paquete config-package-dev facilita la creación de un paquete Debian que contenga un archivo de configuración de cron. Para este caso se creará un archivo cron para el programa logcheck. Este programa estará como Pre-Depends para que esté instalado y configurado antes de instalar el paquete con la configuración de …" />
+<meta name="keywords" content="Canaima, Debian, Empaquetado, General, Ubuntu">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Creación de paquete Debian que contiene un archivo cron con config-package-dev"/>
+<meta property="og:description" content="El paquete config-package-dev facilita la creación de un paquete Debian que contenga un archivo de configuración de cron. Para este caso se creará un archivo cron para el programa logcheck. Este programa estará como Pre-Depends para que esté instalado y configurado antes de instalar el paquete con la configuración de …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/creacion-de-paquete-debian-que-contiene-un-archivo-cron-con-config-package-dev.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2011-11-14 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Linux,Empaquetado"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Empaquetado"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Creación de paquete Debian que contiene un archivo cron con config-package-dev</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="creacion-de-paquete-debian-que-contiene-un-archivo-cron-con-config-package-dev">Creación de paquete Debian que contiene un archivo cron con config-package-dev</h1>
+    <p>
+          Posted on lun 14 noviembre 2011 in <a href="https://ecrespo.github.io/category/linuxempaquetado.html">Linux,Empaquetado</a>
+
+
+        &#8226; 4 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>El paquete <code>config-package-dev</code> facilita la creaci&oacute;n de un paquete Debian que contenga un archivo de configuraci&oacute;n de cron.</p>
+<p>Para este caso se crear&aacute; un archivo cron para el programa <code>logcheck</code>. Este programa estar&aacute; como Pre-Depends para que est&eacute; instalado y configurado antes de instalar el paquete con la configuraci&oacute;n de <code>logcheck</code> en el cron.</p>
+<p>Instalar <code>logcheck</code>:  </p>
+<div class="highlight"><pre><span></span>apt-get install logcheck
+</pre></div>
+<p>El archivo cron para <code>logcheck</code> contendr&aacute; lo siguiente:</p>
+<div class="highlight"><pre><span></span># /etc/cron.d/logcheck: crontab entries for the logcheck package
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+@reboot logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck -R; fi
+* * * * *   logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck; fi
+
+# EOF
+</pre></div>
+<h2 id="procedimiento para la creacion del paquete:">Procedimiento para la creaci&oacute;n del paquete:</h2>
+<h4 id="1. creacion del directorio de trabajo y del directorio debian">1. Creaci&oacute;n del directorio de trabajo y del directorio Debian</h4>
+<div class="highlight"><pre><span></span>mkdir -p canaima-cron-logcheck-0.1
+
+mkdir -p canaima-cron-logcheck-0.1/debian
+</pre></div>
+<h4 id="2. se crea el archivo debian/changelog.">2. Se crea el archivo <code>debian/changelog</code>.</h4>
+<div class="highlight"><pre><span></span>canaima-cron-logcheck (0.1) unstable; urgency=low
+
+* Initial release.
+
+-- Ernesto Nadir Crespo Avila &lt;ecrespo@gmail.com&gt;  Mon, 14 Nov 2011 21:48:20 -0430
+</pre></div>
+<h4 id="3. se crea el archivo compat con el valor de 7.">3. Se crea el archivo <code>compat</code> con el valor de 7.</h4>
+<h4 id="4. se crea el archivo control y control.in con lo siguiente:">4. Se crea el archivo <code>control</code> y <code>control.in</code> con lo siguiente:</h4>
+<p>Se coloca <code>logcheck</code> como predependencia, se define el <code>standar version</code> con valor <code>3.9.2</code>.  </p>
+<div class="highlight"><pre><span></span><span class="n">Source</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">cron</span><span class="o">-</span><span class="n">logcheck</span>
+<span class="n">Section</span><span class="o">:</span> <span class="n">config</span>
+<span class="n">Priority</span><span class="o">:</span> <span class="n">extra</span>
+<span class="n">Maintainer</span><span class="o">:</span> <span class="n">Ernesto</span> <span class="n">Nadir</span> <span class="n">Crespo</span> <span class="n">Avila</span> <span class="o">&lt;</span><span class="n">ecrespo</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="na">com</span><span class="o">&gt;</span>
+<span class="n">Build</span><span class="o">-</span><span class="n">Depends</span><span class="o">:</span> <span class="n">cdbs</span> <span class="o">(&gt;=</span> <span class="mf">0.4</span><span class="o">.</span><span class="mi">23</span><span class="o">-</span><span class="mf">1.1</span><span class="o">),</span> <span class="n">debhelper</span> <span class="o">(&gt;=</span> <span class="mf">4.2</span><span class="o">.</span><span class="mi">0</span><span class="o">),</span> <span class="n">config</span><span class="o">-</span><span class="kd">package</span><span class="o">-</span><span class="n">dev</span> <span class="o">(&gt;=</span> <span class="mf">4.5</span><span class="o">~)</span>
+<span class="n">Standards</span><span class="o">-</span><span class="n">Version</span><span class="o">:</span> <span class="mf">3.9</span><span class="o">.</span><span class="mi">2</span>
+
+<span class="n">Package</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">cron</span><span class="o">-</span><span class="n">logcheck</span>
+<span class="n">Architecture</span><span class="o">:</span> <span class="n">all</span>
+<span class="n">Depends</span><span class="o">:</span> <span class="n">cdbs</span><span class="o">,</span> <span class="n">$</span><span class="o">{</span><span class="n">misc</span><span class="o">:</span><span class="n">Depends</span><span class="o">}</span>
+<span class="n">Pre</span><span class="o">-</span><span class="n">Depends</span><span class="o">:</span> <span class="n">logcheck</span>
+<span class="n">Provides</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">diverted</span><span class="o">-</span><span class="n">files</span><span class="o">}</span>
+<span class="n">Conflicts</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">diverted</span><span class="o">-</span><span class="n">files</span><span class="o">}</span>
+<span class="n">Description</span><span class="o">:</span> <span class="n">Configuracion</span> <span class="n">de</span> <span class="n">cron</span> <span class="n">para</span> <span class="n">logcheck</span>
+<span class="n">Configuracion</span> <span class="n">de</span> <span class="n">cron</span> <span class="n">para</span> <span class="n">logcheck</span><span class="o">.</span>
+</pre></div>
+<h4 id="5. se crea el archivo debian/copyright:">5. Se crea el archivo <code>debian/copyright</code>:</h4>
+<p>Se mantiene el autor del paquete ya que se est&aacute; usando tal cual el ejemplo de cron para logcheck de <code>config-package-dev</code>.  </p>
+<div class="highlight"><pre><span></span>canaima-cron-logcheck.
+Example config-package-dev package.
+
+Author: Tim Abbott &lt;tabbott@mit.edu&gt;
+
+Copyright &copy; 2008 Tim Abbott &lt;tabbott@mit.edu&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</pre></div>
+<h4 id="6. se crea el archivo debian/canaima-cron-logcheck.cron.d con el contenido del cron para logcheck:">6. Se crea el archivo <code>debian/canaima-cron-logcheck.cron.d</code> con el contenido del cron para <code>logcheck</code>:</h4>
+<div class="highlight"><pre><span></span># /etc/cron.d/logcheck: crontab entries for the logcheck package
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+@reboot logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck -R; fi
+* * * * *   logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck; fi
+
+# EOF
+</pre></div>
+<h4 id="7. se crea el archivo debian/rules con el siguiente contenido:">7. Se crea el archivo <code>debian/rules</code> con el siguiente contenido:</h4>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span>#!/usr/bin/make -f
+
+DEB_DIVERT_EXTENSION = .canaima
+
+ # This will remove /etc/cron.d/logcheck
+  DEB_REMOVE_FILES_canaima-cron-logcheck += \
+/etc/cron.d/logcheck
+
+ # We will install (using dh_installcron, by placing the new cron job
+ # at debian/canaima-cron-logcheck.cron.d) a new version that runs
+ # every minute, rather than every 30 minutes.  This will generate a
+ # lot of mail.  Note that we cannot install a new file to the path
+ # /etc/cron.d/logcheck from which a file was removed using
+ # DEB_REMOVE_FILES.
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/config-package.mk
+</pre></div>
+</td></tr></table>
+<h4 id="8. se le agrega permiso de ejecucion al archivo debian/rules:">8. Se le agrega permiso de ejecuci&oacute;n al archivo <code>debian/rules</code>:</h4>
+<div class="highlight"><pre><span></span>chmod a+x debian/rules
+</pre></div>
+<h4 id="9. al final se tienen los siguientes archivos:">9. Al final se tienen los siguientes archivos:</h4>
+<div class="highlight"><pre><span></span>ecrespo@jewel:~/canaima/canaima-cron-logcheck-0.1$ ls -l debian/
+total 28
+-rw-r--r-- 1 ecrespo ecrespo  347 nov 14 22:02 canaima-cron-logcheck.cron.d
+-rw-r--r-- 1 ecrespo ecrespo  157 nov 14 21:50 changelog
+-rw-r--r-- 1 ecrespo ecrespo2 nov 14 21:50 compat
+-rw-r--r-- 1 ecrespo ecrespo  481 nov 14 21:55 control
+-rw-r--r-- 1 ecrespo ecrespo  481 nov 14 21:55 control.in
+-rw-r--r-- 1 ecrespo ecrespo 1169 nov 14 22:01 copyright
+-rwxr-xr-x 1 ecrespo ecrespo  612 nov 14 22:06 rules
+</pre></div>
+<h4 id="10. se crea y se firma el paquete canaima-cron-logcheck-0.1:">10. Se crea y se firma el paquete <code>canaima-cron-logcheck-0.1</code>:</h4>
+<div class="highlight"><pre><span></span>dpkg-buildpackage -rfakeroot -kC97E7015
+</pre></div>
+<h4 id="11. al final se crean los siguientes archivos:">11. Al final se cre&aacute;n los siguientes archivos:</h4>
+<div class="highlight"><pre><span></span>ls -l canaima-cron-logcheck*
+-rw-r--r-- 1 ecrespo ecrespo 2902 nov 14 22:08 canaima-cron-logcheck_0.1_all.deb
+-rw-r--r-- 1 ecrespo ecrespo  876 nov 14 22:08 canaima-cron-logcheck_0.1.dsc
+-rw-r--r-- 1 ecrespo ecrespo 1551 nov 14 22:09 canaima-cron-logcheck_0.1_i386.changes
+-rw-r--r-- 1 ecrespo ecrespo 1807 nov 14 22:08 canaima-cron-logcheck_0.1.tar.gz
+</pre></div>
+<h4 id="12. se verifica si el paquete cumple con las politicas de debian con lintian:">12. Se verifica si el paquete cumple con las pol&iacute;ticas de Debian con <code>lintian</code>:</h4>
+<div class="highlight"><pre><span></span>lintian -i canaima-cron-logcheck_0.1.dsc
+</pre></div>
+<h4 id="13. se instala el paquete:">13. Se instala el paquete:</h4>
+<div class="highlight"><pre><span></span>dpkg -i canaima-cron-logcheck_0.1_all.deb
+</pre></div>
+<h4 id="14. el archivo del cron se encuentra ya instalado:">14. El archivo del cron se encuentra ya instalado:</h4>
+<div class="highlight"><pre><span></span>ls -l /etc/cron.d
+total 12
+-rw-r--r-- 1 root root 244 nov  1  2009 anacron
+-rw-r--r-- 1 root root 347 nov 14 22:08 canaima-cron-logcheck
+-rw-r--r-- 1 root root 544 sep 13 05:59 php5
+</pre></div>
+<h2 id="_2"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/empaquetado.html">Empaquetado</a>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html">Como crear un metapaquete de configuración con config-package-dev</a></li>
+      <li><a href="https://ecrespo.github.io/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html">Corrigiendo los reportes generados por lintian de un metapaquete</a></li>
+      <li><a href="https://ecrespo.github.io/como-crear-un-metapaquete-version-2.html">Como crear un metapaquete (versión 2)</a></li>
+      <li><a href="https://ecrespo.github.io/como-crear-un-metapaquete-metapaquete-con-archivos-de-configuracion.html">Como crear un metapaquete (metapaquete con archivos de configuración)</a></li>
+      <li><a href="https://ecrespo.github.io/compartir-repositorios-mercurial-por-ssh.html">Compartir repositorios Mercurial por ssh</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

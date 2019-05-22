@@ -1,5 +1,288 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-11-13T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Como crear un metapaquete de configuración con config-package-dev</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html" rel="alternate"></link><published>2011-11-13T09:00:00-05:30</published><updated>2011-11-13T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-11-13:/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html</id><summary type="html">&lt;p&gt;Anteriormente se explic&amp;oacute; como crear un metapaquete con &lt;code&gt;equivs&lt;/code&gt;, se tiene tambi&amp;eacute;n el paquete &lt;code&gt;config-package-dev&lt;/code&gt; el cual permite crear paquetes de configuraci&amp;oacute;n donde se puede cambiar la configuraci&amp;oacute;n de otros archivos dentro del directorio &lt;code&gt;/etc/&lt;/code&gt; .&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-12-08T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Compartir repositorios Mercurial por ssh</title><link href="https://ecrespo.github.io/compartir-repositorios-mercurial-por-ssh.html" rel="alternate"></link><published>2011-12-08T09:00:00-05:30</published><updated>2011-12-08T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-12-08:/compartir-repositorios-mercurial-por-ssh.html</id><summary type="html">&lt;p&gt;&lt;a href="http://blog.crespo.org.ve/2011/08/compartir-repositorios-de-mercurial-con.html"&gt;En art&amp;iacute;culo anterior&lt;/a&gt; se explica como compartir un repositorio mercurial con &lt;code&gt;mercurial-server&lt;/code&gt;, ahora se explicar&amp;aacute; como hacerlo usando &lt;code&gt;ssh&lt;/code&gt; con claves p&amp;uacute;blicas.&lt;/p&gt;
+&lt;p&gt;Lo que primero se va a hacer es crear la clave p&amp;uacute;blica para &lt;code&gt;ssh&lt;/code&gt; y distribuirlo al equipo o los equipos, luego se verifica el funcionamiento del &lt;code&gt;ssh …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://blog.crespo.org.ve/2011/08/compartir-repositorios-de-mercurial-con.html"&gt;En art&amp;iacute;culo anterior&lt;/a&gt; se explica como compartir un repositorio mercurial con &lt;code&gt;mercurial-server&lt;/code&gt;, ahora se explicar&amp;aacute; como hacerlo usando &lt;code&gt;ssh&lt;/code&gt; con claves p&amp;uacute;blicas.&lt;/p&gt;
+&lt;p&gt;Lo que primero se va a hacer es crear la clave p&amp;uacute;blica para &lt;code&gt;ssh&lt;/code&gt; y distribuirlo al equipo o los equipos, luego se verifica el funcionamiento del &lt;code&gt;ssh&lt;/code&gt; con la clave p&amp;uacute;blica. &lt;/p&gt;
+&lt;p&gt;La idea es mantener respaldado la configuraci&amp;oacute;n de un equipo que est&amp;aacute; con control de versiones con mercurial usando &lt;a href="http://blog.crespo.org.ve/2011/07/gestionar-los-archivos-de-configuracion.html"&gt;etckeeper&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En el servidor es necesario instalar &lt;code&gt;etckeeper&lt;/code&gt;, &lt;code&gt;mercurial&lt;/code&gt; y &lt;code&gt;ssh&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install etckeeper mercurial openssh-server
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Configurar &lt;code&gt;etckeeper&lt;/code&gt; y &lt;code&gt;mercurial&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim /etc/etckeeper/etckeeper.conf
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se descomenta y agrega lo siguiente en el archivo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# The VCS to use.
+VCS="hg"
+#VCS="git"
+#VCS="bzr"
+#VCS="darcs"
+
+# Options passed to git commit when run by etckeeper.
+#GIT_COMMIT_OPTIONS=""
+
+# Options passed to hg commit when run by etckeeper.
+HG_COMMIT_OPTIONS="-u ecrespo@gmail.com"
+
+# Options passed to bzr commit when run by etckeeper.
+#BZR_COMMIT_OPTIONS=""
+
+# Options passed to darcs record when run by etckeeper.
+#DARCS_COMMIT_OPTIONS="-a"
+
+# Uncomment to avoid etckeeper committing existing changes
+# to /etc automatically once per day.
+AVOID_DAILY_AUTOCOMMITS=1
+
+# Uncomment to avoid etckeeper committing existing changes to
+# /etc before installation. It will cancel the installation,
+# so you can commit the changes by hand.
+#AVOID_COMMIT_BEFORE_INSTALL=1
+
+# The high-level package manager that's being used.
+# (apt, pacman-g2, yum etc)
+HIGHLEVEL_PACKAGE_MANAGER=apt
+
+# The low-level package manager that's being used.
+# (dpkg, rpm, pacman-g2, etc)
+LOWLEVEL_PACKAGE_MANAGER=dpkg  
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Luego:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim /etc/mercurial/hgrc
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[ui]&lt;/span&gt;
+&lt;span class="na"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;"Ernesto Nadir Crespo Avila &amp;lt;ecrespo@gmail.com&amp;gt;"&lt;/span&gt;
+&lt;span class="na"&gt;editor&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;vim&lt;/span&gt;
+&lt;span class="c1"&gt;# pedir indicaci&amp;oacute;n de archivos cambiados:&lt;/span&gt;
+&lt;span class="na"&gt;verbose&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Inicializar &lt;code&gt;etckeeper&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;etckeeper init
+...
+adding ssl/certs/f950ccc2.0
+adding ssl/certs/facacbc6.0
+adding ssl/certs/ff783690.0
+adding ssl/certs/signet_ca1_pem.pem
+adding ssl/certs/signet_ca2_pem.pem
+adding ssl/certs/signet_ca3_pem.pem
+adding ssl/certs/signet_ocspklasa2_pem.pem
+adding ssl/certs/signet_ocspklasa3_pem.pem
+adding ssl/certs/signet_pca2_pem.pem
+adding ssl/certs/signet_pca3_pem.pem
+adding ssl/certs/signet_rootca_pem.pem
+adding ssl/certs/signet_tsa1_pem.pem
+adding ssl/certs/spi-ca-2003.pem
+adding ssl/certs/spi-cacert-2008.pem
+adding ssl/certs/ssl-cert-snakeoil.pem
+adding ssl/certs/thawte_Primary_Root_CA.pem
+adding ssl/openssl.cnf
+adding ssl/private/ssl-cert-snakeoil.key
+adding subversion/config
+adding subversion/servers
+adding sudoers
+adding sudoers.d/README
+adding sysctl.conf
+adding sysctl.d/README.sysctl
+adding sysctl.d/bindv6only.conf
+adding terminfo/README
+adding timezone
+adding ts.conf
+adding ucf.conf
+adding ufw/applications.d/bind9
+adding ufw/applications.d/openssh-server
+adding ufw/applications.d/postfix
+adding vga/dvorak-us.keymap
+adding vga/libvga.config
+adding vga/libvga.et4000
+adding vga/null.keymap
+adding vim/vimrc
+adding vim/vimrc.tiny
+adding w3m/config
+adding w3m/mailcap
+adding wgetrc
+adding xml/catalog
+adding xml/xml-core.xml
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Este comando agregar&amp;aacute; todos los archivos de configuraci&amp;oacute;n dentro del directorio &lt;code&gt;/etc&lt;/code&gt; a un control de versiones, en este caso &lt;code&gt;mercurial&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Al ejecutar el comando de mercurial para ver el estatus muestra los archivos que fueron agregados:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg status /etc/
+...
+A sudoers
+A sudoers.d/README
+A sysctl.conf
+A sysctl.d/README.sysctl
+A sysctl.d/bindv6only.conf
+A terminfo/README
+A timezone
+A ts.conf
+A ucf.conf
+A ufw/applications.d/bind9
+A ufw/applications.d/openssh-server
+A ufw/applications.d/postfix
+A vga/dvorak-us.keymap
+A vga/libvga.config
+A vga/libvga.et4000
+A vga/null.keymap
+A vim/vimrc
+A vim/vimrc.tiny
+A w3m/config
+A w3m/mailcap
+A wgetrc
+A xml/catalog
+A xml/xml-core.xml
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora se hace el primer commit.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;etckeeper commit "Inicializacion del control de versiones"
+...
+sysctl.conf
+sysctl.d/README.sysctl
+sysctl.d/bindv6only.conf
+terminfo/README
+timezone
+ts.conf
+ucf.conf
+ufw/applications.d/bind9
+ufw/applications.d/openssh-server
+ufw/applications.d/postfix
+vga/dvorak-us.keymap
+vga/libvga.config
+vga/libvga.et4000
+vga/null.keymap
+vim/vimrc
+vim/vimrc.tiny
+w3m/config
+w3m/mailcap
+wgetrc
+xml/catalog
+xml/xml-core.xml
+committed changeset 0:10c12e9f2889
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora se crear&amp;aacute; la clave ssh y se copiar&amp;aacute; en el servidor.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh-keygen -t rsa -C "ecrespo@gmail.com" -f hgernesto-identity
+Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in hgernesto-identity.
+Your public key has been saved in hgernesto-identity.pub.
+The key fingerprint is:
+ca:7a:09:57:77:85:9c:05:d8:73:ca:d0:b1:41:5c:11 ecrespo@gmail.com
+The key's randomart image is:
++--[ RSA 2048]----+
+|           B=BEo |
+|          o Ooo  |
+|           o.=   |
+|        . . +    |
+|       .S. .     |
+|    ....         |
+|     oo.         |
+|     .o          |
+|    ..           |
++-----------------+
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se copia la clave p&amp;uacute;blica al servidor.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;scp hgernesto-identity.pub ernesto@www.crespo.org.ve:.ssh/
+ernesto@www.crespo.org.ve's password: 
+hgernesto-identity.pub           100%  399     0.4KB/s   00:00
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se accede al servidor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh ernesto@www.crespo.org.ve
+ernesto@www.crespo.org.ve's password: 
+Linux crespo.org.ve 2.6.26-2-vserver-amd64 #1 SMP Fri Aug 14 09:21:21 UTC 2009 x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Dec  8 18:58:20 2011 from 190.75.37.237
+
+ernesto@crespo:~$
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se agrega la llave publica al archivo &lt;code&gt;authorized_keys&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd .ssh
+cat hgernesto-identity.pub &amp;amp;gt;&amp;amp;gt;  authorized_keys
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se regresa al equipo que se conectar&amp;aacute; al servidor.&lt;/p&gt;
+&lt;p&gt;Se crea el archivo &lt;code&gt;~/.ssh/config&lt;/code&gt; Se agrega el host, el usuario y la clave privada que se va a usar para la conexi&amp;oacute;n ssh.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Host www.crespo.org.ve
+    user ernesto
+    IdentityFile ~/.ssh/hgernesto-identity
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se verifica que se conecte al servidor usando la llave p&amp;uacute;blica.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh www.crespo.org.ve -i ~/.ssh/hgernesto-identity -l ernesto
+Linux crespo.org.ve 2.6.26-2-vserver-amd64 #1 SMP Fri Aug 14 09:21:21 UTC 2009 x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Dec  8 19:20:08 2011 from 190.75.37.237
+
+ernesto@crespo:~$
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Esta vez el servidor no pidi&amp;oacute; clave para el usuario.&lt;/p&gt;
+&lt;p&gt;Ahora se va a clonar el directorio etc para tener la configuraci&amp;oacute;n en el home del usuario.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo hg clone /etc conf-www.respo.org.ve
+...
+getting subversion/servers
+getting sudoers
+getting sudoers.d/README
+getting sysctl.conf
+getting sysctl.d/README.sysctl
+getting sysctl.d/bindv6only.conf
+getting terminfo/README
+getting timezone
+getting ts.conf
+getting ucf.conf
+getting ufw/applications.d/bind9
+getting ufw/applications.d/openssh-server
+getting ufw/applications.d/postfix
+getting vga/dvorak-us.keymap
+getting vga/libvga.config
+getting vga/libvga.et4000
+getting vga/null.keymap
+getting vim/vimrc
+getting vim/vimrc.tiny
+getting w3m/config
+getting w3m/mailcap
+getting wgetrc
+getting xml/catalog
+getting xml/xml-core.xml
+1775 files updated, 0 files merged, 0 files removed, 0 files unresolved
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se cambia el due&amp;ntilde;o y el grupo del repositorio ya que pertenece a root y no se va  a poder clonar con ese due&amp;ntilde;o.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo chown -R ernesto.ecrespo conf-www.respo.org.ve/
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora se prueba realizar la clonaci&amp;oacute;n del repositorio del servidor en la m&amp;aacute;quina local.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@zeath:~$ hg clone ssh://ernesto@www.crespo.org.ve/repo/conf-www.respo.org.ve 
+destination directory: conf-www.respo.org.ve
+requesting all changes
+adding changesets
+adding manifests
+adding file changes
+added 1 changesets with 1775 changes to 1775 files
+updating to branch default
+1775 files updated, 0 files merged, 0 files removed, 0 files unresolved
+remote: 1 changesets found
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se verifica el repositorio local.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@zeath:~$ hg log conf-www.respo.org.ve/
+changeset:   0:10c12e9f2889
+tag:         tip
+user:        ecrespo@gmail.com
+date:        Thu Dec 08 19:11:24 2011 +0000
+summary:     Inicializacion del control de versiones
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ya se tiene respaldada la configuraci&amp;oacute;n del servidor por medio de control de versiones, si se desea tener automatizado el proceso se puede crear scripts que se coloquen en el cron de manera que diariamente se tenga actualizado el respaldo de la configuraci&amp;oacute;n del servidor por medio de control de versiones distribuido (mercurial).&lt;/p&gt;
+&lt;p&gt;Es recomendable sacar del control de versiones los archivos &lt;code&gt;shadow&lt;/code&gt;, &lt;code&gt;passwd&lt;/code&gt; y &lt;code&gt;group&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Control de versiones"></category><category term="Debian"></category><category term="Linux"></category><category term="mercurial"></category><category term="ssh"></category><category term="Ubuntu"></category></entry><entry><title>Como crear un metapaquete de configuración con config-package-dev</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html" rel="alternate"></link><published>2011-11-13T09:00:00-05:30</published><updated>2011-11-13T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-11-13:/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html</id><summary type="html">&lt;p&gt;Anteriormente se explic&amp;oacute; como crear un metapaquete con &lt;code&gt;equivs&lt;/code&gt;, se tiene tambi&amp;eacute;n el paquete &lt;code&gt;config-package-dev&lt;/code&gt; el cual permite crear paquetes de configuraci&amp;oacute;n donde se puede cambiar la configuraci&amp;oacute;n de otros archivos dentro del directorio &lt;code&gt;/etc/&lt;/code&gt; .&lt;/p&gt;
 &lt;p&gt;Este art&amp;iacute;culo se basa en el &lt;a href="https://debathena.mit.edu/config-package-dev/"&gt;tutorial del MIT sobre creaci&amp;oacute;n de paquetes de configuraci&amp;oacute;n …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Anteriormente se explic&amp;oacute; como crear un metapaquete con &lt;code&gt;equivs&lt;/code&gt;, se tiene tambi&amp;eacute;n el paquete &lt;code&gt;config-package-dev&lt;/code&gt; el cual permite crear paquetes de configuraci&amp;oacute;n donde se puede cambiar la configuraci&amp;oacute;n de otros archivos dentro del directorio &lt;code&gt;/etc/&lt;/code&gt; .&lt;/p&gt;
 &lt;p&gt;Este art&amp;iacute;culo se basa en el &lt;a href="https://debathena.mit.edu/config-package-dev/"&gt;tutorial del MIT sobre creaci&amp;oacute;n de paquetes de configuraci&amp;oacute;n para Debian y una gu&amp;iacute;a en el wiki de Debian&lt;/a&gt; y una gu&amp;iacute;a en el &lt;a href="https://wiki.debian.org/ConfigPackages"&gt;wiki de Debian&lt;/a&gt;. El proceso de como adoptar un paquete y empaquetar se explica en una gu&amp;iacute;a que se encuentra en el &lt;a href="https://wiki.debian.org/AdoptarUnPaquete"&gt;wiki de Debian&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Como ejemplo se usar&amp;aacute; el paquete &lt;code&gt;openssh-server&lt;/code&gt; que crea un archivo con el nombre  &lt;code&gt;/etc/ssh/sshd_config&lt;/code&gt; . Este archivo contiene la configuraci&amp;oacute;n necesaria para arrancar un servidor &lt;code&gt;ssh&lt;/code&gt;.&lt;/p&gt;

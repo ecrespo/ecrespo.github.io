@@ -1,5 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-09-23T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Como crear un metapaquete (metapaquete con archivos de configuración)</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-metapaquete-con-archivos-de-configuracion.html" rel="alternate"></link><published>2011-09-23T09:00:00-05:30</published><updated>2011-09-23T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-09-23:/como-crear-un-metapaquete-metapaquete-con-archivos-de-configuracion.html</id><summary type="html">&lt;p&gt;Continuando con los art&amp;iacute;culos de empaquetados, ahora se explicar&amp;aacute; como agregar archivos de configuraci&amp;oacute;n al metapaquete.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2011-11-13T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Como crear un metapaquete de configuración con config-package-dev</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html" rel="alternate"></link><published>2011-11-13T09:00:00-05:30</published><updated>2011-11-13T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-11-13:/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html</id><summary type="html">&lt;p&gt;Anteriormente se explic&amp;oacute; como crear un metapaquete con &lt;code&gt;equivs&lt;/code&gt;, se tiene tambi&amp;eacute;n el paquete &lt;code&gt;config-package-dev&lt;/code&gt; el cual permite crear paquetes de configuraci&amp;oacute;n donde se puede cambiar la configuraci&amp;oacute;n de otros archivos dentro del directorio &lt;code&gt;/etc/&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;Este art&amp;iacute;culo se basa en el &lt;a href="https://debathena.mit.edu/config-package-dev/"&gt;tutorial del MIT sobre creaci&amp;oacute;n de paquetes de configuraci&amp;oacute;n …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Anteriormente se explic&amp;oacute; como crear un metapaquete con &lt;code&gt;equivs&lt;/code&gt;, se tiene tambi&amp;eacute;n el paquete &lt;code&gt;config-package-dev&lt;/code&gt; el cual permite crear paquetes de configuraci&amp;oacute;n donde se puede cambiar la configuraci&amp;oacute;n de otros archivos dentro del directorio &lt;code&gt;/etc/&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;Este art&amp;iacute;culo se basa en el &lt;a href="https://debathena.mit.edu/config-package-dev/"&gt;tutorial del MIT sobre creaci&amp;oacute;n de paquetes de configuraci&amp;oacute;n para Debian y una gu&amp;iacute;a en el wiki de Debian&lt;/a&gt; y una gu&amp;iacute;a en el &lt;a href="https://wiki.debian.org/ConfigPackages"&gt;wiki de Debian&lt;/a&gt;. El proceso de como adoptar un paquete y empaquetar se explica en una gu&amp;iacute;a que se encuentra en el &lt;a href="https://wiki.debian.org/AdoptarUnPaquete"&gt;wiki de Debian&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Como ejemplo se usar&amp;aacute; el paquete &lt;code&gt;openssh-server&lt;/code&gt; que crea un archivo con el nombre  &lt;code&gt;/etc/ssh/sshd_config&lt;/code&gt; . Este archivo contiene la configuraci&amp;oacute;n necesaria para arrancar un servidor &lt;code&gt;ssh&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Instalando &lt;code&gt;openssh-server&lt;/code&gt;:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install openssh-server config-package-dev
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El contenido del archivo es el siguiente:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Port 22
+Protocol 2
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+UsePrivilegeSeparation yes
+KeyRegenerationInterval 3600
+ServerKeyBits 768
+SyslogFacility AUTH
+LogLevel INFO
+LoginGraceTime 120
+PermitRootLogin yes
+StrictModes yes
+RSAAuthentication yes
+PubkeyAuthentication yes
+IgnoreRhosts yes
+RhostsRSAAuthentication no
+HostbasedAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+X11Forwarding yes
+X11DisplayOffset 10
+PrintMotd no
+PrintLastLog yes
+TCPKeepAlive yes
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Este archivo tiene el siguiente hash md5.  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;8caefdd9e251b7cc1baa37874149a870  /etc/ssh/sshd_config
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;La idea es modificar este archivo para que no permita que el usuario &lt;code&gt;root&lt;/code&gt; se conecte por &lt;code&gt;ssh&lt;/code&gt; y no permitir reenv&amp;iacute;o de aplicaciones gr&amp;aacute;ficas.&lt;/p&gt;
+&lt;h4 id="procedimiento para crear paquete de configuracion sshd-config:"&gt;Procedimiento para crear paquete de configuraci&amp;oacute;n &lt;code&gt;sshd-config&lt;/code&gt;:&lt;/h4&gt;
+&lt;h5 id="1.crear el directorio de trabajo"&gt;1.Crear el directorio de trabajo&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir canaima-sshd-config-0.1
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="2. cambiarse a dicho directorio"&gt;2. Cambiarse a dicho directorio&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd canaima-sshd-config-0.1
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="3. crear los directorios debian y files"&gt;3. Crear los directorios debian y files&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p debian files
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="4. en files crear el directorio etc, luego dentro de el, el directorio ssh y copiar el archivo sshd_config de /etc/ssh/ al directorio creado."&gt;4. En &lt;code&gt;files&lt;/code&gt; crear el directorio &lt;code&gt;etc&lt;/code&gt;, luego dentro de &amp;eacute;l, el directorio &lt;code&gt;ssh&lt;/code&gt; y copiar el archivo &lt;code&gt;sshd_config&lt;/code&gt; de &lt;code&gt;/etc/ssh/&lt;/code&gt; al directorio creado.&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p files/etc
+mkdir -p files/etc/ssh
+cp /etc/ssh/sshd_config ./files/etc/ssh/sshd_config.canaima
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="5. modificar el archivo para que el usuario root no pueda acceder al servidor ssh y que no se pueda reenviar paquetes de x11. las lineas son:"&gt;5. Modificar el archivo para que el usuario root no pueda acceder al servidor &lt;code&gt;ssh&lt;/code&gt; y que no se pueda reenviar paquetes de &lt;code&gt;X11&lt;/code&gt;. Las l&amp;iacute;neas son:&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PermitRootLogin no
+X11Forwarding no
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="6. dentro del directorio debian se creo el archivo changelog con el siguiente contenido:"&gt;6. Dentro del directorio debian se cre&amp;oacute; el archivo &lt;code&gt;changelog&lt;/code&gt; con el siguiente contenido:&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;canaima-sshd-config (0.1) unstable; urgency=low
+
+* Initial release.
+
+-- Ernesto Nadir Crespo Avila &amp;lt;ecrespo@gmail.com&amp;gt;  Sun, 13 Nov 2011 10:22:48 -0430
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="7. se crea el archivo debian/compat con el valor 7."&gt;7. Se crea el archivo &lt;code&gt;debian/compat&lt;/code&gt;  con el valor 7.&lt;/h5&gt;
+&lt;h5 id="8. se crea el archivo debian/control y debian/control.in con la siguiente informacion:"&gt;8. Se crea el archivo &lt;code&gt;debian/control&lt;/code&gt; y &lt;code&gt;debian/control.in&lt;/code&gt; con la siguiente informaci&amp;oacute;n:&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Source&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sshd&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;
+&lt;span class="n"&gt;Section&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;config&lt;/span&gt;
+&lt;span class="n"&gt;Priority&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;extra&lt;/span&gt;
+&lt;span class="n"&gt;Maintainer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Ernesto&lt;/span&gt; &lt;span class="n"&gt;Nadir&lt;/span&gt; &lt;span class="n"&gt;Crespo&lt;/span&gt; &lt;span class="n"&gt;Avila&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;ecrespo&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;gmail&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;com&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="n"&gt;Build&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;cdbs&lt;/span&gt; &lt;span class="o"&gt;(&amp;gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.4&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;1.1&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="o"&gt;(&amp;gt;=&lt;/span&gt; &lt;span class="mf"&gt;4.2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="kd"&gt;package&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="o"&gt;(&amp;gt;=&lt;/span&gt; &lt;span class="mf"&gt;4.5&lt;/span&gt;&lt;span class="o"&gt;~)&lt;/span&gt;
+&lt;span class="n"&gt;Standards&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Version&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.9&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;
+
+&lt;span class="n"&gt;Package&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;canaima&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sshd&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;
+&lt;span class="n"&gt;Architecture&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt;
+&lt;span class="n"&gt;Pre&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;openssh&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;
+&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;cdbs&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;misc&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Depends&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;Provides&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;diverted&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;Conflicts&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;$&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="n"&gt;diverted&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;Description&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Archivo&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;configuracion&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;ssh&lt;/span&gt;
+&lt;span class="n"&gt;Archivo&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;configuracion&lt;/span&gt; &lt;span class="n"&gt;del&lt;/span&gt; &lt;span class="n"&gt;servidor&lt;/span&gt; &lt;span class="n"&gt;ssh&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;En este caso se coloca el par&amp;aacute;metro &lt;code&gt;Pre-Depends&lt;/code&gt; ya que se necesita tener el servidor &lt;code&gt;openssh&lt;/code&gt; instalado y bien configurado para poder agregarle cambios al archivo &lt;code&gt;/etc/ssh/sshd_config&lt;/code&gt; .&lt;/p&gt;
+&lt;h5 id="9. se crea el archivo debian/copyright, en este caso se esta usando el mismo copyright de los archivos de ejemplo de config-package-dev:"&gt;9. Se crea el archivo &lt;code&gt;debian/copyright&lt;/code&gt;, en este caso se est&amp;aacute; usando el mismo copyright de los archivos de ejemplo de &lt;code&gt;config-package-dev&lt;/code&gt;:&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;canaima-ssh-config package.
+
+Author: Ernesto Nadir Crespo Avila &amp;lt;ecrespo@gmail.com&amp;gt;
+
+Copyright &amp;copy; 2011 Ernesto Nadir Crespo Avila &amp;lt;ecrespo@gmail.com&amp;gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="10. se crea el archivo debian/canaima-sshd-config.install . este archivo define donde se va a tomar los archivos de configuracion y a donde se van a copiar."&gt;10. Se crea el archivo &lt;code&gt;debian/canaima-sshd-config.install&lt;/code&gt; . Este archivo define donde se va a tomar los archivos de configuraci&amp;oacute;n y a donde se van a copiar.&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;files/* /
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="11. se crea el archivo debian/rules. en este archivo se define la extension .canaima, la cual permite diferenciar de los paquetes base de debian de la meta distribucion canaima, ademas se define el archivo a modificar y luego los include de los cdbs:"&gt;11. Se crea el archivo &lt;code&gt;debian/rules&lt;/code&gt;. En este archivo se define la extensi&amp;oacute;n &lt;code&gt;.canaima&lt;/code&gt;, la cual permite diferenciar de los paquetes base de Debian de la meta distribuci&amp;oacute;n canaima, adem&amp;aacute;s se define el archivo a modificar y luego los include de los &lt;code&gt;cdbs&lt;/code&gt;:&lt;/h5&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#!/usr/bin/make -f
+
+DEB_DIVERT_EXTENSION = .canaima
+# Replace some base files with simple replacements.
+DEB_DIVERT_FILES_canaima-sshd-config += \
+/etc/ssh/sshd_config.canaima 
+# These files are installed via dh_install from the files/ directory
+# (see debian/canaima-sshd-config.install)
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/config-package.mk
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;h5 id="12. crear el paquete debian y firmarlo con la llave gpg:"&gt;12. Crear el paquete debian y firmarlo con la llave &lt;code&gt;gpg&lt;/code&gt;:&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dpkg-buildpackage -rfakeroot -kC97E7015
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Al ejectuar un &lt;code&gt;ls&lt;/code&gt;  se pueden ver los archivos creados:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls -l canaima-sshd*
+-rw-r--r-- 1 ecrespo ecrespo 3948 nov 13 16:09 canaima-sshd-config_0.1_all.deb
+-rw-r--r-- 1 ecrespo ecrespo  864 nov 13 16:09 canaima-sshd-config_0.1.dsc
+-rw-r--r-- 1 ecrespo ecrespo 1521 nov 13 16:09 canaima-sshd-config_0.1_i386.changes
+-rw-r--r-- 1 ecrespo ecrespo 2745 nov 13 16:09 canaima-sshd-config_0.1.tar.gz
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="13. se verifica que el paquete debian cumple con el policy de debian:"&gt;13. Se verifica que el paquete Debian cumple con el policy de Debian:&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lintian -i canaima-sshd-config_0.1.dsc
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="14. verificar la instalacion del paquete debian."&gt;14. Verificar la instalaci&amp;oacute;n del paquete Debian.&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo dpkg -i canaima-sshd-config_0.1_all.deb 
+[sudo] password for ecrespo: 
+Selecting previously unselected package canaima-sshd-config.
+(Leyendo la base de datos ... 418546 ficheros o directorios instalados actualmente.)
+Desempaquetando canaima-sshd-config (de canaima-sshd-config_0.1_all.deb) ...
+Configurando canaima-sshd-config (0.1) ...
+A&amp;ntilde;adiendo `desviaci&amp;oacute;n de /etc/ssh/sshd_config a /etc/ssh/sshd_config.canaima-orig por canaima-sshd-config'
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="15. al ejecutar un ls -l en el directorio /etc/ssh/sshd_config* se vera que se crea un enlace al archivo original y se muestra los archivos agregados de la extension canaima:"&gt;15. Al ejecutar un &lt;code&gt;ls -l&lt;/code&gt; en el directorio &lt;code&gt;/etc/ssh/sshd_config*&lt;/code&gt; se ver&amp;aacute; que se crea un enlace al archivo original y se muestra los archivos agregados de la extensi&amp;oacute;n canaima:&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@jewel:/etc/ssh# ls -l sshd_config*
+lrwxrwxrwx 1 root root   19 nov 13 16:16 sshd_config -&amp;gt; sshd_config.canaima
+-rw-r--r-- 1 root root 2487 nov 13 10:15 sshd_config.canaima
+-rw-r--r-- 1 root root 2489 nov 13 13:20 sshd_config.canaima-orig
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h5 id="16. al revisar el archivo se nota que el campo para permitir a root conectarse al servidor ssh se encuentra en no, igual caso para el parametro de reenvio de x11. se revisa el hash md5 del archivo y se nota que del archivo original al actual son diferentes:"&gt;16. Al revisar el archivo se nota que el campo para permitir a root conectarse al servidor ssh se encuentra en no, igual caso para el par&amp;aacute;metro de reenv&amp;iacute;o de &lt;code&gt;X11&lt;/code&gt;. Se revisa el hash &lt;code&gt;md5&lt;/code&gt; del archivo y se nota que del archivo original al actual son diferentes:&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;a358d423fa6b8bf640a7fd1e06731ea3  sshd_config
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Al crear paquetes de configuraci&amp;oacute;n de esta forma (una forma limpia de modificar archivos de configuraci&amp;oacute;n) y al eliminar el paquete de configuraci&amp;oacute;n los archivos originales se vuelven a usar:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get remove -f canaima-sshd-config
+
+root@jewel:/etc/ssh# md5sum sshd_config
+8caefdd9e251b7cc1baa37874149a870  sshd_config
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se tienen varios ejemplos para usar &lt;code&gt;config-package-dev&lt;/code&gt; como por ejemplo paquetes binarios, configuraci&amp;oacute;n de cron, etc.&lt;/p&gt;
+&lt;h2 id="_3"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Empaquetado"></category><category term="General"></category><category term="ssh"></category><category term="Ubuntu"></category></entry><entry><title>Como crear un metapaquete (metapaquete con archivos de configuración)</title><link href="https://ecrespo.github.io/como-crear-un-metapaquete-metapaquete-con-archivos-de-configuracion.html" rel="alternate"></link><published>2011-09-23T09:00:00-05:30</published><updated>2011-09-23T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-09-23:/como-crear-un-metapaquete-metapaquete-con-archivos-de-configuracion.html</id><summary type="html">&lt;p&gt;Continuando con los art&amp;iacute;culos de empaquetados, ahora se explicar&amp;aacute; como agregar archivos de configuraci&amp;oacute;n al metapaquete.&lt;/p&gt;
 &lt;p&gt;La idea es agregar los archivos de configuraci&amp;oacute;n de orca que se guardan en &lt;code&gt;.orca&lt;/code&gt; en el home de los usuarios. Para ello se va a copiar el directorio &lt;code&gt;.orca&lt;/code&gt; con los archivos que …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los art&amp;iacute;culos de empaquetados, ahora se explicar&amp;aacute; como agregar archivos de configuraci&amp;oacute;n al metapaquete.&lt;/p&gt;
 &lt;p&gt;La idea es agregar los archivos de configuraci&amp;oacute;n de orca que se guardan en &lt;code&gt;.orca&lt;/code&gt; en el home de los usuarios. Para ello se va a copiar el directorio &lt;code&gt;.orca&lt;/code&gt; con los archivos que contenga el directorio a &lt;code&gt;/etc/skell/&lt;/code&gt; &lt;/p&gt;
 &lt;p&gt;Se ejecuta el comando &lt;code&gt;equivs-control&lt;/code&gt; :&lt;/p&gt;

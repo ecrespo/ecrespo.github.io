@@ -1,0 +1,519 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En artículo anterior se explica como compartir un repositorio mercurial con mercurial-server, ahora se explicará como hacerlo usando ssh con claves públicas. Lo que primero se va a hacer es crear la clave pública para ssh y distribuirlo al equipo o los equipos, luego se verifica el funcionamiento del ssh …" />
+<meta name="keywords" content="Canaima, Control de versiones, Debian, Linux, mercurial, ssh, Ubuntu">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Compartir repositorios Mercurial por ssh"/>
+<meta property="og:description" content="En artículo anterior se explica como compartir un repositorio mercurial con mercurial-server, ahora se explicará como hacerlo usando ssh con claves públicas. Lo que primero se va a hacer es crear la clave pública para ssh y distribuirlo al equipo o los equipos, luego se verifica el funcionamiento del ssh …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/compartir-repositorios-mercurial-por-ssh.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2011-12-08 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Linux,Desarrollo"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Control de versiones"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="mercurial"/>
+<meta property="article:tag" content="ssh"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Compartir repositorios Mercurial por ssh</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="compartir-repositorios-mercurial-por-ssh">Compartir repositorios Mercurial por ssh</h1>
+    <p>
+          Posted on jue 08 diciembre 2011 in <a href="https://ecrespo.github.io/category/linuxdesarrollo.html">Linux,Desarrollo</a>
+
+
+        &#8226; 5 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p><a href="http://blog.crespo.org.ve/2011/08/compartir-repositorios-de-mercurial-con.html">En art&iacute;culo anterior</a> se explica como compartir un repositorio mercurial con <code>mercurial-server</code>, ahora se explicar&aacute; como hacerlo usando <code>ssh</code> con claves p&uacute;blicas.</p>
+<p>Lo que primero se va a hacer es crear la clave p&uacute;blica para <code>ssh</code> y distribuirlo al equipo o los equipos, luego se verifica el funcionamiento del <code>ssh</code> con la clave p&uacute;blica. </p>
+<p>La idea es mantener respaldado la configuraci&oacute;n de un equipo que est&aacute; con control de versiones con mercurial usando <a href="http://blog.crespo.org.ve/2011/07/gestionar-los-archivos-de-configuracion.html">etckeeper</a>.</p>
+<p>En el servidor es necesario instalar <code>etckeeper</code>, <code>mercurial</code> y <code>ssh</code>.</p>
+<div class="highlight"><pre><span></span>apt-get install etckeeper mercurial openssh-server
+</pre></div>
+<p>Configurar <code>etckeeper</code> y <code>mercurial</code>.</p>
+<div class="highlight"><pre><span></span>vim /etc/etckeeper/etckeeper.conf
+</pre></div>
+<p>Se descomenta y agrega lo siguiente en el archivo:</p>
+<div class="highlight"><pre><span></span># The VCS to use.
+VCS="hg"
+#VCS="git"
+#VCS="bzr"
+#VCS="darcs"
+
+# Options passed to git commit when run by etckeeper.
+#GIT_COMMIT_OPTIONS=""
+
+# Options passed to hg commit when run by etckeeper.
+HG_COMMIT_OPTIONS="-u ecrespo@gmail.com"
+
+# Options passed to bzr commit when run by etckeeper.
+#BZR_COMMIT_OPTIONS=""
+
+# Options passed to darcs record when run by etckeeper.
+#DARCS_COMMIT_OPTIONS="-a"
+
+# Uncomment to avoid etckeeper committing existing changes
+# to /etc automatically once per day.
+AVOID_DAILY_AUTOCOMMITS=1
+
+# Uncomment to avoid etckeeper committing existing changes to
+# /etc before installation. It will cancel the installation,
+# so you can commit the changes by hand.
+#AVOID_COMMIT_BEFORE_INSTALL=1
+
+# The high-level package manager that's being used.
+# (apt, pacman-g2, yum etc)
+HIGHLEVEL_PACKAGE_MANAGER=apt
+
+# The low-level package manager that's being used.
+# (dpkg, rpm, pacman-g2, etc)
+LOWLEVEL_PACKAGE_MANAGER=dpkg  
+</pre></div>
+<p>Luego:</p>
+<div class="highlight"><pre><span></span>vim /etc/mercurial/hgrc
+</pre></div>
+<div class="highlight"><pre><span></span><span class="k">[ui]</span>
+<span class="na">username</span> <span class="o">=</span> <span class="s">"Ernesto Nadir Crespo Avila &lt;ecrespo@gmail.com&gt;"</span>
+<span class="na">editor</span> <span class="o">=</span> <span class="s">vim</span>
+<span class="c1"># pedir indicaci&oacute;n de archivos cambiados:</span>
+<span class="na">verbose</span><span class="o">=</span><span class="s">True</span>
+</pre></div>
+<p>Inicializar <code>etckeeper</code>.</p>
+<div class="highlight"><pre><span></span>etckeeper init
+...
+adding ssl/certs/f950ccc2.0
+adding ssl/certs/facacbc6.0
+adding ssl/certs/ff783690.0
+adding ssl/certs/signet_ca1_pem.pem
+adding ssl/certs/signet_ca2_pem.pem
+adding ssl/certs/signet_ca3_pem.pem
+adding ssl/certs/signet_ocspklasa2_pem.pem
+adding ssl/certs/signet_ocspklasa3_pem.pem
+adding ssl/certs/signet_pca2_pem.pem
+adding ssl/certs/signet_pca3_pem.pem
+adding ssl/certs/signet_rootca_pem.pem
+adding ssl/certs/signet_tsa1_pem.pem
+adding ssl/certs/spi-ca-2003.pem
+adding ssl/certs/spi-cacert-2008.pem
+adding ssl/certs/ssl-cert-snakeoil.pem
+adding ssl/certs/thawte_Primary_Root_CA.pem
+adding ssl/openssl.cnf
+adding ssl/private/ssl-cert-snakeoil.key
+adding subversion/config
+adding subversion/servers
+adding sudoers
+adding sudoers.d/README
+adding sysctl.conf
+adding sysctl.d/README.sysctl
+adding sysctl.d/bindv6only.conf
+adding terminfo/README
+adding timezone
+adding ts.conf
+adding ucf.conf
+adding ufw/applications.d/bind9
+adding ufw/applications.d/openssh-server
+adding ufw/applications.d/postfix
+adding vga/dvorak-us.keymap
+adding vga/libvga.config
+adding vga/libvga.et4000
+adding vga/null.keymap
+adding vim/vimrc
+adding vim/vimrc.tiny
+adding w3m/config
+adding w3m/mailcap
+adding wgetrc
+adding xml/catalog
+adding xml/xml-core.xml
+</pre></div>
+<p>Este comando agregar&aacute; todos los archivos de configuraci&oacute;n dentro del directorio <code>/etc</code> a un control de versiones, en este caso <code>mercurial</code>.</p>
+<p>Al ejecutar el comando de mercurial para ver el estatus muestra los archivos que fueron agregados:</p>
+<div class="highlight"><pre><span></span>hg status /etc/
+...
+A sudoers
+A sudoers.d/README
+A sysctl.conf
+A sysctl.d/README.sysctl
+A sysctl.d/bindv6only.conf
+A terminfo/README
+A timezone
+A ts.conf
+A ucf.conf
+A ufw/applications.d/bind9
+A ufw/applications.d/openssh-server
+A ufw/applications.d/postfix
+A vga/dvorak-us.keymap
+A vga/libvga.config
+A vga/libvga.et4000
+A vga/null.keymap
+A vim/vimrc
+A vim/vimrc.tiny
+A w3m/config
+A w3m/mailcap
+A wgetrc
+A xml/catalog
+A xml/xml-core.xml
+</pre></div>
+<p>Ahora se hace el primer commit.</p>
+<div class="highlight"><pre><span></span>etckeeper commit "Inicializacion del control de versiones"
+...
+sysctl.conf
+sysctl.d/README.sysctl
+sysctl.d/bindv6only.conf
+terminfo/README
+timezone
+ts.conf
+ucf.conf
+ufw/applications.d/bind9
+ufw/applications.d/openssh-server
+ufw/applications.d/postfix
+vga/dvorak-us.keymap
+vga/libvga.config
+vga/libvga.et4000
+vga/null.keymap
+vim/vimrc
+vim/vimrc.tiny
+w3m/config
+w3m/mailcap
+wgetrc
+xml/catalog
+xml/xml-core.xml
+committed changeset 0:10c12e9f2889
+</pre></div>
+<p>Ahora se crear&aacute; la clave ssh y se copiar&aacute; en el servidor.</p>
+<div class="highlight"><pre><span></span>ssh-keygen -t rsa -C "ecrespo@gmail.com" -f hgernesto-identity
+Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in hgernesto-identity.
+Your public key has been saved in hgernesto-identity.pub.
+The key fingerprint is:
+ca:7a:09:57:77:85:9c:05:d8:73:ca:d0:b1:41:5c:11 ecrespo@gmail.com
+The key's randomart image is:
++--[ RSA 2048]----+
+|           B=BEo |
+|          o Ooo  |
+|           o.=   |
+|        . . +    |
+|       .S. .     |
+|    ....         |
+|     oo.         |
+|     .o          |
+|    ..           |
++-----------------+
+</pre></div>
+<p>Se copia la clave p&uacute;blica al servidor.</p>
+<div class="highlight"><pre><span></span>scp hgernesto-identity.pub ernesto@www.crespo.org.ve:.ssh/
+ernesto@www.crespo.org.ve's password: 
+hgernesto-identity.pub           100%  399     0.4KB/s   00:00
+</pre></div>
+<p>Se accede al servidor:</p>
+<div class="highlight"><pre><span></span>ssh ernesto@www.crespo.org.ve
+ernesto@www.crespo.org.ve's password: 
+Linux crespo.org.ve 2.6.26-2-vserver-amd64 #1 SMP Fri Aug 14 09:21:21 UTC 2009 x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Dec  8 18:58:20 2011 from 190.75.37.237
+
+ernesto@crespo:~$
+</pre></div>
+<p>Se agrega la llave publica al archivo <code>authorized_keys</code>.</p>
+<div class="highlight"><pre><span></span>cd .ssh
+cat hgernesto-identity.pub &amp;gt;&amp;gt;  authorized_keys
+</pre></div>
+<p>Se regresa al equipo que se conectar&aacute; al servidor.</p>
+<p>Se crea el archivo <code>~/.ssh/config</code> Se agrega el host, el usuario y la clave privada que se va a usar para la conexi&oacute;n ssh.</p>
+<div class="highlight"><pre><span></span>Host www.crespo.org.ve
+    user ernesto
+    IdentityFile ~/.ssh/hgernesto-identity
+</pre></div>
+<p>Se verifica que se conecte al servidor usando la llave p&uacute;blica.</p>
+<div class="highlight"><pre><span></span>ssh www.crespo.org.ve -i ~/.ssh/hgernesto-identity -l ernesto
+Linux crespo.org.ve 2.6.26-2-vserver-amd64 #1 SMP Fri Aug 14 09:21:21 UTC 2009 x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Dec  8 19:20:08 2011 from 190.75.37.237
+
+ernesto@crespo:~$
+</pre></div>
+<p>Esta vez el servidor no pidi&oacute; clave para el usuario.</p>
+<p>Ahora se va a clonar el directorio etc para tener la configuraci&oacute;n en el home del usuario.</p>
+<div class="highlight"><pre><span></span>sudo hg clone /etc conf-www.respo.org.ve
+...
+getting subversion/servers
+getting sudoers
+getting sudoers.d/README
+getting sysctl.conf
+getting sysctl.d/README.sysctl
+getting sysctl.d/bindv6only.conf
+getting terminfo/README
+getting timezone
+getting ts.conf
+getting ucf.conf
+getting ufw/applications.d/bind9
+getting ufw/applications.d/openssh-server
+getting ufw/applications.d/postfix
+getting vga/dvorak-us.keymap
+getting vga/libvga.config
+getting vga/libvga.et4000
+getting vga/null.keymap
+getting vim/vimrc
+getting vim/vimrc.tiny
+getting w3m/config
+getting w3m/mailcap
+getting wgetrc
+getting xml/catalog
+getting xml/xml-core.xml
+1775 files updated, 0 files merged, 0 files removed, 0 files unresolved
+</pre></div>
+<p>Se cambia el due&ntilde;o y el grupo del repositorio ya que pertenece a root y no se va  a poder clonar con ese due&ntilde;o.</p>
+<div class="highlight"><pre><span></span>sudo chown -R ernesto.ecrespo conf-www.respo.org.ve/
+</pre></div>
+<p>Ahora se prueba realizar la clonaci&oacute;n del repositorio del servidor en la m&aacute;quina local.</p>
+<div class="highlight"><pre><span></span>ernesto@zeath:~$ hg clone ssh://ernesto@www.crespo.org.ve/repo/conf-www.respo.org.ve 
+destination directory: conf-www.respo.org.ve
+requesting all changes
+adding changesets
+adding manifests
+adding file changes
+added 1 changesets with 1775 changes to 1775 files
+updating to branch default
+1775 files updated, 0 files merged, 0 files removed, 0 files unresolved
+remote: 1 changesets found
+</pre></div>
+<p>Se verifica el repositorio local.</p>
+<div class="highlight"><pre><span></span>ernesto@zeath:~$ hg log conf-www.respo.org.ve/
+changeset:   0:10c12e9f2889
+tag:         tip
+user:        ecrespo@gmail.com
+date:        Thu Dec 08 19:11:24 2011 +0000
+summary:     Inicializacion del control de versiones
+</pre></div>
+<p>Ya se tiene respaldada la configuraci&oacute;n del servidor por medio de control de versiones, si se desea tener automatizado el proceso se puede crear scripts que se coloquen en el cron de manera que diariamente se tenga actualizado el respaldo de la configuraci&oacute;n del servidor por medio de control de versiones distribuido (mercurial).</p>
+<p>Es recomendable sacar del control de versiones los archivos <code>shadow</code>, <code>passwd</code> y <code>group</code>.</p>
+<h2 id="_1"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/tag/control-de-versiones.html">Control de versiones</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/mercurial.html">mercurial</a>
+      <a href="https://ecrespo.github.io/tag/ssh.html">ssh</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/compartir-repositorios-de-mercurial-con-mercurial-server.html">Compartir repositorios de Mercurial con mercurial-server</a></li>
+      <li><a href="https://ecrespo.github.io/gestionar-los-archivos-de-configuracion-en-etc-con-etckeeper-y-mercurial.html">Gestionar los archivos de configuración en /etc con etckeeper y mercurial</a></li>
+      <li><a href="https://ecrespo.github.io/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html">Como crear un metapaquete de configuración con config-package-dev</a></li>
+      <li><a href="https://ecrespo.github.io/como-crear-un-metapaquete-version-2.html">Como crear un metapaquete (versión 2)</a></li>
+      <li><a href="https://ecrespo.github.io/como-cifrar-directoriosparticiones-con-ecryptfs.html">Como cifrar directorios/particiones con eCryptfs</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

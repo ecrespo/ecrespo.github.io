@@ -1,5 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2012-01-09T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Feliz año 2012</title><link href="https://ecrespo.github.io/feliz-ano-2012.html" rel="alternate"></link><published>2012-01-09T09:00:00-05:30</published><updated>2012-01-09T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-01-09:/feliz-ano-2012.html</id><summary type="html">&lt;p&gt;Les deseo a todos un Feliz a&amp;ntilde;o 2012 y que todas sus metas se cumplan. Este correo deb&amp;iacute; enviarlo los primeros d&amp;iacute;as del a&amp;ntilde;o pero por motivos de viaje fue hasta ahorita que pude sentarme a escribir.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/all.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2012-01-10T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Servidor Proxy DNS con pdnsd</title><link href="https://ecrespo.github.io/servidor-proxy-dns-con-pdnsd.html" rel="alternate"></link><published>2012-01-10T09:00:00-05:30</published><updated>2012-01-10T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-01-10:/servidor-proxy-dns-con-pdnsd.html</id><summary type="html">&lt;p&gt;Ya hace un tiempo hab&amp;iacute;a explicado como se instala un servidor proxy DNS con &lt;code&gt;dnsmasq&lt;/code&gt;, ahora explicar&amp;eacute; la configuraci&amp;oacute;n de &lt;code&gt;PDNSD&lt;/code&gt; utilizando como servidor de DNS los servidores ra&amp;iacute;z de &lt;a href="https://es.wikipedia.org/wiki/OpenNIC"&gt;OpenNIC&lt;/a&gt; debido a los posibles problemas que nos genere la aprobaci&amp;oacute;n de la Ley SOPA y la Censura en Internet …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Ya hace un tiempo hab&amp;iacute;a explicado como se instala un servidor proxy DNS con &lt;code&gt;dnsmasq&lt;/code&gt;, ahora explicar&amp;eacute; la configuraci&amp;oacute;n de &lt;code&gt;PDNSD&lt;/code&gt; utilizando como servidor de DNS los servidores ra&amp;iacute;z de &lt;a href="https://es.wikipedia.org/wiki/OpenNIC"&gt;OpenNIC&lt;/a&gt; debido a los posibles problemas que nos genere la aprobaci&amp;oacute;n de la Ley SOPA y la Censura en Internet.&lt;/p&gt;
+&lt;p&gt;Si quiere utilizar los servidores de DNS de &lt;code&gt;OpenNIC&lt;/code&gt;  m&amp;aacute;s cercanos puede visitar el siguiente &lt;a href="http://wiki.opennicproject.org/ClosestT2Servers"&gt;enlace&lt;/a&gt;. Si desea m&amp;aacute;s informaci&amp;oacute;n sobre &lt;code&gt;OpenNIC&lt;/code&gt; puede revisar el siguiente &lt;a href="http://ww1.linuxerz.org/"&gt;art&amp;iacute;culo&lt;/a&gt; y la p&amp;aacute;gina del &lt;a href="http://www.opennicproject.org/"&gt;proyecto&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En mi caso luego de consultar los servidores de &lt;code&gt;OpenNIC&lt;/code&gt; m&amp;aacute;s cercanos usar&amp;eacute; el siguiente servidor de DNS 192.121.86.100.&lt;/p&gt;
+&lt;p&gt;Instalaci&amp;oacute;n de &lt;code&gt;pdnsd&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;En Debian simplemente se ejecuta un &lt;code&gt;apt-get install&lt;/code&gt;.  &lt;/p&gt;
+&lt;p&gt;&lt;code&gt;#apt-get install pdnsd&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;La aplicaci&amp;oacute;n muestra una ventana de dialogo donde menciona 3 m&amp;eacute;todos de configuraci&amp;oacute;n (resolvconf, servidores de DNS ra&amp;iacute;z o manual).&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Texto alternativo" src="./images/servidorproxydnsconpdnsd-1.png"/&gt;&lt;/p&gt;
+&lt;p&gt;En este caso se usar&amp;aacute; el m&amp;eacute;todo manual y se selecciona en la ventana de dialogo.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Texto alternativo" src="./images/servidorproxydnsconpdnsd-2.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Se edita el archivo &lt;code&gt;/etc/pdnsd.conf&lt;/code&gt;.  &lt;/p&gt;
+&lt;p&gt;Se agrega la siguiente informaci&amp;oacute;n:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;server {
+    label = "OpenNIC";
+    ip = 192.121.86.100; //IP del servidor DNS
+    uptest = query;     //Lrealiza consultas  DNS de una solicitud DNS.
+    interface=wlan0;     //La interface conectada a la red.
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se modifica a &lt;code&gt;yes&lt;/code&gt; el par&amp;aacute;metro &lt;code&gt;START_DAEMON&lt;/code&gt; del archivo &lt;code&gt;/etc/default/pdnsd&lt;/code&gt; para iniciar autom&amp;aacute;ticamente el servicio &lt;code&gt;pdnsd&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;START_DAEMON=yes&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Al editar el archivo &lt;code&gt;/etc/resolv.conf&lt;/code&gt; y agregar el servidor de DNS 127.0.0.1.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nameserver 127.0.0.1&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Se reinicia el servicio &lt;code&gt;pdnsd&lt;/code&gt;:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# invoke-rc.d pdnsd restart
+Stopping pdnsd.
+Starting pdnsd.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se hace una consulta con &lt;code&gt;dig&lt;/code&gt;:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dig www.barrapunto.com|grep "Query time"
+;; Query time: 316 msec
+
+dig www.barrapunto.com|grep "Query time"
+;; Query time: 2 msec
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Para verificar el funcionamiento del servidor se ejecuta el siguiente comando:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# pdnsd-ctl status
+
+Opening socket /var/cache/pdnsd/pdnsd.status
+
+pdnsd-1.2.8-par running on jewel.
+
+Cache status:
+=============
+2048 kB maximum disk cache size.
+56894 of 2107392 bytes (2.7%) memory cache used in 216 entries.
+
+Thread status:
+==============
+server status thread is running.
+pdnsd control thread is running.
+tcp server thread is running.
+udp server thread is running.
+19 query threads spawned in total (0 queries dropped).
+10 running query threads (10 active, 0 queued).
+
+Configuration:
+==============
+Global:
+-------
+    Cache size: 2048 kB
+    Server directory: /var/cache/pdnsd
+    Scheme file (for Linux pcmcia support): /var/lib/pcmcia/scheme
+    Server port: 53
+    Server ip (0.0.0.0=any available one): 127.0.0.1
+    Ignore cache when link is down: off
+    Maximum ttl: 604800
+    Minimum ttl: 900
+    Negative ttl: 900
+    Negative RRS policy: default
+    Negative domain policy: auth
+    Run as: pdnsd
+    Strict run as: on
+    Use NSS: on
+    Paranoid mode (cache pollution prevention): on
+    Ignore CD ('checking disabled') flag in queries: on
+    Control socket permissions (mode): 600
+    Maximum parallel queries served: 40
+    Maximum queries queued for serving: 60
+    Global timeout setting: 10
+    Parallel queries increment: 2
+    Randomize records in answer: on
+    Query method: udp_only
+    Query port start: 1024
+    Query port end: 65535
+    TCP server thread: on
+    TCP query timeout: 30
+    Delegation-only zones: (none)
+Server 0:
+------
+    label: OpenNIC
+    ip: 192.121.86.100
+    server assumed available: yes
+    port: 53
+    uptest: query
+    timeout: 120
+    uptest interval: 900
+    ping timeout: 600
+    ping ip: (using server ip)
+    interface: wlan0
+    device (for special Linux ppp device support):
+    uptest command:
+    uptest user: (process owner)
+    force cache purging: off
+    server is cached: on
+    lean query: on
+    Use only proxy?: off
+    Assumed root server: no
+    Randomize server query order: no
+    Default policy: included
+    Policies: (none)
+Succeeded
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se pueden agregar tantas IPS como se quiera.&lt;/p&gt;
+&lt;p&gt;Si desea m&amp;aacute;s informaci&amp;oacute;n para configurar pdnsd revise los siguientes enlaces:  &lt;/p&gt;
+&lt;p&gt;&lt;a href="https://wiki.archlinux.org/index.php/Pdnsd_(Espa%C3%B1ol)"&gt;https://wiki.archlinux.org/index.php/Pdnsd_(Espa%C3%B1ol)&lt;/a&gt; &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://manualinux.heliohost.org/pdnsd.html"&gt;http://manualinux.heliohost.org/pdnsd.html&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="DNS"></category><category term="General"></category><category term="Linux"></category><category term="Ubuntu"></category></entry><entry><title>Feliz año 2012</title><link href="https://ecrespo.github.io/feliz-ano-2012.html" rel="alternate"></link><published>2012-01-09T09:00:00-05:30</published><updated>2012-01-09T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-01-09:/feliz-ano-2012.html</id><summary type="html">&lt;p&gt;Les deseo a todos un Feliz a&amp;ntilde;o 2012 y que todas sus metas se cumplan. Este correo deb&amp;iacute; enviarlo los primeros d&amp;iacute;as del a&amp;ntilde;o pero por motivos de viaje fue hasta ahorita que pude sentarme a escribir.&lt;/p&gt;
 &lt;p&gt;Entre las metas de este blog fue el escribir para el a&amp;ntilde;o 2011 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Les deseo a todos un Feliz a&amp;ntilde;o 2012 y que todas sus metas se cumplan. Este correo deb&amp;iacute; enviarlo los primeros d&amp;iacute;as del a&amp;ntilde;o pero por motivos de viaje fue hasta ahorita que pude sentarme a escribir.&lt;/p&gt;
 &lt;p&gt;Entre las metas de este blog fue el escribir para el a&amp;ntilde;o 2011 por lo menos m&amp;aacute;s de 36 art&amp;iacute;culos que fue logrado el a&amp;ntilde;o 2009, en el 2011  se publicaron 49 art&amp;iacute;culos que da un promedio por mes de 4 art&amp;iacute;culos.&lt;/p&gt;
 &lt;p&gt;Adicional a esto en el mes de Diciembre se logr&amp;oacute; superar la cantidad de visitas mensuales del blog de 3800 que fue el m&amp;aacute;ximo a 4160 para ese mes seg&amp;uacute;n lo muestra la siguiente figura.&lt;/p&gt;

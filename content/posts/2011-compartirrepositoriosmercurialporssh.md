@@ -5,17 +5,17 @@ Tags: Canaima,Control de versiones,Debian,Linux,mercurial,ssh,Ubuntu
 lang: es
 translation: true
 
-[En artículo anterior](http://blog.crespo.org.ve/2011/08/compartir-repositorios-de-mercurial-con.html) se explica como compartir un repositorio mercurial con `mercurial-server`, ahora se explicará como hacerlo usando `ssh` con claves públicas.
+[En artículo anterior](https://www.seraph.to/compartir-repositorios-de-mercurial-con-mercurial-server.html) se explica como compartir un repositorio mercurial con `mercurial-server`, ahora se explicará como hacerlo usando `ssh` con claves públicas.
 
-Lo que primero se va a hacer es crear la clave pública para `ssh` y distribuirlo al equipo o los equipos, luego se verifica el funcionamiento del `ssh` con la clave pública. 
+Lo que primero se va a hacer es crear la clave pública para `ssh` y distribuirlo al equipo o los equipos, luego se verifica el funcionamiento del `ssh` con la clave pública.
 
-La idea es mantener respaldado la configuración de un equipo que está con control de versiones con mercurial usando [etckeeper](http://blog.crespo.org.ve/2011/07/gestionar-los-archivos-de-configuracion.html).
+La idea es mantener respaldado la configuración de un equipo que está con control de versiones con mercurial usando [etckeeper](https://www.seraph.to/gestionar-los-archivos-de-configuracion-en-etc-con-etckeeper-y-mercurial.html).
 
 En el servidor es necesario instalar `etckeeper`, `mercurial` y `ssh`.
 
 ```
 apt-get install etckeeper mercurial openssh-server
-``` 
+```
 
 Configurar `etckeeper` y `mercurial`.
 
@@ -56,7 +56,7 @@ AVOID_DAILY_AUTOCOMMITS=1
 # The high-level package manager that's being used.
 # (apt, pacman-g2, yum etc)
 HIGHLEVEL_PACKAGE_MANAGER=apt
-	
+
 # The low-level package manager that's being used.
 # (dpkg, rpm, pacman-g2, etc)
 LOWLEVEL_PACKAGE_MANAGER=dpkg  
@@ -159,7 +159,7 @@ A xml/xml-core.xml
 ```
 
 Ahora se hace el primer commit.
-	
+
 ```
 etckeeper commit "Inicializacion del control de versiones"
 ...
@@ -192,8 +192,8 @@ Ahora se creará la clave ssh y se copiará en el servidor.
 ```
 ssh-keygen -t rsa -C "ecrespo@gmail.com" -f hgernesto-identity
 Generating public/private rsa key pair.
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
 Your identification has been saved in hgernesto-identity.
 Your public key has been saved in hgernesto-identity.pub.
 The key fingerprint is:
@@ -216,7 +216,7 @@ Se copia la clave pública al servidor.
 
 ```
 scp hgernesto-identity.pub ernesto@www.crespo.org.ve:.ssh/
-ernesto@www.crespo.org.ve's password: 
+ernesto@www.crespo.org.ve's password:
 hgernesto-identity.pub           100%  399     0.4KB/s   00:00
 ```    
 
@@ -224,7 +224,7 @@ Se accede al servidor:
 
 ```
 ssh ernesto@www.crespo.org.ve
-ernesto@www.crespo.org.ve's password: 
+ernesto@www.crespo.org.ve's password:
 Linux crespo.org.ve 2.6.26-2-vserver-amd64 #1 SMP Fri Aug 14 09:21:21 UTC 2009 x86_64
 
 The programs included with the Debian GNU/Linux system are free software;
@@ -236,10 +236,10 @@ permitted by applicable law.
 Last login: Thu Dec  8 18:58:20 2011 from 190.75.37.237
 
 ernesto@crespo:~$
-``` 
+```
 
 Se agrega la llave publica al archivo `authorized_keys`.
-	
+
 ```
 cd .ssh
 cat hgernesto-identity.pub &gt;&gt;  authorized_keys
@@ -269,7 +269,7 @@ permitted by applicable law.
 Last login: Thu Dec  8 19:20:08 2011 from 190.75.37.237
 
 ernesto@crespo:~$
-``` 
+```
 
 Esta vez el servidor no pidió clave para el usuario.
 
@@ -314,7 +314,7 @@ sudo chown -R ernesto.ecrespo conf-www.respo.org.ve/
 Ahora se prueba realizar la clonación del repositorio del servidor en la máquina local.
 
 ```
-ernesto@zeath:~$ hg clone ssh://ernesto@www.crespo.org.ve/repo/conf-www.respo.org.ve 
+ernesto@zeath:~$ hg clone ssh://ernesto@www.crespo.org.ve/repo/conf-www.respo.org.ve
 destination directory: conf-www.respo.org.ve
 requesting all changes
 adding changesets

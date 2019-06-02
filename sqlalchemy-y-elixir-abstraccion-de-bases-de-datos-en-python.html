@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En el artículo anterior se explica como usar Sqlalchemy para acceder y manipular una base de datos abstrayendo el motor de la base de datos a utilizar. Existe una herramienta que facilita aun más el trabajo de crear tablas, insertar, consultar o remover datos de dichas tablas; Elixir crea una …" />
+<meta name="keywords" content="Debian, General, Python, Ubuntu">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Sqlalchemy y Elixir: Abstracción de Bases de Datos en Python"/>
+<meta property="og:description" content="En el artículo anterior se explica como usar Sqlalchemy para acceder y manipular una base de datos abstrayendo el motor de la base de datos a utilizar. Existe una herramienta que facilita aun más el trabajo de crear tablas, insertar, consultar o remover datos de dichas tablas; Elixir crea una …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/sqlalchemy-y-elixir-abstraccion-de-bases-de-datos-en-python.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2012-04-08 08:30:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Python"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Sqlalchemy y Elixir: Abstracción de Bases de Datos en Python</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="sqlalchemy-y-elixir-abstraccion-de-bases-de-datos-en-python">Sqlalchemy y Elixir: Abstracción de Bases de Datos en Python</h1>
+    <p>
+          Posted on dom 08 abril 2012 in <a href="https://ecrespo.github.io/category/tutorial-de-python.html">Tutorial de Python</a>
+
+
+        &#8226; 5 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>En el art&iacute;culo <a href="https://www.seraph.to/sqlite-con-python.html">anterior</a> se explica como usar <code>Sqlalchemy</code> para acceder y manipular una base de datos abstrayendo el motor de la base de datos a utilizar.</p>
+<p>Existe una herramienta que facilita aun m&aacute;s el trabajo de crear tablas, insertar, consultar o remover datos de dichas tablas; <a href="http://elixir.ematia.de/trac/wiki">Elixir</a> crea una capa declarativa sobre <code>slqalchemy</code> que permite usar la declaraci&oacute;n de clases directamente a las tablas de entidad relaci&oacute;n.</p>
+<p>Igual que en el ejemplo anterior se usar&aacute; las tablas Grupos y Contactos, la diferencia ser&aacute; que no ser&aacute; necesario definir un campo id para cada tabla, adem&aacute;s la forma de declarar cual campo es primary key o foreign key es con la declaraci&oacute;n de uno a muchos o de muchos a uno.</p>
+<p>Este ejemplo crea las tablas, se realiza una inserci&oacute;n de datos a ambas tablas, se realiza unas consultas de datos y al final se elimina y dato de la tabla Contactos y se muestra que ya se elimino de dicha tabla.</p>
+<p>El c&oacute;digo python se muestra a continuaci&oacute;n:  </p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">elixir</span> <span class="kn">import</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">Entity</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">elixir</span> <span class="kn">import</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">UnicodeText</span>
+<span class="kn">from</span> <span class="nn">elixir</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1">#Se asocia el metadato con la base de datos sqlite</span>
+<span class="n">metadata</span><span class="o">.</span><span class="n">bind</span> <span class="o">=</span> <span class="s2">"sqlite:///prueba.db"</span>
+<span class="c1">#Se activa el echo de los resultados de los comandos.</span>
+<span class="n">metadata</span><span class="o">.</span><span class="n">bind</span><span class="o">.</span><span class="n">echo</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="c1">#Se crea la clase Grupos que hereda Entity, </span>
+<span class="c1">#se crea los campos grupo (unicode 150),</span>
+<span class="c1">#descripcion (unicode 200) y</span>
+<span class="c1">#contactos que es una referencia uno a muchos de la </span>
+<span class="c1">#clase Contactos.</span>
+<span class="k">class</span> <span class="nc">Grupos</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+<span class="n">grupo</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">150</span><span class="p">))</span>
+<span class="n">descripcion</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">200</span><span class="p">))</span>
+<span class="n">contactos</span> <span class="o">=</span> <span class="n">OneToMany</span><span class="p">(</span><span class="s1">'Contactos'</span><span class="p">)</span>
+
+<span class="c1">#Devuelve la informacion de los grupos</span>
+<span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">return</span> <span class="s1">'&lt;Grupos "</span><span class="si">%s</span><span class="s1">" (</span><span class="si">%s</span><span class="s1">)&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grupo</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">descripcion</span><span class="p">)</span>
+
+<span class="c1">#Se crea la clase contactos que hereda de Entity.</span>
+<span class="c1">#se tiene el campo nombre (unicode 100),</span>
+<span class="c1">#telefono (string 11) y el campo grupo muchos a uno de grupos.</span>
+<span class="k">class</span> <span class="nc">Contactos</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+<span class="n">nombre</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+<span class="n">telefono</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">String</span><span class="p">(</span><span class="mi">11</span><span class="p">))</span>
+<span class="n">grupo</span> <span class="o">=</span> <span class="n">ManyToOne</span><span class="p">(</span><span class="s1">'Grupos'</span><span class="p">)</span>
+
+<span class="c1">#Devuelve la informacion de los contactos</span>
+<span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">return</span> <span class="s1">'&lt;Contactos- nombre: "</span><span class="si">%s</span><span class="s1">", telefono: "</span><span class="si">%s</span><span class="s1">", grupo: "</span><span class="si">%s</span><span class="s1">"&gt;'</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">telefono</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">grupo</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+<span class="c1">#Se importa create_all, setup_all y session de elixir.</span>
+<span class="kn">from</span> <span class="nn">elixir</span> <span class="kn">import</span> <span class="n">create_all</span><span class="p">,</span> <span class="n">setup_all</span><span class="p">,</span> <span class="n">session</span>
+<span class="c1">#Se crea las clases segun los modelos.</span>
+<span class="n">setup_all</span><span class="p">()</span>
+<span class="c1">#Se crea las tablas en la base de datos segun los modelos definidos</span>
+<span class="n">create_all</span><span class="p">()</span>
+
+<span class="c1">#Se insertan datos en la tabla grupos</span>
+<span class="c1">#En este caso se agregan ciudades del pais.</span>
+<span class="n">Guacara</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s1">'Guacara'</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s1">'Ciudad del Estado Carabobo'</span><span class="p">)</span>
+<span class="n">Valencia</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Valencia"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Capital del Estado Carabobo"</span><span class="p">)</span>
+<span class="n">Barquisimeto</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Barquisimeto"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Capital del Estado Lara"</span><span class="p">)</span>
+<span class="n">Caracas</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Caracas"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Distrito Capital"</span><span class="p">)</span>
+<span class="n">Maracaibo</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Maracaibo"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Capital del Estado Zulia"</span><span class="p">)</span>
+<span class="n">Merida</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Merida"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Capital del Estado Merida"</span><span class="p">)</span>
+<span class="n">Barcelona</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Barcelona"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Capital de Anzoategui"</span><span class="p">)</span>
+<span class="n">PuertoOrdaz</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Puerto Ordaz"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Ciudad del Estado Bolivar"</span><span class="p">)</span>
+<span class="n">Barinas</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Barinas"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Capital del Estado Barinas"</span><span class="p">)</span>
+<span class="n">Maracay</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Maracay"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Capital del Estado Aragua"</span><span class="p">)</span>
+<span class="n">LosTeques</span> <span class="o">=</span> <span class="n">Grupos</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s2">"Los Teques"</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s2">"Capital del Estado Miranda"</span><span class="p">)</span>
+
+<span class="c1">#Se hace el commit para insertar los datos de la tabla grupos en la base de datos.</span>
+<span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="c1">#Se insertan datos en la tabla contactos, cada contacto hace referencia a un grupo de </span>
+<span class="c1">#la tabla grupos.</span>
+<span class="n">Contactos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Ernesto Nadir Crespo Avila'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04205873118'</span><span class="p">,</span><span class="n">grupo</span><span class="o">=</span><span class="n">Guacara</span><span class="p">)</span>
+<span class="n">Contactos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Jhon Doe'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04295333131'</span><span class="p">,</span><span class="n">grupo</span><span class="o">=</span><span class="n">Valencia</span><span class="p">)</span>
+<span class="n">Contactos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Jane Doe'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04399991919'</span><span class="p">,</span><span class="n">grupo</span><span class="o">=</span><span class="n">Caracas</span><span class="p">)</span>
+<span class="n">Contactos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Pedro Perez'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04596661617'</span><span class="p">,</span><span class="n">grupo</span><span class="o">=</span><span class="n">Caracas</span><span class="p">)</span>
+<span class="n">Contactos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Maria Perez'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04194445445'</span><span class="p">,</span><span class="n">grupo</span><span class="o">=</span><span class="n">Barquisimeto</span><span class="p">)</span>
+<span class="c1">#Se hace el commit para insertar los datos en la tabla contactos en la base de datos.</span>
+<span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="c1">#Se realiza una consulta buscando los contactos del grupo Caracas</span>
+<span class="c1">#Y se presentan en pantalla</span>
+<span class="n">registros</span> <span class="o">=</span> <span class="n">Contactos</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Contactos</span><span class="o">.</span><span class="n">grupo</span> <span class="o">==</span> <span class="n">Caracas</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">print</span> <span class="s2">"Contactos de Caracas"</span>
+<span class="k">for</span> <span class="n">registro</span> <span class="ow">in</span> <span class="n">registros</span><span class="p">:</span>
+<span class="k">print</span> <span class="s2">"-"</span> <span class="o">*</span> <span class="mi">20</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">nombre</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">telefono</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">grupo</span>
+<span class="k">print</span> <span class="s2">"*-"</span> <span class="o">*</span><span class="mi">20</span>
+
+<span class="c1">#Se muestra en pantalla todos los contactos.</span>
+<span class="n">registros</span> <span class="o">=</span> <span class="n">Contactos</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">print</span> <span class="s2">"Todos los Contactos"</span>
+<span class="k">for</span> <span class="n">registro</span> <span class="ow">in</span> <span class="n">registros</span><span class="p">:</span>
+<span class="k">print</span> <span class="s2">"-"</span> <span class="o">*</span> <span class="mi">20</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">nombre</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">telefono</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">grupo</span>
+<span class="k">print</span> <span class="s2">"*-"</span> <span class="o">*</span><span class="mi">20</span>
+<span class="c1">#Se muestra en pantalla todos los grupos, con sus contactos</span>
+<span class="c1">#asociados.</span>
+<span class="n">registros</span> <span class="o">=</span> <span class="n">Grupos</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">registro</span> <span class="ow">in</span> <span class="n">registros</span><span class="p">:</span>
+<span class="k">print</span> <span class="s2">"-"</span> <span class="o">*</span> <span class="mi">20</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">grupo</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">descripcion</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">contactos</span>
+<span class="k">print</span> <span class="s2">"*-"</span> <span class="o">*</span><span class="mi">20</span>
+<span class="c1">#Se consulta la tabla contactos buscando al usuario Maria Perez</span>
+<span class="c1">#Se muestra en pantalla la informacion de ese contacto</span>
+<span class="n">consulta</span> <span class="o">=</span> <span class="n">Contactos</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="sa">u</span><span class="s1">'Maria Perez'</span><span class="p">)</span>
+<span class="n">registro</span> <span class="o">=</span> <span class="n">consulta</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<span class="k">print</span> <span class="s2">"</span><span class="si">%s</span><span class="s2"> , </span><span class="si">%s</span><span class="s2"> :(</span><span class="si">%s</span><span class="s2">)"</span> <span class="o">%</span> <span class="p">(</span><span class="n">registro</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="n">registro</span><span class="o">.</span><span class="n">telefono</span><span class="p">,</span> <span class="n">registro</span><span class="o">.</span><span class="n">grupo</span><span class="p">)</span>
+<span class="c1"># Se borra ese contacto de la tabla contactos y se actualiza la base de datos.</span>
+<span class="n">registro</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+<span class="c1">#Se muestra en pantalla todos los contactos</span>
+<span class="c1">#para hacer notar que ya el contacto Maria Perez no existe</span>
+<span class="c1">#en la base de datos.</span>
+<span class="n">registros</span> <span class="o">=</span> <span class="n">Contactos</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">print</span> <span class="s2">"Contactos, luego de eliminar a Maria Perez"</span>
+<span class="k">for</span> <span class="n">registro</span> <span class="ow">in</span> <span class="n">registros</span><span class="p">:</span>
+<span class="k">print</span> <span class="s2">"-"</span> <span class="o">*</span> <span class="mi">20</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">nombre</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">telefono</span>
+<span class="k">print</span> <span class="n">registro</span><span class="o">.</span><span class="n">grupo</span>
+</pre></div>
+</td></tr></table>
+<p>El c&oacute;digo SQL generado a partir del modelo es el siguiente:</p>
+<div class="highlight"><pre><span></span>CREATE TABLE __main___grupos (
+id INTEGER NOT NULL, 
+grupo VARCHAR(150), 
+descripcion VARCHAR(200), 
+PRIMARY KEY (id)
+)
+
+
+CREATE TABLE __main___contactos (
+id INTEGER NOT NULL, 
+nombre VARCHAR(100), 
+telefono VARCHAR(11), 
+grupo_id INTEGER, 
+PRIMARY KEY (id), 
+CONSTRAINT __main___contactos_grupo_id_fk FOREIGN KEY(grupo_id) REFERENCES __main___grupos (id)
+)
+</pre></div>
+<p>Con respecto al modelo el c&oacute;digo <code>SQL</code> si tiene los campos <code>id</code> como <code>PRIMARY KEY</code> en cada tabla y se define cuales son <code>FOREIGN KEY</code>, gracias a <code>Elixir</code> se ahorra trabajo en la definici&oacute;n de campos y al usar <code>OneToMany</code> o <code>ManyToOne</code> se est&aacute; definiendo quienes son primary o foreign key.</p>
+<p>El resultado del script se muestra a continuaci&oacute;n:  </p>
+<div class="highlight"><pre><span></span><span class="gh">Contactos de Caracas</span>
+<span class="gh">--------------------</span>
+Jane Doe
+04399991919
+<span class="gh">&lt;Grupos "Caracas" (Distrito Capital)&gt;</span>
+<span class="gh">--------------------</span>
+Pedro Perez
+04596661617
+<span class="nt">&lt;Grupos "Caracas" (Distrito Capital)&gt;</span>
+<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-
+<span class="gh">Todos los Contactos</span>
+<span class="gh">--------------------</span>
+Ernesto Nadir Crespo Avila
+04205873118
+<span class="gh">&lt;Grupos "Guacara" (Ciudad del Estado Carabobo)&gt;</span>
+<span class="gh">--------------------</span>
+Jhon Doe
+04295333131
+<span class="gh">&lt;Grupos "Valencia" (Capital del Estado Carabobo)&gt;</span>
+<span class="gh">--------------------</span>
+Jane Doe
+04399991919
+<span class="gh">&lt;Grupos "Caracas" (Distrito Capital)&gt;</span>
+<span class="gh">--------------------</span>
+Pedro Perez
+04596661617
+<span class="gh">&lt;Grupos "Caracas" (Distrito Capital)&gt;</span>
+<span class="gh">--------------------</span>
+Maria Perez
+04194445445
+<span class="nt">&lt;Grupos "Barquisimeto" (Capital del Estado Lara)&gt;</span>
+<span class="gh">*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-</span>
+<span class="gh">--------------------</span>
+Guacara
+Ciudad del Estado Carabobo
+<span class="gh">[&lt;Contactos- nombre: "Ernesto Nadir Crespo Avila", telefono: "04205873118", grupo: "&lt;Grupos "Guacara" (Ciudad del Estado Carabobo)&gt;"&gt;]</span>
+<span class="gh">--------------------</span>
+Valencia
+Capital del Estado Carabobo
+<span class="gh">[&lt;Contactos- nombre: "Jhon Doe", telefono: "04295333131", grupo: "&lt;Grupos "Valencia" (Capital del Estado Carabobo)&gt;"&gt;]</span>
+<span class="gh">--------------------</span>
+Barquisimeto
+Capital del Estado Lara
+<span class="gh">[&lt;Contactos- nombre: "Maria Perez", telefono: "04194445445", grupo: "&lt;Grupos "Barquisimeto" (Capital del Estado Lara)&gt;"&gt;]</span>
+<span class="gh">--------------------</span>
+Caracas
+Distrito Capital
+[<span class="nt">&lt;Contactos- nombre: "Jane Doe", telefono: "04399991919", grupo: "&lt;Grupos "Caracas" (Distrito Capital)&gt;</span>"&gt;,  
+<span class="gh">&lt;Contactos- nombre: "Pedro Perez", telefono: "04596661617", grupo: "&lt;Grupos "Caracas" (Distrito Capital)&gt;"&gt;]</span>
+<span class="gh">--------------------</span>
+Maracaibo
+Capital del Estado Zulia
+<span class="gh">[]</span>
+<span class="gh">--------------------</span>
+Merida
+Capital del Estado Merida
+<span class="gh">[]</span>
+<span class="gh">--------------------</span>
+Barcelona
+Capital de Anzoategui
+<span class="gh">[]</span>
+<span class="gh">--------------------</span>
+Puerto Ordaz
+Ciudad del Estado Bolivar
+<span class="gh">[]</span>
+<span class="gh">--------------------</span>
+Barinas
+Capital del Estado Barinas
+<span class="gh">[]</span>
+<span class="gh">--------------------</span>
+Maracay
+Capital del Estado Aragua
+<span class="gh">[]</span>
+<span class="gh">--------------------</span>
+Los Teques
+Capital del Estado Miranda
+[]
+<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-<span class="ge">*-*</span>-
+Maria Perez , 04194445445 :(&lt;Grupos "Barquisimeto" (Capital del Estado Lara)&gt;)
+<span class="gh">Contactos, luego de eliminar a Maria Perez</span>
+<span class="gh">--------------------</span>
+Ernesto Nadir Crespo Avila
+04205873118
+<span class="gh">&lt;Grupos "Guacara" (Ciudad del Estado Carabobo)&gt;</span>
+<span class="gh">--------------------</span>
+Jhon Doe
+04295333131
+<span class="gh">&lt;Grupos "Valencia" (Capital del Estado Carabobo)&gt;</span>
+<span class="gh">--------------------</span>
+Jane Doe
+04399991919
+<span class="gh">&lt;Grupos "Caracas" (Distrito Capital)&gt;</span>
+<span class="gh">--------------------</span>
+Pedro Perez
+04596661617
+<span class="nt">&lt;Grupos "Caracas" (Distrito Capital)&gt;</span>
+</pre></div>
+<p>Las herramientas <code>sqlalchemy</code> y <code>Elixir</code> facilitan el trabajo de abstraer el motor de base de datos y la creaci&oacute;n de las tablas con sus respectivos campos en dichas base de datos.  De est&aacute; forma se puede crear aplicaciones donde se puede facilitar el uso de varios motores de base de datos realizando cambios m&iacute;nimos en la aplicaci&oacute;n.</p>
+<h2 id="_1"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/abstraccion-del-motor-de-base-de-datos-con-el-orm-sqlalchemy-y-python.html">Abstracción del motor de Base de Datos con el ORM Sqlalchemy y python</a></li>
+      <li><a href="https://ecrespo.github.io/simulacion-de-circuitos-electricos-con-python-eispice.html">Simulación de circuitos eléctricos con python eispice</a></li>
+      <li><a href="https://ecrespo.github.io/calculo-de-direcciones-ip-con-python.html">Cálculo de direcciones IP con python</a></li>
+      <li><a href="https://ecrespo.github.io/crear-llave-gpg-desde-python.html">Crear llave gpg desde Python</a></li>
+      <li><a href="https://ecrespo.github.io/conectarse-al-repositorio-de-bitbucket-desde-python.html">Conectarse al repositorio de bitbucket desde python</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

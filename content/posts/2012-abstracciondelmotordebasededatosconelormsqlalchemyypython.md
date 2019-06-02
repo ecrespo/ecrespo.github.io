@@ -9,7 +9,7 @@ translation: true
 
 `Sqlalchemy` es una herramienta `ORM` para python que da flexibilidad en el desarrollo con SQL.
 
-Tomando el artículo anterior de [sqlite con python](https://www.seraph.to/sqlite-con-python.html#sqlite-con-python), se cambiará el módulo de `sqlite3` para python por el `ORM Sqlalchemy`, de esa forma se abstrae las distintas instrucciones existentes para diferentes motores de base de datos como `postgresql`, `mysql`, `sqlite` y se puede así utilizar cualquier motor de base de datos realizando mínimos cambios en el programa.
+Tomando el artículo anterior de [sqlite con python](https://ecrespo.github.io/sqlite-con-python.html), se cambiará el módulo de `sqlite3` para python por el `ORM Sqlalchemy`, de esa forma se abstrae las distintas instrucciones existentes para diferentes motores de base de datos como `postgresql`, `mysql`, `sqlite` y se puede así utilizar cualquier motor de base de datos realizando mínimos cambios en el programa.
 
 A continuación el código donde se muestra el uso de `sqlalchemy` en una base de datos `sqlite3`:  
 

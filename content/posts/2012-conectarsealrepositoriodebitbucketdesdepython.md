@@ -103,4 +103,4 @@ dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV
 
 O Escaneando el código QR desde la billetera:
 
-![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)
+![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)

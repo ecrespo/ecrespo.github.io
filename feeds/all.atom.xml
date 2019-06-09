@@ -684,7 +684,328 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Tutorial de ZeroMQ con Python (REP/REQ y PUB/SUB). Parte 5.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-repreq-y-pubsub-parte-5.html" rel="alternate"></link><published>2012-06-02T09:00:00-05:30</published><updated>2012-06-02T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-02:/tutorial-de-zeromq-con-python-repreq-y-pubsub-parte-5.html</id><summary type="html">&lt;p&gt;Continuando con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;art&amp;iacute;culos sobre ZeroMQ&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Tutorial de ZeroMQ con Python( Pipelining). Parte 7.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-pipelining-parte-7.html" rel="alternate"></link><published>2012-06-30T09:00:00-05:30</published><updated>2012-06-30T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-30:/tutorial-de-zeromq-con-python-pipelining-parte-7.html</id><summary type="html">&lt;p&gt;Siguiendo con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ejemplos sobre ZeroMQ&lt;/a&gt;, ahora mostrar&amp;eacute; como usar diferentes tipos de transporte (antes se mostrada a tcp, ahora se usar&amp;aacute; &lt;code&gt;tcp&lt;/code&gt; e &lt;code&gt;ipc&lt;/code&gt; el cual es un modelo de comunicaci&amp;oacute;n interprocesos y puede ser de ayuda cuando se necesita baja latencia).&lt;/p&gt;
+&lt;p&gt;Luego de escoger la capa de transporte …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Siguiendo con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ejemplos sobre ZeroMQ&lt;/a&gt;, ahora mostrar&amp;eacute; como usar diferentes tipos de transporte (antes se mostrada a tcp, ahora se usar&amp;aacute; &lt;code&gt;tcp&lt;/code&gt; e &lt;code&gt;ipc&lt;/code&gt; el cual es un modelo de comunicaci&amp;oacute;n interprocesos y puede ser de ayuda cuando se necesita baja latencia).&lt;/p&gt;
+&lt;p&gt;Luego de escoger la capa de transporte se selecciona un patr&amp;oacute;n de mensaje, en art&amp;iacute;culos anteriores se ha mostrado los patrones REQ/REP, PUB/SUB y Pair, s&amp;oacute;lo queda por explicar su funcionamiento el patr&amp;oacute;n UPSTREAM/DOWNSTREAM.&lt;/p&gt;
+&lt;p&gt;El patr&amp;oacute;n UPSTREAM/DOWNSTREAM se parece al patr&amp;oacute;n REQ/REP, la diferencia es que en REQ/REP puede existir comunicaci&amp;oacute;n bidireccional en cambio con UPSTREAM/DOWNSTREAM se tiene una comunicaci&amp;oacute;n en un s&amp;oacute;lo sentido y permite paralelizar procesos. En la figura se muestra el flujo de trabajo.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython7-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Un ejemplo de su posible uso tomado del art&amp;iacute;culo de Nicholas Pi&amp;euml;l es que se tenga un sistema de reconocimiento de im&amp;aacute;genes en tiempo real, el servidor captura las im&amp;aacute;genes y se las env&amp;iacute;a a los workers para que sean procesadas, y al terminar dicho proceso se env&amp;iacute;an las im&amp;aacute;genes al colector.&lt;/p&gt;
+&lt;p&gt;El servidor simplemente tiene 2 listas una de cadenas de texto que al final env&amp;iacute;a 2 "x" para que los clientes finalicen. Se crea un socket con capa de transporte tcp para env&amp;iacute;ar la lista de n&amp;uacute;meros, luego se crea el socket para ipc y se env&amp;iacute;a las cadenas de texto.&lt;/p&gt;
+&lt;p&gt;Se notar&amp;aacute; que los clientes simplemente se conectan al servidor, uno de los clientes se conecta por tcp y el otro por ipc.&lt;/p&gt;
+&lt;p&gt;El c&amp;oacute;digo del servidor se muestra a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ y sleep de time&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;ctx&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket con parametro DOWNSTREAM&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ctx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DOWNSTREAM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea una lista de textos&lt;/span&gt;
+
+&lt;span class="n"&gt;lista1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Esta es una prueba,1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"Desde zeroMQ,2"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"Sigo probando,3"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"Prueba...,4"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"q,5"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"1,6"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"q,7"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"x"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"x"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea una lista de un rango de numeros&lt;/span&gt;
+
+&lt;span class="n"&gt;lista2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se asocia el socket a una IP y puerto&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:12345"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se envia la lista de numeros a los clientes&lt;/span&gt;
+
+&lt;span class="c1"&gt;#que se conectan al servidor.&lt;/span&gt;
+
+&lt;span class="c1"&gt;#El envio se hace cada segundo.&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;lista2&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Enviado &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;
+
+ &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se asocia el socket a un archivo por&lt;/span&gt;
+
+&lt;span class="c1"&gt;#medio del transporte ipc&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"ipc:///tmp/zmqdemo"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se envia la lista de textos a los clientes conectados&lt;/span&gt;
+
+&lt;span class="c1"&gt;#el envio se realiza cada segundo.&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;lista1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Enviado &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;
+
+ &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El c&amp;oacute;digo del cliente que usa tcp como transporte se muestra a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa el modulo zeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;ctx&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket con Parametro UPSTREAM&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ctx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;UPSTREAM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se conecta el socket (tcp) al servidor y su puerto&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:12345"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea un ciclo que recibe lo que envia el &lt;/span&gt;
+
+&lt;span class="c1"&gt;#servidor y lo muestra en pantalla&lt;/span&gt;
+
+&lt;span class="c1"&gt;#y se recibe la letra x finaliza la conexion del cliente&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="n"&gt;rcv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;  &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+ &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;rcv&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"x"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;rcv&lt;/span&gt;
+
+  &lt;span class="k"&gt;break&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;rcv&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se muestra el c&amp;oacute;digo del cliente utilizando como transporte ipc:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa el modulo zeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;ctx&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket con parametro UPSTREAM&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ctx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;UPSTREAM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se conecta el socket a un archivo temporal&lt;/span&gt;
+
+&lt;span class="c1"&gt;#por medio de ipc como transporte&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"ipc:///tmp/zmqdemo"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea un ciclo para recibir&lt;/span&gt;
+
+&lt;span class="c1"&gt;#la informacion del servidor&lt;/span&gt;
+
+&lt;span class="c1"&gt;#se muestra en pantalla &lt;/span&gt;
+
+&lt;span class="c1"&gt;#si se recibe la letra x &lt;/span&gt;
+
+&lt;span class="c1"&gt;#finaliza la conexion con el servidor&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="n"&gt;rcv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+ &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;rcv&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt;  &lt;span class="s1"&gt;'x'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+  &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;rcv&lt;/span&gt;
+
+  &lt;span class="k"&gt;break&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;rcv&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;La siguientes figuras muestran el resultado en el servidor y ambos clientes:
+Servidor:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython7-2.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Cliente (tcp):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython7-3.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Cliente (ipc):  &lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython7-4.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Como se nota en las figuras de los clientes, la informaci&amp;oacute;n que env&amp;iacute;a el servidor a los clientes se distribuye entre ambos.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="ZeroMQ"></category></entry><entry><title>Tutorial de ZeroMQ con Python( PUSH/PULL). Parte 6.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-pushpull-parte-6.html" rel="alternate"></link><published>2012-06-03T09:00:00-05:30</published><updated>2012-06-03T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-03:/tutorial-de-zeromq-con-python-pushpull-parte-6.html</id><summary type="html">&lt;p&gt;Siguiendo con la serie sobre &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ZeroMQ&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En este art&amp;iacute;culo se explica el funcionamiento de PUSH y PULL.&lt;/p&gt;
+&lt;p&gt;La idea es que se tiene el emisor, quien env&amp;iacute;a a los "workers" unos string que son procesados de distinta manera o de igual manera (una forma de crear escalabilidad). Luego que los …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Siguiendo con la serie sobre &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ZeroMQ&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En este art&amp;iacute;culo se explica el funcionamiento de PUSH y PULL.&lt;/p&gt;
+&lt;p&gt;La idea es que se tiene el emisor, quien env&amp;iacute;a a los "workers" unos string que son procesados de distinta manera o de igual manera (una forma de crear escalabilidad). Luego que los "workers" procesan la informaci&amp;oacute;n recibida del emisor se la pasan a resultado quien presenta la informaci&amp;oacute;n en pantalla.&lt;/p&gt;
+&lt;p&gt;La figura muestra el proceso ya explicado:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython6-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;El c&amp;oacute;digo del emisor es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ y random&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;random&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket con el argumento PUSH&lt;/span&gt;
+
+&lt;span class="n"&gt;envio&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PUSH&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se asocia el socket a escuchar todas las IPs y el puerto 5557&lt;/span&gt;
+
+&lt;span class="n"&gt;envio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://*:5557"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#se muestra que es necesario esperar que arranquen los workers&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Hay que esperar que los workers se inicien"&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Al dar enter se inicia el proceso de transmision&lt;/span&gt;
+
+&lt;span class="nb"&gt;raw_input&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Se inicia la transmision del trabajo..."&lt;/span&gt;
+
+&lt;span class="c1"&gt;#tupla de strings que se van a enviar&lt;/span&gt;
+
+&lt;span class="n"&gt;cadenas&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'hola'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'aloha'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'hello'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'buenas noches'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'buenas tardes'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'buenos dias'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'bienvenido'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea un ciclo para recorrer la tupla&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cadenas&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+
+ &lt;span class="n"&gt;cadena&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cadenas&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+ &lt;span class="n"&gt;envio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cadena&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Enviando: {0}"&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cadena&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El c&amp;oacute;digo del worker es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa ZeroMQ y sleep de time&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el Socket con argumento PULL&lt;/span&gt;
+
+&lt;span class="n"&gt;recepcion&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se conecta el socket a localhost puerto 5557&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Es el puerto donde origen envia con PUSH los datos&lt;/span&gt;
+
+&lt;span class="n"&gt;recepcion&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://localhost:5557"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket de envio de los datos procesados con argumento PUSH&lt;/span&gt;
+
+&lt;span class="n"&gt;envio&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PUSH&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se conecta el socket a localhost y puerto 5558&lt;/span&gt;
+
+&lt;span class="n"&gt;envio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://localhost:5558"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se genera un ciclo&lt;/span&gt;
+
+&lt;span class="c1"&gt;#donde se recive lo transmitido por origen&lt;/span&gt;
+
+&lt;span class="c1"&gt;#se procesa (se coloca en mayusculas)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#se muestra en pantalla y se envia.&lt;/span&gt;
+
+&lt;span class="c1"&gt;#los ciclos tienen un retardo de 1 seg&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="n"&gt;cadena&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;recepcion&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Proceso:{0}"&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cadena&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="n"&gt;envio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cadena&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;upper&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+ &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;El&lt;/span&gt; &lt;span class="n"&gt;c&amp;oacute;digo&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;resultado&lt;/span&gt; &lt;span class="n"&gt;es&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt; &lt;span class="n"&gt;siguiente&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+&lt;span class="c1"&gt;#!/usr/bin/python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa ZeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket PULL que recibe los mensajes de los workers&lt;/span&gt;
+
+&lt;span class="n"&gt;recepcion&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PULL&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se asocia el socket a escuchar todas las IPs en el puerto 5558&lt;/span&gt;
+
+&lt;span class="c1"&gt;#el puerto donde los workers envian los mensajes&lt;/span&gt;
+
+&lt;span class="n"&gt;recepcion&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://*:5558"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se inicia un ciclo donde se recibe los mensajes&lt;/span&gt;
+
+&lt;span class="c1"&gt;#de los workers y se muestra en pantalla&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;recepcion&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Recibo: {0}"&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se tiene que iniciar los scripts resultado, worker (worker1 y una copia identica llamada worker2) y origen.&lt;/p&gt;
+&lt;p&gt;La siguiente figura muestra el resultado de origen:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython6-2.png"/&gt; &lt;/p&gt;
+&lt;p&gt;La siguiente figura muestra el resultado del worker1 y worker2:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython6-3.png"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython6-4.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Se nota que los workers se distribuyen el trabajo de forma equitativa.&lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra lo que despliega en pantalla resultado:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython6-5.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Como se ve, los workers procesan las cadenas de texto que reciben de origen, las pasan a may&amp;uacute;sculas y se la env&amp;iacute;an a resultado para que las muestre en pantalla.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Python"></category><category term="Ubuntu"></category><category term="ZeroMQ"></category></entry><entry><title>Tutorial de ZeroMQ con Python (REP/REQ y PUB/SUB). Parte 5.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-repreq-y-pubsub-parte-5.html" rel="alternate"></link><published>2012-06-02T09:00:00-05:30</published><updated>2012-06-02T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-02:/tutorial-de-zeromq-con-python-repreq-y-pubsub-parte-5.html</id><summary type="html">&lt;p&gt;Continuando con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;art&amp;iacute;culos sobre ZeroMQ&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;En la revista &lt;a href="http://www.linux-magazine.com/"&gt;Linux Magazine versi&amp;oacute;n en espa&amp;ntilde;ol&lt;/a&gt; publicaron un art&amp;iacute;culo sobre &lt;code&gt;ZeroMQ&lt;/code&gt; con Python.&lt;/p&gt;
 &lt;p&gt;Explican el uso de 2 patrones en conjunto, &lt;code&gt;REP/REQ&lt;/code&gt; y &lt;code&gt;PUB/SUB&lt;/code&gt;. Colocan como ejemplo una simulaci&amp;oacute;n del proceso de env&amp;iacute;o de tweets de twitter.&lt;/p&gt;
 &lt;p&gt;La siguiente figura …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;art&amp;iacute;culos sobre ZeroMQ&lt;/a&gt;.&lt;/p&gt;

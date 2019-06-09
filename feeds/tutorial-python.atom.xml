@@ -1,5 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2012-06-30T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Tutorial de ZeroMQ con Python( Pipelining). Parte 7.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-pipelining-parte-7.html" rel="alternate"></link><published>2012-06-30T09:00:00-05:30</published><updated>2012-06-30T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-30:/tutorial-de-zeromq-con-python-pipelining-parte-7.html</id><summary type="html">&lt;p&gt;Siguiendo con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ejemplos sobre ZeroMQ&lt;/a&gt;, ahora mostrar&amp;eacute; como usar diferentes tipos de transporte (antes se mostrada a tcp, ahora se usar&amp;aacute; &lt;code&gt;tcp&lt;/code&gt; e &lt;code&gt;ipc&lt;/code&gt; el cual es un modelo de comunicaci&amp;oacute;n interprocesos y puede ser de ayuda cuando se necesita baja latencia).&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2012-07-02T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Tutorial de ZeroMQ con Python. Parte 8.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-8.html" rel="alternate"></link><published>2012-07-02T09:00:00-05:30</published><updated>2012-07-02T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-07-02:/tutorial-de-zeromq-con-python-parte-8.html</id><summary type="html">&lt;p&gt;Siguiendo con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ejemplos sobre ZeroMQ&lt;/a&gt;. Este art&amp;iacute;culo muestra el uso del patr&amp;oacute;n PUB/SUB como en el &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-pythonpubsub-parte-4.html#tutorial-de-zeromq-con-pythonpubsub-parte-4"&gt;art&amp;iacute;culo de zeroMQ parte 4&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;La diferencia est&amp;aacute; en la definici&amp;oacute;n del transporte, en la parte 4 se usa tcp y en este caso se usar&amp;aacute; &lt;a href="api.zeromq.org/2-1:zmq-epgm"&gt;epgm&lt;/a&gt; que se usa para multicast …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Siguiendo con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ejemplos sobre ZeroMQ&lt;/a&gt;. Este art&amp;iacute;culo muestra el uso del patr&amp;oacute;n PUB/SUB como en el &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-pythonpubsub-parte-4.html#tutorial-de-zeromq-con-pythonpubsub-parte-4"&gt;art&amp;iacute;culo de zeroMQ parte 4&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;La diferencia est&amp;aacute; en la definici&amp;oacute;n del transporte, en la parte 4 se usa tcp y en este caso se usar&amp;aacute; &lt;a href="api.zeromq.org/2-1:zmq-epgm"&gt;epgm&lt;/a&gt; que se usa para multicast.&lt;/p&gt;
+&lt;p&gt;El ejemplo que se mostrar&amp;aacute; se basa en el art&amp;iacute;culo de Saghul Ibarra en su blog &lt;a href="code.saghul.net/implementing-a-pubsub-based-application-with"&gt;Saghul Ibarra en su blog&lt;/a&gt;.
+El productor crea una l&amp;iacute;nea de comandos donde se pasa el texto al consumidor, el consumidor recibe el texto y s&amp;oacute;lo se muestra en pantalla el texto que est&amp;aacute; definido en la subscripci&amp;oacute;n.&lt;/p&gt;
+&lt;p&gt;En el productor se define unas opciones en el socket, en el sitio de ZeroMQ tiene una explicaci&amp;oacute;n de las &lt;a href="api.zeromq.org/2-1:zmq-setsockopt"&gt;opciones para crear el socket&lt;/a&gt;. LINGER con par&amp;aacute;metro cero define que se descarte mensajes que no son enviados.&lt;/p&gt;
+&lt;p&gt;El c&amp;oacute;digo del productor se muestra a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;# &lt;/span&gt;
+
+&lt;span class="c1"&gt;# producer&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa ZeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia de la clase Context.&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el socket con parametro PUB&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PUB&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define unas opciones en el socket&lt;/span&gt;
+
+&lt;span class="c1"&gt;#esta opcion LINGER con valor cero, descarta mensajes no enviados&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setsockopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LINGER&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;    
+
+&lt;span class="c1"&gt;#Se conecta al socket a la IP y puerto&lt;/span&gt;
+
+&lt;span class="c1"&gt;#por medio de multicast&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'epgm://192.168.10.96:5000'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea un ciclo&lt;/span&gt;
+
+&lt;span class="c1"&gt;#si se envia el texto salir, se envia y luego finaliza el ciclo&lt;/span&gt;
+
+&lt;span class="c1"&gt;#si no, se envia el texto&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;raw_input&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"-&amp;gt;"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+
+ &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"salir"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;break&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El c&amp;oacute;digo del programa consumidor es el siguiente: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Importar zeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia de la clase contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el socket con parametro SUB&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SUB&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se conecta el socket a la IP y puerto del productor&lt;/span&gt;
+
+&lt;span class="c1"&gt;#con el transporte epgm&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'epgm://192.168.10.96:5000'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define los textos que se recibe la informacion.&lt;/span&gt;
+
+&lt;span class="c1"&gt;#prueba, hora y salir.&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setsockopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SUBSCRIBE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'prueba'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setsockopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SUBSCRIBE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'hora'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setsockopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SUBSCRIBE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'salir'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define un ciclo,&lt;/span&gt;
+
+&lt;span class="c1"&gt;#se recibe la informacion&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Si el texto es salir se muestra en pantalla &lt;/span&gt;
+
+&lt;span class="c1"&gt;#finaliza el ciclo, si no se muestra&lt;/span&gt;
+
+&lt;span class="c1"&gt;#el texto en pantalla&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="n"&gt;rcv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;rcv&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;rcv&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"salir"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;break&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Las siguientes figuras muestran el resultado de la ejecuci&amp;oacute;n de ambos programas: 
+Productor:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython8-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Consumidor:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython8-2.png"/&gt; &lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Python"></category><category term="Ubuntu"></category><category term="ZeroMQ"></category></entry><entry><title>Tutorial de ZeroMQ con Python( Pipelining). Parte 7.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-pipelining-parte-7.html" rel="alternate"></link><published>2012-06-30T09:00:00-05:30</published><updated>2012-06-30T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-30:/tutorial-de-zeromq-con-python-pipelining-parte-7.html</id><summary type="html">&lt;p&gt;Siguiendo con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ejemplos sobre ZeroMQ&lt;/a&gt;, ahora mostrar&amp;eacute; como usar diferentes tipos de transporte (antes se mostrada a tcp, ahora se usar&amp;aacute; &lt;code&gt;tcp&lt;/code&gt; e &lt;code&gt;ipc&lt;/code&gt; el cual es un modelo de comunicaci&amp;oacute;n interprocesos y puede ser de ayuda cuando se necesita baja latencia).&lt;/p&gt;
 &lt;p&gt;Luego de escoger la capa de transporte …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Siguiendo con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;ejemplos sobre ZeroMQ&lt;/a&gt;, ahora mostrar&amp;eacute; como usar diferentes tipos de transporte (antes se mostrada a tcp, ahora se usar&amp;aacute; &lt;code&gt;tcp&lt;/code&gt; e &lt;code&gt;ipc&lt;/code&gt; el cual es un modelo de comunicaci&amp;oacute;n interprocesos y puede ser de ayuda cuando se necesita baja latencia).&lt;/p&gt;
 &lt;p&gt;Luego de escoger la capa de transporte se selecciona un patr&amp;oacute;n de mensaje, en art&amp;iacute;culos anteriores se ha mostrado los patrones REQ/REP, PUB/SUB y Pair, s&amp;oacute;lo queda por explicar su funcionamiento el patr&amp;oacute;n UPSTREAM/DOWNSTREAM.&lt;/p&gt;
 &lt;p&gt;El patr&amp;oacute;n UPSTREAM/DOWNSTREAM se parece al patr&amp;oacute;n REQ/REP, la diferencia es que en REQ/REP puede existir comunicaci&amp;oacute;n bidireccional en cambio con UPSTREAM/DOWNSTREAM se tiene una comunicaci&amp;oacute;n en un s&amp;oacute;lo sentido y permite paralelizar procesos. En la figura se muestra el flujo de trabajo.&lt;/p&gt;

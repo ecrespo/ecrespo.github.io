@@ -1,5 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2012-05-26T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Tutorial de ZeroMQ con python . Parte 1.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-1.html" rel="alternate"></link><published>2012-05-26T09:00:00-05:30</published><updated>2012-05-26T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-05-26:/tutorial-de-zeromq-con-python-parte-1.html</id><summary type="html">&lt;p&gt;&lt;a href="http://zeromq.org/"&gt;ZeroMQ&lt;/a&gt; es una librer&amp;iacute;a de mensajes, permite crear complejos sistemas de comunicaci&amp;oacute;n con poco esfuerzo (sistemas de cola).&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2012-05-27T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Tutorial de ZeroMQ con Python. Parte 2.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-2.html" rel="alternate"></link><published>2012-05-27T09:00:00-05:30</published><updated>2012-05-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-05-27:/tutorial-de-zeromq-con-python-parte-2.html</id><summary type="html">&lt;p&gt;Continuando con los art&amp;iacute;culos sobre &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-python-parte-1.html#tutorial-de-zeromq-con-python-parte-1"&gt;ZeroMQ&lt;/a&gt;, en esta ocasi&amp;oacute;n se muestra el uso del patr&amp;oacute;n de mensaje PAR (comunicaci&amp;oacute;n entre compa&amp;ntilde;eros exclusivamente).&lt;/p&gt;
+&lt;p&gt;Los art&amp;iacute;culos se basan en el art&amp;iacute;culo de Nicholas Pi&amp;euml;l, &lt;a href="http://nichol.as/zeromq-an-introduction"&gt;una Introducci&amp;oacute;n a ZeroMQ&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Socket par son muy similares a los sockets regulares. La comunicaci&amp;oacute;n es bidireccional, no …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los art&amp;iacute;culos sobre &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-python-parte-1.html#tutorial-de-zeromq-con-python-parte-1"&gt;ZeroMQ&lt;/a&gt;, en esta ocasi&amp;oacute;n se muestra el uso del patr&amp;oacute;n de mensaje PAR (comunicaci&amp;oacute;n entre compa&amp;ntilde;eros exclusivamente).&lt;/p&gt;
+&lt;p&gt;Los art&amp;iacute;culos se basan en el art&amp;iacute;culo de Nicholas Pi&amp;euml;l, &lt;a href="http://nichol.as/zeromq-an-introduction"&gt;una Introducci&amp;oacute;n a ZeroMQ&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Socket par son muy similares a los sockets regulares. La comunicaci&amp;oacute;n es bidireccional, no hay un espec&amp;iacute;fico estado almacenado dentro del socket y solamente se puede conectar con un compa&amp;ntilde;ero.&lt;/p&gt;
+&lt;p&gt;La figura representa la estructura de sockets pares, el servidor escucha en un puerto seguro y un cliente se conecta a el. Las l&amp;iacute;neas rojas muestran el flujo de los mensajes, en este patr&amp;oacute;n ambos extremos usan el patr&amp;oacute;n par, y los mensajes fluyen de manera bidireccional.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython2-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Se muestra a continuaci&amp;oacute;n el c&amp;oacute;digo del servidor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Importar zmq&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea el socket del tipo PAR&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PAIR&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se asocia a una IP y puerto donde escucha el servidor.&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:5555"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea un ciclo.&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se recibe un mensaje del cliente&lt;/span&gt;
+    &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se muestra en pantalla&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Recivo"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se envia de vuelta el mensaje&lt;/span&gt;
+    &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El c&amp;oacute;digo del cliente es el siguiente:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span class="c1"&gt;#Se importa zmq&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea el socket con argumento del tipo de mensaje Par.&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PAIR&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se conecta al servidor dado la IP y puerto.&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:5555"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea un cilo de 100 repeticiones.&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se define el mensaje a pasar&lt;/span&gt;
+    &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"mensaje &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se pasa el mensaje al servidor&lt;/span&gt;
+    &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se presenta en pantalla el mensaje&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Enviando"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se recibe el mensaje de vuelta&lt;/span&gt;
+    &lt;span class="n"&gt;msg_in&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se presenta en pantalla el mensaje de vuelta&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Recibido:"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;msg_in&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;El resultado del lado del servidor se muestra en la siguiente figura:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython2-2.png"/&gt; &lt;/p&gt;
+&lt;p&gt;El resultado del lado del cliente se muestra en la siguiente figura:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython2-3.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Al intentar ejecutar 2 clientes al mismo tiempo el servidor termina con un mensaje de error por que s&amp;oacute;lo maneja una comunicaci&amp;oacute;n bidireccional con un s&amp;oacute;lo compa&amp;ntilde;ero.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="ZeroMQ"></category></entry><entry><title>Tutorial de ZeroMQ con python . Parte 1.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-1.html" rel="alternate"></link><published>2012-05-26T09:00:00-05:30</published><updated>2012-05-26T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-05-26:/tutorial-de-zeromq-con-python-parte-1.html</id><summary type="html">&lt;p&gt;&lt;a href="http://zeromq.org/"&gt;ZeroMQ&lt;/a&gt; es una librer&amp;iacute;a de mensajes, permite crear complejos sistemas de comunicaci&amp;oacute;n con poco esfuerzo (sistemas de cola).&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;ZeroMQ&lt;/code&gt; es m&amp;aacute;s r&amp;aacute;pido que otros sistemas de mensajes basados en el protocolo &lt;code&gt;AMQP&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;En este art&amp;iacute;culo se explicar&amp;aacute; un uso sencillo de zeroMQ al estilo cliente y servidor. Se usar&amp;aacute; el …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://zeromq.org/"&gt;ZeroMQ&lt;/a&gt; es una librer&amp;iacute;a de mensajes, permite crear complejos sistemas de comunicaci&amp;oacute;n con poco esfuerzo (sistemas de cola).&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;ZeroMQ&lt;/code&gt; es m&amp;aacute;s r&amp;aacute;pido que otros sistemas de mensajes basados en el protocolo &lt;code&gt;AMQP&lt;/code&gt;.&lt;/p&gt;
@@ -90,7 +172,7 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Python"></category></entry><entry><title>Programa para el envío de SMS desde Linux con Celular Android (conexión wifi y USB)</title><link href="https://ecrespo.github.io/programa-para-el-envio-de-sms-desde-linux-con-celular-android-conexion-wifi-y-usb.html" rel="alternate"></link><published>2011-06-16T09:00:00-05:30</published><updated>2011-06-16T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-06-16:/programa-para-el-envio-de-sms-desde-linux-con-celular-android-conexion-wifi-y-usb.html</id><summary type="html">&lt;p&gt;En el art&amp;iacute;culo de ejecuci&amp;oacute;n remota de script versi&amp;oacute;n conectado por &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html"&gt;USB&lt;/a&gt; y la versi&amp;oacute;n por &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android.html"&gt;wifi&lt;/a&gt;, se  explica  en el primer caso como enviar mensajes de texto y en el segundo como ejecutar una aplicaci&amp;oacute;n remotamente en el celular.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Python"></category><category term="ZeroMQ"></category></entry><entry><title>Programa para el envío de SMS desde Linux con Celular Android (conexión wifi y USB)</title><link href="https://ecrespo.github.io/programa-para-el-envio-de-sms-desde-linux-con-celular-android-conexion-wifi-y-usb.html" rel="alternate"></link><published>2011-06-16T09:00:00-05:30</published><updated>2011-06-16T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-06-16:/programa-para-el-envio-de-sms-desde-linux-con-celular-android-conexion-wifi-y-usb.html</id><summary type="html">&lt;p&gt;En el art&amp;iacute;culo de ejecuci&amp;oacute;n remota de script versi&amp;oacute;n conectado por &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html"&gt;USB&lt;/a&gt; y la versi&amp;oacute;n por &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android.html"&gt;wifi&lt;/a&gt;, se  explica  en el primer caso como enviar mensajes de texto y en el segundo como ejecutar una aplicaci&amp;oacute;n remotamente en el celular.&lt;/p&gt;
 &lt;p&gt;En este caso se fusionar&amp;aacute; ambos tipos de conexiones para …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el art&amp;iacute;culo de ejecuci&amp;oacute;n remota de script versi&amp;oacute;n conectado por &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html"&gt;USB&lt;/a&gt; y la versi&amp;oacute;n por &lt;a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android.html"&gt;wifi&lt;/a&gt;, se  explica  en el primer caso como enviar mensajes de texto y en el segundo como ejecutar una aplicaci&amp;oacute;n remotamente en el celular.&lt;/p&gt;
 &lt;p&gt;En este caso se fusionar&amp;aacute; ambos tipos de conexiones para enviar mensajes de texto tanto por USB como por wifi.&lt;/p&gt;
 &lt;p&gt;Para ello se creo un clase AndroidSMS donde se define los datos siguientes:&lt;/p&gt;

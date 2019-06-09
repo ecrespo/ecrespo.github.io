@@ -1,7 +1,7 @@
 Title: Tutorial de ZeroMQ con python . Parte 1.
 Date: 2012-05-26 9:00
 Category: Tutorial Python
-Tags: Canaima,Debian,General,Python
+Tags: Canaima,Debian,General,Python,ZeroMQ
 lang: es
 translation: true
 

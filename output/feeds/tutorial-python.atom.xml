@@ -1,5 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2012-05-27T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Tutorial de ZeroMQ con Python. Parte 2.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-2.html" rel="alternate"></link><published>2012-05-27T09:00:00-05:30</published><updated>2012-05-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-05-27:/tutorial-de-zeromq-con-python-parte-2.html</id><summary type="html">&lt;p&gt;Continuando con los art&amp;iacute;culos sobre &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-python-parte-1.html#tutorial-de-zeromq-con-python-parte-1"&gt;ZeroMQ&lt;/a&gt;, en esta ocasi&amp;oacute;n se muestra el uso del patr&amp;oacute;n de mensaje PAR (comunicaci&amp;oacute;n entre compa&amp;ntilde;eros exclusivamente).&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2012-05-28T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Tutorial de ZeroMQ con Python. Parte 3.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-3.html" rel="alternate"></link><published>2012-05-28T09:00:00-05:30</published><updated>2012-05-28T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-05-28:/tutorial-de-zeromq-con-python-parte-3.html</id><summary type="html">&lt;p&gt;Tomando como base el art&amp;iacute;culo de &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-python-parte-1.html#tutorial-de-zeromq-con-python-parte-1"&gt;ZeroMQ parte 1&lt;/a&gt;, se puede crear varios servidores (como cluster de aplicaci&amp;oacute;n). &lt;/p&gt;
+&lt;p&gt;Est&amp;aacute; vez se crean 3 scripts servidores, pueden estar en el mismo equipo o en equipos diferentes. Lo &amp;uacute;nico que cambi&amp;eacute; en cada script es el puerto donde escucha para el servicio …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Tomando como base el art&amp;iacute;culo de &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-python-parte-1.html#tutorial-de-zeromq-con-python-parte-1"&gt;ZeroMQ parte 1&lt;/a&gt;, se puede crear varios servidores (como cluster de aplicaci&amp;oacute;n). &lt;/p&gt;
+&lt;p&gt;Est&amp;aacute; vez se crean 3 scripts servidores, pueden estar en el mismo equipo o en equipos diferentes. Lo &amp;uacute;nico que cambi&amp;eacute; en cada script es el puerto donde escucha para el servicio.&lt;/p&gt;
+&lt;p&gt;En el cliente, se crean 3 sockets con los puertos donde escucha los 3 servidores.&lt;/p&gt;
+&lt;p&gt;La idea es pasar un mensaje por parte del cliente, los servidores los recibe y los env&amp;iacute;a de vuelta al cliente.&lt;/p&gt;
+&lt;p&gt;El c&amp;oacute;digo del script del lado del cliente es la siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#importar zeromq&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea una instancia del contexto&lt;/span&gt;
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea el socket con parametro peticion (REQ)&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;REQ&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crean 3 sockets con la IP y los 3 puertos donde escucha &lt;/span&gt;
+&lt;span class="c1"&gt;#los 3 servidores.&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:5000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:6000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:7000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea un ciclo de 100 repeticiones&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea el string del mensaje&lt;/span&gt;
+    &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"mensaje &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se envia el mensaje&lt;/span&gt;
+    &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se muestra en pantalla el mensaje enviado&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Enviando"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se recibe el mensaje de vuelta&lt;/span&gt;
+    &lt;span class="n"&gt;msg_in&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Los scripts de los servidores se muestra a continuaci&amp;oacute;n:
+Servidor 1:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea el socket pasandole como parametro respuesta (REP)&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;REP&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se asocia el socket a la IP y el puerto&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:5000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea un ciclo&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se recibe el mensaje&lt;/span&gt;
+    &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se muestra en pantalla el mensaje recibido&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Recibiendo"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se envia el mensaje de regreso al cliente&lt;/span&gt;
+    &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Servidor 2:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea el socket pasandole como parametro respuesta (REP)&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;REP&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se asocia el socket a la IP y el puerto&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:6000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea un ciclo&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se recibe el mensaje&lt;/span&gt;
+    &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se muestra en pantalla el mensaje recibido&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Recibiendo"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se envia el mensaje de regreso al cliente&lt;/span&gt;
+    &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;  
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Servidor 3:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea la instancia del contexto&lt;/span&gt;
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea el socket pasandole como parametro respuesta (REP)&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;REP&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se asocia el socket a la IP y el puerto&lt;/span&gt;
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:7000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea un ciclo&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se recibe el mensaje&lt;/span&gt;
+    &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se muestra en pantalla el mensaje recibido&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Recibiendo"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se envia el mensaje de regreso al cliente&lt;/span&gt;
+    &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se inician los 3 servidores y luego el cliente:
+En la siguiente figura se muestra los env&amp;iacute;os realizados por el cliente:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython3-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Se muestra a continuaci&amp;oacute;n las figuras de los 3 servidores:&lt;/p&gt;
+&lt;p&gt;Servidor 1:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython3-2.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Servidor 2:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython3-3.png"/&gt; &lt;/p&gt;
+&lt;p&gt;servidor 3:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython3-4.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Al ver las 3 figuras de los servidores se nota como se distribuye de forma equitativa la recepci&amp;oacute;n de los mensajes.&lt;/p&gt;
+&lt;p&gt;Luego se puede complicar algo m&amp;aacute;s este esquema agregando una cola entre los clientes y los servidores. &lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="ZeroMQ"></category></entry><entry><title>Tutorial de ZeroMQ con Python. Parte 2.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-2.html" rel="alternate"></link><published>2012-05-27T09:00:00-05:30</published><updated>2012-05-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-05-27:/tutorial-de-zeromq-con-python-parte-2.html</id><summary type="html">&lt;p&gt;Continuando con los art&amp;iacute;culos sobre &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-python-parte-1.html#tutorial-de-zeromq-con-python-parte-1"&gt;ZeroMQ&lt;/a&gt;, en esta ocasi&amp;oacute;n se muestra el uso del patr&amp;oacute;n de mensaje PAR (comunicaci&amp;oacute;n entre compa&amp;ntilde;eros exclusivamente).&lt;/p&gt;
 &lt;p&gt;Los art&amp;iacute;culos se basan en el art&amp;iacute;culo de Nicholas Pi&amp;euml;l, &lt;a href="http://nichol.as/zeromq-an-introduction"&gt;una Introducci&amp;oacute;n a ZeroMQ&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Socket par son muy similares a los sockets regulares. La comunicaci&amp;oacute;n es bidireccional, no …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los art&amp;iacute;culos sobre &lt;a href="https://www.seraph.to/tutorial-de-zeromq-con-python-parte-1.html#tutorial-de-zeromq-con-python-parte-1"&gt;ZeroMQ&lt;/a&gt;, en esta ocasi&amp;oacute;n se muestra el uso del patr&amp;oacute;n de mensaje PAR (comunicaci&amp;oacute;n entre compa&amp;ntilde;eros exclusivamente).&lt;/p&gt;
 &lt;p&gt;Los art&amp;iacute;culos se basan en el art&amp;iacute;culo de Nicholas Pi&amp;euml;l, &lt;a href="http://nichol.as/zeromq-an-introduction"&gt;una Introducci&amp;oacute;n a ZeroMQ&lt;/a&gt;.&lt;/p&gt;

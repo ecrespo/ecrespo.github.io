@@ -44,28 +44,28 @@
     <meta name="msapplication-TileColor" content="#333333">
 
 <meta name="author" content="Ernesto Crespo" />
-<meta name="description" content="A nivel mundial se crearon varios grupos de direcciones IP de IPv4 (Clases A,B o C) la cual permiten definir redes y rango de equipos para dichas redes. Claro actualmente se está migrando a IPv6 ya que las direcciones IPv4 se agotaron hace un par de años aproximadamente (aunque …" />
-<meta name="keywords" content="Canaima, Debian, Linux, Python, Redes, Ubuntu">
+<meta name="description" content="En Linux se pueden ejecutar procesos de forma periodica gracias a cron o en un momento determinado gracias a at. En python se tiene una librería que permite ejecutar de forma periodica o en una fecha determinada al estilo de cron o at, la librería se llama APScheduler (Advanced Python …" />
+<meta name="keywords" content="Canaima, Debian, Linux, Python, Ubuntu, Tareas periodicas">
 
 <meta property="og:site_name" content="Página de Seraph"/>
-<meta property="og:title" content="Geolocalización de direcciones IP y dominios de Internet con GeoIP en python"/>
-<meta property="og:description" content="A nivel mundial se crearon varios grupos de direcciones IP de IPv4 (Clases A,B o C) la cual permiten definir redes y rango de equipos para dichas redes. Claro actualmente se está migrando a IPv6 ya que las direcciones IPv4 se agotaron hace un par de años aproximadamente (aunque …"/>
+<meta property="og:title" content="Agendar tareas con python"/>
+<meta property="og:description" content="En Linux se pueden ejecutar procesos de forma periodica gracias a cron o en un momento determinado gracias a at. En python se tiene una librería que permite ejecutar de forma periodica o en una fecha determinada al estilo de cron o at, la librería se llama APScheduler (Advanced Python …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://ecrespo.github.io/geolocalizacion-de-direcciones-ip-y-dominios-de-internet-con-geoip-en-python.html"/>
+<meta property="og:url" content="https://ecrespo.github.io/agendar-tareas-con-python.html"/>
 <meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2012-02-26 09:00:00-04:30"/>
+<meta property="article:published_time" content="2012-07-18 09:00:00-04:30"/>
 <meta property="article:modified_time" content=""/>
 <meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
-<meta property="article:section" content="Tutorial de Python"/>
+<meta property="article:section" content="Tutorial Python"/>
 <meta property="article:tag" content="Canaima"/>
 <meta property="article:tag" content="Debian"/>
 <meta property="article:tag" content="Linux"/>
 <meta property="article:tag" content="Python"/>
-<meta property="article:tag" content="Redes"/>
 <meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Tareas periodicas"/>
 <meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
 
-  <title>Página de Seraph &ndash; Geolocalización de direcciones IP y dominios de Internet con GeoIP en python</title>
+  <title>Página de Seraph &ndash; Agendar tareas con python</title>
 
 </head>
 <body>
@@ -155,9 +155,9 @@
 <article class="single">
   <header>
       
-    <h1 id="geolocalizacion-de-direcciones-ip-y-dominios-de-internet-con-geoip-en-python">Geolocalización de direcciones IP y dominios de Internet con GeoIP en python</h1>
+    <h1 id="agendar-tareas-con-python">Agendar tareas con python</h1>
     <p>
-          Posted on dom 26 febrero 2012 in <a href="https://ecrespo.github.io/category/tutorial-de-python.html">Tutorial de Python</a>
+          Posted on mié 18 julio 2012 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
 
 
         &#8226; 2 min read
@@ -166,62 +166,134 @@
 
 
   <div>
-    <p>A nivel mundial se crearon varios grupos de direcciones IP de IPv4 (Clases A,B o C) la cual permiten definir redes y rango de equipos para dichas redes.</p>
-<p>Claro actualmente se est&aacute; migrando a IPv6 ya que las direcciones IPv4 se agotaron hace un par de a&ntilde;os aproximadamente (aunque existan soluciones como NAT, Subnetting o Supernetting que permiten utilizar m&aacute;s eficientemente las IPs).</p>
-<p>Con GeoIP para python se puede averiguar de cual Pa&iacute;s proviene una IP, tambi&eacute;n se puede conocer un dominio o sitio en espec&iacute;fico donde se encuentra alojado, conocer el rango de IPs de una clase de IPv4.</p>
-<p>Para instalar <code>python-geoip</code> a lo Debian (Debian, Canaima, Ubuntu, LinuxMint), se convierte el usuario en superusuario y ejecuta:  </p>
-<div class="highlight"><pre><span></span>#apt-get install python-geoip
+    <p>En Linux se pueden ejecutar procesos de forma periodica gracias a <code>cron</code> o en un momento determinado gracias a <code>at</code>.</p>
+<p>En python se tiene una librer&iacute;a que permite ejecutar de forma periodica o en una fecha determinada al estilo de <code>cron</code> o <code>at</code>, la librer&iacute;a se llama <a href="https://pypi.org/project/APScheduler/">APScheduler</a> (Advanced Python Scheduler). La documentaci&oacute;n de <code>SPScheduler</code> lo pueden revisar en este <a href="https://apscheduler.readthedocs.io/en/latest/">enlace</a>.</p>
+<p>El ejemplo a mostrar a continuaci&oacute;n permite ejecutar 2 tareas, la primera tarea se ejecuta a intervalos de 1 minuto, la segunda tarea se ejecuta de lunes a viernes en una hora espec&iacute;fica.</p>
+<p>El c&oacute;digo del ejemplo se muestra a continuaci&oacute;n:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1">#Se importa Scheduler</span>
+
+<span class="kn">from</span> <span class="nn">apscheduler.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
+
+<span class="c1">#Se importa ctime y sleep</span>
+
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">ctime</span><span class="p">,</span><span class="n">sleep</span>
+
+<span class="c1">#Se crea la instancia de la clase Scheduler</span>
+
+<span class="n">sched</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">()</span>
+
+<span class="c1">#Se crea una funcion con la tarea1, pero se dfine</span>
+
+<span class="c1">#un decorador para la tarea para que sea periodica</span>
+
+<span class="c1">#Cada minuto se ejecutara la tarea.</span>
+
+<span class="nd">@sched.interval_schedule</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">Tarea1</span><span class="p">():</span>
+
+    <span class="c1">#Muestra en pantalla la fecha y hora</span>
+
+    <span class="k">print</span> <span class="s2">"Se ejecuta cada minuto: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">ctime</span><span class="p">()</span>
+
+<span class="c1">#Se crea la tarea2 al estilo cron por medio de un decorador cron</span>
+
+<span class="c1">#que se ejecuta de lunes a viernes a las 9:40pm.</span>
+
+<span class="nd">@sched.cron_schedule</span><span class="p">(</span><span class="n">day_of_week</span><span class="o">=</span><span class="s1">'mon-fri'</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span><span class="n">minute</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">Tarea2</span><span class="p">():</span>
+
+    <span class="c1">#Se muestra en pantalla la hora del momento que se ejecuta la aplicacion.</span>
+
+    <span class="k">print</span> <span class="s2">"Se ejecuto a las : </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">ctime</span><span class="p">()</span>
+
+<span class="c1">#Se pasa la configuracion al scheduler</span>
+
+<span class="n">sched</span><span class="o">.</span><span class="n">configure</span><span class="p">()</span>
+
+<span class="c1">#Se inicia el scheduler</span>
+
+<span class="n">sched</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1">#Se muestra las tareas definidas.</span>
+
+<span class="k">print</span> <span class="n">sched</span><span class="o">.</span><span class="n">print_jobs</span><span class="p">()</span>
+
+<span class="c1">#Se crea un ciclo de 10 iteraciones</span>
+
+<span class="c1">#Donde se espera un minuto por cada iteracion</span>
+
+<span class="c1">#Se muestra en pantalla las veces que se ejecuta.</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+
+    <span class="k">print</span> <span class="s2">"---- </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span>
+
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+
+<span class="c1">#Se detiene las tareas del scheduler al finalizar</span>
+
+<span class="c1">#las iteraciones</span>
+
+<span class="n">sched</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
-<p>Se ejecuta el interprete de comandos de python:  </p>
-<div class="highlight"><pre><span></span>ecrespo@jewel:~$ python
-Python 2.7.2+ (default, Dec  1 2011, 01:55:02)
-[GCC 4.6.2] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
-&gt;&gt;&gt; 
+<p>La salida de la ejecuci&oacute;n del programa se muestra a continuaci&oacute;n:</p>
+<div class="highlight"><pre><span></span>ernesto@clara:~/bin/python/procesos$ sudo ./procesos2.py 
+
+Jobstore default:
+
+    Tarea1 (trigger: interval[0:01:00], next run at: 2012-07-18 21:27:59.911483)
+
+    Tarea2 (trigger: cron[day_of_week='mon-fri', hour='21', minute='30'], next run at: 2012-07-18 21:30:00)
+
+None
+
+---- 0
+
+Se ejecuta cada minuto: Wed Jul 18 21:27:59 2012
+
+---- 1
+
+Se ejecuta cada minuto: Wed Jul 18 21:28:59 2012
+
+---- 2
+
+Se ejecuta cada minuto: Wed Jul 18 21:29:59 2012
+
+Se ejecuto a las : Wed Jul 18 21:30:00 2012
+
+---- 3
+
+Se ejecuta cada minuto: Wed Jul 18 21:30:59 2012
+
+---- 4
+
+Se ejecuta cada minuto: Wed Jul 18 21:31:59 2012
+
+---- 5
+
+Se ejecuta cada minuto: Wed Jul 18 21:32:59 2012
+
+---- 6
+
+Se ejecuta cada minuto: Wed Jul 18 21:33:59 2012
+
+---- 7
+
+Se ejecuta cada minuto: Wed Jul 18 21:34:59 2012
+
+---- 8
+
+Se ejecuta cada minuto: Wed Jul 18 21:35:59 2012
+
+---- 9
+
+Se ejecuta cada minuto: Wed Jul 18 21:36:59 2012
 </pre></div>
-<p>Se importa el m&oacute;dulo <code>geoip</code>:  </p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">GeoIP</span>
-</pre></div>
-<p>Se crea el objeto de la Instancia de GeoIP, asociandole la informaci&oacute;n de GeoIP de la memoria Cache:  </p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">gi</span> <span class="o">=</span> <span class="n">GeoIP</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">GeoIP</span><span class="o">.</span><span class="n">GEOIP_MEMORY_CACHE</span><span class="p">)</span>
-</pre></div>
-<p>Se busca en cual Pa&iacute;s se encuentra alojado yahoo.com:  </p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_code_by_name</span><span class="p">(</span><span class="s2">"yahoo.com"</span><span class="p">)</span>
-<span class="n">US</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_name_by_name</span><span class="p">(</span><span class="s2">"yahoo.com"</span><span class="p">)</span>
-<span class="n">United</span> <span class="n">States</span>
-</pre></div>
-<p>En el primer caso se devuelve el c&oacute;digo del Pa&iacute;s, en el segundo se devuelve el nombre del Pa&iacute;s.</p>
-<p>Ahora se probar&aacute; con yahoo.es:  </p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_code_by_name</span><span class="p">(</span><span class="s2">"www.yahoo.es"</span><span class="p">)</span>
-<span class="n">IE</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_name_by_name</span><span class="p">(</span><span class="s2">"www.yahoo.es"</span><span class="p">)</span>
-<span class="n">Ireland</span>
-</pre></div>
-<p>Se nota que yahoo.com est&aacute; alojado en Estados Unidos y yahoo.es se encuentra alojado en Irlanda.</p>
-<p>Ahora se buscar&aacute; en cual Pa&iacute;s se encuentra alojado www.cantv.net (es obvio):  </p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_code_by_name</span><span class="p">(</span><span class="s2">"www.cantv.net"</span><span class="p">)</span>
-<span class="n">VE</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_name_by_name</span><span class="p">(</span><span class="s2">"www.cantv.net"</span><span class="p">)</span>
-<span class="n">Venezuela</span>
-</pre></div>
-<p>Aunque es posible que dominios de Venezuela se encuentren alojados en otros Pa&iacute;ses, un ejemplo ser&iacute;a www.crespo.org.ve:  </p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_name_by_name</span><span class="p">(</span><span class="s2">"www.crespo.org.ve"</span><span class="p">)</span>
-<span class="n">Sweden</span>
-</pre></div>
-<p>Para terminar se probar&aacute; averiguar el Pa&iacute;s seg&uacute;n la IP que se le pase:  </p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_name_by_addr</span><span class="p">(</span><span class="s2">"24.24.24.24"</span><span class="p">)</span>
-<span class="n">United</span> <span class="n">States</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">country_name_by_addr</span><span class="p">(</span><span class="s2">"150.186.32.0"</span><span class="p">)</span>
-<span class="n">Venezuela</span>
-</pre></div>
-<p>La primera IP se encuentra en Estados Unidos y la segunda en Venezuela.</p>
-<p>Para averiguar el rango de IPs de la IP de Venezuela se ejecuta <code>geoip</code> solicitando que devuelva el rango de IPs:  </p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">gi</span><span class="o">.</span><span class="n">range_by_ip</span><span class="p">(</span><span class="s2">"150.186.32.0"</span><span class="p">)</span>
-<span class="p">(</span><span class="s1">'150.185.0.0'</span><span class="p">,</span> <span class="s1">'150.189.255.255'</span>
-</pre></div>
-<p>Est&aacute; Ip por el rango de direcciones que maneja es una clase B.</p>
-<p>Con esta herramienta se puede usar para aplicaciones Web con Django por ejemplo y dicha aplicaciones puede mostrar informaci&oacute;n del Pa&iacute;s donde se conectan los usuarios.</p>
+<p>Con est&aacute; librer&iacute;a se puede definir la ejecuci&oacute;n de procesos a ciertos d&iacute;as y horas, o de forma peri&oacute;dica.</p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
@@ -236,8 +308,8 @@ direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
       <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
       <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
       <a href="https://ecrespo.github.io/tag/python.html">Python</a>
-      <a href="https://ecrespo.github.io/tag/redes.html">Redes</a>
       <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/tag/tareas-periodicas.html">Tareas periodicas</a>
     </p>
   </div>
 
@@ -249,9 +321,9 @@ direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
     <ul class="related-posts">
       <li><a href="https://ecrespo.github.io/captura-de-video-con-python-y-simplecv-parte-4.html">Captura de vídeo con Python y SimpleCV. Parte 4.</a></li>
       <li><a href="https://ecrespo.github.io/modificar-imagen-con-simplecvbinarizacion-parte-3.html">Modificar imagen con simpleCV(binarización). Parte 3.</a></li>
-      <li><a href="https://ecrespo.github.io/agendar-tareas-con-python.html">Agendar tareas con python</a></li>
       <li><a href="https://ecrespo.github.io/captura-de-imagen-desde-webcam-con-el-framework-simplecv-parte-2.html">Captura de imágen desde webcam con el framework SimpleCV. Parte 2.</a></li>
       <li><a href="https://ecrespo.github.io/captura-de-imagen-desde-la-webcam-con-el-framework-simplecv-parte-1.html">Captura de imágen desde la webcam con el framework SimpleCV. Parte 1.</a></li>
+      <li><a href="https://ecrespo.github.io/framework-de-desarrollo-web-django-parte-1.html">Framework de desarrollo web Django. Parte 1.</a></li>
     </ul>
   </div>
 

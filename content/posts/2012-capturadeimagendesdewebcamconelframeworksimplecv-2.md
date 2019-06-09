@@ -7,9 +7,11 @@ translation: true
 
 En el [artículo anterior](https://www.seraph.to/captura-de-imagen-desde-la-webcam-con-el-framework-simplecv-parte-1.html#captura-de-imagen-desde-la-webcam-con-el-framework-simplecv-parte-1) se explica como usar la webcam del equipo para capturar una imágen, en este caso se explicará como definir el tamaño de la imágen, ahora se muestra como manejar 2 webcam al mismo tiempo.
 
+
 La idea es capturar imágenes de ambas webcam y luego salvarlas en formato png.
 
 El código de la aplicación es la siguiente:
+
 ```python
 #!/usr/bin/env python
 

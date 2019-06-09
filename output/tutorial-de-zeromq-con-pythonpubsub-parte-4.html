@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con los tutoriales sobre ZeroMQ ahora se muestra como usar Publicar/Suscribir (Publish/subscribe). En el patrón pub/sub los componentes son pobremente acompladas, será de gran ayuda para escalar ya que no hay necesidad de preocuparse por los suscriptores. Sin embargo, este acoplamiento puede conducir a un comportamiento …" />
+<meta name="keywords" content="Canaima, Debian, General, Linux, Python, ZeroMQ">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Tutorial de ZeroMQ con Python(PUB/SUB). Parte 4."/>
+<meta property="og:description" content="Continuando con los tutoriales sobre ZeroMQ ahora se muestra como usar Publicar/Suscribir (Publish/subscribe). En el patrón pub/sub los componentes son pobremente acompladas, será de gran ayuda para escalar ya que no hay necesidad de preocuparse por los suscriptores. Sin embargo, este acoplamiento puede conducir a un comportamiento …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/tutorial-de-zeromq-con-pythonpubsub-parte-4.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2012-06-01 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="ZeroMQ"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Tutorial de ZeroMQ con Python(PUB/SUB). Parte 4.</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="tutorial-de-zeromq-con-pythonpubsub-parte-4">Tutorial de ZeroMQ con Python(PUB/SUB). Parte 4.</h1>
+    <p>
+          Posted on vie 01 junio 2012 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Continuando con los <a href="https://www.seraph.to/tag/zeromq.html">tutoriales sobre ZeroMQ</a> ahora se muestra como usar Publicar/Suscribir (Publish/subscribe).</p>
+<p>En el patr&oacute;n pub/sub los componentes son pobremente acompladas, ser&aacute; de gran ayuda para escalar ya que no hay necesidad de preocuparse por los suscriptores.  Sin embargo, este acoplamiento puede conducir a un comportamiento inesperado cuando no se entienden completamente.</p>
+<p>El ejemplo que se va a desarrollar se basa en la publicaci&oacute;n sobre la <a href="http://nichol.as/zeromq-an-introduction">introducci&oacute;n de ZeroMQ de Nicholas Pi&euml;l</a>.</p>
+<p>El servidor genera una serie de mensaje de pa&iacute;ses y de eventos por pa&iacute;s, la idea es publicar de forma aleatoria un pa&iacute;s y un evento. Se crear&aacute; 2 clientes donde cada uno mostrar&aacute; la informaci&oacute;n de 2 pa&iacute;ses, eso es gracias a PUB/SUB ya que el suscriptor s&oacute;lo recibe la informaci&oacute;n que necesita.</p>
+<p>A continuaci&oacute;n se muestra el c&oacute;digo del servidor:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1">#Se importa ZeroMQ</span>
+<span class="kn">import</span> <span class="nn">zmq</span>
+<span class="c1">#Se importa choice a partir de random</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choice</span>
+<span class="c1">#Se crea la instancia del contexto</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="c1">#Se crea el socket pasandole argumento de publicacion PUB</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
+<span class="c1">#Se asocia la IP y el puerto que va a escuchar.</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5000"</span><span class="p">)</span>
+<span class="c1">#Se importa sleep</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span> 
+<span class="c1">#Se crea una lista de paises y de eventos </span>
+<span class="n">paises</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'holanda'</span><span class="p">,</span><span class="s1">'brasil'</span><span class="p">,</span><span class="s1">'alemania'</span><span class="p">,</span><span class="s1">'portugal'</span><span class="p">,</span><span class="s1">'argentina'</span><span class="p">,</span><span class="s1">'italia'</span><span class="p">,</span><span class="s1">'rusia'</span><span class="p">,</span><span class="s1">'venezuela'</span><span class="p">]</span>
+<span class="n">eventos</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'tarjeta amarilla'</span><span class="p">,</span><span class="s1">'tarjeta roja'</span><span class="p">,</span><span class="s1">'gol'</span><span class="p">,</span><span class="s1">'corner'</span><span class="p">,</span><span class="s1">'falta'</span><span class="p">]</span>
+
+<span class="c1">#Se crea un contador con valor inicial 1</span>
+<span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="c1">#Se crea un ciclo indefinido</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="c1">#Se define un mensaje pasando de forma aleatoria un pais y un evento</span>
+    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">choice</span><span class="p">(</span> <span class="n">paises</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">choice</span><span class="p">(</span><span class="n">eventos</span><span class="p">)</span>
+    <span class="c1">#Se muestra en pantalla el valor del contador y el mensaje.</span>
+    <span class="k">print</span> <span class="s2">"-&gt;"</span><span class="p">,</span><span class="n">c</span> <span class="p">,</span> <span class="n">mensaje</span>
+    <span class="c1">#Se envia el mensaje</span>
+    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
+    <span class="c1">#Se genera un retardo de 1 seg</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#Se incrementa el contador</span>
+    <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1">#Si se llega a 180 se termina el ciclo si no continua.</span>
+    <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">180</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">continue</span>
+</pre></div>
+<p>A continuaci&oacute;n el c&oacute;digo de los 2 clientes(suscriptores):
+Cliente1:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1">#Se importa zeroMQ</span>
+<span class="kn">import</span> <span class="nn">zmq</span>
+<span class="c1">#Se importa sleep a partir de time</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span> 
+<span class="c1">#Se crea la instancia del contexto de zeroMQ</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="c1">#Se crea el socket del suscriptor SUB</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
+<span class="c1">#Se crea la conexion a la IP y puerto del servidor</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5000"</span><span class="p">)</span>
+<span class="c1">#Se define una opcion del socket del suscriptor con argentina y venezuela</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s2">"argentina"</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s2">"venezuela"</span><span class="p">)</span>
+<span class="c1">#Se define el valor inicial de un contador</span>
+<span class="n">c</span> <span class="o">=</span> <span class="mi">1</span> 
+<span class="c1">#Se crea un ciclo indefinido</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="c1">#Se muestra en pantalla el valor del contador y el mensaje recibido</span>
+    <span class="k">print</span>  <span class="n">c</span><span class="p">,</span> <span class="s2">"-&gt;"</span><span class="p">,</span><span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="c1">#Se genera un retardo de 1 seg en cada ciclo</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#Se incrementa el contador en 1</span>
+    <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1">#Si el contador llega a 90 se termina el ciclo, si no continua</span>
+    <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">continue</span>
+</pre></div>
+<p>Cliente 2:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1">#Se importa zeroMQ</span>
+<span class="kn">import</span> <span class="nn">zmq</span>
+<span class="c1">#Se importa sleep a partir de time</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span> 
+<span class="c1">#Se crea la instancia del contexto de zeroMQ</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="c1">#Se crea el socket del suscriptor SUB</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
+<span class="c1">#Se crea la conexion a la IP y puerto del servidor</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5000"</span><span class="p">)</span>
+<span class="c1">#Se define una opcion del socket del suscriptor con brasil y alemania</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s2">"brasil"</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s2">"alemania"</span><span class="p">)</span>
+<span class="c1">#Se define el valor inicial de un contador</span>
+<span class="n">c</span> <span class="o">=</span> <span class="mi">1</span> 
+<span class="c1">#Se crea un ciclo indefinido</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="c1">#Se muestra en pantalla el valor del contador y el mensaje recibido</span>
+    <span class="k">print</span>  <span class="n">c</span><span class="p">,</span> <span class="s2">"-&gt;"</span><span class="p">,</span><span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
+    <span class="c1">#Se genera un retardo de 1 seg en cada ciclo</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#Se incrementa el contador en 1</span>
+    <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1">#Si el contador llega a 90 se termina el ciclo, si no continua</span>
+    <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">continue</span>
+</pre></div>
+<p>Es como si el servidor estuviera narrando varios juegos de futbol y los clientes s&oacute;lo muestran la informaci&oacute;n del partido de futbol que les interesa.</p>
+<p>La siguiente figura muestra el resultado del servidor:</p>
+<p><img alt="" src="./images/tutorialdezeromqconpython4-1.png"/> </p>
+<p>A continuaci&oacute;n se muestra las 2 f&iacute;guras de los clientes:
+Cliente 1 (Venezuela, Argentina):</p>
+<p><img alt="" src="./images/tutorialdezeromqconpython4-2.png"/> </p>
+<p>Cliente 2(Brasil,Alemania):</p>
+<p><img alt="" src="./images/tutorialdezeromqconpython4-3.png"/> </p>
+<p>Ya se va mostrando cosas m&aacute;s complicadas que se pueden hacer con <code>ZeroMQ</code>, y todav&iacute;a faltan...</p>
+<h2 id="_1"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/zeromq.html">ZeroMQ</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-3.html">Tutorial de ZeroMQ con Python. Parte 3.</a></li>
+      <li><a href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-2.html">Tutorial de ZeroMQ con Python. Parte 2.</a></li>
+      <li><a href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-1.html">Tutorial de ZeroMQ con python . Parte 1.</a></li>
+      <li><a href="https://ecrespo.github.io/simulacion-de-circuitos-electricos-con-python-eispice.html">Simulación de circuitos eléctricos con python eispice</a></li>
+      <li><a href="https://ecrespo.github.io/conectarse-al-repositorio-de-bitbucket-desde-python.html">Conectarse al repositorio de bitbucket desde python</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

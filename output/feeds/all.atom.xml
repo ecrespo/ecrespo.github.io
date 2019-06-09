@@ -684,7 +684,167 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Tutorial de ZeroMQ con Python(PUB/SUB). Parte 4.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-pythonpubsub-parte-4.html" rel="alternate"></link><published>2012-06-01T09:00:00-05:30</published><updated>2012-06-01T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-01:/tutorial-de-zeromq-con-pythonpubsub-parte-4.html</id><summary type="html">&lt;p&gt;Continuando con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;tutoriales sobre ZeroMQ&lt;/a&gt; ahora se muestra como usar Publicar/Suscribir (Publish/subscribe).&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Tutorial de ZeroMQ con Python (REP/REQ y PUB/SUB). Parte 5.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-repreq-y-pubsub-parte-5.html" rel="alternate"></link><published>2012-06-02T09:00:00-05:30</published><updated>2012-06-02T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-02:/tutorial-de-zeromq-con-python-repreq-y-pubsub-parte-5.html</id><summary type="html">&lt;p&gt;Continuando con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;art&amp;iacute;culos sobre ZeroMQ&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En la revista &lt;a href="http://www.linux-magazine.com/"&gt;Linux Magazine versi&amp;oacute;n en espa&amp;ntilde;ol&lt;/a&gt; publicaron un art&amp;iacute;culo sobre &lt;code&gt;ZeroMQ&lt;/code&gt; con Python.&lt;/p&gt;
+&lt;p&gt;Explican el uso de 2 patrones en conjunto, &lt;code&gt;REP/REQ&lt;/code&gt; y &lt;code&gt;PUB/SUB&lt;/code&gt;. Colocan como ejemplo una simulaci&amp;oacute;n del proceso de env&amp;iacute;o de tweets de twitter.&lt;/p&gt;
+&lt;p&gt;La siguiente figura …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;art&amp;iacute;culos sobre ZeroMQ&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En la revista &lt;a href="http://www.linux-magazine.com/"&gt;Linux Magazine versi&amp;oacute;n en espa&amp;ntilde;ol&lt;/a&gt; publicaron un art&amp;iacute;culo sobre &lt;code&gt;ZeroMQ&lt;/code&gt; con Python.&lt;/p&gt;
+&lt;p&gt;Explican el uso de 2 patrones en conjunto, &lt;code&gt;REP/REQ&lt;/code&gt; y &lt;code&gt;PUB/SUB&lt;/code&gt;. Colocan como ejemplo una simulaci&amp;oacute;n del proceso de env&amp;iacute;o de tweets de twitter.&lt;/p&gt;
+&lt;p&gt;La siguiente figura muestra la simulaci&amp;oacute;n:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython5-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;El emisor genera los mensajes, el twitter los recibe y los publica, luego cada receptor se suscribe al twitter y recibe la informaci&amp;oacute;n que le interesa.&lt;/p&gt;
+&lt;p&gt;EL c&amp;oacute;digo del emisor es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket con el parametro REQ&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;REQ&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se asocia la IP y el puerto del socket.&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:4000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se genera los mensajes estilo tuiter y se envia al socket.&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'@_seraph1 Esta es una prueba'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'@otro viendo el juego'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'@_seraph1 otra prueba'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'@otro otro'&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+
+ &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="n"&gt;msg_in&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El c&amp;oacute;digo del tuiter es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa choice de random&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;random&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;choice&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el socket de recepcion con argumento REP&lt;/span&gt;
+
+&lt;span class="n"&gt;socket_recv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;REP&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se asocia a una IP y puerto el socket de recepcion&lt;/span&gt;
+
+&lt;span class="n"&gt;socket_recv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:4000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el socket de publicacion con argumento PUB&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PUB&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se asocia la ip y un puerto distinto al anterio socket&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:5000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea un ciclo&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="c1"&gt;#Se recibe el mensaje del socket de recepcion&lt;/span&gt;
+
+ &lt;span class="n"&gt;msg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket_recv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+ &lt;span class="c1"&gt;#Se envia el mensaje de recepcion&lt;/span&gt;
+
+ &lt;span class="n"&gt;socket_recv&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="c1"&gt;#Se muestra el mensaje en pantalla&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Reenvio: {0}"&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="c1"&gt;#Se envia  el mensaje al socket de publicacion&lt;/span&gt;
+
+ &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se muestra ahora el c&amp;oacute;digo de los receptores:  &lt;/p&gt;
+&lt;p&gt;Receptor 1:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket de suscripcion&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SUB&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se asocia ese socket a la IP y puerto donde publica tuiter&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:5000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se suscribe a escuchar los mensajes de @_seraph1&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setsockopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SUBSCRIBE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"@_seraph1"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#se crea un ciclo donde se recibe los mensajes&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"-&amp;gt;"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Receptor 2:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa zeroMQ&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;zmq&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el contexto&lt;/span&gt;
+
+&lt;span class="n"&gt;context&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea el socket de suscripcion&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SUB&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se asocia ese socket a la IP y puerto donde publica tuiter&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"tcp://127.0.0.1:5000"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se suscribe a escuchar los mensajes de @otro&lt;/span&gt;
+
+&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setsockopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;zmq&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SUBSCRIBE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"@otro"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#se crea un ciclo donde se recibe los mensajes&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"-&amp;gt;"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;En la figura se muestra el resultado de twitter:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython5-2.png"/&gt; &lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra el resultado del receptor 1:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython5-3.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Y por &amp;uacute;ltimo el receptor 2:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/tutorialdezeromqconpython5-4.png"/&gt; &lt;/p&gt;
+&lt;p&gt;En la versi&amp;oacute;n de la revista no publicaron el c&amp;oacute;digo de los receptores.
+Esto muestra el nivel de complejidad en sistema de colas que se puede lograr con &lt;code&gt;ZeroMQ&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Python"></category><category term="Ubuntu"></category><category term="ZeroMQ"></category></entry><entry><title>Tutorial de ZeroMQ con Python(PUB/SUB). Parte 4.</title><link href="https://ecrespo.github.io/tutorial-de-zeromq-con-pythonpubsub-parte-4.html" rel="alternate"></link><published>2012-06-01T09:00:00-05:30</published><updated>2012-06-01T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-06-01:/tutorial-de-zeromq-con-pythonpubsub-parte-4.html</id><summary type="html">&lt;p&gt;Continuando con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;tutoriales sobre ZeroMQ&lt;/a&gt; ahora se muestra como usar Publicar/Suscribir (Publish/subscribe).&lt;/p&gt;
 &lt;p&gt;En el patr&amp;oacute;n pub/sub los componentes son pobremente acompladas, ser&amp;aacute; de gran ayuda para escalar ya que no hay necesidad de preocuparse por los suscriptores.  Sin embargo, este acoplamiento puede conducir a un comportamiento …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los &lt;a href="https://www.seraph.to/tag/zeromq.html"&gt;tutoriales sobre ZeroMQ&lt;/a&gt; ahora se muestra como usar Publicar/Suscribir (Publish/subscribe).&lt;/p&gt;
 &lt;p&gt;En el patr&amp;oacute;n pub/sub los componentes son pobremente acompladas, ser&amp;aacute; de gran ayuda para escalar ya que no hay necesidad de preocuparse por los suscriptores.  Sin embargo, este acoplamiento puede conducir a un comportamiento inesperado cuando no se entienden completamente.&lt;/p&gt;
 &lt;p&gt;El ejemplo que se va a desarrollar se basa en la publicaci&amp;oacute;n sobre la &lt;a href="http://nichol.as/zeromq-an-introduction"&gt;introducci&amp;oacute;n de ZeroMQ de Nicholas Pi&amp;euml;l&lt;/a&gt;.&lt;/p&gt;

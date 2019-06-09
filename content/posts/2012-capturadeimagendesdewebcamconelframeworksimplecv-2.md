@@ -1,5 +1,5 @@
 Title: Captura de imágen desde webcam con el framework SimpleCV. Parte 2.
-Date: 2012-07-08 9:00
+Date: 2012-07-08 10:00
 Category: Tutorial Python
 Tags: Camara,Canaima,Debian,gnome,Linux,Python,Ubuntu,SimpleCV
 lang: es

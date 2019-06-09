@@ -44,30 +44,29 @@
     <meta name="msapplication-TileColor" content="#333333">
 
 <meta name="author" content="Ernesto Crespo" />
-<meta name="description" content="En el artículo anterior se explica como usar la webcam del equipo para capturar una imágen, en este caso se explicará como definir el tamaño de la imágen, ahora se muestra como manejar 2 webcam al mismo tiempo. La idea es capturar imágenes de ambas webcam y luego salvarlas en …" />
-<meta name="keywords" content="Camara, Canaima, Debian, gnome, Linux, Python, Ubuntu, SimpleCV">
+<meta name="description" content="En el artículo anterior se explican 2 formas de definir tareas de forma periódica y al estilo crond. En este caso se explicará como ejecutar una función en una fecha próxima. #!/usr/bin/env python #Se importa date from datetime import date #Se importa Scheduler from apscheduler.scheduler import Scheduler …" />
+<meta name="keywords" content="Canaima, Debian, General, Linux, Python, Ubuntu, Tareas">
 
 <meta property="og:site_name" content="Página de Seraph"/>
-<meta property="og:title" content="Captura de imágen desde webcam con el framework SimpleCV. Parte 2."/>
-<meta property="og:description" content="En el artículo anterior se explica como usar la webcam del equipo para capturar una imágen, en este caso se explicará como definir el tamaño de la imágen, ahora se muestra como manejar 2 webcam al mismo tiempo. La idea es capturar imágenes de ambas webcam y luego salvarlas en …"/>
+<meta property="og:title" content="Ejecutar una tarea en una fecha próxima (APScheduler)"/>
+<meta property="og:description" content="En el artículo anterior se explican 2 formas de definir tareas de forma periódica y al estilo crond. En este caso se explicará como ejecutar una función en una fecha próxima. #!/usr/bin/env python #Se importa date from datetime import date #Se importa Scheduler from apscheduler.scheduler import Scheduler …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://ecrespo.github.io/captura-de-imagen-desde-webcam-con-el-framework-simplecv-parte-2.html"/>
+<meta property="og:url" content="https://ecrespo.github.io/ejecutar-una-tarea-en-una-fecha-proxima-apscheduler.html"/>
 <meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2012-07-08 10:00:00-04:30"/>
+<meta property="article:published_time" content="2012-07-19 09:00:00-04:30"/>
 <meta property="article:modified_time" content=""/>
 <meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
 <meta property="article:section" content="Tutorial Python"/>
-<meta property="article:tag" content="Camara"/>
 <meta property="article:tag" content="Canaima"/>
 <meta property="article:tag" content="Debian"/>
-<meta property="article:tag" content="gnome"/>
+<meta property="article:tag" content="General"/>
 <meta property="article:tag" content="Linux"/>
 <meta property="article:tag" content="Python"/>
 <meta property="article:tag" content="Ubuntu"/>
-<meta property="article:tag" content="SimpleCV"/>
+<meta property="article:tag" content="Tareas"/>
 <meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
 
-  <title>Página de Seraph &ndash; Captura de imágen desde webcam con el framework SimpleCV. Parte 2.</title>
+  <title>Página de Seraph &ndash; Ejecutar una tarea en una fecha próxima (APScheduler)</title>
 
 </head>
 <body>
@@ -157,71 +156,86 @@
 <article class="single">
   <header>
       
-    <h1 id="captura-de-imagen-desde-webcam-con-el-framework-simplecv-parte-2">Captura de imágen desde webcam con el framework SimpleCV. Parte 2.</h1>
+    <h1 id="ejecutar-una-tarea-en-una-fecha-proxima-apscheduler">Ejecutar una tarea en una fecha próxima (APScheduler)</h1>
     <p>
-          Posted on dom 08 julio 2012 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+          Posted on jue 19 julio 2012 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
 
 
-        &#8226; 1 min read
+        &#8226; 2 min read
     </p>
   </header>
 
 
   <div>
-    <p>En el <a href="https://www.seraph.to/captura-de-imagen-desde-la-webcam-con-el-framework-simplecv-parte-1.html#captura-de-imagen-desde-la-webcam-con-el-framework-simplecv-parte-1">art&iacute;culo anterior</a> se explica como usar la webcam del equipo para capturar una im&aacute;gen, en este caso se explicar&aacute; como definir el tama&ntilde;o de la im&aacute;gen, ahora se muestra como manejar 2 webcam al mismo tiempo.</p>
-<p>La idea es capturar im&aacute;genes de ambas webcam y luego salvarlas en formato png.</p>
-<p>El c&oacute;digo de la aplicaci&oacute;n es la siguiente:</p>
+    <p>En el art&iacute;culo <a href="https://www.seraph.to/agendar-tareas-con-python.html#agendar-tareas-con-python">anterior</a> se explican 2 formas de definir tareas de forma peri&oacute;dica y al estilo <code>crond</code>. En este caso se explicar&aacute; como ejecutar una funci&oacute;n en una fecha pr&oacute;xima.</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Importa Camera de SimpleCV</span>
-
-<span class="kn">from</span> <span class="nn">SimpleCV</span> <span class="kn">import</span> <span class="n">Camera</span>
-
-<span class="c1">#Se importa sleep de time</span>
-
+<span class="c1">#Se importa date</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="c1">#Se importa Scheduler</span>
+<span class="kn">from</span> <span class="nn">apscheduler.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
+<span class="c1">#Se importa sleep</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 
-<span class="c1"># Se asocia la primera camara con un ancho y alto predefinido.</span>
+<span class="c1"># Se instancia la clase scheduler</span>
+<span class="n">sched</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">()</span>
+<span class="c1">#Se inicia el scheduler</span>
+<span class="n">sched</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-<span class="n">camara1</span> <span class="o">=</span> <span class="n">Camera</span><span class="p">(</span><span class="mi">0</span><span class="p">,{</span> <span class="s2">"width"</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="s2">"height"</span><span class="p">:</span> <span class="mi">480</span> <span class="p">})</span>
+<span class="c1"># Se define la funci&oacute;n a ser ejecutada.</span>
+<span class="c1">#La funci&oacute;n toma un texto y lo presenta en pantalla.</span>
+<span class="k">def</span> <span class="nf">Tarea</span><span class="p">(</span><span class="n">texto</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">texto</span>
 
-<span class="c1"># Se asocia la segunda camara</span>
+<span class="c1"># La tarea ser&aacute; ejecutada el 19 de Julio de 2012.</span>
+<span class="n">fecha_ejecucion</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span> <span class="mo">07</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
 
-<span class="n">camara2</span> <span class="o">=</span> <span class="n">Camera</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># se alamacena la tarea en la variable tarea en caso que se quiera suspender</span>
+<span class="c1">#Se le pasa la funci&oacute;n Tarea, la fecha a ejecutar y los argumentos solicitados de la funci&oacute;n</span>
+<span class="n">tarea</span> <span class="o">=</span> <span class="n">sched</span><span class="o">.</span><span class="n">add_date_job</span><span class="p">(</span><span class="n">Tarea</span><span class="p">,</span> <span class="n">fecha_ejecucion</span><span class="p">,</span> <span class="p">[</span><span class="s1">'texto a escribir'</span><span class="p">])</span>
 
-<span class="c1"># Se captura la imagen de la primera camara y segunda camara</span>
-
-<span class="n">imagen1</span> <span class="o">=</span> <span class="n">camara1</span><span class="o">.</span><span class="n">getImage</span><span class="p">()</span>
-
-<span class="n">imagen2</span> <span class="o">=</span> <span class="n">camara2</span><span class="o">.</span><span class="n">getImage</span><span class="p">()</span>
-
-<span class="c1">#Se escribe un texto en la primera camara con la posicion dentro de la</span>
-
-<span class="c1">#imagen donde va a estar.</span>
-
-<span class="n">imagen1</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="s2">"Camara 1"</span><span class="p">,</span><span class="mi">160</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
-
-<span class="c1">#Se escribe un texto en la segunda camara</span>
-
-<span class="n">imagen2</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span><span class="s2">"Camara 2"</span><span class="p">)</span>
-
-<span class="c1">#Se muestra ambas imagenes</span>
-
-<span class="n">imagen1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="n">imagen2</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="c1">#Se salva ambas imagenes</span>
-
-<span class="n">imagen1</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"imagen1.png"</span><span class="p">)</span>
-
-<span class="n">imagen2</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"imagen2.png"</span><span class="p">)</span>
+<span class="c1">#Se muestra las tareas definidas.</span>
+<span class="k">print</span> <span class="n">sched</span><span class="o">.</span><span class="n">print_jobs</span><span class="p">()</span>
+<span class="c1">#Se crea un ciclo de 10 iteraciones</span>
+<span class="c1">#Donde se espera 60 minutos por cada iteracion</span>
+<span class="c1">#Se muestra en pantalla las veces que se ejecuta.</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s2">"---- </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">3600</span><span class="p">)</span>
+<span class="c1">#Se detiene el scheduler</span>
+<span class="n">sched</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
-<p>A continuaci&oacute;n se muestra las im&aacute;genes capturadas por las 2 webcam: 
-Webcam 1:</p>
-<p><img alt="" src="./images/capturadeimagendesdewebcamconelframeworksimplecv-1.png"/> </p>
-<p>Webcam 2:</p>
-<p><img alt="" src="./images/capturadeimagendesdewebcamconelframeworksimplecv-2.png"/> </p>
+<p>Al ejecutar el programa se muestra lo siguiente:</p>
+<div class="highlight"><pre><span></span>ernesto@clara:~/bin/python/procesos$ sudo ./procesos3.py
+
+Jobstore default:
+
+    Tarea (trigger: date[2012-07-19 00:00:00], next run at: 2012-07-19 00:00:00)
+
+None
+
+---- 0
+
+---- 1
+
+text
+
+---- 2
+
+---- 3
+
+---- 4
+
+---- 5
+
+---- 6
+
+---- 7
+
+---- 8
+
+---- 9
+</pre></div>
+<p>Con este art&iacute;culo se muestran las tres formas de ejecutar procesos con <code>APScheduler</code> (ejecuci&oacute;n peri&oacute;dica, estilo crond y ejecuci&oacute;n en una fecha pr&oacute;xima).</p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
@@ -232,14 +246,13 @@ direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
   </div>
   <div class="tag-cloud">
     <p>
-      <a href="https://ecrespo.github.io/tag/camara.html">Camara</a>
       <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
       <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
-      <a href="https://ecrespo.github.io/tag/gnome.html">gnome</a>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
       <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
       <a href="https://ecrespo.github.io/tag/python.html">Python</a>
       <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
-      <a href="https://ecrespo.github.io/tag/simplecv.html">SimpleCV</a>
+      <a href="https://ecrespo.github.io/tag/tareas.html">Tareas</a>
     </p>
   </div>
 
@@ -251,9 +264,9 @@ direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
     <ul class="related-posts">
       <li><a href="https://ecrespo.github.io/captura-de-video-con-python-y-simplecv-parte-4.html">Captura de vídeo con Python y SimpleCV. Parte 4.</a></li>
       <li><a href="https://ecrespo.github.io/modificar-imagen-con-simplecvbinarizacion-parte-3.html">Modificar imagen con simpleCV(binarización). Parte 3.</a></li>
-      <li><a href="https://ecrespo.github.io/captura-de-imagen-desde-la-webcam-con-el-framework-simplecv-parte-1.html">Captura de imágen desde la webcam con el framework SimpleCV. Parte 1.</a></li>
-      <li><a href="https://ecrespo.github.io/generar-una-grafica-en-python-con-pyqwt-parte-1.html">Generar una gráfica en python con PyQwt. Parte 1</a></li>
-      <li><a href="https://ecrespo.github.io/ejecutar-una-tarea-en-una-fecha-proxima-apscheduler.html">Ejecutar una tarea en una fecha próxima (APScheduler)</a></li>
+      <li><a href="https://ecrespo.github.io/tutorial-de-zeromq-con-python-parte-3.html">Tutorial de ZeroMQ con Python. Parte 3.</a></li>
+      <li><a href="https://ecrespo.github.io/simulacion-de-circuitos-electricos-con-python-eispice.html">Simulación de circuitos eléctricos con python eispice</a></li>
+      <li><a href="https://ecrespo.github.io/conectarse-al-repositorio-de-bitbucket-desde-python.html">Conectarse al repositorio de bitbucket desde python</a></li>
     </ul>
   </div>
 

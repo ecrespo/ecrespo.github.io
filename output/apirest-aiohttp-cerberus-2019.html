@@ -1,0 +1,767 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Se creará un API rest asíncrono (usando aiohttp), donde se valida la entrada con cerberus" />
+<meta name="keywords" content="Debian, Python, aiohttp, Ubuntu, API rest, asincrono, Cerberus">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Validando un API rest asíncrono con Cerberus"/>
+<meta property="og:description" content="Se creará un API rest asíncrono (usando aiohttp), donde se valida la entrada con cerberus"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/apirest-aiohttp-cerberus-2019.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2019-06-08 19:33:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Python"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="aiohttp"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="API rest"/>
+<meta property="article:tag" content="asincrono"/>
+<meta property="article:tag" content="Cerberus"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Validando un API rest asíncrono con Cerberus</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="apirest-aiohttp-cerberus-2019">Validando un API rest asíncrono con Cerberus</h1>
+    <p>
+          Posted on sáb 08 junio 2019 in <a href="https://ecrespo.github.io/category/tutorial-de-python.html">Tutorial de Python</a>
+
+
+        &#8226; 8 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>En este art&iacute;culo se mostrar&aacute; como crear un API rest asincrono usando aiohttp, se usar&aacute; un script para acceder a la base de datos NoSQL RethinkDB de manera as&iacute;ncrona,
+y 2 formas de validar la entrada de datos del API, la primera evaluando cada variable, la segunda se usar&aacute; cerberus donde se tiene un esquema de la entrada de datos y
+por &uacute;ltimo la tercera, usar&aacute; cerberus pero el esquema estar&aacute; guardado en rethinkdb.</p>
+<p>El repositorio del c&oacute;digo completo de este tutorial se encuentra en <a href="https://gitlab.com/ecrespo/async-api-rest-example/tree/master">github</a>.</p>
+<p>Este art&iacute;culo se basa en el art&iacute;culo <a href="https://www.ecalamia.com/blog/data-validation-robust-apis/">Using Data Validation for Robust APIs</a> y en el
+art&iacute;culo <a href="https://blog.apcelent.com/create-rest-api-using-aiohttp.html">How to create REST API using aiohttp</a>, donde se explica como hacer un API rest sincr&oacute;nico con aiohttp.</p>
+<p>La documentaci&oacute;n de cerberus la pueden ver en el siguiente <a href="https://cerberus-sanhe.readthedocs.io/usage.html">cerberus</a>.</p>
+<p>Se tiene la siguiente estructura de directorios y archivos del API rest:</p>
+<div class="highlight"><pre><span></span>async-api-rest-example
+├── app.py
+├── README.md
+├── resources
+│&nbsp;&nbsp; ├── api_resources.py
+│&nbsp;&nbsp; ├── home.py
+│&nbsp;&nbsp; ├── __init__.py
+│&nbsp;&nbsp; └── rethink_async.py
+└── run.py
+</pre></div>
+<p>Descripci&oacute;n de los archivos:</p>
+<ul>
+<li>app.py: Se definen las rutas de los endpoint del API rest.</li>
+<li>run.py: Script que permite correr el API rest.</li>
+<li>resources/rethin_async.py: M&oacute;dulo que permite acceder de manera as&iacute;ncrona a rethinkdb.</li>
+<li>resources/home.py: P&aacute;gina de inicio del API rest.</li>
+<li>resources/api_resources.py: Donde se define los m&eacute;todos HTTP del API rest.</li>
+</ul>
+<h3 id="script run.py">Script run.py</h3>
+<p>Este script permite iniciar el API rest, a continuaci&oacute;n el c&oacute;digo:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="c1">#Se importa aiohttp</span>
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+
+<span class="c1">#Se importa las rutas de los endpoint</span>
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">setup_routes</span>
+
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">init_app</span><span class="p">():</span>
+    <span class="c1">#Se instancia la aplicaci&oacute;n</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+    <span class="c1">#A la aplicaci&oacute;n se le pasa las rutas</span>
+    <span class="n">setup_routes</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="c1">#Se retorna la aplicaci&oacute;n</span>
+    <span class="k">return</span> <span class="n">app</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="c1">#Se define la direcci&oacute;n del host, el puerto y se corre la Ap en dicha IP y puerto</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="s1">'0.0.0.0'</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">5000</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">init_app</span><span class="p">()</span>
+
+    <span class="n">web</span><span class="o">.</span><span class="n">run_app</span><span class="p">(</span><span class="n">app</span><span class="p">,</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+<h3 id="script app.py">Script app.py</h3>
+<p>Este script define las rutas y URLs de los endpoint del API rest. A continuaci&oacute;n el c&oacute;digo:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se importa los recursos del api rest y el home .</span>
+<span class="kn">from</span> <span class="nn">resources.api_resources</span> <span class="kn">import</span> <span class="n">Student</span>
+<span class="kn">from</span> <span class="nn">resources.home</span> <span class="kn">import</span> <span class="n">getIndex</span>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">setup_routes</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">student</span> <span class="o">=</span> <span class="n">Student</span><span class="p">()</span>
+    <span class="c1">#Se tiene 3 endpoints, el primero validaci&oacute;n cl&aacute;sica,</span>
+    <span class="c1"># el segundo validando con cerberus, y el 3ero con cerberus</span>
+    <span class="c1">#pero guardando el esquema de validaci&oacute;n en una base de datos</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/api/v1/student1'</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData1</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/api/v1/student2'</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData2</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/api/v1/student3'</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData3</span><span class="p">)</span>
+    <span class="c1">#Por seguridad no se permite ingresar a la raiz del API rest</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/api/v1/'</span><span class="p">,</span> <span class="n">getIndex</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">getIndex</span><span class="p">)</span>
+</pre></div>
+<h3 id="script">Script</h3>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">rethinkdb</span> <span class="kn">as</span> <span class="nn">r</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="n">r</span><span class="o">.</span><span class="n">set_loop_type</span><span class="p">(</span><span class="s2">"asyncio"</span><span class="p">)</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">createDB</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Create DB to database server.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to create</span>
+
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">database</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_list</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_create</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">createTable</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Create Table in database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table_create</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">listdb</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    List all database in database server.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_list</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">listtables</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Lista tables from database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to list tables</span>
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table_list</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Insert dictionary  in table.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table to insert Dictionary</span>
+<span class="sd">    data: Dictionary data to insert</span>
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">getAll</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">pattern</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Get All documents from pattern search</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table name to search</span>
+<span class="sd">    pattern: Dictionary with pattern search</span>
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetch_next</span><span class="p">()):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">elements</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">getFirst</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pattern</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Get first document from pattern search</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table name to search</span>
+<span class="sd">    pattern: Dictionary with pattern search</span>
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">await</span>  <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">await</span>  <span class="n">cursor</span><span class="o">.</span><span class="n">fetch_next</span><span class="p">()):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">elements</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">pattern</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Delete a  document from pattern search</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table name to search</span>
+<span class="sd">    pattern: Dictionary with pattern search</span>
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span>  <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">pattern</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Update a document from pattern search</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table name to search</span>
+<span class="sd">    pattern: Dictionary with pattern search</span>
+<span class="sd">    """</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="nb">dict</span><span class="p">())):</span>
+        <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="bp">None</span> <span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+            <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span>  <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+            <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+<h3 id="script api_resouces.py">Script api_resouces.py</h3>
+<p>En el script se tienen 3 m&eacute;todos:</p>
+<ul>
+<li>getData1: Este m&eacute;todo v&aacute;lida cada una de las entrada de datos.</li>
+<li>getData2: Este m&eacute;todo v&aacute;lida la entrada de datos con un esquema validando con cerberus.</li>
+<li>getData3: Este m&eacute;todo vuelve a usar cerberus pero ahora tomando el esquema a validar usando rethinkdb.</li>
+</ul>
+<p>A continuaci&oacute;n se muestra el c&oacute;digo:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span> <span class="nn">cerberus</span> <span class="kn">import</span> <span class="n">Validator</span>
+<span class="kn">import</span> <span class="nn">rethinkdb</span> <span class="kn">as</span> <span class="nn">r</span>
+
+<span class="kn">from</span> <span class="nn">.rethink_async</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">'0.0.1'</span>
+
+
+<span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'uid'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'required'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'integer'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">'age'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'required'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'integer'</span><span class="p">,</span>
+        <span class="s1">'min'</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="s1">'max'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">'name'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'required'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'string'</span><span class="p">,</span>
+        <span class="s1">'maxlength'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">'grade'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'required'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'string'</span><span class="p">,</span>
+        <span class="s1">'allowed'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">Student</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">getData1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+
+        <span class="c1">#Se convierte el json a un diccionario</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Ill-formed JSON"</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Se valida los datos de entrada</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">uid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Expecting uid:int"</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">age</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'age'</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="mi">18</span> <span class="o">&lt;</span> <span class="n">age</span> <span class="o">&lt;</span> <span class="mi">35</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Bad age'</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Expecting age:int within the range [18:35]"</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Max limit 50'</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Expecting name:str within the range [0:50]"</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">grade</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grade'</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">grade</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">grade</span> <span class="o">=</span> <span class="s1">'A'</span>
+            <span class="k">if</span> <span class="n">grade</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">):</span>
+                <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"A, B or C expected"</span><span class="p">}</span>
+                <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Expecting grade:str A, B or C expected"</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Luego de validar se construye el diccionario de salida de datos como json</span>
+
+        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grade'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">)</span>
+
+        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'success'</span><span class="p">,</span>
+            <span class="s1">'data'</span><span class="p">:</span> <span class="n">data_output</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">'application/json'</span><span class="p">)</span>
+
+
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">getData2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+
+        <span class="c1">#Se convierte el json del post en un diccionario</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Ill-formed JSON"</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Con la variable que contiene el esquema se realiza la validaci&oacute;n del json</span>
+        <span class="n">student_validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">student_schema</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">errors</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Se construye el diccionario de la salida de los datos v&iacute;a json</span>
+        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grade'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">)</span>
+
+        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'success'</span><span class="p">,</span>
+            <span class="s1">'data'</span><span class="p">:</span> <span class="n">data_output</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">'application/json'</span><span class="p">)</span>
+
+
+    <span class="n">async</span> <span class="k">def</span> <span class="nf">getData3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+
+        <span class="c1">#Se convierte el json en un diccionario</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Ill-formed JSON"</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Si yo se, no deber&iacute;a tener  la configuraci&oacute;n de la base de datos ac&aacute;,</span>
+        <span class="c1">#pero era para no alargar el c&oacute;digo de ejemplo</span>
+        <span class="c1">#Se definen el servidor, puerto, base de datos, la tabla y el patr&oacute;n de busqueda</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="s2">"localhost"</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">28015</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="s2">"student"</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="s2">"student_schema"</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"endpoint"</span><span class="p">:</span> <span class="s2">"student3"</span><span class="p">}</span>
+
+        <span class="c1">#Se realiza la consulta a rethinkdb de manera asincrona</span>
+        <span class="n">student_schemadb</span> <span class="o">=</span> <span class="n">await</span> <span class="n">getFirst</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+
+        <span class="c1">#Se quitan del diccionario el id y el endpoint a fin de realizar la evaluaci&oacute;n del esquema</span>
+        <span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="p">:</span> <span class="n">student_schemadb</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">student_schemadb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="s1">'id'</span><span class="p">}</span>
+        <span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="p">:</span> <span class="n">student_schema</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">student_schema</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="s1">'endpoint'</span><span class="p">}</span>
+
+        <span class="c1">#Se valida el esquema con los datos suministrados v&iacute;a post</span>
+        <span class="n">student_validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">student_schema</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">errors</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Se toman los datos y se colocan en el diccionario para el json de salida</span>
+        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">'grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grade'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">)</span>
+
+        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'success'</span><span class="p">,</span>
+            <span class="s1">'data'</span><span class="p">:</span> <span class="n">data_output</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">'application/json'</span><span class="p">)</span>
+</pre></div>
+<h3 id="base de datos rethinkdb con el esquema para cerberus">Base de datos rethinkdb con el esquema para cerberus</h3>
+<p>Para que el m&eacute;todo getData3 funcione es necesario tener almacenado en la base de datos rethinkdb el esquema.</p>
+<p>El proceso de instalaci&oacute;n de rethinkDB v&iacute;a docker, se deja en el siguiente <a href="https://platzi.com/blog/como-instalar-rethinkdb-docker/">art&iacute;culo de platzi</a>.</p>
+<p>Para insertar los datos se ejecuta en el dashboard de rethinkDB (http://localhost:8080) el siguiente comando:</p>
+<div class="highlight"><pre><span></span>r.db("student").table("student_schema").insert({id:1,endpoint: 'student3',uid: {
+        'required': true,
+        'type': 'integer'},
+    age: {
+        'required': true,
+        'type': 'integer',
+        'min': 18,
+        'max': 35
+    },
+    name: {
+        'required': true,
+        'type': 'string',
+        'maxlength': 50
+    },
+    grade: {
+        'required': false,
+        'type': 'string',
+        'allowed': ['A', 'B', 'C']
+  }})
+</pre></div>
+<p>De esa forma se inserta los datos en la tabla.</p>
+<p>Para consultar la tabla v&iacute;a dashboard se ejecuta:</p>
+<div class="highlight"><pre><span></span>r.db("student").table("student_schema")
+</pre></div>
+<p>A continuaci&oacute;n se muestra la tabla:</p>
+<p><img alt="Tabla esquema" src="./images/2019-apirest-cerberus-5.png"/></p>
+<h3 id="iniciar el api rest.">Iniciar el API rest.</h3>
+<p>Para iniciar el API rest se tiene que tener instalado la librer&iacute;a rethinkdb y aiohttp:</p>
+<div class="highlight"><pre><span></span>pip install rethinkdb aiohttp
+</pre></div>
+<p>Luego de instalada se ejecuta el script run.py:</p>
+<div class="highlight"><pre><span></span>python run.py
+</pre></div>
+<p>Si se tiene la siguiente salida el API rest est&aacute; corriendo sin problemas:</p>
+<div class="highlight"><pre><span></span>======== Running on http://0.0.0.0:5000 ========
+(Press CTRL+C to quit)
+</pre></div>
+<h3 id="consultas al api rest">Consultas al API rest</h3>
+<p>Para consultar el API rest se puede usar insomia o postman, ambos son clientes API rest.</p>
+<p>Se tienen 3 endpoint todos v&iacute;a m&eacute;todo post que se le pasar&aacute; un json como el siguiente:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">"uid"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+  <span class="nt">"age"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+  <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"John Doe"</span><span class="p">,</span>
+  <span class="nt">"grade"</span><span class="p">:</span> <span class="s2">"A"</span>
+<span class="p">}</span>
+</pre></div>
+<p>Los urls son los siguientes:</p>
+<ul>
+<li>http://localhost:5000/api/v1/student1 : Usa el m&eacute;todo getData1.</li>
+<li>http://localhost:5000/api/v1/student2 : Usa el m&eacute;todo getData2.</li>
+<li>http://localhost:5000/api/v1/student3 : Usa el m&eacute;todo getData3.</li>
+</ul>
+<p>Primer endpoint:</p>
+<p>Se realiza la consulta con el json mostrado anteriormente:</p>
+<p><img alt="Consulta v&aacute;lida" src="./images/2019-apirest-cerberus-1.png"/></p>
+<p>Ahora se modifica por ejemplo la variable grade a X:</p>
+<p><img alt="Consulta inv&aacute;lida" src="./images/2019-apirest-cerberus-2.png"/></p>
+<p>En este caso el valor X para la variable grade no es v&aacute;lido.</p>
+<p>Segundo endpoint:</p>
+<p>En este caso se usa cerberus y la variable que contiene el esquema para validar:</p>
+<p>Se realiza la consulta con el json original:</p>
+<p><img alt="Consulta v&aacute;lida" src="./images/2019-apirest-cerberus-3.png"/></p>
+<p>Ahora se realiza la consulta modificando la variable grade con el valor de Z:</p>
+<p><img alt="Consulta inv&aacute;lida" src="./images/2019-apirest-cerberus-4.png"/></p>
+<p>El mensaje es m&aacute;s gen&eacute;rico no es el que se defini&oacute; en el primer m&eacute;todo.</p>
+<p>Tercer endpoint:</p>
+<p>Ac&aacute; no se ver&aacute;n cambios significativos en la consulta, lo interesante es que, al tener muchos endpoint con distintas entradas de datos,
+lo mejor es usar una base de datos donde se tenga almacenada cada esquema por endpoint.</p>
+<p>As&iacute; que el resultado ser&iacute;a el mismo que los del segundo endpoint.</p>
+<h2 id="_2"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/aiohttp.html">aiohttp</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/tag/api-rest.html">API rest</a>
+      <a href="https://ecrespo.github.io/tag/asincrono.html">asincrono</a>
+      <a href="https://ecrespo.github.io/tag/cerberus.html">Cerberus</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/python-wikipedia-2019.html">Cómo usar el API de wikipedia con Python</a></li>
+      <li><a href="https://ecrespo.github.io/sqlalchemy-y-elixir-abstraccion-de-bases-de-datos-en-python.html">Sqlalchemy y Elixir: Abstracción de Bases de Datos en Python</a></li>
+      <li><a href="https://ecrespo.github.io/abstraccion-del-motor-de-base-de-datos-con-el-orm-sqlalchemy-y-python.html">Abstracción del motor de Base de Datos con el ORM Sqlalchemy y python</a></li>
+      <li><a href="https://ecrespo.github.io/simulacion-de-circuitos-electricos-con-python-eispice.html">Simulación de circuitos eléctricos con python eispice</a></li>
+      <li><a href="https://ecrespo.github.io/calculo-de-direcciones-ip-con-python.html">Cálculo de direcciones IP con python</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

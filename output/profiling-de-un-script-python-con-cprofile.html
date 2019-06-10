@@ -1,0 +1,390 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con los artículos sobre profiling, otra herramienta para llevar adelante el profiling se llama cProfile, esta es una extensión en C que se introdujo en Python 2.5. Se usa para determinar Profiling deterministico (se mide el tiempo de manera precisa en vez de muestreo). El ejemplo que se …" />
+<meta name="keywords" content="General, Linux, numpy, python, cProfile, Profiling">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Profiling de un script python con cProfile"/>
+<meta property="og:description" content="Continuando con los artículos sobre profiling, otra herramienta para llevar adelante el profiling se llama cProfile, esta es una extensión en C que se introdujo en Python 2.5. Se usa para determinar Profiling deterministico (se mide el tiempo de manera precisa en vez de muestreo). El ejemplo que se …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/profiling-de-un-script-python-con-cprofile.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2012-12-05 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="numpy"/>
+<meta property="article:tag" content="python"/>
+<meta property="article:tag" content="cProfile"/>
+<meta property="article:tag" content="Profiling"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Profiling de un script python con cProfile</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="profiling-de-un-script-python-con-cprofile">Profiling de un script python con cProfile</h1>
+    <p>
+          Posted on mié 05 diciembre 2012 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Continuando con los art&iacute;culos sobre profiling, otra herramienta para llevar adelante el profiling se llama <code>cProfile</code>, esta es una extensi&oacute;n en C que se introdujo en Python 2.5. Se usa para determinar Profiling deterministico (se mide el tiempo de manera precisa en vez de muestreo).</p>
+<p>El ejemplo que se desarrollar&aacute; es el mismo de la generaci&oacute;n de la matriz inversa, la diferencia ser&aacute; que la definici&oacute;n del valor de n de la matriz y su generaci&oacute;n estar&aacute; en una funci&oacute;n llamada main. Est&aacute; funci&oacute;n luego se llamar&aacute; desde <code>cProfile</code>.</p>
+<p>A continuaci&oacute;n el c&oacute;digo:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+
+
+<span class="c1">#Se importa numpy como np</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">cProfile</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1">#funcion que genera matrices inversas.</span>
+
+<span class="k">def</span> <span class="nf">Inversa</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">I</span>
+
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+
+    <span class="c1">#Se define una lista de  tama&ntilde;os de la matriz</span>
+
+    <span class="n">tamagno</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span>
+
+    <span class="c1">#Se recorre la lista de tama&ntilde;os y se invierte cada matriz con la</span>
+
+    <span class="c1">#funcion.</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tamagno</span><span class="p">:</span>
+
+        <span class="n">Inversa</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+
+
+<span class="c1">#Se ejecuta la funci&oacute;n main desde la llamada run de cProfile.    </span>
+
+<span class="n">cProfile</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">'main()'</span><span class="p">)</span>
+</pre></div>
+<p>Al ejecutar el script se tiene como resultado el profiling de la generaci&oacute;n de la matriz inversa:</p>
+<div class="highlight"><pre><span></span>ecrespo@jewel:~/proyectos/ernesto-ecrespo.blogspot/cprofile$ python matrizinversa.py 
+
+         809 function calls in 5.764 seconds
+
+
+
+   Ordered by: standard name
+
+
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+
+        1    0.000    0.000    5.764    5.764 &lt;string&gt;:1(&lt;module&gt;)
+
+       24    0.000    0.000    0.058    0.002 defmatrix.py:233(__new__)
+
+       36    0.000    0.000    0.000    0.000 defmatrix.py:279(__array_finalize__)
+
+       12    0.000    0.000    0.000    0.000 defmatrix.py:55(asmatrix)
+
+       12    0.015    0.001    5.467    0.456 defmatrix.py:808(getI)
+
+        1    0.000    0.000    0.000    0.000 dual.py:12(&lt;module&gt;)
+
+       12    0.000    0.000    0.000    0.000 linalg.py:127(_to_native_byte_order)
+
+       12    0.000    0.000    0.257    0.021 linalg.py:139(_fastCopyAndTranspose)
+
+       12    0.000    0.000    0.000    0.000 linalg.py:151(_assertRank2)
+
+       12    0.000    0.000    0.000    0.000 linalg.py:157(_assertSquareness)
+
+       12    0.000    0.000    5.396    0.450 linalg.py:244(solve)
+
+       12    0.020    0.002    5.452    0.454 linalg.py:404(inv)
+
+       36    0.000    0.000    0.000    0.000 linalg.py:66(_makearray)
+
+       36    0.000    0.000    0.000    0.000 linalg.py:71(isComplexType)
+
+       24    0.000    0.000    0.000    0.000 linalg.py:84(_realType)
+
+       12    0.000    0.000    0.000    0.000 linalg.py:99(_commonType)
+
+       12    0.007    0.001    5.751    0.479 matrizinversa.py:12(Inversa)
+
+        1    0.013    0.013    5.764    5.764 matrizinversa.py:17(main)
+
+       36    0.000    0.000    0.000    0.000 numeric.py:167(asarray)
+
+       12    0.000    0.000    0.035    0.003 numeric.py:1830(identity)
+
+       36    0.000    0.000    0.000    0.000 {getattr}
+
+       72    0.000    0.000    0.000    0.000 {isinstance}
+
+       60    0.000    0.000    0.000    0.000 {issubclass}
+
+       60    0.000    0.000    0.000    0.000 {len}
+
+       12    0.000    0.000    0.000    0.000 {max}
+
+       24    0.000    0.000    0.000    0.000 {method '__array_prepare__' of 'numpy.ndarray' objects}
+
+       24    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+
+       12    0.059    0.005    0.059    0.005 {method 'astype' of 'numpy.ndarray' objects}
+
+       12    0.058    0.005    0.058    0.005 {method 'copy' of 'numpy.ndarray' objects}
+
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+
+       24    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+
+       12    0.220    0.018    0.220    0.018 {method 'rand' of 'mtrand.RandomState' objects}
+
+       12    0.000    0.000    0.000    0.000 {method 'transpose' of 'numpy.ndarray' objects}
+
+       12    0.000    0.000    0.000    0.000 {method 'view' of 'numpy.ndarray' objects}
+
+       12    0.000    0.000    0.000    0.000 {min}
+
+       24    0.257    0.011    0.257    0.011 {numpy.core.multiarray._fastCopyAndTranspose}
+
+        1    0.000    0.000    0.000    0.000 {numpy.core.multiarray.arange}
+
+       36    0.000    0.000    0.000    0.000 {numpy.core.multiarray.array}
+
+       24    0.035    0.001    0.035    0.001 {numpy.core.multiarray.zeros}
+
+       12    5.078    0.423    5.078    0.423 {numpy.linalg.lapack_lite.dgesv}
+</pre></div>
+<p>La salida es la misma que se mostr&oacute; en el art&iacute;culo de timeit con ipython.  Como adicional al <a href="http://blog.crespo.org.ve/2012/12/profiling-de-un-script-python-con-timeit.html">art&iacute;culo de timeit</a> se muestra a continuaci&oacute;n el significado de cada columna:</p>
+<ul>
+<li><code>ncalls</code>: N&uacute;mero de llamadas.</li>
+<li><code>tottime</code>: Tiempo total gastado en una funci&oacute;n.</li>
+<li><code>percall</code>: Tiempo por llamada, calculado el tiempo total la cantidad de llamadas.</li>
+<li><code>cumtime</code>: Tiempo acumulado gastado en una funci&oacute;n y llamadas a funciones por la funci&oacute;n, incluyendo llamadas recursivas.  </li>
+</ul>
+<p>El c&oacute;digo del script lo pueden bajar desde <a href="https://bitbucket.org/ecrespo/ernesto-ecrespo.blogspot/src/a3294957f9a7a41932385d064d7799ad1dd80b60/cprofile/matrizinversa.py?at=default">bitbucket</a>.</p>
+<h2 id="_1"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/numpy.html">numpy</a>
+      <a href="https://ecrespo.github.io/tag/python.html">python</a>
+      <a href="https://ecrespo.github.io/tag/cprofile.html">cProfile</a>
+      <a href="https://ecrespo.github.io/tag/profiling.html">Profiling</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/analizando-codigo-python-con-pylint.html">Analizando código Python con Pylint</a></li>
+      <li><a href="https://ecrespo.github.io/depurar-codigo-python-con-pudb.html">Depurar código python con pudb</a></li>
+      <li><a href="https://ecrespo.github.io/depurar-codigo-python-con-ipython.html">Depurar código python con ipython.</a></li>
+      <li><a href="https://ecrespo.github.io/resolucion-de-sistemas-de-ecuaciones-con-numpy.html">Resolución de sistemas de ecuaciones con NumPy</a></li>
+      <li><a href="https://ecrespo.github.io/generar-una-grafica-en-python-con-pyqwt-parte-1.html">Generar una gráfica en python con PyQwt. Parte 1</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

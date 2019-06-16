@@ -1,5 +1,5 @@
 Title: Contador incremental con un display 7 segmentos y Arduino
-Date: 2013-04-02 9:00
+Date: 2013-02-04 9:00
 Category: Tutorial de Arduino
 Tags: Arduino,Linux, Debian, Ubuntu
 lang: es

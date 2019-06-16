@@ -684,7 +684,1023 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Día Debian en Barquisimeto</title><link href="https://ecrespo.github.io/dia-debian-en-barquisimeto.html" rel="alternate"></link><published>2013-08-16T09:00:00-05:30</published><updated>2013-08-16T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-08-16:/dia-debian-en-barquisimeto.html</id><summary type="html">&lt;p&gt;Ma&amp;ntilde;ana s&amp;aacute;bado se realizar&amp;aacute; el evento D&amp;iacute;a Debian en El INCES de la carrera 19 con calle 23 desde las 9am en Barquisimeto.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Mostrar tweets en tiempo real con twython y el API Stream de Twitter</title><link href="https://ecrespo.github.io/mostrar-tweets-en-tiempo-real-con-twython-y-el-api-stream-de-twitter.html" rel="alternate"></link><published>2013-09-26T09:00:00-05:30</published><updated>2013-09-26T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-09-26:/mostrar-tweets-en-tiempo-real-con-twython-y-el-api-stream-de-twitter.html</id><summary type="html">&lt;p&gt;En este art&amp;iacute;culo se usar&amp;aacute; el API Stream de twitter para ver el flujo de tweets que recibe el usuario o lo que se publica en general en twitter.&lt;/p&gt;
+&lt;p&gt;La idea es usar &lt;code&gt;twython&lt;/code&gt; con la clase &lt;a href="https://twython.readthedocs.org/en/latest/usage/streaming_api.html"&gt;TwythonStreamer&lt;/a&gt; para acceder a la API stream de twitter.&lt;/p&gt;
+&lt;p&gt;Del API de twitter …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En este art&amp;iacute;culo se usar&amp;aacute; el API Stream de twitter para ver el flujo de tweets que recibe el usuario o lo que se publica en general en twitter.&lt;/p&gt;
+&lt;p&gt;La idea es usar &lt;code&gt;twython&lt;/code&gt; con la clase &lt;a href="https://twython.readthedocs.org/en/latest/usage/streaming_api.html"&gt;TwythonStreamer&lt;/a&gt; para acceder a la API stream de twitter.&lt;/p&gt;
+&lt;p&gt;Del API de twitter se mostrar&amp;aacute; &lt;a href="https://developer.twitter.com/docs/api/1.1/get/user"&gt;GET user&lt;/a&gt;  el cual muestra los mensajes en flujo de un s&amp;oacute;lo usuario.&lt;/p&gt;
+&lt;p&gt;Tambi&amp;eacute;n se mostrar&amp;aacute; como usar &lt;a href="https://developer.twitter.com/docs/api/1.1/post/statuses/filter"&gt;POST status filter&lt;/a&gt;, el cual muestra todos los tweets p&amp;uacute;blicos que contengan una palabra (track).&lt;/p&gt;
+&lt;p&gt;El primer ejemplo es con el &lt;code&gt;GET user&lt;/code&gt;, el c&amp;oacute;digo a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el token de la aplicacion&lt;/span&gt;
+
+&lt;span class="n"&gt;CONSUMER_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="n"&gt;CONSUMER_SECRET&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el acceso al usuario&lt;/span&gt;
+
+&lt;span class="n"&gt;ACCESS_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="n"&gt;ACCESS_SECRET&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa TwythonStreamer&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;twython&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TwythonStreamer&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la clase MiStream que hereda de TwythonStreamer &lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MiStream&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TwythonStreamer&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se crea el metodo on_success que recibe data&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_success&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+        &lt;span class="c1"&gt;#Si la palabra 'text' se encuentra en data se muestra en pantalla&lt;/span&gt;
+
+        &lt;span class="c1"&gt;#su contenido&lt;/span&gt;
+
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s1"&gt;'text'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+            &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'text'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'utf-8'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+            &lt;span class="c1"&gt;#Si se desea desconectar luego del primer resultado?&lt;/span&gt;
+
+            &lt;span class="c1"&gt;#self.disconnect()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se crea el metodo on_error que recibe el codigo de estatus y data y se muestra en pantalla&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;on_error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Requires Authentication as of Twitter API v1.1&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia de la clase MiStream con los parametros de autenticacion del API v1.1 de twittter.&lt;/span&gt;
+
+&lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;MiStreame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CONSUMER_KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;CONSUMER_SECRET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ACCESS_KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ACCESS_SECRET&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se recibe los tweets del usuario.&lt;/span&gt;
+
+&lt;span class="n"&gt;stream&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El resultado se muestra a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;NASA&lt;/span&gt; &lt;span class="n"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;papers&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;Curiosity&lt;/span&gt; &lt;span class="nn"&gt;rover&lt;/span&gt; &lt;span class="nn"&gt;behind&lt;/span&gt; &lt;span class="nn"&gt;paywall&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nd"&gt;@mbeisen&lt;/span&gt; &lt;span class="n"&gt;points&lt;/span&gt; &lt;span class="n"&gt;out&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;illegal&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;amp&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;shares&lt;/span&gt; &lt;span class="n"&gt;them&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;UB1jQfRpLR&lt;/span&gt; &lt;span class="c1"&gt;#openaccess&lt;/span&gt;
+
+&lt;span class="n"&gt;ICYMI&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Boost&lt;/span&gt; &lt;span class="n"&gt;Mobile&lt;/span&gt; &lt;span class="n"&gt;now&lt;/span&gt; &lt;span class="n"&gt;offering&lt;/span&gt; &lt;span class="n"&gt;Boost&lt;/span&gt; &lt;span class="n"&gt;Warp&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;G&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;qvZKtZXqOn&lt;/span&gt;
+
+&lt;span class="n"&gt;Empoderando&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;ciudadan&amp;iacute;a&lt;/span&gt; &lt;span class="n"&gt;para&lt;/span&gt; &lt;span class="n"&gt;mejorar&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;educaci&amp;oacute;n&lt;/span&gt; &lt;span class="n"&gt;en&lt;/span&gt; &lt;span class="n"&gt;M&amp;eacute;xico&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;GnTqhDWqzv&lt;/span&gt;
+
+&lt;span class="n"&gt;BREAKING&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Dodgers&lt;/span&gt; &lt;span class="n"&gt;say&lt;/span&gt; &lt;span class="n"&gt;man&lt;/span&gt; &lt;span class="n"&gt;killed&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;altercation&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;Giants&lt;/span&gt; &lt;span class="n"&gt;fans&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;SF&lt;/span&gt; &lt;span class="n"&gt;was&lt;/span&gt; &lt;span class="n"&gt;son&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;team&lt;/span&gt; &lt;span class="n"&gt;security&lt;/span&gt; &lt;span class="n"&gt;guard&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CkB75Nkt0V&lt;/span&gt;
+
+&lt;span class="n"&gt;RT&lt;/span&gt; &lt;span class="nd"&gt;@Anonymous_Prodi&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Posible&lt;/span&gt; &lt;span class="n"&gt;bomba&lt;/span&gt; &lt;span class="n"&gt;nuclear&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;baja&lt;/span&gt; &lt;span class="n"&gt;intensidad&lt;/span&gt; &lt;span class="n"&gt;en&lt;/span&gt; &lt;span class="n"&gt;Siria&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;uSjjVI1T3A&lt;/span&gt; &lt;span class="nd"&gt;@Famelica_legion&lt;/span&gt; &lt;span class="nd"&gt;@AquiyAhora_2013&lt;/span&gt; &lt;span class="nd"&gt;@wikinotici&lt;/span&gt;&lt;span class="err"&gt;&amp;hellip;&lt;/span&gt;
+
+&lt;span class="n"&gt;gu&amp;iacute;a&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;gobierno&lt;/span&gt; &lt;span class="n"&gt;electr&amp;oacute;nico&lt;/span&gt; &lt;span class="n"&gt;local&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;X6i7f8NHFe&lt;/span&gt;  &lt;span class="n"&gt;servicios&lt;/span&gt; &lt;span class="n"&gt;electr&amp;oacute;nicos&lt;/span&gt; &lt;span class="n"&gt;orientados&lt;/span&gt; &lt;span class="n"&gt;al&lt;/span&gt; &lt;span class="n"&gt;ciudadano&lt;/span&gt; &lt;span class="c1"&gt;#eGov&lt;/span&gt;
+
+&lt;span class="err"&gt;&amp;iexcl;&lt;/span&gt;&lt;span class="n"&gt;Felicidades&lt;/span&gt; &lt;span class="n"&gt;tambi&amp;eacute;n&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="nd"&gt;@jenniferpsayago&lt;/span&gt; &lt;span class="n"&gt;por&lt;/span&gt; &lt;span class="n"&gt;ser&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;ganadora&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;estos&lt;/span&gt; &lt;span class="n"&gt;incre&amp;iacute;bles&lt;/span&gt; &lt;span class="n"&gt;productos&lt;/span&gt; &lt;span class="c1"&gt;#Samsung y @Oakley_VE! http://t.co/ZfZnNtZtCf&lt;/span&gt;
+
+&lt;span class="c1"&gt;#linux #fedora  #art  Re: Request to join the Design Team http://t.co/CuAuncfFPU&lt;/span&gt;
+
+&lt;span class="n"&gt;Del&lt;/span&gt; &lt;span class="n"&gt;Gobierno&lt;/span&gt; &lt;span class="n"&gt;Abierto&lt;/span&gt; &lt;span class="n"&gt;como&lt;/span&gt; &lt;span class="n"&gt;Pol&amp;iacute;tica&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;Apertura&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;Datos&lt;/span&gt; &lt;span class="n"&gt;como&lt;/span&gt; &lt;span class="n"&gt;Programa&lt;/span&gt; &lt;span class="n"&gt;P&amp;uacute;blico&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;fmZAHA8x6&lt;/span&gt;  &lt;span class="c1"&gt;#OpenData #OGov&lt;/span&gt;
+
+&lt;span class="c1"&gt;#linux #fedora  #art  Re: Request to join the Design Team http://t.co/RiHSMifvBQ&lt;/span&gt;
+
+&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="n"&gt;printer&lt;/span&gt; &lt;span class="n"&gt;duplicates&lt;/span&gt; &lt;span class="n"&gt;paintings&lt;/span&gt; &lt;span class="n"&gt;down&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;last&lt;/span&gt; &lt;span class="n"&gt;brush&lt;/span&gt; &lt;span class="n"&gt;stroke&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;suC4T3P2Lr&lt;/span&gt; &lt;span class="c1"&gt;#3DPrinting #art&lt;/span&gt;
+
+&lt;span class="n"&gt;Maduro&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Mi&lt;/span&gt; &lt;span class="n"&gt;ausencia&lt;/span&gt; &lt;span class="n"&gt;en&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;ONU&lt;/span&gt; &lt;span class="n"&gt;se&lt;/span&gt; &lt;span class="n"&gt;debi&amp;oacute;&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;provocaciones&lt;/span&gt; &lt;span class="n"&gt;que&lt;/span&gt; &lt;span class="n"&gt;hab&amp;iacute;an&lt;/span&gt; &lt;span class="n"&gt;en&lt;/span&gt; &lt;span class="n"&gt;mi&lt;/span&gt; &lt;span class="n"&gt;contra&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Ed1ufBiPCW&lt;/span&gt;
+
+&lt;span class="n"&gt;Venezuela&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Turismo&lt;/span&gt; &lt;span class="err"&gt;&amp;ldquo;&lt;/span&gt;&lt;span class="n"&gt;raspatarjetas&lt;/span&gt;&lt;span class="err"&gt;&amp;rdquo;&lt;/span&gt; &lt;span class="n"&gt;mat&amp;oacute;&lt;/span&gt; &lt;span class="n"&gt;al&lt;/span&gt; &lt;span class="n"&gt;turismo&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Rd18XiZYZu&lt;/span&gt; &lt;span class="nd"&gt;@kaosenlarednet&lt;/span&gt; &lt;span class="n"&gt;mm&lt;/span&gt;
+
+&lt;span class="n"&gt;Como&lt;/span&gt; &lt;span class="n"&gt;las&lt;/span&gt; &lt;span class="n"&gt;iniciativas&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;Datos&lt;/span&gt; &lt;span class="n"&gt;Abiertos&lt;/span&gt; &lt;span class="n"&gt;pueden&lt;/span&gt; &lt;span class="n"&gt;mejorar&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;vida&lt;/span&gt; &lt;span class="n"&gt;en&lt;/span&gt; &lt;span class="n"&gt;las&lt;/span&gt; &lt;span class="n"&gt;Ciudades&lt;/span&gt;&lt;span class="err"&gt;?&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;j8FJOUd5mk&lt;/span&gt;  &lt;span class="c1"&gt;#OpenData&lt;/span&gt;
+
+&lt;span class="n"&gt;RT&lt;/span&gt; &lt;span class="nd"&gt;@csoghoian&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Want&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;read&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;some&lt;/span&gt; &lt;span class="n"&gt;NSA&lt;/span&gt; &lt;span class="c1"&gt;#LOVEINT surveillance abuses? Now you can, thanks to Senator @ChuckGrassley http://t.co&amp;hellip;&lt;/span&gt;
+
+&lt;span class="err"&gt;&amp;iquest;&lt;/span&gt;&lt;span class="n"&gt;Me&lt;/span&gt; &lt;span class="n"&gt;est&amp;aacute;&lt;/span&gt; &lt;span class="n"&gt;diciendo&lt;/span&gt; &lt;span class="n"&gt;usted&lt;/span&gt; &lt;span class="n"&gt;q&lt;/span&gt; &lt;span class="n"&gt;su&lt;/span&gt; &lt;span class="n"&gt;teor&amp;iacute;a&lt;/span&gt; &lt;span class="n"&gt;m&amp;aacute;gica&lt;/span&gt; &lt;span class="n"&gt;es&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;tener&lt;/span&gt; &lt;span class="n"&gt;teor&amp;iacute;a&lt;/span&gt;&lt;span class="err"&gt;?&lt;/span&gt; &lt;span class="n"&gt;Creo&lt;/span&gt; &lt;span class="n"&gt;que&lt;/span&gt; &lt;span class="n"&gt;eso&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;es&lt;/span&gt; &lt;span class="n"&gt;muy&lt;/span&gt; &lt;span class="n"&gt;anarquista&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ni&lt;/span&gt; &lt;span class="n"&gt;l&amp;oacute;gico&lt;/span&gt; &lt;span class="n"&gt;tampoco&lt;/span&gt; &lt;span class="nd"&gt;@fascaso&lt;/span&gt; &lt;span class="nd"&gt;@loadupyourgun&lt;/span&gt;
+
+&lt;span class="n"&gt;Venezuela&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Turismo&lt;/span&gt; &lt;span class="err"&gt;&amp;ldquo;&lt;/span&gt;&lt;span class="n"&gt;raspatarjetas&lt;/span&gt;&lt;span class="err"&gt;&amp;rdquo;&lt;/span&gt; &lt;span class="n"&gt;mat&amp;oacute;&lt;/span&gt; &lt;span class="n"&gt;al&lt;/span&gt; &lt;span class="n"&gt;turismo&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Rd18XiZYZu&lt;/span&gt; &lt;span class="nd"&gt;@kaosenlarednetmmmmm&lt;/span&gt;
+
+&lt;span class="n"&gt;RT&lt;/span&gt; &lt;span class="nd"&gt;@C354R_B3RMUD3Z&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Te&lt;/span&gt; &lt;span class="n"&gt;interesa&lt;/span&gt; &lt;span class="n"&gt;saber&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="c1"&gt;#Soporte Tecnico en #Gnu/Linux? #inscribete, es totalmente #gratuito informate por 04243165766&lt;/span&gt;
+
+&lt;span class="n"&gt;RT&lt;/span&gt; &lt;span class="nd"&gt;@csoghoian&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Are&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;NSA&lt;/span&gt; &lt;span class="n"&gt;analyst&lt;/span&gt;&lt;span class="err"&gt;?&lt;/span&gt; &lt;span class="n"&gt;Suspect&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="n"&gt;husband&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;cheating&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt;&lt;span class="err"&gt;?&lt;/span&gt; &lt;span class="n"&gt;Tap&lt;/span&gt; &lt;span class="n"&gt;his&lt;/span&gt; &lt;span class="n"&gt;phone&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;don&lt;/span&gt;&lt;span class="s1"&gt;'t get prosecuted. Page 3 of http://&amp;hellip;&lt;/span&gt;
+
+&lt;span class="n"&gt;Saturday&lt;/span&gt; &lt;span class="n"&gt;Night&lt;/span&gt; &lt;span class="n"&gt;Live&lt;/span&gt; &lt;span class="n"&gt;lanza&lt;/span&gt; &lt;span class="n"&gt;canal&lt;/span&gt; &lt;span class="n"&gt;oficial&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;YouTube&lt;/span&gt; &lt;span class="n"&gt;disponible&lt;/span&gt; &lt;span class="n"&gt;para&lt;/span&gt; &lt;span class="n"&gt;todo&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt; &lt;span class="n"&gt;mundo&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;LDFcwFxsx0&lt;/span&gt;
+
+&lt;span class="n"&gt;Microsoft&lt;/span&gt; &lt;span class="n"&gt;donated&lt;/span&gt; &lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;IPython&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sU2UP07dJ8&lt;/span&gt;
+
+&lt;span class="n"&gt;Crece&lt;/span&gt; &lt;span class="n"&gt;el&lt;/span&gt; &lt;span class="n"&gt;hurac&amp;aacute;n&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;exitosos&lt;/span&gt; &lt;span class="n"&gt;Ni&amp;ntilde;os&lt;/span&gt; &lt;span class="n"&gt;Cantores&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;diversas&lt;/span&gt; &lt;span class="n"&gt;tendencias&lt;/span&gt; &lt;span class="n"&gt;pol&amp;iacute;ticas&lt;/span&gt; &lt;span class="n"&gt;nos&lt;/span&gt; &lt;span class="n"&gt;dieron&lt;/span&gt; &lt;span class="n"&gt;hoy&lt;/span&gt; &lt;span class="n"&gt;p&amp;uacute;blicamente&lt;/span&gt; &lt;span class="n"&gt;su&lt;/span&gt; &lt;span class="n"&gt;apoyo&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;SGDvxPrczA&lt;/span&gt;
+
+&lt;span class="n"&gt;How&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;everyone&lt;/span&gt;&lt;span class="err"&gt;?&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;feel&lt;/span&gt; &lt;span class="n"&gt;like&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="s1"&gt;'ve been away for years when it'&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;only&lt;/span&gt; &lt;span class="n"&gt;been&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;few&lt;/span&gt; &lt;span class="n"&gt;days&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora se muestran todos los tweets p&amp;uacute;blicos que contengan la palabra python, esto se logra al  sustituir la &amp;uacute;ltima l&amp;iacute;nea del c&amp;oacute;digo anterior por &lt;code&gt;stream.statuses.filter&lt;/code&gt; pasando el argumento &lt;code&gt;track&lt;/code&gt; con la palabra a buscar:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;stream&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;statuses&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;track&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'python'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El resultado se muestra a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;lunes&lt;/span&gt; &lt;span class="n"&gt;que&lt;/span&gt; &lt;span class="n"&gt;viene&lt;/span&gt; &lt;span class="c1"&gt;#PUG  con pizza, cerveza, #python en @Dlabs_co . Yo no me la perder&amp;iacute;a...&lt;/span&gt;
+
+&lt;span class="n"&gt;Monty&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;man&lt;/span&gt; &lt;span class="n"&gt;who&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;alternately&lt;/span&gt; &lt;span class="n"&gt;rude&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;polite&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;#NowPlaying.#ClassicComedies..#ComedyGreats ,,,#Comedy.  http://t.co/IO3juw6nfD&lt;/span&gt;
+
+&lt;span class="n"&gt;Like&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;Kungfu&lt;/span&gt; &lt;span class="n"&gt;master&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;Pythonista&lt;/span&gt; &lt;span class="n"&gt;knows&lt;/span&gt; &lt;span class="n"&gt;how&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;kill&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;single&lt;/span&gt; &lt;span class="n"&gt;finger&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;never&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;actually&lt;/span&gt; &lt;span class="n"&gt;do&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;xx0Sb8SsWV&lt;/span&gt;
+
+&lt;span class="n"&gt;RT&lt;/span&gt; &lt;span class="nd"&gt;@jpcolino&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;Hadoop&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Real&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;Pig&lt;/span&gt; &lt;span class="n"&gt;trunk&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;i4NZXrofvq&lt;/span&gt;
+
+&lt;span class="n"&gt;Affiliate&lt;/span&gt; &lt;span class="n"&gt;Freelancer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Freelancing&lt;/span&gt; &lt;span class="n"&gt;September&lt;/span&gt; &lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="mo"&gt;04&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;51&lt;/span&gt;&lt;span class="n"&gt;PM&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="n"&gt;web&lt;/span&gt; &lt;span class="n"&gt;front&lt;/span&gt; &lt;span class="n"&gt;end&lt;/span&gt; &lt;span class="n"&gt;development&lt;/span&gt; &lt;span class="n"&gt;by&lt;/span&gt; &lt;span class="n"&gt;vishalchavda&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;V45nPv3LVI&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Compressed&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Win32&lt;/span&gt; &lt;span class="n"&gt;dbg&lt;/span&gt; &lt;span class="n"&gt;API&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;Intel&lt;/span&gt; &lt;span class="n"&gt;PIN&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="n"&gt;h&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Still&lt;/span&gt; &lt;span class="n"&gt;people&lt;/span&gt; &lt;span class="n"&gt;seemed&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;like&lt;/span&gt; &lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt; &lt;span class="n"&gt;guess&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;lot&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;people&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;BSDM&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="nd"&gt;@brucon&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Go&lt;/span&gt; &lt;span class="n"&gt;vs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;longer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="n"&gt;times&lt;/span&gt; &lt;span class="n"&gt;faster&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;v640YolHW4&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;concurrent&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;statically&lt;/span&gt; &lt;span class="n"&gt;compiled&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;libraries&lt;/span&gt; &lt;span class="n"&gt;are&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt; &lt;span class="n"&gt;modern&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Quantitative&lt;/span&gt; &lt;span class="n"&gt;Economics&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="c1"&gt;#python #ebook http://t.co/eVjlO9VBoE&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@MikeKellyofEM&lt;/span&gt; &lt;span class="n"&gt;Hopefully&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;Monty&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="n"&gt;style&lt;/span&gt; &lt;span class="n"&gt;parrot&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="n"&gt;por&lt;/span&gt; &lt;span class="n"&gt;um&lt;/span&gt; &lt;span class="n"&gt;tutorial&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;como&lt;/span&gt; &lt;span class="n"&gt;aprender&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;em&lt;/span&gt; &lt;span class="n"&gt;um&lt;/span&gt; &lt;span class="n"&gt;dia&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@tommyd_95&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;could&lt;/span&gt; &lt;span class="n"&gt;descend&lt;/span&gt; &lt;span class="n"&gt;into&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;scene&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;a&lt;/span&gt; &lt;span class="nn"&gt;Monty&lt;/span&gt; &lt;span class="nn"&gt;Python&lt;/span&gt; &lt;span class="nn"&gt;movie&lt;/span&gt; &lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;De esta forma se puede mejorar la captura de tweets en tiempo real  del timeline de un usuario o de todos los tweets p&amp;uacute;blicos. &lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="Twitter"></category><category term="Ubuntu"></category></entry><entry><title>Probando la librería twython para twitter</title><link href="https://ecrespo.github.io/probando-la-libreria-twython-para-twitter.html" rel="alternate"></link><published>2013-09-22T10:00:00-05:30</published><updated>2013-09-22T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-09-22:/probando-la-libreria-twython-para-twitter.html</id><summary type="html">&lt;p&gt;Retomando los &lt;a href="https://www.seraph.to/tag/twitter.html"&gt;art&amp;iacute;culos sobre librer&amp;iacute;as de python para acceder a twitter&lt;/a&gt;, en el &amp;uacute;ltimo art&amp;iacute;culo explique como &lt;a href="http://blog.crespo.org.ve/2013/04/descubriendo-trending-topics-de-twitter.html"&gt;descubrir trending topic con la librer&amp;iacute;a python-twitter&lt;/a&gt;, ahora le toca el turno a twython.
+La p&amp;aacute;gina del proyecto se encuentra en &lt;a href="https://github.com/ryanmcgrath/twython"&gt;github&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Twython soporta lo siguiente:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Busqueda para:&lt;ul&gt;
+&lt;li&gt;Informaci&amp;oacute;n de usuario.&lt;/li&gt;
+&lt;li&gt;Lista de …&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Retomando los &lt;a href="https://www.seraph.to/tag/twitter.html"&gt;art&amp;iacute;culos sobre librer&amp;iacute;as de python para acceder a twitter&lt;/a&gt;, en el &amp;uacute;ltimo art&amp;iacute;culo explique como &lt;a href="http://blog.crespo.org.ve/2013/04/descubriendo-trending-topics-de-twitter.html"&gt;descubrir trending topic con la librer&amp;iacute;a python-twitter&lt;/a&gt;, ahora le toca el turno a twython.
+La p&amp;aacute;gina del proyecto se encuentra en &lt;a href="https://github.com/ryanmcgrath/twython"&gt;github&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Twython soporta lo siguiente:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Busqueda para:&lt;ul&gt;
+&lt;li&gt;Informaci&amp;oacute;n de usuario.&lt;/li&gt;
+&lt;li&gt;Lista de twitter.&lt;/li&gt;
+&lt;li&gt;L&amp;iacute;neas de tiempo (timeline).&lt;/li&gt;
+&lt;li&gt;Mensajes directos (DM).&lt;/li&gt;
+&lt;li&gt;Cualquier cosa que se encuentre en la documentaci&amp;oacute;n del API de twitter.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Actualizaci&amp;oacute;n de imagen:&lt;ul&gt;
+&lt;li&gt;Actualizaci&amp;oacute;n de un estatus de un usuario con una imagen.&lt;/li&gt;
+&lt;li&gt;Cambiar el avatar de un usuario.&lt;/li&gt;
+&lt;li&gt;Cambiar imagen de fondo.&lt;/li&gt;
+&lt;li&gt;Cambiar banner.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Soporte de s&amp;oacute;lo lectura para OAuth2&lt;/li&gt;
+&lt;li&gt;Soporte para el API de stream de twitter.&lt;/li&gt;
+&lt;li&gt;Soporte para Python 3.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para m&amp;aacute;s informaci&amp;oacute;n sobre la documentaci&amp;oacute;n la pueden visitar en el siguiente &lt;a href="https://twython.readthedocs.org/en/latest/index.html"&gt;enlace&lt;/a&gt;.
+Para manejar la autenticaci&amp;oacute;n de la aplicaci&amp;oacute;n y del c&amp;oacute;digo pueden revisar el art&amp;iacute;culo de Efrain Valles, &lt;a href="https://effiejayx.wordpress.com/2010/10/25/jugando-con-las-apis-de-twitter-y-python/"&gt;jugando con las APis de twitter y python&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;Para instalar twython se usa &lt;code&gt;pip&lt;/code&gt; o &lt;code&gt;easy_install&lt;/code&gt; como root desde la l&amp;iacute;nea de comandos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@grievous:~# pip install twython
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Lo primero que se va a hacer es env&amp;iacute;ar un tweet con una imagen y luego s&amp;oacute;lo texto, la implementaci&amp;oacute;n usa un proxy para enviar los tweets, luego se muestra en pantalla el timeline del usuario y por &amp;uacute;ltimo el resultado de la busqueda de la palabra python.&lt;/p&gt;
+&lt;p&gt;El c&amp;oacute;digo de la aplicaci&amp;oacute;n se muestra a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el token de la aplicacion&lt;/span&gt;
+
+&lt;span class="n"&gt;CONSUMER_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="n"&gt;CONSUMER_SECRET&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el acceso al usuario&lt;/span&gt;
+
+&lt;span class="n"&gt;ACCESS_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="n"&gt;ACCESS_SECRET&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se importa twython y de time a  sleep&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;twython&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Twython&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se define los argumentos del cliente, la ip y puerto del proxy, el tiempo de intento de la conexion y el nombre de la&lt;/span&gt;
+
+&lt;span class="c1"&gt;#aplicacion cliente&lt;/span&gt;
+
+&lt;span class="n"&gt;client_args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;'headers'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;'User-Agent'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'cmdtweetpy'&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="s1"&gt;'proxies'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;'http'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'127.0.0.1:xxxx'&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="s1"&gt;'timeout'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Conectar a twitter y enviar un tweet,&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Si no se logra la conexion se devuelve un mensaje.&lt;/span&gt;
+
+&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="n"&gt;api&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Twython&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CONSUMER_KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;CONSUMER_SECRET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ACCESS_KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ACCESS_SECRET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;client_args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;client_args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;photo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'linux.jpg'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'rb'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;update_status_with_media&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;media&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;photo&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'May the source be with you=&amp;gt; '&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;update_status&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"Enviando tweets con twython por medio de un proxy"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Tweet enviado con exito"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;twython&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exceptions&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TwythonAuthError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s2"&gt;"Error de autenticaci&amp;oacute;n, no se pudo env&amp;iacute;ar el tweet"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Listar el timeline del usuario&lt;/span&gt;
+
+
+
+&lt;span class="n"&gt;listado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_home_timeline&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Timeline del usuario _seraph1"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"-----------------------------"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'text'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"-----------------------------"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se realiza una busqueda de la palabra python con tipo de resultado popular&lt;/span&gt;
+
+
+&lt;span class="n"&gt;resultados&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;q&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'python'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;result_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'popular'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#resultados = api.search(q='python')&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#&lt;/span&gt;
+
+
+&lt;span class="n"&gt;datos&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;resultados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Elementos del diccionario: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;datos&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Resultado de la busqueda: python"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"--------------------------------"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resultados&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;datos&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]])):&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;resultados&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;datos&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]][&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'text'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"***********************************"&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"--------------------------------"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se muestra la salida de la aplicaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Tweet&lt;/span&gt; &lt;span class="n"&gt;enviado&lt;/span&gt; &lt;span class="n"&gt;con&lt;/span&gt; &lt;span class="n"&gt;exito&lt;/span&gt;
+&lt;span class="n"&gt;Timeline&lt;/span&gt; &lt;span class="n"&gt;del&lt;/span&gt; &lt;span class="n"&gt;usuario&lt;/span&gt; &lt;span class="n"&gt;_seraph1&lt;/span&gt;
+&lt;span class="o"&gt;-----------------------------&lt;/span&gt;
+&lt;span class="n"&gt;Bo&lt;/span&gt; &lt;span class="n"&gt;Xilai&lt;/span&gt; &lt;span class="n"&gt;Gets&lt;/span&gt; &lt;span class="n"&gt;Life&lt;/span&gt; &lt;span class="n"&gt;Sentence&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/oWBTgTBJKv&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Starting&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="s"&gt;"A"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Armstrong&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Aslan&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;Atran&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Who&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;first&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;say&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;has&lt;/span&gt; &lt;span class="n"&gt;nothing&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="n"&gt;religion&lt;/span&gt;&lt;span class="o"&gt;?&lt;/span&gt;
+&lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/8IacERuHN7&lt;/span&gt;
+&lt;span class="n"&gt;All&lt;/span&gt; &lt;span class="n"&gt;About&lt;/span&gt; &lt;span class="n"&gt;Team&lt;/span&gt; &lt;span class="n"&gt;Building&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;amp&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="n"&gt;Leadership&lt;/span&gt; &lt;span class="n"&gt;Exercises&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;Work&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/SEI89zGp8P #managers&lt;/span&gt;
+&lt;span class="cp"&gt;#linux #netdev  Re: [Xen-devel] [PATCH net-next] xen-netfront: convert to GRO API and advertise this feature http:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/3nWDlbv7pT&lt;/span&gt;
+&lt;span class="cp"&gt;#linux #netdev  [PATCH net 3/5] bnx2x: 57840 non-external loopback test fail on 1G http:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/tI6azgkcBZ&lt;/span&gt;
+&lt;span class="s"&gt;"Read the collective bargaining agreement, we can do that"&lt;/span&gt; &lt;span class="n"&gt;RT&lt;/span&gt; &lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="nl"&gt;BradStone&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;ESPN&lt;/span&gt; &lt;span class="n"&gt;reports&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="n"&gt;Browns&lt;/span&gt; &lt;span class="n"&gt;now&lt;/span&gt; &lt;span class="n"&gt;fielding&lt;/span&gt; &lt;span class="n"&gt;offers&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;their&lt;/span&gt; &lt;span class="n"&gt;fans&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt; &lt;span class="n"&gt;souls&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="err"&gt;&amp;ldquo;&lt;/span&gt;&lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="nl"&gt;SoftwareHollis&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="n"&gt;CloudExpo&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="n"&gt;wait&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;November&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;Looking&lt;/span&gt; &lt;span class="n"&gt;forward&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;presenting&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/b3dc2a08KU #Cloud #SocialMedia #SaaS&amp;rdquo;&lt;/span&gt;
+&lt;span class="p"&gt;.@&lt;/span&gt;&lt;span class="n"&gt;jeancase&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;really&lt;/span&gt; &lt;span class="n"&gt;about&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;democratization&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;ideas&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;smartest&lt;/span&gt; &lt;span class="n"&gt;people&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;room&lt;/span&gt; &lt;span class="n"&gt;probably&lt;/span&gt; &lt;span class="n"&gt;don&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="n"&gt;work&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="mi"&gt;2030&lt;/span&gt;&lt;span class="n"&gt;NOW&lt;/span&gt;
+&lt;span class="n"&gt;Achieving&lt;/span&gt; &lt;span class="n"&gt;Accountability&lt;/span&gt; &lt;span class="n"&gt;With&lt;/span&gt; &lt;span class="n"&gt;Talk&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;Infidelity&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;via&lt;/span&gt; &lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="n"&gt;toddbnielsen&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/hZktGZZ3EK #leadership&lt;/span&gt;
+&lt;span class="n"&gt;RT&lt;/span&gt; &lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="nl"&gt;les_leopold&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Solution&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;Student&lt;/span&gt; &lt;span class="n"&gt;Debt&lt;/span&gt; &lt;span class="nl"&gt;Crisis&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;No&lt;/span&gt; &lt;span class="n"&gt;More&lt;/span&gt; &lt;span class="n"&gt;Debt&lt;/span&gt;
+&lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/hsvdZj9uJQ&lt;/span&gt;
+&lt;span class="n"&gt;Recuerda&lt;/span&gt; &lt;span class="n"&gt;cerrar&lt;/span&gt; &lt;span class="n"&gt;sesi&amp;oacute;n&lt;/span&gt; &lt;span class="n"&gt;cuando&lt;/span&gt; &lt;span class="n"&gt;entres&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="n"&gt;Clavenet&lt;/span&gt; &lt;span class="n"&gt;desde&lt;/span&gt; &lt;span class="n"&gt;cualquier&lt;/span&gt; &lt;span class="n"&gt;equipo&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="n"&gt;TipdeSeguridad&lt;/span&gt;
+&lt;span class="o"&gt;-----------------------------&lt;/span&gt;
+&lt;span class="n"&gt;Elementos&lt;/span&gt; &lt;span class="n"&gt;del&lt;/span&gt; &lt;span class="nl"&gt;diccionario&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;search_metadata&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;statuses&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;Resultado&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="nl"&gt;busqueda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;
+&lt;span class="o"&gt;--------------------------------&lt;/span&gt;
+&lt;span class="s"&gt;"Well, everday's a workout when you gotta carry around a 20 pound python in your jeans."&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Will&lt;/span&gt; &lt;span class="n"&gt;Forte&lt;/span&gt; &lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;MacGruber&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Aprende&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="n"&gt;desde&lt;/span&gt; &lt;span class="n"&gt;cero&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Gu&amp;iacute;a&lt;/span&gt; &lt;span class="n"&gt;completa&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/ZZE2NXEOVG #YoComparto&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="err"&gt;「&lt;/span&gt;&lt;span class="n"&gt;d3はシングルスレッドなのでHadoopからデータ直接流し込んで大規模処理するわけにはいかないから&lt;/span&gt;&lt;span class="err"&gt;、サーバ側で&lt;/span&gt;&lt;span class="n"&gt;Pythonとか走らせ&lt;/span&gt;&lt;span class="err"&gt;、集計やサンプリング済みデータを&lt;/span&gt;&lt;span class="n"&gt;JSに渡して可視化してる&lt;/span&gt;&lt;span class="err"&gt;」的なこと言ったら「フリーソフトでは大規模なデータマイニングは難しい」っていう纏め方された&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Please&lt;/span&gt; &lt;span class="n"&gt;RT&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt; &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;most&lt;/span&gt; &lt;span class="n"&gt;significant&lt;/span&gt; &lt;span class="n"&gt;fact&lt;/span&gt; &lt;span class="n"&gt;about&lt;/span&gt; &lt;span class="n"&gt;today&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;Raspberry&lt;/span&gt; &lt;span class="n"&gt;Jam&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;kids&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;PyconUK&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;gender&lt;/span&gt; &lt;span class="nl"&gt;split&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;50&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mf"&gt;50.&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="n"&gt;progress&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="err"&gt;先方、データマイニングについての記事のインタビューなのに&lt;/span&gt;&lt;span class="n"&gt;Pythonとか全く知らない&lt;/span&gt;&lt;span class="err"&gt;（名前すらしらない）ようで、&lt;/span&gt;&lt;span class="n"&gt;RやPython&lt;/span&gt;&lt;span class="err"&gt;、果ては&lt;/span&gt;&lt;span class="n"&gt;d3&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jsとか全部ひっくるめて&lt;/span&gt;&lt;span class="err"&gt;「フリーソフトを利用して分析している」っていうすごいざっくりしたまとめられ方してて、前後の話に矛盾が出てる&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Obviously&lt;/span&gt; &lt;span class="n"&gt;Monty&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="n"&gt;was&lt;/span&gt; &lt;span class="n"&gt;never&lt;/span&gt; &lt;span class="n"&gt;shown&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;JA&lt;/span&gt; &lt;span class="n"&gt;TV&lt;/span&gt; &lt;span class="n"&gt;as&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;Reggae&lt;/span&gt; &lt;span class="n"&gt;Charts&lt;/span&gt; &lt;span class="k"&gt;out&lt;/span&gt; &lt;span class="n"&gt;there&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="n"&gt;Silly&lt;/span&gt; &lt;span class="n"&gt;Walks&lt;/span&gt; &lt;span class="n"&gt;Record&lt;/span&gt; &lt;span class="n"&gt;label&lt;/span&gt; &lt;span class="n"&gt;listed&lt;/span&gt; &lt;span class="n"&gt;as&lt;/span&gt; &lt;span class="n"&gt;err&lt;/span&gt;&lt;span class="p"&gt;..&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;Silky&lt;/span&gt; &lt;span class="n"&gt;Walks&lt;/span&gt;&lt;span class="s"&gt;".&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Air&lt;/span&gt; &lt;span class="n"&gt;Jordan&lt;/span&gt; &lt;span class="n"&gt;IV&lt;/span&gt; &lt;span class="err"&gt;&amp;ldquo;&lt;/span&gt;&lt;span class="n"&gt;Black&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt;&lt;span class="err"&gt;&amp;rdquo;&lt;/span&gt; &lt;span class="n"&gt;Customs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="n"&gt;WIN&lt;/span&gt; &lt;span class="n"&gt;or&lt;/span&gt; &lt;span class="n"&gt;BIN&lt;/span&gt;&lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="n"&gt;CurtienFashion&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/SHu9MKOOB5&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Defenders&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;Obamacare&lt;/span&gt; &lt;span class="n"&gt;dismissing&lt;/span&gt; &lt;span class="s"&gt;"glitches"&lt;/span&gt; &lt;span class="n"&gt;increasingly&lt;/span&gt; &lt;span class="n"&gt;sound&lt;/span&gt; &lt;span class="n"&gt;like&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;Black&lt;/span&gt; &lt;span class="n"&gt;Knight&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Monty&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/SGV8ys8hMF&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Without&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;Beatle&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Monty&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="s"&gt;"Life of Brian"&lt;/span&gt; &lt;span class="n"&gt;would&lt;/span&gt; &lt;span class="n"&gt;never&lt;/span&gt; &lt;span class="n"&gt;have&lt;/span&gt; &lt;span class="n"&gt;been&lt;/span&gt; &lt;span class="n"&gt;made&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/85ys7bLo6S #5facts&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Indonesia&lt;/span&gt; &lt;span class="n"&gt;adalah&lt;/span&gt; &lt;span class="n"&gt;Tempat&lt;/span&gt; &lt;span class="n"&gt;ditemukannya&lt;/span&gt; &lt;span class="n"&gt;ular&lt;/span&gt; &lt;span class="n"&gt;terpanjang&lt;/span&gt; &lt;span class="n"&gt;di&lt;/span&gt; &lt;span class="n"&gt;dunia&lt;/span&gt; &lt;span class="n"&gt;yaitu&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="n"&gt;Reticulates&lt;/span&gt; &lt;span class="n"&gt;sepanjang&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="n"&gt;meter&lt;/span&gt; &lt;span class="n"&gt;di&lt;/span&gt; &lt;span class="n"&gt;Sulawesi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="nl"&gt;Recruiter&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;"I came across your resume in a Google search. You seem to have an awesome expertise on python"&lt;/span&gt; &lt;span class="n"&gt;To&lt;/span&gt; &lt;span class="n"&gt;Guido&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt; &lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/lAbeQVgo1I&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Mozilla&lt;/span&gt; &lt;span class="n"&gt;Webdev&lt;/span&gt; &lt;span class="n"&gt;is&lt;/span&gt; &lt;span class="n"&gt;looking&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;Web&lt;/span&gt; &lt;span class="n"&gt;Engineer&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Django&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;jQuery&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;OSS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/9hg8GFOeSl&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;Writing&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;High&lt;/span&gt; &lt;span class="n"&gt;Performance&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="nl"&gt;book&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;terribly&lt;/span&gt; &lt;span class="n"&gt;excited&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;announce&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;co&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;authoring&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;O&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;Reilly&lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/ZctbSoZGqa&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="n"&gt;If&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt; &lt;span class="n"&gt;write&lt;/span&gt; &lt;span class="n"&gt;PHP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;you&lt;/span&gt; &lt;span class="n"&gt;can&lt;/span&gt; &lt;span class="n"&gt;write&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;++/&lt;/span&gt;&lt;span class="n"&gt;Java&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Python&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Ruby&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;whatever&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;These&lt;/span&gt; &lt;span class="n"&gt;language&lt;/span&gt; &lt;span class="n"&gt;aren&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;different&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="err"&gt;'&lt;/span&gt;&lt;span class="n"&gt;El&lt;/span&gt; &lt;span class="n"&gt;sentido&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;vida&lt;/span&gt;&lt;span class="err"&gt;'&lt;/span&gt; &lt;span class="n"&gt;cumple&lt;/span&gt; &lt;span class="mi"&gt;30&lt;/span&gt; &lt;span class="nl"&gt;a&amp;ntilde;os&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="n"&gt;cosas&lt;/span&gt; &lt;span class="n"&gt;que&lt;/span&gt; &lt;span class="n"&gt;probablemente&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;sab&amp;iacute;as&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;la&lt;/span&gt; &lt;span class="n"&gt;peli&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;los&lt;/span&gt; &lt;span class="n"&gt;Monty&lt;/span&gt; &lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="nl"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//t.co/hBVKUCIMFJ&lt;/span&gt;
+&lt;span class="o"&gt;***********************************&lt;/span&gt;
+&lt;span class="o"&gt;--------------------------------&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se muestran dos im&amp;aacute;genes de los tweets enviados:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/probandolalibreriatwythonparatwitter-1.jpg"/&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/probandolalibreriatwythonparatwitter-2.jpg"/&gt; &lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="Twitter"></category><category term="Ubuntu"></category></entry><entry><title>Descubriendo Trending Topics de Twitter con twython y python</title><link href="https://ecrespo.github.io/descubriendo-trending-topics-de-twitter-con-twython-y-python.html" rel="alternate"></link><published>2013-09-22T09:00:00-05:30</published><updated>2013-09-22T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-09-22:/descubriendo-trending-topics-de-twitter-con-twython-y-python.html</id><summary type="html">&lt;p&gt;Siguiendo con los art&amp;iacute;culos sobre &lt;a href="https://www.seraph.to/tag/twitter.html"&gt;librer&amp;iacute;as de python para twitter&lt;/a&gt;, hace poco se mostr&amp;oacute; en un art&amp;iacute;culo como &lt;a href="https://www.seraph.to/descubriendo-trending-topics-de-twitter-con-python-twitter.html#descubriendo-trending-topics-de-twitter-con-python-twitter"&gt;ver los Trending Topics usando la librer&amp;iacute;a python-twitter&lt;/a&gt; , ahora se mostrar&amp;aacute; como desplegar los topics usando la librer&amp;iacute;a twython.&lt;/p&gt;
+&lt;p&gt;El script mostrar&amp;aacute; la conexi&amp;oacute;n a twitter, luego despliega los identificadores de las …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Siguiendo con los art&amp;iacute;culos sobre &lt;a href="https://www.seraph.to/tag/twitter.html"&gt;librer&amp;iacute;as de python para twitter&lt;/a&gt;, hace poco se mostr&amp;oacute; en un art&amp;iacute;culo como &lt;a href="https://www.seraph.to/descubriendo-trending-topics-de-twitter-con-python-twitter.html#descubriendo-trending-topics-de-twitter-con-python-twitter"&gt;ver los Trending Topics usando la librer&amp;iacute;a python-twitter&lt;/a&gt; , ahora se mostrar&amp;aacute; como desplegar los topics usando la librer&amp;iacute;a twython.&lt;/p&gt;
+&lt;p&gt;El script mostrar&amp;aacute; la conexi&amp;oacute;n a twitter, luego despliega los identificadores de las ciudades que tienen Trending Topics en Venezuela y por &amp;uacute;ltimo se despliega los Trending Topics de Venezuela en este momento.&lt;/p&gt;
+&lt;p&gt;Para saber como obtener el valor del token de la aplicaci&amp;oacute;n o de acceso se recomienda revisar el &lt;a href="http://blog.crespo.org.ve/2013/09/probando-la-libreria-twython-para.html"&gt;art&amp;iacute;culo anterior&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El c&amp;oacute;digo se muestra a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el token de la aplicacion&lt;/span&gt;
+
+&lt;span class="n"&gt;CONSUMER_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="n"&gt;CONSUMER_SECRET&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el acceso al usuario&lt;/span&gt;
+
+&lt;span class="n"&gt;ACCESS_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="n"&gt;ACCESS_SECRET&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'xxxxx'&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa twython y de time a  sleep&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;twython&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Twython&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define los argumentos del cliente, la ip y puerto del proxy, el tiempo de intento de la conexion y el nombre de la&lt;/span&gt;
+
+&lt;span class="c1"&gt;#aplicacion cliente&lt;/span&gt;
+
+&lt;span class="n"&gt;client_args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;'headers'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;'User-Agent'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'cmdtweetpy'&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="s1"&gt;'proxies'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;'http'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'127.0.0.1:xxx'&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="s1"&gt;'timeout'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Conectar a twitter y enviar un tweet,&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Si no se logra la conexion se devuelve un mensaje.&lt;/span&gt;
+
+&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="n"&gt;api&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Twython&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CONSUMER_KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;CONSUMER_SECRET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ACCESS_KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;ACCESS_SECRET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;client_args&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;client_args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s2"&gt;"Autenticaci&amp;oacute;n con exito"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;twython&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exceptions&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TwythonAuthError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s2"&gt;"Error de autenticaci&amp;oacute;n"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;
+
+&lt;span class="n"&gt;trending&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_available_trends&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s2"&gt;"Identificaci&amp;oacute;n de woeid de Venezuela"&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"-------------------------------------"&lt;/span&gt;
+
+&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;   
+
+&lt;span class="n"&gt;pos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+&lt;span class="n"&gt;woeid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se despliega los woeid de las ciudades de Venezuela y de Venezuela en si&lt;/span&gt;
+
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;trending&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'countryCode'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'VE'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'name'&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'woeid'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se toma el woeid de Venezuela&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;woeid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'woeid'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;pos&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se despliega los topics de Venezuela.&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Lista de Trending Topics en Venezuela"&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"-------------------------------------"&lt;/span&gt;
+
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_place_trends&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;woeid&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'trends'&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'name'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se muestra el resultado de la ejecuci&amp;oacute;n del script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Identificaci&amp;oacute;n&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;woeid&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;Venezuela&lt;/span&gt;
+
+
+&lt;span class="o"&gt;-------------------------------------&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Caracas&lt;/span&gt; &lt;span class="mi"&gt;395269&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Maracaibo&lt;/span&gt; &lt;span class="mi"&gt;395270&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Maracay&lt;/span&gt; &lt;span class="mi"&gt;395271&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Valencia&lt;/span&gt; &lt;span class="mi"&gt;395272&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Barcelona&lt;/span&gt; &lt;span class="mi"&gt;395273&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Ciudad&lt;/span&gt; &lt;span class="n"&gt;Guayana&lt;/span&gt; &lt;span class="mi"&gt;395275&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Turmero&lt;/span&gt; &lt;span class="mi"&gt;395277&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Barquisimeto&lt;/span&gt; &lt;span class="mi"&gt;468382&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Matur&amp;iacute;n&lt;/span&gt; &lt;span class="mi"&gt;468384&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Venezuela&lt;/span&gt; &lt;span class="mi"&gt;23424982&lt;/span&gt;
+
+
+
+
+
+&lt;span class="n"&gt;Lista&lt;/span&gt; &lt;span class="n"&gt;de&lt;/span&gt; &lt;span class="n"&gt;Trending&lt;/span&gt; &lt;span class="n"&gt;Topics&lt;/span&gt; &lt;span class="n"&gt;en&lt;/span&gt; &lt;span class="n"&gt;Venezuela&lt;/span&gt;
+
+
+&lt;span class="o"&gt;-------------------------------------&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#10CosasQueOdio&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#AlfombraRojaE&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#EmmysPorWarner&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#ChavezElGranArquitecto&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#ObamaNervioso&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Angela&lt;/span&gt; &lt;span class="n"&gt;Merkel&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Titanic&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Kenia&lt;/span&gt;
+
+
+&lt;span class="n"&gt;GNB&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Sofia&lt;/span&gt; &lt;span class="n"&gt;Vergara&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Como se ve, se puede obtener el topics de cada ciudad o Pa&amp;iacute;s al obtener el &lt;code&gt;woeid&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="Twitter"></category><category term="Ubuntu"></category></entry><entry><title>Manejo de sesión en el ORM sqlalchemy</title><link href="https://ecrespo.github.io/manejo-de-sesion-en-el-orm-sqlalchemy.html" rel="alternate"></link><published>2013-09-18T09:00:00-05:30</published><updated>2013-09-18T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-09-18:/manejo-de-sesion-en-el-orm-sqlalchemy.html</id><summary type="html">&lt;p&gt;Hace tiempo explique como crear unas tablas para la base de datos &lt;code&gt;sqlite3&lt;/code&gt;, insertar datos, removerlos y consultarlos,el art&amp;iacute;culo se llama &lt;a href="http://blog.crespo.org.ve/2012/04/abstraccion-del-motor-de-base-de-datos.html"&gt;Abstracci&amp;oacute;n del motor de Base de Datos con el ORM Sqlalchemy y python&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Antes de comenzar a probar lo que se escribe en este art&amp;iacute;culo es necesario que …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hace tiempo explique como crear unas tablas para la base de datos &lt;code&gt;sqlite3&lt;/code&gt;, insertar datos, removerlos y consultarlos,el art&amp;iacute;culo se llama &lt;a href="http://blog.crespo.org.ve/2012/04/abstraccion-del-motor-de-base-de-datos.html"&gt;Abstracci&amp;oacute;n del motor de Base de Datos con el ORM Sqlalchemy y python&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Antes de comenzar a probar lo que se escribe en este art&amp;iacute;culo es necesario que realicen pruebas con el art&amp;iacute;culo mencionado anteriormente para que tengan la base de datos con sus datos listas para ser utilizadas en este art&amp;iacute;culo.&lt;/p&gt;
+&lt;p&gt;Ahora se explica como usar unas tablas con sus datos ya creada, creando una sesi&amp;oacute;n para la base de datos.&lt;/p&gt;
+&lt;p&gt;Este art&amp;iacute;culo se basa en un &lt;a href="mapfish.org/doc/tutorials/sqlalchemy.html"&gt;tutorial en ingl&amp;eacute;s de sqlalchemy&lt;/a&gt; o el &lt;a href="http://www.rmunn.com/sqlalchemy-tutorial/tutorial.html"&gt;tutorial paso a paso de sqlalchemy&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Lo primero que se har&amp;aacute; es crear un archivo &lt;code&gt;model.py&lt;/code&gt; que contendr&amp;aacute; el modelo de la base de datos.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se importa el m&amp;oacute;dulo datetime&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa schema y tupes de sqlalchemy&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sqlalchemy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;types&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se instancia la clase MetaData.&lt;/span&gt;
+
+&lt;span class="n"&gt;metadata&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MetaData&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se crea la funci&amp;oacute;n now que devuelve la hora actual.&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;now&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se crea la instancia table con los campos de la tabla grupos&lt;/span&gt;
+
+&lt;span class="n"&gt;grupos_table&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'grupos'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;metadata&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'id'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;types&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;primary_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+
+        &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'grupo'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;types&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="n"&gt;nullable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+
+        &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'descripcion'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;types&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="n"&gt;nullable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se crea la instancia table con los campos de la tabla contactos&lt;/span&gt;
+
+&lt;span class="n"&gt;contactos_table&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Table&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'contactos'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;metadata&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+        &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'id'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;types&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;primary_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+
+        &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'nombre'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;types&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="n"&gt;nullable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+
+        &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'telefono'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;types&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="n"&gt;nullable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+
+        &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Column&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'grupo_id'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;types&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;nullable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se crea la clase Contactos y Grupos que heredan de object y s&amp;oacute;lo tienen pass.&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Contactos&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt; &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Grupos&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt; &lt;span class="k"&gt;pass&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se mapea la Clase Contactos con la tabla contactos_table&lt;/span&gt;
+
+&lt;span class="n"&gt;orm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Contactos&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;contactos_table&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se mapea la Clase Grupos con la tabla grupos_table&lt;/span&gt;
+
+&lt;span class="n"&gt;orm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Grupos&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;grupos_table&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ya con este c&amp;oacute;digo se logra el mapeo de las tablas existentes con sus campos.&lt;/p&gt;
+&lt;p&gt;Ahora se crea un archivo llamado &lt;code&gt;prueba-db.py&lt;/code&gt; que va a realizar la sesi&amp;oacute;n a la base de datos por medio del m&amp;oacute;dulo &lt;code&gt;model.py&lt;/code&gt;  donde se realizar&amp;aacute; unas consultas, inserciones y remociones de datos.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;model&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sqlalchemy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;orm&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sqlalchemy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;create_engine&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Crear un engine y crear todas las tablas necesarias&lt;/span&gt;
+
+&lt;span class="n"&gt;engine&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;create_engine&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'sqlite:///tutorial.db'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;echo&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;metadata&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;engine&lt;/span&gt;
+
+&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;metadata&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;# Configurar la sesion&lt;/span&gt;
+
+
+
+&lt;span class="n"&gt;sm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;orm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sessionmaker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;engine&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;autoflush&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;autocommit&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+            &lt;span class="n"&gt;expire_on_commit&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;session&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;orm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;scoped_session&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sm&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se realiza una consulta a la tabla grupos&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Consulta inicial de la tabla contactos"&lt;/span&gt;
+
+&lt;span class="n"&gt;consulta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Contactos&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;lista&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;consulta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;telefono&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"--------------------------------"&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Agregar un contacto&lt;/span&gt;
+
+&lt;span class="n"&gt;contacto&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Contactos&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;contacto&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s2"&gt;"Luisa Gonzalez"&lt;/span&gt;
+
+&lt;span class="n"&gt;contacto&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;telefono&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s2"&gt;"04155555555"&lt;/span&gt;
+
+&lt;span class="n"&gt;contacto&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;grupo_id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+
+&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contacto&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flush&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;commit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se realiza una consulta a la tabla grupos&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Consulta la tabla contactos con el dato incorporado"&lt;/span&gt;
+
+&lt;span class="n"&gt;consulta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Contactos&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;lista&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;consulta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;telefono&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"--------------------------------"&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Borrar un contacto&lt;/span&gt;
+
+&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;delete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contacto&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flush&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;commit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se realiza una consulta a la tabla grupos&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Consulta la tabla contactos luego de borrar el dato"&lt;/span&gt;
+
+&lt;span class="n"&gt;consulta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Contactos&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;lista&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;consulta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;telefono&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"--------------------------------"&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El resultado de ejecutar el script &lt;code&gt;pruebas-db.py&lt;/code&gt; se muestra a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Consulta inicial de la tabla contactos
+
+Ernesto Crespo 04155673029
+
+Pedro Perez 0295212223
+
+Jhon Doe 04184488484
+
+Jane Doe 04184488482
+
+Pepito de los palotes 04184588484
+
+--------------------------------
+
+Consulta la tabla contactos con el dato incorporado
+
+Ernesto Crespo 04155673029
+
+Pedro Perez 0295212223
+
+Jhon Doe 04184488484
+
+Jane Doe 04184488482
+
+Pepito de los palotes 04184588484
+
+Luisa Gonzalez 04155555555
+
+--------------------------------
+
+Consulta la tabla contactos luego de borrar el dato
+
+Ernesto Crespo 04155673029
+
+Pedro Perez 0295212223
+
+Jhon Doe 04184488484
+
+Jane Doe 04184488482
+
+Pepito de los palotes 04184588484
+
+--------------------------------
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;De esta forma se puede realizar consultas, remociones e inserciones por medio de &lt;code&gt;sqlalchemy&lt;/code&gt; con sesiones.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="General"></category><category term="Python"></category></entry><entry><title>Bajar vídeos de youtube desde Python con Pafy.</title><link href="https://ecrespo.github.io/bajar-videos-de-youtube-desde-python-con-pafy.html" rel="alternate"></link><published>2013-09-01T09:00:00-05:30</published><updated>2013-09-01T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-09-01:/bajar-videos-de-youtube-desde-python-con-pafy.html</id><summary type="html">&lt;p&gt;&lt;code&gt;Pafy&lt;/code&gt; permite realizar busquedas de v&amp;iacute;deos de youtube y descargarlos.&lt;/p&gt;
+&lt;p&gt;El sitio de &lt;code&gt;Pafy&lt;/code&gt; se encuentra en &lt;a href="http://np1.github.io/pafy/"&gt;github&lt;/a&gt;, en ese sitio se puede bajar la librer&amp;iacute;a en formato zip, tar.gz o visitar el repositorio git del proyecto.&lt;/p&gt;
+&lt;p&gt;Para instalar &lt;code&gt;Pafy&lt;/code&gt; desde Linux se puede hacer con &lt;code&gt;easy_install&lt;/code&gt; o &lt;code&gt;pip …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;code&gt;Pafy&lt;/code&gt; permite realizar busquedas de v&amp;iacute;deos de youtube y descargarlos.&lt;/p&gt;
+&lt;p&gt;El sitio de &lt;code&gt;Pafy&lt;/code&gt; se encuentra en &lt;a href="http://np1.github.io/pafy/"&gt;github&lt;/a&gt;, en ese sitio se puede bajar la librer&amp;iacute;a en formato zip, tar.gz o visitar el repositorio git del proyecto.&lt;/p&gt;
+&lt;p&gt;Para instalar &lt;code&gt;Pafy&lt;/code&gt; desde Linux se puede hacer con &lt;code&gt;easy_install&lt;/code&gt; o &lt;code&gt;pip&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install Pafy
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se ejecuta python:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;ernesto&lt;/span&gt;&lt;span class="nd"&gt;@grievous&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;
+
+&lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="mf"&gt;2.7&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Jan&lt;/span&gt;  &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="mi"&gt;2013&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;13&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;56&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;14&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;GCC&lt;/span&gt; &lt;span class="mf"&gt;4.7&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;linux2&lt;/span&gt;
+
+&lt;span class="n"&gt;Type&lt;/span&gt; &lt;span class="s2"&gt;"help"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"copyright"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"credits"&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="s2"&gt;"license"&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;more&lt;/span&gt; &lt;span class="n"&gt;information&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se importa Pafy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pafy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Pafy&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se crea la variable donde se encuentra el url del v&amp;iacute;deo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"http://www.youtube.com/watch?v=YOZjaqHioro"&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se crea la instancia del v&amp;iacute;deo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Pafy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se obtiene el t&amp;iacute;tulo del v&amp;iacute;deo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;
+
+&lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;'Jimmy Fallon, Robin Thicke &amp;amp; The Roots Sing "Blurred Lines" (w/ Classroom Instruments)'&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El rating y longitud del v&amp;iacute;deo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rating&lt;/span&gt;
+
+
+&lt;span class="mf"&gt;4.9188302785&lt;/span&gt;
+
+
+
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;214&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se muestra los metadatos del v&amp;iacute;deo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Jimmy&lt;/span&gt; &lt;span class="n"&gt;Fallon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Robin&lt;/span&gt; &lt;span class="n"&gt;Thicke&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;Roots&lt;/span&gt; &lt;span class="n"&gt;Sing&lt;/span&gt; &lt;span class="s2"&gt;"Blurred Lines"&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;Classroom&lt;/span&gt; &lt;span class="n"&gt;Instruments&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Author&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;latenight&lt;/span&gt;
+
+
+&lt;span class="n"&gt;ID&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;YOZjaqHioro&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Duration&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mo"&gt;00&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;03&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;34&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Rating&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;4.9188302785&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Views&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10459846&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Thumbnail&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;i1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ytimg&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;vi&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;YOZjaqHioro&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jpg&lt;/span&gt;
+
+
+&lt;span class="n"&gt;Keywords&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Jimmy&lt;/span&gt; &lt;span class="n"&gt;Fallon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Late&lt;/span&gt; &lt;span class="n"&gt;Night&lt;/span&gt; &lt;span class="n"&gt;With&lt;/span&gt; &lt;span class="n"&gt;Jimmy&lt;/span&gt; &lt;span class="n"&gt;Fallon&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Late&lt;/span&gt; &lt;span class="n"&gt;Night&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NBC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NBC&lt;/span&gt; &lt;span class="n"&gt;TV&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Television&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Funny&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Talk&lt;/span&gt; &lt;span class="n"&gt;Show&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;comedic&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;humor&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stand&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;up&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;snl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Fallon&lt;/span&gt; &lt;span class="n"&gt;Stand&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;up&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Fallon&lt;/span&gt; &lt;span class="n"&gt;monologue&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;latenight&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;jokes&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;funny&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;interview&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;variety&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;comedy&lt;/span&gt; &lt;span class="n"&gt;sketches&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;talent&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;celebrities&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;music&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;musical&lt;/span&gt; &lt;span class="n"&gt;performance&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;The&lt;/span&gt; &lt;span class="n"&gt;Roots&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;clip&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;highlight&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;talking&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;jimmy&lt;/span&gt; &lt;span class="n"&gt;fallon&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;robin&lt;/span&gt; &lt;span class="n"&gt;thicke&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;robin&lt;/span&gt; &lt;span class="n"&gt;thicke&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;blurred&lt;/span&gt; &lt;span class="n"&gt;lines&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;classroom&lt;/span&gt; &lt;span class="n"&gt;instruments&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;late&lt;/span&gt; &lt;span class="n"&gt;night&lt;/span&gt; &lt;span class="n"&gt;music&lt;/span&gt; &lt;span class="n"&gt;room&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se muestra el t&amp;iacute;tulo del v&amp;iacute;deo, el autor, el ID del v&amp;iacute;deo, la duraci&amp;oacute;n, el rating, la cantidad de veces que se ha visto, entre otra informaci&amp;oacute;n.&lt;/p&gt;
+&lt;p&gt;Se muestra todos los formatos del v&amp;iacute;deo y su resoluci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;streams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;streams&lt;/span&gt;
+
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;streams&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;resolution&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extension&lt;/span&gt;
+
+
+&lt;span class="o"&gt;...&lt;/span&gt; 
+
+
+&lt;span class="mi"&gt;1080&lt;/span&gt;&lt;span class="n"&gt;x1920&lt;/span&gt; &lt;span class="n"&gt;webm&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;1080&lt;/span&gt;&lt;span class="n"&gt;x1920&lt;/span&gt; &lt;span class="n"&gt;mp4&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;720&lt;/span&gt;&lt;span class="n"&gt;x1280&lt;/span&gt; &lt;span class="n"&gt;webm&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;720&lt;/span&gt;&lt;span class="n"&gt;x1280&lt;/span&gt; &lt;span class="n"&gt;mp4&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;480&lt;/span&gt;&lt;span class="n"&gt;x854&lt;/span&gt; &lt;span class="n"&gt;webm&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;480&lt;/span&gt;&lt;span class="n"&gt;x854&lt;/span&gt; &lt;span class="n"&gt;flv&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;360&lt;/span&gt;&lt;span class="n"&gt;x640&lt;/span&gt; &lt;span class="n"&gt;webm&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;360&lt;/span&gt;&lt;span class="n"&gt;x640&lt;/span&gt; &lt;span class="n"&gt;flv&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;360&lt;/span&gt;&lt;span class="n"&gt;x640&lt;/span&gt; &lt;span class="n"&gt;mp4&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="n"&gt;x400&lt;/span&gt; &lt;span class="n"&gt;flv&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;320&lt;/span&gt;&lt;span class="n"&gt;x240&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="n"&gt;gp&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;144&lt;/span&gt;&lt;span class="n"&gt;x176&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="n"&gt;gp&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se muestran todos los formatos, su resoluci&amp;oacute;n y el url para descargarlo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;streams&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;resolution&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extension&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;
+
+
+&lt;span class="o"&gt;...&lt;/span&gt; 
+
+
+&lt;span class="mi"&gt;1080&lt;/span&gt;&lt;span class="n"&gt;x1920&lt;/span&gt; &lt;span class="n"&gt;webm&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;1080&lt;/span&gt;&lt;span class="n"&gt;x1920&lt;/span&gt; &lt;span class="n"&gt;mp4&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;720&lt;/span&gt;&lt;span class="n"&gt;x1280&lt;/span&gt; &lt;span class="n"&gt;webm&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;720&lt;/span&gt;&lt;span class="n"&gt;x1280&lt;/span&gt; &lt;span class="n"&gt;mp4&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;480&lt;/span&gt;&lt;span class="n"&gt;x854&lt;/span&gt; &lt;span class="n"&gt;webm&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;480&lt;/span&gt;&lt;span class="n"&gt;x854&lt;/span&gt; &lt;span class="n"&gt;flv&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;360&lt;/span&gt;&lt;span class="n"&gt;x640&lt;/span&gt; &lt;span class="n"&gt;webm&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;360&lt;/span&gt;&lt;span class="n"&gt;x640&lt;/span&gt; &lt;span class="n"&gt;flv&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;360&lt;/span&gt;&lt;span class="n"&gt;x640&lt;/span&gt; &lt;span class="n"&gt;mp4&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="n"&gt;x400&lt;/span&gt; &lt;span class="n"&gt;flv&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;320&lt;/span&gt;&lt;span class="n"&gt;x240&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="n"&gt;gp&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+
+&lt;span class="mi"&gt;144&lt;/span&gt;&lt;span class="n"&gt;x176&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="n"&gt;gp&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;r14&lt;/span&gt;&lt;span class="o"&gt;---&lt;/span&gt;&lt;span class="n"&gt;sn&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ab5e6nll&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Obtener la mejor resoluci&amp;oacute;n y su extensi&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getbest&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;resolution&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extension&lt;/span&gt;
+
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'1080x1920'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'webm'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Mejor resoluci&amp;oacute;n para un formato en espec&amp;iacute;fico:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getbest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;preftype&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"mp4"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;resolution&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extension&lt;/span&gt;
+
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'1080x1920'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'mp4'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Obtener el url para descargar el v&amp;iacute;deo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;
+
+
+&lt;span class="s1"&gt;'http://r14---sn-ab5e6nll.c.youtube.com/videoplayback...'&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se descarga el v&amp;iacute;deo con un nombre y en una ruta predefinida:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;myfilename&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"/home/ernesto/videos/"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"JimmtFallon"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"."&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extension&lt;/span&gt;
+
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;best&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;download&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;progress&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;filepath&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;myfilename&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Downloading&lt;/span&gt; &lt;span class="s1"&gt;'Jimmy Fallon, Robin Thicke &amp;amp; The Roots Sing "Blurred Lines" (w/ Classroom Instruments).webm'&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;157&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;236&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;345&lt;/span&gt; &lt;span class="n"&gt;Bytes&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+
+&lt;span class="n"&gt;Done&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se sale de python:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se verifica que el archivo bajo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@grievous:~/videos$ ls -l
+
+
+total 153556
+
+
+-rw-r--r-- 1 ernesto ernesto 157236345 sep  1 11:03 JimmtFallon.webm
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora puede ejecutar su reproductor de v&amp;iacute;deo preferido para ver el v&amp;iacute;deo.  &lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra la captura de pantalla del escritorio al momento de reproducir el v&amp;iacute;deo con VLC:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/bajarvideosdeyoutubedesdepythonconpafy-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Si desean ver el v&amp;iacute;deo a continuaci&amp;oacute;n les dejo el enlace de youtube para verlo:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://youtu.be/YOZjaqHioro"&gt;https://youtu.be/YOZjaqHioro&lt;/a&gt; &lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="General"></category></entry><entry><title>Día Debian en Barquisimeto</title><link href="https://ecrespo.github.io/dia-debian-en-barquisimeto.html" rel="alternate"></link><published>2013-08-16T09:00:00-05:30</published><updated>2013-08-16T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-08-16:/dia-debian-en-barquisimeto.html</id><summary type="html">&lt;p&gt;Ma&amp;ntilde;ana s&amp;aacute;bado se realizar&amp;aacute; el evento D&amp;iacute;a Debian en El INCES de la carrera 19 con calle 23 desde las 9am en Barquisimeto.&lt;/p&gt;
 &lt;p&gt;La charla que llevar&amp;eacute; se llama colaborar en Debian, la pueden descargar en slideshare.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://www.slideshare.net/ecrespo/colaborar-debian"&gt;Colaborar debian&lt;/a&gt; from &lt;a href="https://www.slideshare.net/ecrespo"&gt;Ernesto Crespo&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id="_1"&gt;&lt;/h2&gt;

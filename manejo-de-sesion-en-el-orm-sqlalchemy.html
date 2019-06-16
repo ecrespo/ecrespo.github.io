@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Hace tiempo explique como crear unas tablas para la base de datos sqlite3, insertar datos, removerlos y consultarlos,el artículo se llama Abstracción del motor de Base de Datos con el ORM Sqlalchemy y python. Antes de comenzar a probar lo que se escribe en este artículo es necesario que …" />
+<meta name="keywords" content="General, Python">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Manejo de sesión en el ORM sqlalchemy"/>
+<meta property="og:description" content="Hace tiempo explique como crear unas tablas para la base de datos sqlite3, insertar datos, removerlos y consultarlos,el artículo se llama Abstracción del motor de Base de Datos con el ORM Sqlalchemy y python. Antes de comenzar a probar lo que se escribe en este artículo es necesario que …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/manejo-de-sesion-en-el-orm-sqlalchemy.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2013-09-18 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="General"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Python"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Manejo de sesión en el ORM sqlalchemy</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="manejo-de-sesion-en-el-orm-sqlalchemy">Manejo de sesión en el ORM sqlalchemy</h1>
+    <p>
+          Posted on mié 18 septiembre 2013 in <a href="https://ecrespo.github.io/category/general.html">General</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Hace tiempo explique como crear unas tablas para la base de datos <code>sqlite3</code>, insertar datos, removerlos y consultarlos,el art&iacute;culo se llama <a href="http://blog.crespo.org.ve/2012/04/abstraccion-del-motor-de-base-de-datos.html">Abstracci&oacute;n del motor de Base de Datos con el ORM Sqlalchemy y python</a>.</p>
+<p>Antes de comenzar a probar lo que se escribe en este art&iacute;culo es necesario que realicen pruebas con el art&iacute;culo mencionado anteriormente para que tengan la base de datos con sus datos listas para ser utilizadas en este art&iacute;culo.</p>
+<p>Ahora se explica como usar unas tablas con sus datos ya creada, creando una sesi&oacute;n para la base de datos.</p>
+<p>Este art&iacute;culo se basa en un <a href="mapfish.org/doc/tutorials/sqlalchemy.html">tutorial en ingl&eacute;s de sqlalchemy</a> o el <a href="http://www.rmunn.com/sqlalchemy-tutorial/tutorial.html">tutorial paso a paso de sqlalchemy</a>.</p>
+<p>Lo primero que se har&aacute; es crear un archivo <code>model.py</code> que contendr&aacute; el modelo de la base de datos.</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se importa el m&oacute;dulo datetime</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="c1">#Se importa schema y tupes de sqlalchemy</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">schema</span><span class="p">,</span> <span class="n">types</span>
+
+
+
+<span class="c1">#Se instancia la clase MetaData.</span>
+
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">()</span>
+
+
+
+<span class="c1">#Se crea la funci&oacute;n now que devuelve la hora actual.</span>
+
+<span class="k">def</span> <span class="nf">now</span><span class="p">():</span>
+
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+
+
+<span class="c1">#Se crea la instancia table con los campos de la tabla grupos</span>
+
+<span class="n">grupos_table</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">'grupos'</span><span class="p">,</span><span class="n">metadata</span><span class="p">,</span>
+
+        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+
+        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'grupo'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">300</span><span class="p">),</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+
+        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'descripcion'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+
+<span class="p">)</span>
+
+
+<span class="c1">#Se crea la instancia table con los campos de la tabla contactos</span>
+
+<span class="n">contactos_table</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">'contactos'</span><span class="p">,</span><span class="n">metadata</span><span class="p">,</span>
+
+        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+
+        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'nombre'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+
+        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'telefono'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+
+        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'grupo_id'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+
+<span class="p">)</span>
+
+
+
+<span class="c1">#Se crea la clase Contactos y Grupos que heredan de object y s&oacute;lo tienen pass.</span>
+
+<span class="k">class</span> <span class="nc">Contactos</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span> <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">Grupos</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span> <span class="k">pass</span>
+
+
+
+<span class="c1">#Se mapea la Clase Contactos con la tabla contactos_table</span>
+
+<span class="n">orm</span><span class="o">.</span><span class="n">mapper</span><span class="p">(</span><span class="n">Contactos</span><span class="p">,</span> <span class="n">contactos_table</span><span class="p">)</span>
+
+<span class="c1">#Se mapea la Clase Grupos con la tabla grupos_table</span>
+
+<span class="n">orm</span><span class="o">.</span><span class="n">mapper</span><span class="p">(</span><span class="n">Grupos</span><span class="p">,</span><span class="n">grupos_table</span><span class="p">)</span>
+</pre></div>
+<p>Ya con este c&oacute;digo se logra el mapeo de las tablas existentes con sus campos.</p>
+<p>Ahora se crea un archivo llamado <code>prueba-db.py</code> que va a realizar la sesi&oacute;n a la base de datos por medio del m&oacute;dulo <code>model.py</code>  donde se realizar&aacute; unas consultas, inserciones y remociones de datos.</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+
+
+<span class="kn">import</span> <span class="nn">model</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">orm</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+
+
+
+<span class="c1">#Crear un engine y crear todas las tablas necesarias</span>
+
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">'sqlite:///tutorial.db'</span><span class="p">,</span> <span class="n">echo</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">bind</span> <span class="o">=</span> <span class="n">engine</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">()</span>
+
+
+
+<span class="c1"># Configurar la sesion</span>
+
+
+
+<span class="n">sm</span> <span class="o">=</span> <span class="n">orm</span><span class="o">.</span><span class="n">sessionmaker</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="n">autoflush</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">autocommit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+
+            <span class="n">expire_on_commit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">session</span> <span class="o">=</span> <span class="n">orm</span><span class="o">.</span><span class="n">scoped_session</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
+
+
+
+<span class="c1">#Se realiza una consulta a la tabla grupos</span>
+
+<span class="k">print</span> <span class="s2">"Consulta inicial de la tabla contactos"</span>
+
+<span class="n">consulta</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Contactos</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">consulta</span><span class="p">:</span>
+
+    <span class="k">print</span> <span class="n">lista</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="n">lista</span><span class="o">.</span><span class="n">telefono</span>
+
+<span class="k">print</span> <span class="s2">"--------------------------------"</span>
+
+
+
+
+
+<span class="c1">#Agregar un contacto</span>
+
+<span class="n">contacto</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Contactos</span><span class="p">()</span>
+
+<span class="n">contacto</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="sa">u</span><span class="s2">"Luisa Gonzalez"</span>
+
+<span class="n">contacto</span><span class="o">.</span><span class="n">telefono</span> <span class="o">=</span> <span class="sa">u</span><span class="s2">"04155555555"</span>
+
+<span class="n">contacto</span><span class="o">.</span><span class="n">grupo_id</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">contacto</span><span class="p">)</span>
+
+<span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+<span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+
+
+
+<span class="c1">#Se realiza una consulta a la tabla grupos</span>
+
+<span class="k">print</span> <span class="s2">"Consulta la tabla contactos con el dato incorporado"</span>
+
+<span class="n">consulta</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Contactos</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">consulta</span><span class="p">:</span>
+
+    <span class="k">print</span> <span class="n">lista</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="n">lista</span><span class="o">.</span><span class="n">telefono</span>
+
+<span class="k">print</span> <span class="s2">"--------------------------------"</span>
+
+
+
+
+
+<span class="c1">#Borrar un contacto</span>
+
+<span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">contacto</span><span class="p">)</span>
+
+<span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+<span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+
+<span class="c1">#Se realiza una consulta a la tabla grupos</span>
+
+<span class="k">print</span> <span class="s2">"Consulta la tabla contactos luego de borrar el dato"</span>
+
+<span class="n">consulta</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Contactos</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">consulta</span><span class="p">:</span>
+
+    <span class="k">print</span> <span class="n">lista</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="n">lista</span><span class="o">.</span><span class="n">telefono</span>
+
+<span class="k">print</span> <span class="s2">"--------------------------------"</span>
+</pre></div>
+<p>El resultado de ejecutar el script <code>pruebas-db.py</code> se muestra a continuaci&oacute;n:</p>
+<div class="highlight"><pre><span></span>Consulta inicial de la tabla contactos
+
+Ernesto Crespo 04155673029
+
+Pedro Perez 0295212223
+
+Jhon Doe 04184488484
+
+Jane Doe 04184488482
+
+Pepito de los palotes 04184588484
+
+--------------------------------
+
+Consulta la tabla contactos con el dato incorporado
+
+Ernesto Crespo 04155673029
+
+Pedro Perez 0295212223
+
+Jhon Doe 04184488484
+
+Jane Doe 04184488482
+
+Pepito de los palotes 04184588484
+
+Luisa Gonzalez 04155555555
+
+--------------------------------
+
+Consulta la tabla contactos luego de borrar el dato
+
+Ernesto Crespo 04155673029
+
+Pedro Perez 0295212223
+
+Jhon Doe 04184488484
+
+Jane Doe 04184488482
+
+Pepito de los palotes 04184588484
+
+--------------------------------
+</pre></div>
+<p>De esta forma se puede realizar consultas, remociones e inserciones por medio de <code>sqlalchemy</code> con sesiones.</p>
+<h2 id="_1"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/mostrar-tweets-en-tiempo-real-con-twython-y-el-api-stream-de-twitter.html">Mostrar tweets en tiempo real con twython y el API Stream de Twitter</a></li>
+      <li><a href="https://ecrespo.github.io/probando-la-libreria-twython-para-twitter.html">Probando la librería twython para twitter</a></li>
+      <li><a href="https://ecrespo.github.io/descubriendo-trending-topics-de-twitter-con-twython-y-python.html">Descubriendo Trending Topics de Twitter con twython y python</a></li>
+      <li><a href="https://ecrespo.github.io/nodos-mas-influyentes-en-un-grafo-con-networkx-parte-4.html">Nodos más influyentes en un grafo con networkx. Parte 4.</a></li>
+      <li><a href="https://ecrespo.github.io/graficar-la-tangente-de-una-curva-con-python-numpy-y-pylab.html">Graficar la tangente de una curva con python, numpy y pylab.</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

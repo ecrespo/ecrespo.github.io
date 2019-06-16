@@ -44,25 +44,26 @@
     <meta name="msapplication-TileColor" content="#333333">
 
 <meta name="author" content="Ernesto Crespo" />
-<meta name="description" content="Raspberry Pi es una placa de computadora de bajo costo (Más información en wikipedia) desarrollada por el Reino Unido. En la siguiente figura se muestra un esquema de la placa: A continuación 2 fotos del unboxing del Raspberry Pi que me llegó hace una semana: Para poner a funcionar la …" />
-<meta name="keywords" content="Debian, General, Linux">
+<meta name="description" content="Hace años usaba qemu para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox. Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé qemu con kvm. Los paquetes necesario son: kvm virt-manager: Para manejar las máquians virtuales de forma gráfica libvirt-bin qemu-kvm …" />
+<meta name="keywords" content="Debian, General, KVM, qemu">
 
 <meta property="og:site_name" content="Página de Seraph"/>
-<meta property="og:title" content="Instalación de Raspbian en un Raspberry Pi."/>
-<meta property="og:description" content="Raspberry Pi es una placa de computadora de bajo costo (Más información en wikipedia) desarrollada por el Reino Unido. En la siguiente figura se muestra un esquema de la placa: A continuación 2 fotos del unboxing del Raspberry Pi que me llegó hace una semana: Para poner a funcionar la …"/>
+<meta property="og:title" content="Máquinas virtuales con kvm y qemu"/>
+<meta property="og:description" content="Hace años usaba qemu para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox. Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé qemu con kvm. Los paquetes necesario son: kvm virt-manager: Para manejar las máquians virtuales de forma gráfica libvirt-bin qemu-kvm …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://ecrespo.github.io/instalacion-de-raspbian-en-un-raspberry-pi.html"/>
+<meta property="og:url" content="https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html"/>
 <meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2013-02-05 09:00:00-04:30"/>
+<meta property="article:published_time" content="2013-06-02 09:00:00-04:30"/>
 <meta property="article:modified_time" content=""/>
 <meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
-<meta property="article:section" content="Tutorial de Linux"/>
+<meta property="article:section" content="Tutorial Linux"/>
 <meta property="article:tag" content="Debian"/>
 <meta property="article:tag" content="General"/>
-<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="KVM"/>
+<meta property="article:tag" content="qemu"/>
 <meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
 
-  <title>Página de Seraph &ndash; Instalación de Raspbian en un Raspberry Pi.</title>
+  <title>Página de Seraph &ndash; Máquinas virtuales con kvm y qemu</title>
 
 </head>
 <body>
@@ -152,47 +153,97 @@
 <article class="single">
   <header>
       
-    <h1 id="instalacion-de-raspbian-en-un-raspberry-pi">Instalación de Raspbian en un Raspberry Pi.</h1>
+    <h1 id="maquinas-virtuales-con-kvm-y-qemu">Máquinas virtuales con kvm y qemu</h1>
     <p>
-          Posted on mar 05 febrero 2013 in <a href="https://ecrespo.github.io/category/tutorial-de-linux.html">Tutorial de Linux</a>
+          Posted on dom 02 junio 2013 in <a href="https://ecrespo.github.io/category/tutorial-linux.html">Tutorial Linux</a>
 
 
-        &#8226; 2 min read
+        &#8226; 3 min read
     </p>
   </header>
 
 
   <div>
-    <p>Raspberry Pi es una placa de computadora de bajo costo (M&aacute;s informaci&oacute;n en <a href="https://es.wikipedia.org/wiki/Raspberry_Pi">wikipedia</a>) desarrollada por el Reino Unido.</p>
-<p>En la siguiente figura se muestra un esquema de la placa:</p>
-<p><img alt="" src="./images/instalacionderaspbianenunraspberrypi-1.png"/> </p>
-<p>A continuaci&oacute;n 2 fotos del unboxing  del Raspberry Pi que me lleg&oacute; hace una semana:</p>
-<p><img alt="" src="./images/instalacionderaspbianenunraspberrypi-2.jpg"/> </p>
-<p><img alt="" src="./images/instalacionderaspbianenunraspberrypi-3.jpg"/> </p>
-<p>Para poner a funcionar la placa es necesario lo siguiente:</p>
+    <p>Hace a&ntilde;os usaba <code>qemu</code> para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox.
+&Uacute;ltimamente me ha parecido que consume m&aacute;s recursos virtualbox, as&iacute; que por recomendaci&oacute;n retom&eacute; <code>qemu</code> con <code>kvm</code>. </p>
+<p>Los paquetes necesario son:  </p>
 <ul>
-<li>Un cable de monitor VGA a HDMI.</li>
-<li>Una tarjeta de Memoria SD (m&iacute;nimo 8 GB).</li>
-<li>Un teclado y rat&oacute;n USB.</li>
-<li>Cable de red.</li>
-<li>Cargador de Celular microusb.</li>
-<li>Una versi&oacute;n de Linux (para este caso Raspbian una versi&oacute;n de Debian Wheezy para Arquitectura ARM).</li>
+<li><code>kvm</code></li>
+<li><code>virt-manager</code>: Para manejar las m&aacute;quians virtuales de forma gr&aacute;fica</li>
+<li><code>libvirt-bin</code></li>
+<li><code>qemu-kvm</code></li>
 </ul>
-<p>Para bajar  Rasbian lo pueden hacer desde el siguiente <a href="downloads.raspberrypi.org/images/raspbian/2012-12-16-wheezy-raspbian/2012-12-16-wheezy-raspbian.zip">enlace</a>, el n&uacute;mero SHA-1 para verificar la integridad del archivo es el siguiente:  <code>514974a5fcbbbea02151d79a715741c2159d4b0a</code>. </p>
-<p>El usuario del sistema es <code>pi</code> y la clave <code>raspberry</code>.</p>
-<p>Para instalar la imagen del Raspbian en la memoria SD es necesario colocar la memoria en un equipo, descomprimir el archivo descargado y desde la l&iacute;nea de comandos ejecutar un dd (para este caso la memoria se encuentra en /dev/sdb, es necesario verificar la identificaci&oacute;n de la memoria antes de ejecutar el comando):</p>
-<div class="highlight"><pre><span></span>dd dd bs=1M if=./2012-12-16-wheezy-raspbian.img of=/dev/sdb
-
-1850+0 registros le&iacute;dos
-1850+0 registros escritos
-1939865600 bytes (1,9 GB) copiados, 1610,06 s, 1,2 MB/s
+<p>Instalaci&oacute;n:</p>
+<div class="highlight"><pre><span></span>apt-get install kvm virt-manager libvirt-bin qemu-kvm
 </pre></div>
-<p>El siguiente v&iacute;deo muestra el proceso de arranque de raspbian. </p>
-<p><a href="https://youtu.be/WQ3pezQsApE">https://youtu.be/WQ3pezQsApE</a> </p>
-<p>V&iacute;deo donde se muestra la configuraci&oacute;n del raspbian:</p>
-<p><a href="https://youtu.be/Xc2pMabUWAo">https://youtu.be/Xc2pMabUWAo</a> </p>
-<p>Para finalizar se muestra una foto del escritorio LXDE del Raspbian:</p>
-<p><img alt="" src="./images/instalacionderaspbianenunraspberrypi-4.jpg"/> </p>
+<p>Prueba inicial:
+Se iniciar&aacute; una m&aacute;quina virtual que arranca un live-cd, por ejemplo el live-cd de Linuxmint 15 con 720M de RAM:</p>
+<div class="highlight"><pre><span></span>kvm -m 720 -cdrom  linuxmint-15-cinnamon-dvd-32bit.iso
+</pre></div>
+<p>En la siguiente figura se muestra la captura de pantalla de la m&aacute;quina virtual:</p>
+<p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-1.png"/></p>
+<p>Crear un disco duro para la m&aacute;quina virtual:
+Se crea el disco duro virtual en un archivo, en este caso se crear&aacute; un disco duro virtual de 10 GB para instalar Debian en dicho disco duro virtual:</p>
+<div class="highlight"><pre><span></span>qemu-img create debian.img 10G
+Formatting 'debian.img', fmt=raw size=10737418240
+</pre></div>
+<p>Ahora se tiene: </p>
+<div class="highlight"><pre><span></span>ernesto@debian:~/imagenes$ ls -l
+total 1808024
+-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 16:22 debian.img
+-rw-r--r-- 1 root    root    10737418240 jun  2 16:00 debianserver.img
+-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 15:30 linuxmint.img
+</pre></div>
+<p>Instalaci&oacute;n de  Debian en la m&aacute;quina virtual:</p>
+<p>Ahora se instalar&aacute; en el disco duro virtual llamado debian.img la distribuci&oacute;n Debian para i386 con 720MB de RAM, se le define el disco duro a usar y el iso a utilizar:</p>
+<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img  -cdrom ../Isos/debian-7.0.0-i386-lxde-CD-1.iso
+</pre></div>
+<p>En la siguiente captura de pantalla se muestra el inicio del cd de Debian:</p>
+<p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-2.png"/></p>
+<p>Luego de terminar el proceso de instalaci&oacute;n se inicia la m&aacute;quina virtual de la siguiente forma:</p>
+<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img
+</pre></div>
+<p>La siguiente figura muestra el escritorio de LXDE de Debian con la consola abierta mostrando la IP que tiene la m&aacute;quina virtual:</p>
+<p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-3.png"/></p>
+<p>Como se puede ver la IP que tiene la m&aacute;quina virtual es una IP privada, la &uacute;nica forma de acceder a la m&aacute;quina virtual es directamente desde <code>qemu</code>, no se podr&aacute; abrir una sesi&oacute;n remota por que desde el equipo que aloja la m&aacute;quina virtual no se tiene una ruta de como llegar a la IP de la m&aacute;quina virtual.</p>
+<p>Para ello necesitaremos darle unas opciones de redes a <code>qemu</code>, estas son <code>nic</code> y <code>tap</code>, la &uacute;ltima crea una interfaz <code>tap</code> en el equipo que aloja la m&aacute;quina virtual con la ruta de una red.</p>
+<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img   -net nic -net tap
+</pre></div>
+<p>Adicional a esto es necesario instalar <code>dnsmasq</code> y configurar una regla de <code>iptables</code> en la configuraci&oacute;n de <code>kvm</code> para poder navegar desde la m&aacute;quina virtual.</p>
+<p>Instalar dnsmasq:</p>
+<div class="highlight"><pre><span></span>apt-get install dnsmasq
+</pre></div>
+<p>Agregar la siguiente configuraci&oacute;n en el archivo <code>/etc/dnsmasq.conf</code>:</p>
+<div class="highlight"><pre><span></span>#Archivo de resolv.conf con la configuraci&oacute;n de dns de la red local.
+resolv-file=/etc/resolv-orig.conf
+#Interface a la cual acepta peticiones, en este caso tap0 para la m&aacute;quina virtual (dns y dhcp) y wlan0 (s&oacute;lo dns).
+interface=tap0,wlan0
+#No se activa el dhcp a la interfaz wlan0
+no-dhcp-interface=wlan0
+#Se define el rango de red de dhcp y el tiempo de liberaci&oacute;n de las IPs.
+dhcp-range=172.20.0.10,172.20.0.15,12h
+</pre></div>
+<p>Se agrega la siguiente regla de iptables al archivo <code>/etc/kvm/kvm-ifup</code>:</p>
+<div class="highlight"><pre><span></span>vim /etc/kvm/kvm-ifup
+exec iptables  -t nat -A POSTROUTING -s 172.20.0.0/16 -o wlan0 -j MASQUERADE
+</pre></div>
+<p>Est&aacute; regla aplica nat a la red 172.20.0.0/255.255.0.0.</p>
+<p>Ya con esta configuraci&oacute;n ya se puede navegar y acceder remotamente a la m&aacute;quina virtual.</p>
+<p>Para terminar las configuraciones se agrega una regla de iptables que borre las tablas de nat en el archivo /etc/kvm/kvm-ifdown:</p>
+<div class="highlight"><pre><span></span>vim /etc/kvm/kvm-ifdown
+
+exec iptables -t nat -F
+</pre></div>
+<p>La tabla de enrutamiento del equipo donde se levanta la m&aacute;quina virtual es la siguiente:</p>
+<div class="highlight"><pre><span></span>root@debian:~# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         185.29.52.131   0.0.0.0         UG    0      0        0 wlan0
+172.20.0.0      0.0.0.0         255.255.0.0     U     0      0        0 tap0
+185.29.52.128   0.0.0.0         255.255.255.128 U     0      0        0 wlan0
+</pre></div>
+<p>En la siguiente captura de pantalla se muestra la p&aacute;gina de este blog desde la m&aacute;quina virtual y la consola donde se muestra la IP que est&aacute; usando la m&aacute;quina virtual, con esa IP se puede acceder desde el equipo que aloja la m&aacute;quina virtual.</p>
+<p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-4.png"/></p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
@@ -205,7 +256,8 @@ direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
     <p>
       <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
       <a href="https://ecrespo.github.io/tag/general.html">General</a>
-      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/kvm.html">KVM</a>
+      <a href="https://ecrespo.github.io/tag/qemu.html">qemu</a>
     </p>
   </div>
 

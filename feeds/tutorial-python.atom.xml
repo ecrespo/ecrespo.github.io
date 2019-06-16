@@ -1,5 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2013-04-27T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Descubriendo trending topics de twitter con python-twitter.</title><link href="https://ecrespo.github.io/descubriendo-trending-topics-de-twitter-con-python-twitter.html" rel="alternate"></link><published>2013-04-27T09:00:00-05:30</published><updated>2013-04-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-04-27:/descubriendo-trending-topics-de-twitter-con-python-twitter.html</id><summary type="html">&lt;p&gt;Recuerdo la presentaci&amp;oacute;n de Efrain en el PyDay en M&amp;eacute;rida, donde hablo de la librer&amp;iacute;a tweepy (&lt;a href="https://effiejayx.wordpress.com/2010/10/25/jugando-con-las-apis-de-twitter-y-python/"&gt;ac&amp;aacute; art&amp;iacute;culo de Efrain sobre el tema&lt;/a&gt;) que permite acceder a una cuenta de twitter, actualizar estado entre otras cosas.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2013-06-04T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Utilizando el API de Stream de Twitter con Python y tweetstream. Parte 1.</title><link href="https://ecrespo.github.io/utilizando-el-api-de-stream-de-twitter-con-python-y-tweetstream-parte-1.html" rel="alternate"></link><published>2013-06-04T09:00:00-05:30</published><updated>2013-06-04T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-06-04:/utilizando-el-api-de-stream-de-twitter-con-python-y-tweetstream-parte-1.html</id><summary type="html">&lt;p&gt;Siguiendo con los art&amp;iacute;culos de &lt;a href="https://www.seraph.to/tag/twitter.html"&gt;Twitter con Python&lt;/a&gt;, ahora mostrar&amp;eacute; como usar el &lt;code&gt;API Stream&lt;/code&gt; de Twitter.&lt;/p&gt;
+&lt;p&gt;En este caso como la librer&amp;iacute;a twitter no maneja stream es necesario instalar otra librer&amp;iacute;a llamada &lt;a href="https://pypi.org/project/tweetstream/"&gt;tweetstream&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;La documentaci&amp;oacute;n del API Stream de twiitter se encuentra en el &lt;a href="https://developer.twitter.com/docs/api/1"&gt;enlace&lt;/a&gt;, y  en espec&amp;iacute;fico para …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Siguiendo con los art&amp;iacute;culos de &lt;a href="https://www.seraph.to/tag/twitter.html"&gt;Twitter con Python&lt;/a&gt;, ahora mostrar&amp;eacute; como usar el &lt;code&gt;API Stream&lt;/code&gt; de Twitter.&lt;/p&gt;
+&lt;p&gt;En este caso como la librer&amp;iacute;a twitter no maneja stream es necesario instalar otra librer&amp;iacute;a llamada &lt;a href="https://pypi.org/project/tweetstream/"&gt;tweetstream&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;La documentaci&amp;oacute;n del API Stream de twiitter se encuentra en el &lt;a href="https://developer.twitter.com/docs/api/1"&gt;enlace&lt;/a&gt;, y  en espec&amp;iacute;fico para obtener informaci&amp;oacute;n  objeto tweets lo pueden revisar en el &lt;a href="https://developer.twitter.com/docs/platform-objects/tweets"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Ah&amp;iacute; encontrar&amp;aacute;n la estructura json de este objeto. El campo que se uso en el ejemplo son 'text' y 'user', text contiene el texto del tweet y user contiene otro objeto que contiene informaci&amp;oacute;n del usuario, para este caso se usar&amp;aacute; el campo 'screen_name' que maneja el nombre del usuario twitter que env&amp;iacute;a el tweet.&lt;/p&gt;
+&lt;p&gt;A continuaci&amp;oacute;n el c&amp;oacute;digo de la aplicaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Import tweetstram, sleep y exit&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;tweetstream&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la funcion StreamTweet donde se le pasa el usuario y la clave de una cuenta twitter.&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;StreamTweet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;usuario&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se captura la excepcion de error de conexion e interrupcion por teclado&lt;/span&gt;
+
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="c1"&gt;#Se intenta conectar a la funcion de stream de tweetstream con el usuario y la clave&lt;/span&gt;
+
+ &lt;span class="c1"&gt;#Asignando a stream el resultado&lt;/span&gt;
+
+ &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;tweetstream&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TweetStream&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;usuario&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+     &lt;span class="c1"&gt;#Se genera un ciclo de cada tweet&lt;/span&gt;
+
+     &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;tweet&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+  &lt;span class="c1"&gt;#Se captura la excepcion de KeyError e Interrupcion de teclado, de esa forma&lt;/span&gt;
+
+  &lt;span class="c1"&gt;#Se devuelve un mensaje de error y se termina el programa respectivamente.&lt;/span&gt;
+
+  &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+      &lt;span class="c1"&gt;#Se crea un texto con el numero de tweet y la velocidad de cada tweet.&lt;/span&gt;
+
+      &lt;span class="n"&gt;adicional&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"|| tweet &lt;/span&gt;&lt;span class="si"&gt;%d&lt;/span&gt;&lt;span class="s2"&gt; || velocidad &lt;/span&gt;&lt;span class="si"&gt;%.5f&lt;/span&gt;&lt;span class="s2"&gt; tweets/seg"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;stream&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;stream&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rate&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+      &lt;span class="c1"&gt;#Se crea un texto final donde se le pasa el nombre del usuario que envia el tweet,&lt;/span&gt;
+
+      &lt;span class="c1"&gt;#el texto del tweet y el texto anterior&lt;/span&gt;
+
+      &lt;span class="n"&gt;texto&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tweet&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'user'&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s1"&gt;'screen_name'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"||"&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;tweet&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'text'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;adicional&lt;/span&gt;
+
+      &lt;span class="c1"&gt;#Se imprime dicho texto en pantalla&lt;/span&gt;
+
+      &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;texto&lt;/span&gt;
+
+  &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;KeyError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+      &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"No hay tweet"&lt;/span&gt;
+
+  &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;KeyboardInterrupt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+      &lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+  &lt;span class="c1"&gt;#Se espera 5 segundos para continuar al siguiente ciclo del lazo&lt;/span&gt;
+
+  &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;tweetstream&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ConnectionError&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"Desconectado de twitter. Razon: "&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reason&lt;/span&gt;
+
+ &lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;KeyboardInterrupt&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;'__main__'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se llama a la funcion pasando el usuario y la clave.&lt;/span&gt;
+
+    &lt;span class="n"&gt;StreamTweet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;usuario&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;En la siguiente figura se muestra la captura de pantalla del programa en funcionamiento:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/utilizandoelapidestreamdetwitterconpythonytweetstream1-1.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Se muestra en cada tweet, el usuario que env&amp;iacute;a el tweet, el tweet en si, el n&amp;uacute;mero de tweet enviado y la velocidad con que se env&amp;iacute;a el tweet.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="API Stream"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="Twitter"></category></entry><entry><title>Descubriendo trending topics de twitter con python-twitter.</title><link href="https://ecrespo.github.io/descubriendo-trending-topics-de-twitter-con-python-twitter.html" rel="alternate"></link><published>2013-04-27T09:00:00-05:30</published><updated>2013-04-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-04-27:/descubriendo-trending-topics-de-twitter-con-python-twitter.html</id><summary type="html">&lt;p&gt;Recuerdo la presentaci&amp;oacute;n de Efrain en el PyDay en M&amp;eacute;rida, donde hablo de la librer&amp;iacute;a tweepy (&lt;a href="https://effiejayx.wordpress.com/2010/10/25/jugando-con-las-apis-de-twitter-y-python/"&gt;ac&amp;aacute; art&amp;iacute;culo de Efrain sobre el tema&lt;/a&gt;) que permite acceder a una cuenta de twitter, actualizar estado entre otras cosas.&lt;/p&gt;
 &lt;p&gt;Con el auge de twitter como red social en el pa&amp;iacute;s me dispuse a …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recuerdo la presentaci&amp;oacute;n de Efrain en el PyDay en M&amp;eacute;rida, donde hablo de la librer&amp;iacute;a tweepy (&lt;a href="https://effiejayx.wordpress.com/2010/10/25/jugando-con-las-apis-de-twitter-y-python/"&gt;ac&amp;aacute; art&amp;iacute;culo de Efrain sobre el tema&lt;/a&gt;) que permite acceder a una cuenta de twitter, actualizar estado entre otras cosas.&lt;/p&gt;
 &lt;p&gt;Con el auge de twitter como red social en el pa&amp;iacute;s me dispuse a probar otra librer&amp;iacute;a de python para twitter llamada &lt;a href="https://github.com/bear/python-twitter"&gt;python-twitter&lt;/a&gt;, la documentaci&amp;oacute;n de la librer&amp;iacute;a se puede acceder desde &lt;a href="https://github.com/bear/python-twitter/wiki"&gt;ac&amp;aacute;&lt;/a&gt;. Existe una serie de ejemplos de como usar la librer&amp;iacute;a python-twitter en &lt;a href="https://github.com/ideoforms/python-twitter-examples/"&gt;github&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Instalar la librer&amp;iacute;a de twitter:

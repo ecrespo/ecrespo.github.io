@@ -684,7 +684,127 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Depurar código python con pudb</title><link href="https://ecrespo.github.io/depurar-codigo-python-con-pudb.html" rel="alternate"></link><published>2012-12-07T09:00:00-05:30</published><updated>2012-12-07T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-12-07:/depurar-codigo-python-con-pudb.html</id><summary type="html">&lt;p&gt;&lt;code&gt;Pudb&lt;/code&gt; es una herramienta de depuraci&amp;oacute;n full pantalla para la consola. Soporta teclas de cursor y comandos del editor vi. Se puede integrar con &lt;code&gt;ipython&lt;/code&gt; si se requiere.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Obtener número de serial y número de versión de Raspberry Pi con Python</title><link href="https://ecrespo.github.io/obtener-numero-de-serial-y-numero-de-version-de-raspberry-pi-con-python.html" rel="alternate"></link><published>2013-02-06T10:00:00-05:30</published><updated>2013-02-06T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-02-06:/obtener-numero-de-serial-y-numero-de-version-de-raspberry-pi-con-python.html</id><summary type="html">&lt;p&gt;El Raspberry Pi tiene informaci&amp;oacute;n de n&amp;uacute;mero del n&amp;uacute;mero de revisi&amp;oacute;n del PCB, este n&amp;uacute;mero indica que se tiene peque&amp;ntilde;os cambios en el PCB. Estos cambios pueden afectar en el funcionamiento de los programas Python e incluso como est&amp;aacute; distribuido los pines (alimentaci&amp;oacute;n, entrada/salida, etc) en la placa.&lt;/p&gt;
+&lt;p&gt;Est&amp;aacute; …&lt;/p&gt;</summary><content type="html">&lt;p&gt;El Raspberry Pi tiene informaci&amp;oacute;n de n&amp;uacute;mero del n&amp;uacute;mero de revisi&amp;oacute;n del PCB, este n&amp;uacute;mero indica que se tiene peque&amp;ntilde;os cambios en el PCB. Estos cambios pueden afectar en el funcionamiento de los programas Python e incluso como est&amp;aacute; distribuido los pines (alimentaci&amp;oacute;n, entrada/salida, etc) en la placa.&lt;/p&gt;
+&lt;p&gt;Est&amp;aacute; informaci&amp;oacute;n se puede obtener desde el archivo /proc/cpuinfo como se indica a continuaci&amp;oacute;n:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@raspberrypi ~ $ cat /proc/cpuinfo 
+
+Processor   : ARMv6-compatible processor rev 7 (v6l)
+
+BogoMIPS    : 697.95
+
+Features    : swp half thumb fastmult vfp edsp java tls 
+
+CPU implementer : 0x41
+
+CPU architecture: 7
+
+CPU variant : 0x0
+
+CPU part    : 0xb76
+
+CPU revision    : 7
+
+
+
+Hardware    : BCM2708
+
+Revision    : 000f
+
+Serial      : 00000000bcd34f5e
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El n&amp;uacute;mero de Revisi&amp;oacute;n es 00f y el serial es 00000000bcd34f5e.
+Las variantes del Raspberry Pi seg&amp;uacute;n n&amp;uacute;mero versi&amp;oacute;n se tiene a continuaci&amp;oacute;n (tomado de ac&amp;aacute;):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Modelo B Revisi&amp;oacute;n 1.0: El valor de cpuinfo es 0002.&lt;/li&gt;
+&lt;li&gt;Modelo B Revisi&amp;oacute;n 1.0+ECN001(sin fusible, D14 se removi&amp;oacute;): El valor de cpuinfo es 0003.&lt;/li&gt;
+&lt;li&gt;Modelo B Revisi&amp;oacute;n 2.0: El valor de cpuinfo es 0004,0005, 0006...&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;El sitio &lt;a href="https://www.raspberrypi-spy.co.uk/"&gt;Raspberrypi spy&lt;/a&gt;  tiene un par de scripts para obtener el n&amp;uacute;mero de revisi&amp;oacute;n y el serial de la placa.&lt;/p&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se muestra el script (con una peque&amp;ntilde;a correcci&amp;oacute;n):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+&lt;span class="sd"&gt;"""&lt;/span&gt;
+&lt;span class="sd"&gt;Script que busca la informacion del serial y numero de revision en el Raspberry Pi.&lt;/span&gt;
+&lt;span class="sd"&gt;Este script se obtiene de los siguientes enlaces:&lt;/span&gt;
+&lt;span class="sd"&gt;Numero de Revision:&lt;/span&gt;
+&lt;span class="sd"&gt;http://www.raspberrypi-spy.co.uk/2012/09/getting-your-raspberry-pi-revision-number-using-python/#more-574&lt;/span&gt;
+&lt;span class="sd"&gt;Numero de Serial:&lt;/span&gt;
+&lt;span class="sd"&gt;http://www.raspberrypi-spy.co.uk/2012/09/getting-your-raspberry-pi-serial-number-using-python/#more-570&lt;/span&gt;
+
+&lt;span class="sd"&gt;"""&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;getrevision&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c1"&gt;# Extrae la informacion del numero de revision del raspberry pi&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se asigna a revision un string de 4 ceros.&lt;/span&gt;
+    &lt;span class="n"&gt;revision&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"0000"&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se abre el archivo cpuinfo&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se &lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/proc/cpuinfo'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'r'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se recorre el archivo&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;linea&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="c1"&gt;#Si existe el contenido Revision en una linea&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;linea&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="s1"&gt;'Revision'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="c1"&gt;#Se toma la longitud de la linea&lt;/span&gt;
+                &lt;span class="n"&gt;longitud&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;linea&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="c1"&gt;#Se agrega la informacion completa de la revision&lt;/span&gt;
+                &lt;span class="n"&gt;revision&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;linea&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;longitud&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se cierra el archivo&lt;/span&gt;
+        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="c1"&gt;#Si no abre el archivo se asigna 4 ceros a revision&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;IOError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;revision&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"0000"&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se retorna el valor de revision&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;revision&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;getserial&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c1"&gt;# Extrae la informacion del serial desde cpuinfo&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se asigna un string con ceros a cpuserial&lt;/span&gt;
+    &lt;span class="n"&gt;cpuserial&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"00000000"&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se intenta a capturar la informacion del archivo cpuinfo,&lt;/span&gt;
+    &lt;span class="c1"&gt;#si no se tiene un mensaje de error.&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'/proc/cpuinfo'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'r'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#se recorre el archivo linea a linea&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;linea&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="c1"&gt;#Si existe el contenido Serial en la linea&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;linea&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="s1"&gt;'Serial'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="c1"&gt;#Se agrega la informacion completa del serial del cpu&lt;/span&gt;
+                &lt;span class="n"&gt;cpuserial&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;linea&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se cierra el archivo&lt;/span&gt;
+        &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Si no abre el archivo se asigna el valor de error al serial&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;IOError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;cpuserial&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"ERROR000000000"&lt;/span&gt;
+    &lt;span class="c1"&gt;#retorna el valor del serial del cpu&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;cpuserial&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;'__main__'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s2"&gt;"El n&amp;uacute;mero de Serial del Raspberry Pi es: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; "&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;getserial&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s2"&gt;"El n&amp;uacute;mero de Revision del Raspberry Pi es: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;getrevision&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Al ejecutar el script se obtiene lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@raspberrypi ~ $ ./versionSerial.py 
+
+El n&amp;uacute;mero de Serial del Raspberry Pi es: 00000000bcd34f5e 
+
+El n&amp;uacute;mero de Revision del Raspberry Pi es: 000f
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ya con esta informaci&amp;oacute;n se tiene que el Raspberry Pi es de la revis&amp;oacute;n 2.0.&lt;/p&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se muestra la organizaci&amp;oacute;n de los pines de la revisi&amp;oacute;n 1.0:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/obtenernumerodeserialynumerodeversionderaspberrypiconpython-1.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Y la organizaci&amp;oacute;n de los pines de la revisi&amp;oacute;n 2.0:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/obtenernumerodeserialynumerodeversionderaspberrypiconpython-2.png"/&gt; &lt;/p&gt;
+&lt;p&gt;Con esta informaci&amp;oacute;n ya se conoce como realizar las conexiones de los circuitos con el Rasberry Pi.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="General"></category><category term="Python"></category><category term="Rasberry Pi"></category><category term="Rasbian"></category></entry><entry><title>Depurar código python con pudb</title><link href="https://ecrespo.github.io/depurar-codigo-python-con-pudb.html" rel="alternate"></link><published>2012-12-07T09:00:00-05:30</published><updated>2012-12-07T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-12-07:/depurar-codigo-python-con-pudb.html</id><summary type="html">&lt;p&gt;&lt;code&gt;Pudb&lt;/code&gt; es una herramienta de depuraci&amp;oacute;n full pantalla para la consola. Soporta teclas de cursor y comandos del editor vi. Se puede integrar con &lt;code&gt;ipython&lt;/code&gt; si se requiere.&lt;/p&gt;
 &lt;p&gt;Para instalarlo en distribuciones basadas en Debian se ejecuta el siguiente comando:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install python-pudb
 &lt;/pre&gt;&lt;/div&gt;

@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Hace años usaba qemu para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox. Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé qemu con kvm. Los paquetes necesario son: kvm virt-manager: Para manejar las máquians virtuales de forma gráfica libvirt-bin qemu-kvm …" />
+<meta name="keywords" content="Debian, General, KVM, qemu">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Máquinas virtuales con kvm y qemu"/>
+<meta property="og:description" content="Hace años usaba qemu para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox. Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé qemu con kvm. Los paquetes necesario son: kvm virt-manager: Para manejar las máquians virtuales de forma gráfica libvirt-bin qemu-kvm …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2013-06-02 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Linux"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="KVM"/>
+<meta property="article:tag" content="qemu"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Máquinas virtuales con kvm y qemu</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="maquinas-virtuales-con-kvm-y-qemu">Máquinas virtuales con kvm y qemu</h1>
+    <p>
+          Posted on dom 02 junio 2013 in <a href="https://ecrespo.github.io/category/tutorial-linux.html">Tutorial Linux</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Hace a&ntilde;os usaba <code>qemu</code> para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox.
+&Uacute;ltimamente me ha parecido que consume m&aacute;s recursos virtualbox, as&iacute; que por recomendaci&oacute;n retom&eacute; <code>qemu</code> con <code>kvm</code>. </p>
+<p>Los paquetes necesario son:  </p>
+<ul>
+<li><code>kvm</code></li>
+<li><code>virt-manager</code>: Para manejar las m&aacute;quians virtuales de forma gr&aacute;fica</li>
+<li><code>libvirt-bin</code></li>
+<li><code>qemu-kvm</code></li>
+</ul>
+<p>Instalaci&oacute;n:</p>
+<div class="highlight"><pre><span></span>apt-get install kvm virt-manager libvirt-bin qemu-kvm
+</pre></div>
+<p>Prueba inicial:
+Se iniciar&aacute; una m&aacute;quina virtual que arranca un live-cd, por ejemplo el live-cd de Linuxmint 15 con 720M de RAM:</p>
+<div class="highlight"><pre><span></span>kvm -m 720 -cdrom  linuxmint-15-cinnamon-dvd-32bit.iso
+</pre></div>
+<p>En la siguiente figura se muestra la captura de pantalla de la m&aacute;quina virtual:</p>
+<p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-1.png"/></p>
+<p>Crear un disco duro para la m&aacute;quina virtual:
+Se crea el disco duro virtual en un archivo, en este caso se crear&aacute; un disco duro virtual de 10 GB para instalar Debian en dicho disco duro virtual:</p>
+<div class="highlight"><pre><span></span>qemu-img create debian.img 10G
+Formatting 'debian.img', fmt=raw size=10737418240
+</pre></div>
+<p>Ahora se tiene: </p>
+<div class="highlight"><pre><span></span>ernesto@debian:~/imagenes$ ls -l
+total 1808024
+-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 16:22 debian.img
+-rw-r--r-- 1 root    root    10737418240 jun  2 16:00 debianserver.img
+-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 15:30 linuxmint.img
+</pre></div>
+<p>Instalaci&oacute;n de  Debian en la m&aacute;quina virtual:</p>
+<p>Ahora se instalar&aacute; en el disco duro virtual llamado debian.img la distribuci&oacute;n Debian para i386 con 720MB de RAM, se le define el disco duro a usar y el iso a utilizar:</p>
+<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img  -cdrom ../Isos/debian-7.0.0-i386-lxde-CD-1.iso
+</pre></div>
+<p>En la siguiente captura de pantalla se muestra el inicio del cd de Debian:</p>
+<p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-2.png"/></p>
+<p>Luego de terminar el proceso de instalaci&oacute;n se inicia la m&aacute;quina virtual de la siguiente forma:</p>
+<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img
+</pre></div>
+<p>La siguiente figura muestra el escritorio de LXDE de Debian con la consola abierta mostrando la IP que tiene la m&aacute;quina virtual:</p>
+<p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-3.png"/></p>
+<p>Como se puede ver la IP que tiene la m&aacute;quina virtual es una IP privada, la &uacute;nica forma de acceder a la m&aacute;quina virtual es directamente desde <code>qemu</code>, no se podr&aacute; abrir una sesi&oacute;n remota por que desde el equipo que aloja la m&aacute;quina virtual no se tiene una ruta de como llegar a la IP de la m&aacute;quina virtual.</p>
+<p>Para ello necesitaremos darle unas opciones de redes a <code>qemu</code>, estas son <code>nic</code> y <code>tap</code>, la &uacute;ltima crea una interfaz <code>tap</code> en el equipo que aloja la m&aacute;quina virtual con la ruta de una red.</p>
+<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img   -net nic -net tap
+</pre></div>
+<p>Adicional a esto es necesario instalar <code>dnsmasq</code> y configurar una regla de <code>iptables</code> en la configuraci&oacute;n de <code>kvm</code> para poder navegar desde la m&aacute;quina virtual.</p>
+<p>Instalar dnsmasq:</p>
+<div class="highlight"><pre><span></span>apt-get install dnsmasq
+</pre></div>
+<p>Agregar la siguiente configuraci&oacute;n en el archivo <code>/etc/dnsmasq.conf</code>:</p>
+<div class="highlight"><pre><span></span>#Archivo de resolv.conf con la configuraci&oacute;n de dns de la red local.
+resolv-file=/etc/resolv-orig.conf
+#Interface a la cual acepta peticiones, en este caso tap0 para la m&aacute;quina virtual (dns y dhcp) y wlan0 (s&oacute;lo dns).
+interface=tap0,wlan0
+#No se activa el dhcp a la interfaz wlan0
+no-dhcp-interface=wlan0
+#Se define el rango de red de dhcp y el tiempo de liberaci&oacute;n de las IPs.
+dhcp-range=172.20.0.10,172.20.0.15,12h
+</pre></div>
+<p>Se agrega la siguiente regla de iptables al archivo <code>/etc/kvm/kvm-ifup</code>:</p>
+<div class="highlight"><pre><span></span>vim /etc/kvm/kvm-ifup
+exec iptables  -t nat -A POSTROUTING -s 172.20.0.0/16 -o wlan0 -j MASQUERADE
+</pre></div>
+<p>Est&aacute; regla aplica nat a la red 172.20.0.0/255.255.0.0.</p>
+<p>Ya con esta configuraci&oacute;n ya se puede navegar y acceder remotamente a la m&aacute;quina virtual.</p>
+<p>Para terminar las configuraciones se agrega una regla de iptables que borre las tablas de nat en el archivo /etc/kvm/kvm-ifdown:</p>
+<div class="highlight"><pre><span></span>vim /etc/kvm/kvm-ifdown
+
+exec iptables -t nat -F
+</pre></div>
+<p>La tabla de enrutamiento del equipo donde se levanta la m&aacute;quina virtual es la siguiente:</p>
+<div class="highlight"><pre><span></span>root@debian:~# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         185.29.52.131   0.0.0.0         UG    0      0        0 wlan0
+172.20.0.0      0.0.0.0         255.255.0.0     U     0      0        0 tap0
+185.29.52.128   0.0.0.0         255.255.255.128 U     0      0        0 wlan0
+</pre></div>
+<p>En la siguiente captura de pantalla se muestra la p&aacute;gina de este blog desde la m&aacute;quina virtual y la consola donde se muestra la IP que est&aacute; usando la m&aacute;quina virtual, con esa IP se puede acceder desde el equipo que aloja la m&aacute;quina virtual.</p>
+<p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-4.png"/></p>
+<h2 id="_1"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/kvm.html">KVM</a>
+      <a href="https://ecrespo.github.io/tag/qemu.html">qemu</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/utilizando-el-api-de-stream-de-twitter-con-python-y-tweetstream-parte-1.html">Utilizando el API de Stream de Twitter con Python y tweetstream. Parte 1.</a></li>
+      <li><a href="https://ecrespo.github.io/descubrir-equipos-en-una-red-local-con-python-ipcalc-y-scapy.html">Descubrir equipos en una Red Local con Python (ipcalc y scapy).</a></li>
+      <li><a href="https://ecrespo.github.io/encontrar-la-raiz-de-una-funcion-con-fsolve.html">Encontrar la raíz de una función con fsolve</a></li>
+      <li><a href="https://ecrespo.github.io/graficar-una-funcion-de-2-variables-con-matplotlib.html">Graficar una función de 2 variables con matplotlib</a></li>
+      <li><a href="https://ecrespo.github.io/creacion-de-grafos-con-networkx-parte-3.html">Creación de grafos con networkx. Parte 3.</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

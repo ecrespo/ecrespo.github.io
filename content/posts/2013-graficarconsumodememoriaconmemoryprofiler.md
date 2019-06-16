@@ -11,6 +11,7 @@ Este artículo se basa en el artículo Memory plots with memory_profiler.
 
 Se hará una pequeña modificación al programa que cálcula la matriz inversa:
 
+```python 
 
 #!/usr/bin/env python
 
@@ -76,6 +77,7 @@ if __name__ == '__main__':
 
     pl.show()
 
+```
 
 
 El resultado de la ejecución es el siguiente:

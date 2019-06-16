@@ -1,7 +1,7 @@
 Title: Obtener información de metadatos EXIF de una imagen con Python
 Date: 2013-10-14 9:00
 Category: Tutorial Python
-Tags: Canaima,Debian,General,Linux,Python,Ubuntu,eifx
+Tags: Canaima,Debian,General,Linux,Python,Ubuntu,exif
 lang: es
 translation: true
 

@@ -1,5 +1,5 @@
 Title: Creación de grafos con networkx. Parte 3.
-Date: 2013-12-03 9:00
+Date: 2013-02-13 9:00
 Category: Tutorial Python
 Tags: Canaima,Debian,General,Linux,matplotlib,Python,Ubuntu
 lang: es

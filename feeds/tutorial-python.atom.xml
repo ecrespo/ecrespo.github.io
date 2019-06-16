@@ -1,5 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2013-02-19T10:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Teorema de muestreo explicado con numpy</title><link href="https://ecrespo.github.io/teorema-de-muestreo-explicado-con-numpy.html" rel="alternate"></link><published>2013-02-19T10:00:00-05:30</published><updated>2013-02-19T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-02-19:/teorema-de-muestreo-explicado-con-numpy.html</id><summary type="html">&lt;p&gt;El teorema demuestra que la reconstrucci&amp;oacute;n exacta de una se&amp;ntilde;al peri&amp;oacute;dica continua en banda base a partir de sus muestras, es matem&amp;aacute;ticamente posible si la se&amp;ntilde;al est&amp;aacute; limitada en banda y la tasa de muestreo es superior al doble de su ancho de banda. 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2013-02-19T10:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Manejar información de un archivo csv con csvkit</title><link href="https://ecrespo.github.io/manejar-informacion-de-un-archivo-csv-con-csvkit.html" rel="alternate"></link><published>2013-02-19T10:00:00-05:30</published><updated>2013-02-19T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-02-19:/manejar-informacion-de-un-archivo-csv-con-csvkit.html</id><summary type="html">&lt;p&gt;El programa &lt;code&gt;csvkit&lt;/code&gt; es una herramienta desarrollada en Python que facilita la manipulaci&amp;oacute;n de la informaci&amp;oacute;n contenida en un archivo con formato &lt;code&gt;csv&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Se utilizar&amp;aacute; como ejemplo los datos de la p&amp;aacute;gina data.gov. Los datos que se utilizar&amp;aacute; son del Departamento de Asuntos de Veteranos de beneficios educativos de …&lt;/p&gt;</summary><content type="html">&lt;p&gt;El programa &lt;code&gt;csvkit&lt;/code&gt; es una herramienta desarrollada en Python que facilita la manipulaci&amp;oacute;n de la informaci&amp;oacute;n contenida en un archivo con formato &lt;code&gt;csv&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Se utilizar&amp;aacute; como ejemplo los datos de la p&amp;aacute;gina data.gov. Los datos que se utilizar&amp;aacute; son del Departamento de Asuntos de Veteranos de beneficios educativos de los Estatos Unidos (disculpen la traducci&amp;oacute;n) del a&amp;ntilde;o 2009.&lt;/p&gt;
+&lt;p&gt;Es necesario instalar &lt;code&gt;csvkit&lt;/code&gt;, en este caso se usa el comando &lt;code&gt;pip&lt;/code&gt; de python:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;csvkit&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Obtener los datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir beneficios
+
+cd beneficios 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Bajar archivo &lt;code&gt;2009.csv&lt;/code&gt; con el comando &lt;code&gt;wget&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget -O 2009.csv -U "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.16 (JHTML, like Gecko) chrome/10.0.648.205 Safari/534.16" http://www.data.gob/download/4029/csv 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Verificar las primeras 5 l&amp;iacute;neas del archivo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;head -n 5 2009.csv 
+
+State Name,State Abbreviate,Code,Montgomery GI Bill-Active Duty,Montgomery GI Bill- Selective Reserve,Dependents' Educational Assistance,Reserve Educational Assistance Program,Post-Vietnam Era Veteran's Educational Assistance Program,TOTAL,
+
+ALABAMA,AL,01,"6,718","1,728","2,703","1,269",8,"12,426",
+
+ALASKA,AK,02,776,154,166,60,2,"1,158",
+
+ARIZONA,AZ,04,"26,822","2,005","3,137","2,011",11,"33,986",
+
+ARKANSAS,AR,05,"2,061",988,"1,575",886,3,"5,513",
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se puede usar el mismo comando &lt;code&gt;wget&lt;/code&gt; para bajar los archivos de los a&amp;ntilde;os 2010.csv, 2011.csv y 2012.csv.&lt;/p&gt;
+&lt;p&gt;Obtener la informaci&amp;oacute;n de las columnas con &lt;code&gt;csvcut&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;csvcut -n 2009.csv
+
+  1: State Name
+
+  2: State Abbreviate
+
+  3: Code
+
+  4: Montgomery GI Bill-Active Duty
+
+  5: Montgomery GI Bill- Selective Reserve
+
+  6: Dependents' Educational Assistance
+
+  7: Reserve Educational Assistance Program
+
+  8: Post-Vietnam Era Veteran's Educational Assistance Program
+
+  9: TOTAL
+
+ 10: 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Como se puede observar, el archivo &lt;code&gt;csv&lt;/code&gt; maneja 9 columnas. &lt;/p&gt;
+&lt;p&gt;Con el comando &lt;code&gt;csvcut&lt;/code&gt; se puede obtener informaci&amp;oacute;n entre la fila 2 y 3 (State Abbreviate y Code), s&amp;oacute;lo se desea mostrar las primeras 5 l&amp;iacute;neas del archivo: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;csvcut -c 2,3 2009.csv | head -n 5
+
+State Abbreviate,Code
+AL,01
+AK,02
+AZ,04
+AR,05
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se puede tambi&amp;eacute;n manejar estadisticas bajo demanda con &lt;code&gt;csvstat&lt;/code&gt;. Se genera la estadistica de la informaci&amp;oacute;n de las columnas 1,4,9 y 10. Para este caso se utiliza &lt;code&gt;csvcut&lt;/code&gt; y se pasa la informaci&amp;oacute;n a &lt;code&gt;csvstat&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;csvcut -c 1,4,9,10 2009.csv | csvstat
+
+  1. State Name
+    &amp;lt;type 'unicode'&amp;gt;
+    Nulls: True
+    Unique values: 52
+    Max length: 17
+  2. Montgomery GI Bill-Active Duty
+    &amp;lt;type 'int'&amp;gt;
+    Nulls: True
+    Min: 435
+    Max: 34942
+    Sum: 325723
+    Mean: 6263.90384615
+    Median: 3548.0
+    Standard Deviation: 7537.86225373
+    Unique values: 52
+  3. TOTAL
+    &amp;lt;type 'int'&amp;gt;
+    Nulls: True
+    Min: 768
+    Max: 46897
+    Sum: 506914
+    Mean: 9748.34615385
+    Median: 6520.0
+    Standard Deviation: 10070.4022127
+    Unique values: 52
+  4. _unnamed
+    &amp;lt;type 'NoneType'&amp;gt;
+    Nulls: True
+    Values: 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se puede realizar busquedas por filas con &lt;code&gt;csvgrep&lt;/code&gt;. En este caso la informaci&amp;oacute;n total del Estado de Illinois:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;csvcut -c 1,"TOTAL" 2009.csv | csvgrep -c 1 -m ILLINOIS
+
+State Name,TOTAL
+
+ILLINOIS,"21,964"
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Voltear orden de las columnas con &lt;code&gt;csvcut&lt;/code&gt;: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;csvcut -c 9,1 2009.csv | head -n 5
+
+TOTAL,State Name
+"12,426",ALABAMA
+"1,158",ALASKA
+"33,986",ARIZONA
+"5,513",ARKANSAS
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;En este caso se cambia el orden de las columnas al decirle a csvcut el orden de las columnas. &lt;/p&gt;
+&lt;p&gt;Ordenar con &lt;code&gt;csvsort&lt;/code&gt;: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;csvcut -c 9,1 2009.csv | csvsort -r | head -n 5
+
+TOTAL,State Name
+46897,CALIFORNIA
+40402,TEXAS
+36394,FLORIDA
+33986,ARIZONA
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se puede dar un formato para que sea legible la informaci&amp;oacute;n con &lt;code&gt;csvlook&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;csvcut -c 9,1 2009.csv | csvsort -r -l | csvlook
+
+|--------------+-------+--------------------|
+|  line_number | TOTAL | State Name         |
+|--------------+-------+--------------------|
+|  1           | 46897 | CALIFORNIA         |
+|  2           | 40402 | TEXAS              |
+|  3           | 36394 | FLORIDA            |
+|  4           | 33986 | ARIZONA            |
+|  5           | 21964 | ILLINOIS           |
+|  6           | 20541 | VIRGINIA           |
+|  7           | 18236 | GEORGIA            |
+|  8           | 15730 | NORTH CAROLINA     |
+|  9           | 13967 | NEW YORK           |
+|  10          | 13962 | MISSOURI           |
+|  11          | 13614 | COLORADO           |
+|  12          | 13314 | OHIO               |
+|  13          | 13011 | PENNSYLVANIA       |
+|  14          | 12426 | ALABAMA            |
+|  15          | 11492 | WASHINGTON         |
+|  16          | 10085 | MARYLAND           |
+|  17          | 9791  | MINNESOTA          |
+|  18          | 9344  | MICHIGAN           |
+|  19          | 9206  | OKLAHOMA           |
+|  20          | 9013  | IOWA               |
+|  21          | 8840  | WEST VIRGINIA      |
+|  22          | 8757  | TENNESSEE          |
+|  23          | 8081  | WISCONSIN          |
+|  24          | 7872  | SOUTH CAROLINA     |
+|  25          | 7809  | INDIANA            |
+|  26          | 6652  | LOUISIANA          |
+|  27          | 6388  | KENTUCKY           |
+|  28          | 6009  | MASSACHUSETTS      |
+|  29          | 5870  | OREGON             |
+|  30          | 5513  | ARKANSAS           |
+|  31          | 5511  | NEW JERSEY         |
+|  32          | 5416  | NEBRASKA           |
+|  33          | 5345  | UTAH               |
+|  34          | 4947  | KANSAS             |
+|  35          | 4551  | NEW MEXICO         |
+|  36          | 4424  | PUERTO RICO        |
+|  37          | 4299  | MISSISSIPPI        |
+|  38          | 3728  | NEVADA             |
+|  39          | 2997  | CONNECTICUT        |
+|  40          | 2751  | IDAHO              |
+|  41          | 2521  | HAWAII             |
+|  42          | 1992  | SOUTH DAKOTA       |
+|  43          | 1920  | MAINE              |
+|  44          | 1795  | MONTANA            |
+|  45          | 1778  | NORTH DAKOTA       |
+|  46          | 1326  | NEW HAMPSHIRE      |
+|  47          | 1175  | RHODE ISLAND       |
+|  48          | 1158  | ALASKA             |
+|  49          | 1145  | DELAWARE           |
+|  50          | 1117  | WYOMING            |
+|  51          | 1084  | DIST. OF COLUMBIA  |
+|  52          | 768   | VERMONT            |
+|  53          |       |                    |
+|--------------+-------+--------------------|
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Para finalizar se puede salvar el trabajo en un nuevo archivo csv:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;csvcut -c 9,1 2009.csv | csvsort -r -l &amp;gt; 2009_ranking.csv
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Si se desea aprender m&amp;aacute;s de la herramienta &lt;code&gt;csvkit&lt;/code&gt; se puede revisar la p&amp;aacute;gina de la &lt;a href="https://csvkit.readthedocs.io/en/latest/index.html"&gt;documentaci&amp;oacute;n&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;En pr&amp;oacute;ximo art&amp;iacute;culo se mostrar&amp;aacute; como usar &lt;code&gt;csvkit&lt;/code&gt; desde un programa en Python.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="General"></category><category term="Python"></category><category term="csv"></category><category term="csvkit"></category></entry><entry><title>Teorema de muestreo explicado con numpy</title><link href="https://ecrespo.github.io/teorema-de-muestreo-explicado-con-numpy.html" rel="alternate"></link><published>2013-02-19T10:00:00-05:30</published><updated>2013-02-19T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-02-19:/teorema-de-muestreo-explicado-con-numpy.html</id><summary type="html">&lt;p&gt;El teorema demuestra que la reconstrucci&amp;oacute;n exacta de una se&amp;ntilde;al peri&amp;oacute;dica continua en banda base a partir de sus muestras, es matem&amp;aacute;ticamente posible si la se&amp;ntilde;al est&amp;aacute; limitada en banda y la tasa de muestreo es superior al doble de su ancho de banda. 
 En el art&amp;iacute;culo se mostrar&amp;aacute; una …&lt;/p&gt;</summary><content type="html">&lt;p&gt;El teorema demuestra que la reconstrucci&amp;oacute;n exacta de una se&amp;ntilde;al peri&amp;oacute;dica continua en banda base a partir de sus muestras, es matem&amp;aacute;ticamente posible si la se&amp;ntilde;al est&amp;aacute; limitada en banda y la tasa de muestreo es superior al doble de su ancho de banda. 
 En el art&amp;iacute;culo se mostrar&amp;aacute; una tasa de muestreo a diferentes frecuencias, desde el valor doble a la frecuencia base, luego a un valor menor.&lt;/p&gt;
 &lt;p&gt;Algo m&amp;aacute;s de teor&amp;iacute;a:

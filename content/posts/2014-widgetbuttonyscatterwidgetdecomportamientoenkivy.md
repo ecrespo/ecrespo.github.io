@@ -1,5 +1,5 @@
 Title: Widget button y Scatter (widget de comportamiento) en kivy.  
-Date: 2014-04-19 11:00  
+Date: 2014-04-19 08:00  
 Category: Tutorial Python  
 Tags: Canaima,Debian,General,gnome,Python,Ubuntu,kivy  
 lang: es  

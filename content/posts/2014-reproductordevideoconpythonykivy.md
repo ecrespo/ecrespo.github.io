@@ -1,5 +1,5 @@
 Title: Reproductor de vídeo con python y kivy  
-Date: 2014-04-19 9:00  
+Date: 2014-04-19 10:00  
 Category: Tutorial Python  
 Tags: Android,Canaima,Debian,General,gnome,Python,Ubuntu,kivy
 lang: es  

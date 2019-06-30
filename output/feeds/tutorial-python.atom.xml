@@ -1,5 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2014-04-19T10:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Reproductor de vídeo con python y kivy</title><link href="https://ecrespo.github.io/reproductor-de-video-con-python-y-kivy.html" rel="alternate"></link><published>2014-04-19T10:00:00-05:30</published><updated>2014-04-19T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-04-19:/reproductor-de-video-con-python-y-kivy.html</id><summary type="html">&lt;p&gt;De los dos art&amp;iacute;culos anteriores, el &lt;a href="https://www.seraph.to/desarrollo-de-aplicaciones-multiplataforma-con-python-y-kivy.html#desarrollo-de-aplicaciones-multiplataforma-con-python-y-kivy"&gt;introductorio con manejo de etiquetas&lt;/a&gt;; y 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2014-04-29T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Manejo de colas de RabbitMQ en Django con Django-Celery</title><link href="https://ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" rel="alternate"></link><published>2014-04-29T09:00:00-05:30</published><updated>2014-04-29T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-04-29:/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html</id><summary type="html">&lt;p&gt;&lt;a href="https://www.seraph.to/tag/django.html"&gt;Hace un tiempo escrib&amp;iacute; unos 3 art&amp;iacute;culos sobre Django&lt;/a&gt;, ahora se tocar&amp;aacute; un tema algo m&amp;aacute;s complejo pero &amp;uacute;til cuando se requiere rendimiento en procesos.&lt;/p&gt;
+&lt;p&gt;A continuaci&amp;oacute;n paso a explicar un proceso sencillo de manejo de colas de &lt;code&gt;RabbitMQ&lt;/code&gt; por medio de &lt;code&gt;Django-Celery&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;La idea es realizar una instalaci&amp;oacute;n y …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://www.seraph.to/tag/django.html"&gt;Hace un tiempo escrib&amp;iacute; unos 3 art&amp;iacute;culos sobre Django&lt;/a&gt;, ahora se tocar&amp;aacute; un tema algo m&amp;aacute;s complejo pero &amp;uacute;til cuando se requiere rendimiento en procesos.&lt;/p&gt;
+&lt;p&gt;A continuaci&amp;oacute;n paso a explicar un proceso sencillo de manejo de colas de &lt;code&gt;RabbitMQ&lt;/code&gt; por medio de &lt;code&gt;Django-Celery&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;La idea es realizar una instalaci&amp;oacute;n y configuraci&amp;oacute;n b&amp;aacute;sica, nada de tener &lt;code&gt;RabbitMQ&lt;/code&gt; en varias m&amp;aacute;quinas virtuales y que se maneje la autenticaci&amp;oacute;n de las diferentes colas de las diferentes m&amp;aacute;quinas.&lt;/p&gt;
+&lt;p&gt;La documentaci&amp;oacute;n la pueden encontrar en el siguiente &lt;a href="https://celery.readthedocs.io/en/latest/getting-started/first-steps-with-celery.html"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Lo primero que se necesita es tener &lt;code&gt;rabbitMQ&lt;/code&gt; instalado en Debian Wheezy.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#aptitude install rabbitmq-server
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Luego de la instalaci&amp;oacute;n se verifica que se inicie el servicio:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:~# invoke-rc.d rabbitmq-server status 
+Status of node rabbit@pruebas ...
+[{pid,3595},
+ {running_applications,[{rabbit,"RabbitMQ","2.8.4"},
+                        {mnesia,"MNESIA  CXC 138 12","4.7"},
+                        {os_mon,"CPO  CXC 138 46","2.2.9"},
+                        {sasl,"SASL  CXC 138 11","2.2.1"},
+                        {stdlib,"ERTS  CXC 138 10","1.18.1"},
+                        {kernel,"ERTS  CXC 138 10","2.15.1"}]},
+ {os,{unix,linux}},
+ {erlang_version,"Erlang R15B01 (erts-5.9.1) [source] [64-bit] [async-threads:30] [kernel-poll:true]\n"},
+ {memory,[{total,26213352},
+          {processes,10386936},
+          {processes_used,10386922},
+          {system,15826416},
+          {atom,504409},
+          {atom_used,473948},
+          {binary,263704},
+          {code,11874771},
+          {ets,771120}]},
+ {vm_memory_high_watermark,0.39999999862767177},
+ {vm_memory_limit,233180364},
+ {disk_free_limit,1000000000},
+ {disk_free,6221991936},
+ {file_descriptors,[{total_limit,924},
+                    {total_used,8},
+                    {sockets_limit,829},
+                    {sockets_used,5}]},
+ {processes,[{limit,1048576},{used,167}]},
+ {run_queue,0},
+ {uptime,5808}]
+...done.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Tambi&amp;eacute;n se puede verificar desde el comando &lt;code&gt;rabbitctl&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:~# rabbitmqctl status 
+Status of node rabbit@pruebas ...
+[{pid,3595},
+ {running_applications,[{rabbit,"RabbitMQ","2.8.4"},
+                        {mnesia,"MNESIA  CXC 138 12","4.7"},
+                        {os_mon,"CPO  CXC 138 46","2.2.9"},
+                        {sasl,"SASL  CXC 138 11","2.2.1"},
+                        {stdlib,"ERTS  CXC 138 10","1.18.1"},
+                        {kernel,"ERTS  CXC 138 10","2.15.1"}]},
+ {os,{unix,linux}},
+ {erlang_version,"Erlang R15B01 (erts-5.9.1) [source] [64-bit] [async-threads:30] [kernel-poll:true]\n"},
+ {memory,[{total,26211600},
+          {processes,10386952},
+          {processes_used,10386938},
+          {system,15824648},
+          {atom,504409},
+          {atom_used,473972},
+          {binary,262176},
+          {code,11874771},
+          {ets,771120}]},
+ {vm_memory_high_watermark,0.39999999862767177},
+ {vm_memory_limit,233180364},
+ {disk_free_limit,1000000000},
+ {disk_free,6221991936},
+ {file_descriptors,[{total_limit,924},
+                    {total_used,8},
+                    {sockets_limit,829},
+                    {sockets_used,5}]},
+ {processes,[{limit,1048576},{used,167}]},
+ {run_queue,0},
+ {uptime,5848}]
+...done.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Como la conexi&amp;oacute;n de Django es con una s&amp;oacute;la m&amp;aacute;quina no se requiere autenticaci&amp;oacute;n del &lt;code&gt;rabbitMQ&lt;/code&gt; as&amp;iacute; que ese paso lo pueden ver en el siguiente &lt;a href="https://celery.readthedocs.io/en/latest/getting-started/brokers/rabbitmq.html"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Ahora se instalar&amp;aacute; &lt;code&gt;python&lt;/code&gt;, &lt;code&gt;celery&lt;/code&gt; y &lt;code&gt;django-celery&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#aptitude install python2.7 python2.7-dev python-django python-django-celery python-celery
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Al terminar de instalar la aplicaci&amp;oacute;n ahora se va a crear un proyecto django:
+Se crea el directorio django en &lt;code&gt;/srv/&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#mkdir -p /srv/django 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Luego se crea el proyecto pasarela con el comando &lt;code&gt;django-admin&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:/srv/django# django-admin startproject pasarela
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Dentro del directorio pasarela se encontrar&amp;aacute; la estructura de archivos que maneja django:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;-rwxr-xr-x 1 pasarela pasarela   251 abr 29 15:32 manage.py
+drwxr-xr-x 3 pasarela pasarela  4096 abr 29 16:49 pasarela
+-rw-rw-rw- 1 pasarela pasarela 69632 abr 29 16:59 pasarela.db
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Luego dentro del directorio pasarela se tiene lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:/srv/django/pasarela/pasarela# ls -l
+total 32
+-rw-r--r-- 1 pasarela pasarela    0 abr 29 15:32 __init__.py
+-rw-r--r-- 1 pasarela pasarela 5464 abr 29 16:46 settings.py
+-rw-r--r-- 1 pasarela pasarela  562 abr 29 15:32 urls.py
+-rw-r--r-- 1 pasarela pasarela 1138 abr 29 15:32 wsgi.py
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se crea el directorio &lt;code&gt;apps&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:/srv/django/pasarela/pasarela#mkdir -p apps
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Dentro del directorio se crea el archivo &lt;code&gt;__init__.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:/srv/django/pasarela/pasarela/apps# touch __init__,py
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora se crea la aplicaci&amp;oacute;n &lt;code&gt;sms&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:/srv/django/pasarela/pasarela/apps# django-admin startapp sms
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El directorio &lt;code&gt;sms&lt;/code&gt; contiene lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:/srv/django/pasarela/pasarela/apps/sms# ls -l
+total 24
+-rw-r--r-- 1 pasarela pasarela   0 abr 29 15:46 __init__.py
+-rw-r--r-- 1 pasarela pasarela  57 abr 29 15:46 models.py
+-rw-r--r-- 1 pasarela pasarela 383 abr 29 15:46 tests.py
+-rw-r--r-- 1 pasarela pasarela  26 abr 29 15:46 views.py
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;En este directorio se crea el archivo &lt;code&gt;tasks.py&lt;/code&gt; con el siguiente contenido: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se importa Celery&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Celery&lt;/span&gt;
+&lt;span class="c1"&gt;#Se instancia Celery importando tasks, se define el broker (quien recibe los procesos en este &lt;/span&gt;
+&lt;span class="c1"&gt;#caso rabbitMQ con el protocolo amgp) y se define el backend (quien recibe los resultado&lt;/span&gt;
+&lt;span class="c1"&gt;#del proceso encolado en este caso con rabbitMQ y el protocolo amgp) &lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Celery&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'tasks'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;broker&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'amqp://'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'amqp'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se usa el decorador task de app y se define la suma.&lt;/span&gt;
+&lt;span class="nd"&gt;@app.task&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Lo que se va a hacer es manejar la suma por medio de la cola de &lt;code&gt;rabbitMQ&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Ahora se revisa el contenido del archivo &lt;code&gt;settings.py&lt;/code&gt; (lo m&amp;aacute;s relevante): &lt;/p&gt;
+&lt;p&gt;Se va a trabajar por los momentos con la base de datos &lt;code&gt;sqlite&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'pasarela.db',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se define el uso horario de la aplicaci&amp;oacute;n: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;TIME_ZONE = 'America/Caracas'
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se define el idioma:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;LANGUAGE_CODE = 'es-ve'
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se agrega la aplicaci&amp;oacute;n &lt;code&gt;djcelery&lt;/code&gt; y &lt;code&gt;sms&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # Uncomment the next line to enable the admin:
+    'django.contrib.admin',
+    'djcelery',
+    'pasarela.apps.sms',
+    # Uncomment the next line to enable admin documentation:
+    # 'django.contrib.admindocs',
+)
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora queda sincronizar la base de datos (ac&amp;aacute; se crea la base de datos para django, lo necesario para django celery y la cuenta del administrador de la aplicaci&amp;oacute;n):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@pruebas:/srv/django/pasarela# python manage.py syncdb
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora lo que queda es iniciar &lt;code&gt;celery&lt;/code&gt;: 
+Se inicia &lt;code&gt;manage.py&lt;/code&gt; de django dici&amp;eacute;ndole que va a iniciar celery en nivel de informaci&amp;oacute;n y con dos procesos concurrentes.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:/srv/django/pasarela$ python manage.py celeryd -E -l info -c 2
+/usr/lib/python2.7/dist-packages/djcelery/loaders.py:108: UserWarning: Using settings.DEBUG leads to a memory leak, never use this setting in production environments!
+  warnings.warn("Using settings.DEBUG leads to a memory leak, never "
+[2014-04-29 17:22:37,272: WARNING/MainProcess]  
+
+ -------------- celery@pruebas v2.5.3
+---- **** -----
+--- * ***  * -- [Configuration]
+-- * - **** ---   . broker:      amqp://guest@localhost:5672//
+- ** ----------   . loader:      djcelery.loaders.DjangoLoader
+- ** ----------   . logfile:     [stderr]@INFO
+- ** ----------   . concurrency: 2
+- ** ----------   . events:      ON
+- *** --- * ---   . beat:        OFF
+-- ******* ----
+--- ***** ----- [Queues]
+ --------------   . celery:      exchange:celery (direct) binding:celery
+
+
+[Tasks]
+  . pasarela.apps.sms.tasks.add
+
+[2014-04-29 17:22:37,293: INFO/PoolWorker-1] child process calling self.run()
+[2014-04-29 17:22:37,297: INFO/PoolWorker-2] child process calling self.run()
+[2014-04-29 17:22:37,307: WARNING/MainProcess] celery@pruebas has started.
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;En otra consola se inicia el shell del &lt;code&gt;manage.py&lt;/code&gt; de django: 
+Se importa la funci&amp;oacute;n add que se defini&amp;oacute; en el archivo &lt;code&gt;tasks.py&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;ernesto&lt;/span&gt;&lt;span class="nd"&gt;@pruebas&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;srv&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;django&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;pasarela&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;shell&lt;/span&gt;
+&lt;span class="n"&gt;Python&lt;/span&gt; &lt;span class="mf"&gt;2.7&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Mar&lt;/span&gt; &lt;span class="mi"&gt;13&lt;/span&gt; &lt;span class="mi"&gt;2014&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mo"&gt;03&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;55&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;GCC&lt;/span&gt; &lt;span class="mf"&gt;4.7&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;linux2&lt;/span&gt;
+&lt;span class="n"&gt;Type&lt;/span&gt; &lt;span class="s2"&gt;"help"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"copyright"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"credits"&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="s2"&gt;"license"&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;more&lt;/span&gt; &lt;span class="n"&gt;information&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;InteractiveConsole&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pasarela.apps.sms.tasks&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt;
+&lt;span class="c1"&gt;#Se realiza la suma de 11+19&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;delay&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;19&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se obtiene el resultado:&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="mi"&gt;30&lt;/span&gt;
+&lt;span class="c1"&gt;#Se verifica si ya celery est&amp;aacute; listo para recibir m&amp;aacute;s procesos:&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ready&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;span class="c1"&gt;#Se verifica si ya el proceso termino.&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;successful&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;En la salida de celery se tiene lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[2014-04-29 17:25:36,200: INFO/MainProcess] Got task from broker: pasarela.apps.sms.tasks.add[64275874-545b-4ab9-bfc8-ea38904d2320]&lt;/span&gt;
+&lt;span class="na"&gt;[2014-04-29 17:25:36,228: INFO/MainProcess] Task pasarela.apps.sms.tasks.add[64275874-545b-4ab9-bfc8-ea38904d2320] succeeded in 0.0155239105225s: 30&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Como se muestra el &lt;code&gt;celery&lt;/code&gt; recibe y devuelve el resultado de la suma con su tiempo de ejecuci&amp;oacute;n, si se tienen varios equipos con &lt;code&gt;rabbitMQ&lt;/code&gt; se puede mejorar significativamente los procesos de ejecuci&amp;oacute;n de funciones en django.&lt;/p&gt;
+&lt;p&gt;Pueden revisar la siguiente &lt;a href="https://es.scribd.com/document/57279486/Celery-An-A-Synchronous-Task-Queue-Not-Only-for-Django"&gt;presentaci&amp;oacute;n&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Python"></category><category term="Ubuntu"></category><category term="Django"></category><category term="Django-Celery"></category></entry><entry><title>Reproductor de vídeo con python y kivy</title><link href="https://ecrespo.github.io/reproductor-de-video-con-python-y-kivy.html" rel="alternate"></link><published>2014-04-19T10:00:00-05:30</published><updated>2014-04-19T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-04-19:/reproductor-de-video-con-python-y-kivy.html</id><summary type="html">&lt;p&gt;De los dos art&amp;iacute;culos anteriores, el &lt;a href="https://www.seraph.to/desarrollo-de-aplicaciones-multiplataforma-con-python-y-kivy.html#desarrollo-de-aplicaciones-multiplataforma-con-python-y-kivy"&gt;introductorio con manejo de etiquetas&lt;/a&gt;; y 
 &lt;a href="https://www.seraph.to/widget-button-y-scatter-widget-de-comportamiento-en-kivy.html#widget-button-y-scatter-widget-de-comportamiento-en-kivy"&gt;el de bot&amp;oacute;n y scatter&lt;/a&gt; ahora explicar&amp;eacute; algo m&amp;aacute;s completo, la reproducci&amp;oacute;n de un v&amp;iacute;deo.&lt;/p&gt;
 &lt;p&gt;Este art&amp;iacute;culo se basa en &lt;a href="http://karanbalkar.com/2012/10/learning-kivy-video-player-and-scatter-widgets/"&gt;ingl&amp;eacute;s sobre un reproductor de v&amp;iacute;deo y scatter con kivy&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Ahora se mostrar&amp;aacute; como asociar un evento (una …&lt;/p&gt;</summary><content type="html">&lt;p&gt;De los dos art&amp;iacute;culos anteriores, el &lt;a href="https://www.seraph.to/desarrollo-de-aplicaciones-multiplataforma-con-python-y-kivy.html#desarrollo-de-aplicaciones-multiplataforma-con-python-y-kivy"&gt;introductorio con manejo de etiquetas&lt;/a&gt;; y 

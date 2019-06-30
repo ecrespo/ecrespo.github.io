@@ -684,7 +684,337 @@ Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bi
 usando la billetera digital de tu preferencia a la siguiente
 direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Crear URL recortadas con Python (bit.ly)</title><link href="https://ecrespo.github.io/crear-url-recortadas-con-python-bitly.html" rel="alternate"></link><published>2014-01-25T09:00:00-05:30</published><updated>2014-01-25T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-01-25:/crear-url-recortadas-con-python-bitly.html</id><summary type="html">&lt;p&gt;Todos conocemos lo famoso que se han hecho los sitios para recortar URL debido al problema de microblogin a 144 caracteres (donde tenemos que ahorrar en la escritura).&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Crear un demonio de Linux con Python</title><link href="https://ecrespo.github.io/crear-un-demonio-de-linux-con-python.html" rel="alternate"></link><published>2014-02-02T09:00:00-05:30</published><updated>2014-02-02T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-02-02:/crear-un-demonio-de-linux-con-python.html</id><summary type="html">&lt;p&gt;Este art&amp;iacute;culo se basa en el &lt;a href="http://www.gavinj.net/2012/06/building-python-daemon-process.html"&gt;siguiente art&amp;iacute;culo en ingl&amp;eacute;s&lt;/a&gt;.&lt;br/&gt;
+La idea es crear un proceso demonio de Linux con Python.&lt;br/&gt;
+Para ello se requerir&amp;aacute; los 2 siguientes librer&amp;iacute;as de python:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Python-daemon&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Python-lockfile&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A lo debian se usa el comando &lt;code&gt;apt-get&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#apt-get install python-daemon python-lockfile
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A lo python se ejecuta …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Este art&amp;iacute;culo se basa en el &lt;a href="http://www.gavinj.net/2012/06/building-python-daemon-process.html"&gt;siguiente art&amp;iacute;culo en ingl&amp;eacute;s&lt;/a&gt;.&lt;br/&gt;
+La idea es crear un proceso demonio de Linux con Python.&lt;br/&gt;
+Para ello se requerir&amp;aacute; los 2 siguientes librer&amp;iacute;as de python:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Python-daemon&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Python-lockfile&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A lo debian se usa el comando &lt;code&gt;apt-get&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#apt-get install python-daemon python-lockfile
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A lo python se ejecuta el comando pip:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#pip install python-daemon lockfile&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se muestra el archivo &lt;code&gt;demonioprueba.py&lt;/code&gt; que se colocar&amp;aacute; en el directorio &lt;code&gt;/usr/share/demonioprueba/&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#libreria est&amp;aacute;ndar loggin y time&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;logging&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#de python-daemon import runner&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;daemon&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;runner&lt;/span&gt;
+
+
+
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;App&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se define unos path est&amp;aacute;ndar en linux.&lt;/span&gt;
+
+
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stdin_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'/dev/null'&lt;/span&gt;
+
+
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stdout_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'/dev/tty'&lt;/span&gt;
+
+
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stderr_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'/dev/tty'&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se define la ruta del archivo pid del demonio.&lt;/span&gt;
+
+
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pidfile_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;  &lt;span class="s1"&gt;'/var/run/demonioprueba/demonioprueba.pid'&lt;/span&gt;
+
+
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pidfile_timeout&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;
+
+
+
+
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+            &lt;span class="c1"&gt;#El c&amp;oacute;digo principal va ac&amp;aacute;&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+
+
+            &lt;span class="c1"&gt;#Diferentes niveles de registro de bitacora&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Debug message &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Info message &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;warn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Warning message &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Error message &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se crea la instancia de la clase&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;App&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#define la instancia de la clase logging para generar la bitacora&lt;/span&gt;
+
+
+&lt;span class="n"&gt;logger&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;logging&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getLogger&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"demonioprueba log"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setLevel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;logging&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;INFO&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se define el forma del log&lt;/span&gt;
+
+
+&lt;span class="n"&gt;formatter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;logging&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Formatter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;%(asctime)s&lt;/span&gt;&lt;span class="s2"&gt; - &lt;/span&gt;&lt;span class="si"&gt;%(name)s&lt;/span&gt;&lt;span class="s2"&gt; - &lt;/span&gt;&lt;span class="si"&gt;%(levelname)s&lt;/span&gt;&lt;span class="s2"&gt; - &lt;/span&gt;&lt;span class="si"&gt;%(message)s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;handler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;logging&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;FileHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"/var/log/demonioprueba/demoniopruebas.log"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;handler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setFormatter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;formatter&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;logger&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;handler&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se ejecuta el demonio llamando al objeto app&lt;/span&gt;
+
+
+&lt;span class="n"&gt;daemon_runner&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DaemonRunner&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Esto evita que el archivo log no se cierre durante la ejecuci&amp;oacute;n del demonio&lt;/span&gt;
+
+
+&lt;span class="n"&gt;daemon_runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;daemon_context&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;files_preserve&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;handler&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Ejecuta el m&amp;eacute;todo run del objeto app&lt;/span&gt;
+
+
+&lt;span class="n"&gt;daemon_runner&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;do_action&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;El archivo se salva en la ruta &lt;code&gt;/usr/share/demonioprueba/demonioprueba.py&lt;/code&gt;.
+Se crean los directorios &lt;code&gt;/var/log/demonioprueba&lt;/code&gt; y &lt;code&gt;/var/run/demonioprueba/&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#mkdir -p /var/log/demonioprueba
+#mkdir -p /var/run/demonioprueba
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se puede probar el demonio al ejecutar el siguiente comando:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;demonioprueba&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;demonioprueba&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
+&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="nd"&gt;@heimdal&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="c1"&gt;# started with pid 5915&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se muestra que el demonio se inicio con el pid 5915.
+Al ejecutar &lt;code&gt;ps aux  | grep demonioprueba.py&lt;/code&gt; se ver&amp;aacute; el proceso en ejecuci&amp;oacute;n:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@heimdal:~# ps aux | grep demonioprueba.py
+root      5915  0.0  0.1  38088  6656 ?        S    17:00   0:00 python /usr/share/demonioprueba/demonioprueba.py start
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Como se ve el proceso se inicio con el pid 5915. &lt;/p&gt;
+&lt;p&gt;Se puede ver la bitacora al ejecutar:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tail -f /var/log/demonioprueba/demonioprueba.log
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se muestra una parte del log:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;2014-02-02 17:01:25,516 - demonioprueba log - WARNING - Warning message 80
+2014-02-02 17:01:25,516 - demonioprueba log - ERROR - Error message 80
+2014-02-02 17:01:26,517 - demonioprueba log - INFO - Info message 81
+2014-02-02 17:01:26,517 - demonioprueba log - WARNING - Warning message 81
+2014-02-02 17:01:26,518 - demonioprueba log - ERROR - Error message 81
+2014-02-02 17:01:27,519 - demonioprueba log - INFO - Info message 82
+2014-02-02 17:01:27,519 - demonioprueba log - WARNING - Warning message 82
+2014-02-02 17:01:27,519 - demonioprueba log - ERROR - Error message 82
+2014-02-02 17:01:28,520 - demonioprueba log - INFO - Info message 83
+2014-02-02 17:01:28,521 - demonioprueba log - WARNING - Warning message 83
+2014-02-02 17:01:28,521 - demonioprueba log - ERROR - Error message 83
+2014-02-02 17:01:29,522 - demonioprueba log - INFO - Info message 84
+2014-02-02 17:01:29,523 - demonioprueba log - WARNING - Warning message 84
+2014-02-02 17:01:29,523 - demonioprueba log - ERROR - Error message 84
+2014-02-02 17:01:30,523 - demonioprueba log - INFO - Info message 85
+2014-02-02 17:01:30,524 - demonioprueba log - WARNING - Warning message 85
+2014-02-02 17:01:30,524 - demonioprueba log - ERROR - Error message 85
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se puede detener el demonio ejecutando:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@heimdal:~# python /usr/share/demonioprueba/demonioprueba.py stop
+Terminating on signal 15
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ahora se crear&amp;aacute; el archivo init de demonio prueba ( salvar el archivo en &lt;code&gt;/etc/init.d/demonioprueba&lt;/code&gt; ):&lt;/p&gt;
+&lt;p&gt;A continuaci&amp;oacute;n se muestra el script bash que se usa de plantilla como demonio init:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Copyright (c) 1996-2012 My Company.&lt;/span&gt;
+
+&lt;span class="c1"&gt;# All rights reserved.&lt;/span&gt;
+
+&lt;span class="c1"&gt;#&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Author: Bob Bobson, 2012&lt;/span&gt;
+
+&lt;span class="c1"&gt;#&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Please send feedback to bob@bob.com&lt;/span&gt;
+
+&lt;span class="c1"&gt;#&lt;/span&gt;
+
+&lt;span class="c1"&gt;# /etc/init.d/demonioprueba&lt;/span&gt;
+
+&lt;span class="c1"&gt;#&lt;/span&gt;
+
+&lt;span class="c1"&gt;### BEGIN INIT INFO&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Provides: demonioprueba&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Required-Start:&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Should-Start:&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Required-Stop:&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Should-Stop:&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Default-Start:  3 5&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Default-Stop:   0 1 2 6&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Short-Description: Test daemon process&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Description:    Runs up the test daemon process&lt;/span&gt;
+
+&lt;span class="c1"&gt;### END INIT INFO&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;# Activate the python virtual environment&lt;/span&gt;
+
+&lt;span class="c1"&gt;#    . /path_to_virtualenv/activate&lt;/span&gt;
+
+
+
+&lt;span class="n"&gt;case&lt;/span&gt; &lt;span class="s2"&gt;"$1"&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt;
+
+  &lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"Starting server"&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Start the daemon&lt;/span&gt;
+
+    &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;demonioprueba&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;demonioprueba&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;
+
+    &lt;span class="p"&gt;;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;stop&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"Stopping server"&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Stop the daemon&lt;/span&gt;
+
+    &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;demonioprueba&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;demonioprueba&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;stop&lt;/span&gt;
+
+    &lt;span class="p"&gt;;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;restart&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"Restarting server"&lt;/span&gt;
+
+    &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;demonioprueba&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;demonioprueba&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;restart&lt;/span&gt;
+
+    &lt;span class="p"&gt;;;&lt;/span&gt;
+
+  &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+    &lt;span class="c1"&gt;# Refuse to do other stuff&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"Usage: /etc/init.d/demonioprueba.sh {start|stop|restart}"&lt;/span&gt;
+
+
+    &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+
+
+    &lt;span class="p"&gt;;;&lt;/span&gt;
+
+
+&lt;span class="n"&gt;esac&lt;/span&gt;
+
+
+
+
+
+&lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se le cambia el permiso al script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chmod u+x demonioprueba.sh
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Se habilita el script para la ejecuci&amp;oacute;n autom&amp;aacute;tica:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@heimdal:/etc/init.d# insserv demonioprueba.sh
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Ac&amp;aacute; les dejo &lt;a href="https://nanvel.name/weblog/python-unix-daemon/"&gt;un ejemplo parecido&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="_1"&gt;&lt;/h2&gt;
+&lt;p&gt;&amp;iexcl;Haz tu donativo!
+Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el c&amp;oacute;digo QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Fedora"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="Python-daemon"></category><category term="Python-lockfile"></category></entry><entry><title>Crear URL recortadas con Python (bit.ly)</title><link href="https://ecrespo.github.io/crear-url-recortadas-con-python-bitly.html" rel="alternate"></link><published>2014-01-25T09:00:00-05:30</published><updated>2014-01-25T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-01-25:/crear-url-recortadas-con-python-bitly.html</id><summary type="html">&lt;p&gt;Todos conocemos lo famoso que se han hecho los sitios para recortar URL debido al problema de microblogin a 144 caracteres (donde tenemos que ahorrar en la escritura).&lt;/p&gt;
 &lt;p&gt;Los recortadores reducen la cantidad de caracteres que puede llegar a tener una url que queramos compartir.&lt;/p&gt;
 &lt;p&gt;Existen varios sitios que facilitan …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Todos conocemos lo famoso que se han hecho los sitios para recortar URL debido al problema de microblogin a 144 caracteres (donde tenemos que ahorrar en la escritura).&lt;/p&gt;
 &lt;p&gt;Los recortadores reducen la cantidad de caracteres que puede llegar a tener una url que queramos compartir.&lt;/p&gt;

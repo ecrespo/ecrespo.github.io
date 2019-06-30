@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Feliz año a todos. Tenía algo de tiempo sin escribir en el blog. Este artículo trata del como usar la librería Feedparser para extraer información del RSS de este blog. Al final del blog (blog.crespo.org.ve) aparece la suscripción al Blog por medio de Atom (ver imagen): Al …" />
+<meta name="keywords" content="Canaima, Debian, Python, Ubuntu">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Jugando con RSS del blog desde Python"/>
+<meta property="og:description" content="Feliz año a todos. Tenía algo de tiempo sin escribir en el blog. Este artículo trata del como usar la librería Feedparser para extraer información del RSS de este blog. Al final del blog (blog.crespo.org.ve) aparece la suscripción al Blog por medio de Atom (ver imagen): Al …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/jugando-con-rss-del-blog-desde-python.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2014-01-18 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Jugando con RSS del blog desde Python</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="jugando-con-rss-del-blog-desde-python">Jugando con RSS del blog desde Python</h1>
+    <p>
+          Posted on sáb 18 enero 2014 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Feliz a&ntilde;o a todos.
+Ten&iacute;a algo de tiempo sin escribir en el blog. </p>
+<p>Este art&iacute;culo trata del como usar la librer&iacute;a <code>Feedparser</code> para extraer informaci&oacute;n del RSS de este blog.</p>
+<p>Al final del blog (blog.crespo.org.ve) aparece la suscripci&oacute;n al Blog por medio de Atom (ver imagen):</p>
+<p><img alt="" src="./images/jugandoconrssdelblogdesdepython-1.png"/></p>
+<p>Al darle clip al enlace aparece lo siguiente (http://feeds.feedburner.com/LaLibertadDeDesarrollarNoTienePrecio):</p>
+<p><img alt="" src="./images/jugandoconrssdelblogdesdepython-2.png"/></p>
+<p>El blog est&aacute; sindicalizado desde FeedBurner.</p>
+<p>La idea es utilizar la librer&iacute;a <code>feedparser</code> para extraer informaci&oacute;n de la sindicalizaci&oacute;n del blog.</p>
+<p>Se importa la librer&iacute;a <code>feedparser</code>:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span><span class="kn">import</span> <span class="nn">feedparser</span>
+</pre></div>
+<p>Se instancia la clase <code>parse</code> con el url  de la sindicalizaci&oacute;n del blog:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span><span class="n">d</span> <span class="o">=</span> <span class="n">feedparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">'http://feeds.feedburner.com/LaLibertadDeDesarrollarNoTienePrecio'</span><span class="p">)</span>
+</pre></div>
+<p>Se muestra el t&iacute;tulo del blog:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="p">[</span><span class="s1">'feed'</span><span class="p">][</span><span class="s1">'title'</span><span class="p">]</span>
+
+<span class="sa">u</span><span class="s1">'La libertad de desarrollar no tiene  precio...'</span>
+</pre></div>
+<p>Otra forma de obtener el t&iacute;tulo del blog:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">title</span>
+
+<span class="sa">u</span><span class="s1">'La libertad de desarrollar no tiene  precio...'</span>
+</pre></div>
+<p>Enlace del blog:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">link</span>
+
+<span class="sa">u</span><span class="s1">'http://blog.crespo.org.ve/'</span>
+</pre></div>
+<p>Descripci&oacute;n del blog:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">description</span>
+
+<span class="sa">u</span><span class="s1">'Blog dedicado al Software Libre en especial Linux Debian, Android y FreeBSD, a la programaci</span><span class="se">\xf3</span><span class="s1">n en python con gtk, qt y en Android.'</span>
+</pre></div>
+<p>Elementos del diccionario:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+<span class="p">[</span><span class="s1">'feed'</span><span class="p">,</span> <span class="s1">'status'</span><span class="p">,</span> <span class="s1">'updated'</span><span class="p">,</span> <span class="s1">'updated_parsed'</span><span class="p">,</span> <span class="s1">'encoding'</span><span class="p">,</span> <span class="s1">'bozo'</span><span class="p">,</span> <span class="s1">'headers'</span><span class="p">,</span> <span class="s1">'etag'</span><span class="p">,</span> <span class="s1">'href'</span><span class="p">,</span> <span class="s1">'version'</span><span class="p">,</span> <span class="s1">'entries'</span><span class="p">,</span> <span class="s1">'namespaces'</span><span class="p">]</span>
+</pre></div>
+<p>Para obtener el author del blog, se ejecuta author en feed:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">author</span>
+
+<span class="sa">u</span><span class="s1">'Ernesto Crespo (noreply@blogger.com)'</span>
+</pre></div>
+<p>La codificaci&oacute;n del texto del blog es UTF-8:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">encoding</span>
+
+<span class="sa">u</span><span class="s1">'UTF-8'</span>
+</pre></div>
+<p>Estatus:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">status</span>
+
+<span class="mi">200</span>
+</pre></div>
+<p>Actualizaci&oacute;n:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">updated</span>
+
+<span class="s1">'Sun, 19 Jan 2014 00:03:47 GMT'</span>
+</pre></div>
+<p>En este caso devuelve la hora pero la informaci&oacute;n separada:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">updated_parsed</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">struct_time</span><span class="p">(</span><span class="n">tm_year</span><span class="o">=</span><span class="mi">2014</span><span class="p">,</span> <span class="n">tm_mon</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tm_mday</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">tm_hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tm_min</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">tm_sec</span><span class="o">=</span><span class="mi">47</span><span class="p">,</span> <span class="n">tm_wday</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">tm_yday</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">tm_isdst</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+<p>Encabezados del blog:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">headers</span>
+
+<span class="p">{</span><span class="s1">'alternate-protocol'</span><span class="p">:</span> <span class="s1">'80:quic'</span><span class="p">,</span> <span class="s1">'x-xss-protection'</span><span class="p">:</span> <span class="s1">'1; mode=block'</span><span class="p">,</span> <span class="s1">'x-content-type-options'</span><span class="p">:</span> <span class="s1">'nosniff'</span><span class="p">,</span> <span class="s1">'expires'</span><span class="p">:</span> <span class="s1">'Sun, 19 Jan 2014 01:01:50 GMT'</span><span class="p">,</span> <span class="s1">'server'</span><span class="p">:</span> <span class="s1">'GSE'</span><span class="p">,</span> <span class="s1">'last-modified'</span><span class="p">:</span> <span class="s1">'Sun, 19 Jan 2014 00:03:47 GMT'</span><span class="p">,</span> <span class="s1">'connection'</span><span class="p">:</span> <span class="s1">'close'</span><span class="p">,</span> <span class="s1">'etag'</span><span class="p">:</span> <span class="s1">'hSh9ZbFEawbSc3BqlNVkqha27os'</span><span class="p">,</span> <span class="s1">'cache-control'</span><span class="p">:</span> <span class="s1">'private, max-age=0'</span><span class="p">,</span> <span class="s1">'date'</span><span class="p">:</span> <span class="s1">'Sun, 19 Jan 2014 01:01:50 GMT'</span><span class="p">,</span> <span class="s1">'content-type'</span><span class="p">:</span> <span class="s1">'text/xml; charset=UTF-8'</span><span class="p">}</span>
+</pre></div>
+<p>Enlace:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">href</span>
+
+<span class="sa">u</span><span class="s1">'http://feeds.feedburner.com/LaLibertadDeDesarrollarNoTienePrecio'</span>
+</pre></div>
+<p>Tipo de RSS (Atom1.0):</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">version</span>
+
+<span class="sa">u</span><span class="s1">'atom10'</span>
+</pre></div>
+<p>Cantidad de entradas:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>
+
+<span class="mi">25</span>
+</pre></div>
+<p>Si se desea obtener el t&iacute;tulo de la &uacute;ltima entrada en el blog:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span>
+
+<span class="sa">u</span><span class="s1">'Webscraping con Python Mechanize y BeautifulSoup4'</span>
+</pre></div>
+<p>Si se desea ver el contenido de la &uacute;ltima entrada ( en html) :</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="o">.....</span>
+
+<span class="s1">'guidislink'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s1">'published'</span><span class="p">:</span> <span class="sa">u</span><span class="s1">'2013-10-29T03:30:00.000-04:30'</span><span class="p">,</span> <span class="sa">u</span><span class="s1">'thr_total'</span><span class="p">:</span> <span class="sa">u</span><span class="s1">'0'</span><span class="p">}</span>
+</pre></div>
+<p>Devuelve un diccionario con dentro c&oacute;digo html  e informaci&oacute;n adicional.</p>
+<p>Para obtener el link del &uacute;ltimo art&iacute;culo:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">link</span>
+
+<span class="sa">u</span><span class="s1">'http://feedproxy.google.com/~r/LaLibertadDeDesarrollarNoTienePrecio/~3/A9jUi9ATI2g/webscraping-con-python-mechanize-y.html'</span>
+</pre></div>
+<p>La fecha de publicaci&oacute;n del &uacute;ltimo art&iacute;culo:  </p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">published</span>
+
+<span class="sa">u</span><span class="s1">'2013-10-29T03:30:00.000-04:30'</span>
+</pre></div>
+<p>El id del &uacute;ltimo art&iacute;culo:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+
+<span class="sa">u</span><span class="s1">'tag:blogger.com,1999:blog-882744969176160062.post-8013337259867824164'</span>
+</pre></div>
+<p>Si se desea listar los &uacute;ltimos 25 art&iacute;culos con su t&iacute;tulo y enlace se ejecuta un ciclo:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span>
+
+<span class="o">...</span>     <span class="k">print</span> <span class="n">post</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s2">": "</span> <span class="o">+</span> <span class="n">post</span><span class="o">.</span><span class="n">link</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+
+<span class="o">...</span> 
+
+<span class="n">Webscraping</span> <span class="n">con</span> <span class="n">Python</span> <span class="n">Mechanize</span> <span class="n">y</span> <span class="n">BeautifulSoup4</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">A9jUi9ATI2g</span><span class="o">/</span><span class="n">webscraping</span><span class="o">-</span><span class="n">con</span><span class="o">-</span><span class="n">python</span><span class="o">-</span><span class="n">mechanize</span><span class="o">-</span><span class="n">y</span><span class="o">.</span><span class="n">html</span>
+
+
+<span class="n">Extracci&oacute;n</span> <span class="n">de</span> <span class="n">datos</span> <span class="n">con</span> <span class="n">Scraperwiki</span> <span class="n">y</span> <span class="n">Python</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">UbQD5y9jbr0</span><span class="o">/</span><span class="n">extraccion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">datos</span><span class="o">-</span><span class="n">con</span><span class="o">-</span><span class="n">scraperwiki</span><span class="o">-</span><span class="n">y</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Extracci&oacute;n</span> <span class="n">de</span> <span class="n">datos</span> <span class="n">de</span> <span class="n">p&aacute;gina</span> <span class="n">web</span> <span class="n">con</span> <span class="n">pyquery</span> <span class="n">y</span> <span class="n">Python</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="mi">1</span><span class="n">QbC7CmSqpk</span><span class="o">/</span><span class="n">extraccion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">datos</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">pagina</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">con</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Extracci&oacute;n</span> <span class="n">de</span> <span class="n">datos</span> <span class="n">de</span> <span class="n">p&aacute;ginas</span> <span class="n">web</span> <span class="n">con</span> <span class="n">Scrapemark</span> <span class="n">y</span> <span class="n">Python</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">g2iUGraxW0M</span><span class="o">/</span><span class="n">extraccion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">datos</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">paginas</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">con</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Extracci&oacute;n</span> <span class="n">de</span> <span class="n">datos</span> <span class="n">en</span> <span class="n">p&aacute;ginas</span> <span class="n">web</span> <span class="n">con</span> <span class="n">Webscraping</span> <span class="n">y</span> <span class="n">Python</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">W9NyMTnRYok</span><span class="o">/</span><span class="n">extraccion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">datos</span><span class="o">-</span><span class="n">en</span><span class="o">-</span><span class="n">paginas</span><span class="o">-</span><span class="n">web</span><span class="o">-</span><span class="n">con</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Webscraping</span> <span class="n">o</span> <span class="n">extracci&oacute;n</span> <span class="n">de</span> <span class="n">datos</span> <span class="n">de</span> <span class="n">p&aacute;ginas</span> <span class="n">web</span> <span class="n">con</span> <span class="n">BeautifulSoup4</span> <span class="n">y</span> <span class="n">Python</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">xFr0x9bSo7E</span><span class="o">/</span><span class="n">webscraping</span><span class="o">-</span><span class="n">o</span><span class="o">-</span><span class="n">extraccion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">datos</span><span class="o">-</span><span class="n">de</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Un</span> <span class="n">introducci&oacute;n</span> <span class="n">a</span> <span class="n">Beautiful</span> <span class="n">Soup</span> <span class="mi">4</span> <span class="n">en</span> <span class="n">Python</span><span class="o">.</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">_7MGtsSCnPg</span><span class="o">/</span><span class="n">un</span><span class="o">-</span><span class="n">introduccion</span><span class="o">-</span><span class="n">beautiful</span><span class="o">-</span><span class="n">soup</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">en</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Obtener</span> <span class="n">informaci&oacute;n</span> <span class="n">de</span> <span class="n">metadatos</span> <span class="n">EXIF</span> <span class="n">de</span> <span class="n">una</span> <span class="n">imagen</span> <span class="n">con</span> <span class="n">Python</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="mi">8</span><span class="n">U6SjV9RS</span><span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="n">obtener</span><span class="o">-</span><span class="n">informacion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">metadatos</span><span class="o">-</span><span class="n">exif</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Mostrar</span> <span class="n">tweets</span> <span class="n">en</span> <span class="n">tiempo</span> <span class="n">real</span> <span class="n">con</span> <span class="n">twython</span> <span class="n">y</span> <span class="n">el</span> <span class="n">API</span> <span class="n">Stream</span> <span class="n">de</span> <span class="n">Twitter</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">jdMIKN04gDs</span><span class="o">/</span><span class="n">mostrar</span><span class="o">-</span><span class="n">tweets</span><span class="o">-</span><span class="n">en</span><span class="o">-</span><span class="n">tiempo</span><span class="o">-</span><span class="n">real</span><span class="o">-</span><span class="n">con</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Descrubiendo</span> <span class="n">Trending</span> <span class="n">Topics</span> <span class="n">de</span> <span class="n">Twitter</span> <span class="n">con</span> <span class="n">twython</span> <span class="n">y</span> <span class="n">python</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">hfKN5Cat5Hw</span><span class="o">/</span><span class="n">descrubiendo</span><span class="o">-</span><span class="n">trending</span><span class="o">-</span><span class="n">topics</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">twitter</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Probando</span> <span class="n">la</span> <span class="n">librer&iacute;a</span> <span class="n">twython</span> <span class="n">para</span> <span class="n">twitter</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">qfv</span><span class="o">-</span><span class="n">BUMniFA</span><span class="o">/</span><span class="n">probando</span><span class="o">-</span><span class="n">la</span><span class="o">-</span><span class="n">libreria</span><span class="o">-</span><span class="n">twython</span><span class="o">-</span><span class="n">para</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Manejo</span> <span class="n">de</span> <span class="n">sesi&oacute;n</span> <span class="n">en</span> <span class="n">el</span> <span class="n">ORM</span> <span class="n">sqlalchemy</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">OjR1D7SxjGQ</span><span class="o">/</span><span class="n">manejo</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">sesion</span><span class="o">-</span><span class="n">en</span><span class="o">-</span><span class="n">el</span><span class="o">-</span><span class="n">orm</span><span class="o">-</span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Bajar</span> <span class="n">v&iacute;deos</span> <span class="n">de</span> <span class="n">youtube</span> <span class="n">desde</span> <span class="n">Python</span> <span class="n">con</span> <span class="n">Pafy</span><span class="o">.</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">IV42QCqWZA8</span><span class="o">/</span><span class="n">bajar</span><span class="o">-</span><span class="n">videos</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">youtube</span><span class="o">-</span><span class="n">desde</span><span class="o">-</span><span class="n">python</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">D&iacute;a</span> <span class="n">Debian</span> <span class="n">en</span> <span class="n">Barquisimeto</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">fK8Q4DtjW8c</span><span class="o">/</span><span class="n">dia</span><span class="o">-</span><span class="n">debian</span><span class="o">-</span><span class="n">en</span><span class="o">-</span><span class="n">barquisimeto</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Nodos</span> <span class="n">m&aacute;s</span> <span class="n">influenyes</span> <span class="n">en</span> <span class="n">un</span> <span class="n">grafo</span> <span class="n">con</span> <span class="n">networkx</span><span class="o">.</span> <span class="n">Parte</span> <span class="mf">4.</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">knGC3Agy03M</span><span class="o">/</span><span class="n">nodos</span><span class="o">-</span><span class="n">mas</span><span class="o">-</span><span class="n">influenyes</span><span class="o">-</span><span class="n">en</span><span class="o">-</span><span class="n">un</span><span class="o">-</span><span class="n">grafo</span><span class="o">-</span><span class="n">con</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Mejorar</span> <span class="n">la</span> <span class="n">privacidad</span> <span class="n">en</span> <span class="n">celulares</span> <span class="n">y</span> <span class="n">tabletas</span> <span class="n">con</span> <span class="n">Android</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">WHiecOQggP4</span><span class="o">/</span><span class="n">mejorar</span><span class="o">-</span><span class="n">la</span><span class="o">-</span><span class="n">privacidad</span><span class="o">-</span><span class="n">en</span><span class="o">-</span><span class="n">celulares</span><span class="o">-</span><span class="n">y</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Graficar</span> <span class="n">la</span> <span class="n">tangente</span> <span class="n">de</span> <span class="n">una</span> <span class="n">curva</span> <span class="n">con</span> <span class="n">python</span><span class="p">,</span> <span class="n">numpy</span> <span class="n">y</span> <span class="n">pylab</span><span class="o">.</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">YB9pcnkSjPg</span><span class="o">/</span><span class="n">graficar</span><span class="o">-</span><span class="n">la</span><span class="o">-</span><span class="n">tangente</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">una</span><span class="o">-</span><span class="n">curva</span><span class="o">-</span><span class="n">con</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Utilizando</span> <span class="n">el</span> <span class="n">API</span> <span class="n">de</span> <span class="n">Stream</span> <span class="n">de</span> <span class="n">Twitter</span> <span class="n">con</span> <span class="n">Python</span> <span class="n">y</span> <span class="n">tweetstream</span><span class="o">.</span> <span class="n">Parte</span> <span class="mf">1.</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span><span class="n">XndFuAR</span><span class="o">-</span><span class="n">wQ</span><span class="o">/</span><span class="n">utilizando</span><span class="o">-</span><span class="n">el</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">stream</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">twitter</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">M&aacute;quinas</span> <span class="n">virtuales</span> <span class="n">con</span> <span class="n">kvm</span> <span class="n">y</span> <span class="n">qemu</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">hBovEziYwnM</span><span class="o">/</span><span class="n">maquinas</span><span class="o">-</span><span class="n">virtuales</span><span class="o">-</span><span class="n">con</span><span class="o">-</span><span class="n">kvm</span><span class="o">-</span><span class="n">y</span><span class="o">-</span><span class="n">qemu</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Descubriendo</span> <span class="n">trending</span> <span class="n">topics</span> <span class="n">de</span> <span class="n">twitter</span> <span class="n">con</span> <span class="n">python</span><span class="o">-</span><span class="n">twitter</span><span class="o">.</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">kAqQ7BRC_4w</span><span class="o">/</span><span class="n">descubriendo</span><span class="o">-</span><span class="n">trending</span><span class="o">-</span><span class="n">topics</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">twitter</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Descubrir</span> <span class="n">equipos</span> <span class="n">en</span> <span class="n">una</span> <span class="n">Red</span> <span class="n">Local</span> <span class="n">con</span> <span class="n">Python</span> <span class="p">(</span><span class="n">ipcalc</span> <span class="n">y</span> <span class="n">scapy</span><span class="p">)</span><span class="o">.</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">KSulfIHpfaA</span><span class="o">/</span><span class="n">descubrir</span><span class="o">-</span><span class="n">equipos</span><span class="o">-</span><span class="n">en</span><span class="o">-</span><span class="n">una</span><span class="o">-</span><span class="n">red</span><span class="o">-</span><span class="n">local</span><span class="o">-</span><span class="n">con</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Resoluci&oacute;n</span> <span class="n">de</span> <span class="n">sistemas</span> <span class="n">de</span> <span class="n">ecuaciones</span> <span class="n">lineales</span> <span class="n">por</span> <span class="n">descomposi&oacute;n</span> <span class="n">QR</span> <span class="n">usando</span> <span class="n">Numpy</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">KJ6mmAemwzk</span><span class="o">/</span><span class="n">resolucion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">sistemas</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">ecuaciones</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Creaci&oacute;n</span> <span class="n">de</span> <span class="n">gr&aacute;fico</span> <span class="n">de</span> <span class="n">burbujas</span> <span class="n">con</span> <span class="n">matplotlib</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">Lu7ps2Z</span><span class="o">-</span><span class="n">zQI</span><span class="o">/</span><span class="n">creacion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">grafico</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">burbujas</span><span class="o">-</span><span class="n">con</span><span class="o">.</span><span class="n">html</span>
+
+
+
+<span class="n">Manejar</span> <span class="n">informaci&oacute;n</span> <span class="n">de</span> <span class="n">un</span> <span class="n">archivo</span> <span class="n">csv</span> <span class="n">con</span> <span class="n">csvkit</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="mi">6</span><span class="n">opCWEx9RoU</span><span class="o">/</span><span class="n">manejar</span><span class="o">-</span><span class="n">informacion</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">un</span><span class="o">-</span><span class="n">archivo</span><span class="o">-</span><span class="n">csv</span><span class="o">.</span><span class="n">html</span>
+
+
+<span class="n">Teorema</span> <span class="n">de</span> <span class="n">muestreo</span> <span class="n">explicado</span> <span class="n">con</span> <span class="n">numpy</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">feedproxy</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span><span class="o">/~</span><span class="n">r</span><span class="o">/</span><span class="n">LaLibertadDeDesarrollarNoTienePrecio</span><span class="o">/~</span><span class="mi">3</span><span class="o">/</span><span class="n">VoY_nZzRtwY</span><span class="o">/</span><span class="n">teorema</span><span class="o">-</span><span class="n">de</span><span class="o">-</span><span class="n">muestreo</span><span class="o">-</span><span class="n">explicado</span><span class="o">-</span><span class="n">con</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+<p>De est&aacute; forma se puede acceder con python al RSS de blogs.
+En pr&oacute;ximo art&iacute;culo se buscar&aacute; recortar los urls desde python.</p>
+<h2 id="_1"></h2>
+<p>&iexcl;Haz tu donativo!
+Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+direcci&oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el c&oacute;digo QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"/></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+    </p>
+  </div>
+
+
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/webscraping-con-python-mechanize-y-beautifulsoup4.html">Webscraping con Python Mechanize y BeautifulSoup4</a></li>
+      <li><a href="https://ecrespo.github.io/extraccion-de-datos-de-pagina-web-con-pyquery-y-python.html">Extracción de datos de página web con pyquery y Python</a></li>
+      <li><a href="https://ecrespo.github.io/extraccion-de-datos-de-paginas-web-con-scrapemark-y-python.html">Extracción de datos de páginas web con Scrapemark y Python</a></li>
+      <li><a href="https://ecrespo.github.io/extraccion-de-datos-en-paginas-web-con-webscraping-y-python.html">Extracción de datos en páginas web con Webscraping y Python</a></li>
+      <li><a href="https://ecrespo.github.io/webscraping-o-extraccion-de-datos-de-paginas-web-con-beautifulsoup4-y-python.html">Webscraping o extracción de datos de páginas web con BeautifulSoup4 y Python</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

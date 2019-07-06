@@ -44,12 +44,12 @@
     <meta name="msapplication-TileColor" content="#333333">
 
 <meta name="author" content="Ernesto Crespo" />
-<meta name="description" content="Este artículo se basa en el siguiente artículo en inglés. La idea es crear un proceso demonio de Linux con Python. Para ello se requerirá los 2 siguientes librerías de python: Python-daemon Python-lockfile A lo debian se usa el comando apt-get: #apt-get install python-daemon python-lockfile A lo python se ejecuta …" />
+<meta name="description" content="Este artículo se basa en el siguiente artículo en inglés. La idea es crear un proceso demonio de Linux con Python. Para ello se requerirá los 2 siguientes librerías de python: Python-daemon Python-lockfile A lo debian se usa el comando apt-get: ``` apt-get install python-daemon python-lockfile A lo python se ejecuta …" />
 <meta name="keywords" content="Canaima, Debian, Fedora, General, Linux, Python, Ubuntu, Python-daemon, Python-lockfile">
 
 <meta property="og:site_name" content="Página de Seraph"/>
 <meta property="og:title" content="Crear un demonio de Linux con Python"/>
-<meta property="og:description" content="Este artículo se basa en el siguiente artículo en inglés. La idea es crear un proceso demonio de Linux con Python. Para ello se requerirá los 2 siguientes librerías de python: Python-daemon Python-lockfile A lo debian se usa el comando apt-get: #apt-get install python-daemon python-lockfile A lo python se ejecuta …"/>
+<meta property="og:description" content="Este artículo se basa en el siguiente artículo en inglés. La idea es crear un proceso demonio de Linux con Python. Para ello se requerirá los 2 siguientes librerías de python: Python-daemon Python-lockfile A lo debian se usa el comando apt-get: ``` apt-get install python-daemon python-lockfile A lo python se ejecuta …"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://ecrespo.github.io/crear-un-demonio-de-linux-con-python.html"/>
 <meta property="og:type" content="article"/>
@@ -176,179 +176,116 @@ Para ello se requerir&aacute; los 2 siguientes librer&iacute;as de python:</p>
 <li><code>Python-daemon</code></li>
 <li><code>Python-lockfile</code></li>
 </ul>
-<p>A lo debian se usa el comando <code>apt-get</code>:</p>
-<div class="highlight"><pre><span></span>#apt-get install python-daemon python-lockfile
-</pre></div>
-<p>A lo python se ejecuta el comando pip:</p>
-<div class="highlight"><pre><span></span><span class="c1">#pip install python-daemon lockfile</span>
-</pre></div>
-<p>A continuaci&oacute;n se muestra el archivo <code>demonioprueba.py</code> que se colocar&aacute; en el directorio <code>/usr/share/demonioprueba/</code>.</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<p>A lo debian se usa el comando <code>apt-get</code>:
+```</p>
+<h1 id="apt-get install python-daemon python-lockfile">apt-get install python-daemon python-lockfile</h1>
+<p><code>A lo python se ejecuta el comando pip:</code>python</p>
+<h1 id="pip install python-daemon lockfile">pip install python-daemon lockfile</h1>
+<p><code>``
+A continuaci&oacute;n se muestra el archivo</code>demonioprueba.py<code>que se colocar&aacute; en el directorio</code>/usr/share/demonioprueba/`.</p>
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="libreria estandar loggin y time">libreria est&aacute;ndar loggin y time</h1>
+<p>import logging</p>
+<p>import time</p>
+<h1 id="de python-daemon import runner">de python-daemon import runner</h1>
+<p>from daemon import runner</p>
+<p>class App():</p>
+<pre><code>def __init__(self):
 
 
-<span class="c1"># -*- coding: utf-8 -*-</span>
+    #Se define unos path est&aacute;ndar en linux.
 
 
+    self.stdin_path = '/dev/null'
 
 
+    self.stdout_path = '/dev/tty'
 
-<span class="c1">#libreria est&aacute;ndar loggin y time</span>
 
+    self.stderr_path = '/dev/tty'
 
-<span class="kn">import</span> <span class="nn">logging</span>
 
+    #Se define la ruta del archivo pid del demonio.
 
-<span class="kn">import</span> <span class="nn">time</span>
 
+    self.pidfile_path =  '/var/run/demonioprueba/demonioprueba.pid'
 
 
+    self.pidfile_timeout = 5
 
 
-<span class="c1">#de python-daemon import runner</span>
 
 
-<span class="kn">from</span> <span class="nn">daemon</span> <span class="kn">import</span> <span class="n">runner</span>
 
+def run(self):
 
 
+    i = 0
 
 
-<span class="k">class</span> <span class="nc">App</span><span class="p">():</span>
+    while True:
 
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        #El c&oacute;digo principal va ac&aacute;
 
 
-        <span class="c1">#Se define unos path est&aacute;ndar en linux.</span>
+        i += 1
 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stdin_path</span> <span class="o">=</span> <span class="s1">'/dev/null'</span>
+        #Diferentes niveles de registro de bitacora
 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stdout_path</span> <span class="o">=</span> <span class="s1">'/dev/tty'</span>
+        logger.debug("Debug message %s" %i)
 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stderr_path</span> <span class="o">=</span> <span class="s1">'/dev/tty'</span>
+        logger.info("Info message %s" %i)
 
 
-        <span class="c1">#Se define la ruta del archivo pid del demonio.</span>
+        logger.warn("Warning message %s" %i)
 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">pidfile_path</span> <span class="o">=</span>  <span class="s1">'/var/run/demonioprueba/demonioprueba.pid'</span>
+        logger.error("Error message %s" %i)
 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">pidfile_timeout</span> <span class="o">=</span> <span class="mi">5</span>
-
-
-
-
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-
-
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
-
-            <span class="c1">#El c&oacute;digo principal va ac&aacute;</span>
-
-
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-
-
-            <span class="c1">#Diferentes niveles de registro de bitacora</span>
-
-
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Debug message </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span>
-
-
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Info message </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span>
-
-
-            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Warning message </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span>
-
-
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error message </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span>
-
-
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-
-
-
-
-<span class="c1">#Se crea la instancia de la clase</span>
-
-
-<span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
-
-
-<span class="c1">#define la instancia de la clase logging para generar la bitacora</span>
-
-
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"demonioprueba log"</span><span class="p">)</span>
-
-
-<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-
-
-<span class="c1">#Se define el forma del log</span>
-
-
-<span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">"</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(name)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">"</span><span class="p">)</span>
-
-
-<span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="s2">"/var/log/demonioprueba/demoniopruebas.log"</span><span class="p">)</span>
-
-
-<span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
-
-
-<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
-
-
-
-
-
-<span class="c1">#Se ejecuta el demonio llamando al objeto app</span>
-
-
-<span class="n">daemon_runner</span> <span class="o">=</span> <span class="n">runner</span><span class="o">.</span><span class="n">DaemonRunner</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
-
-
-<span class="c1">#Esto evita que el archivo log no se cierre durante la ejecuci&oacute;n del demonio</span>
-
-
-<span class="n">daemon_runner</span><span class="o">.</span><span class="n">daemon_context</span><span class="o">.</span><span class="n">files_preserve</span><span class="o">=</span><span class="p">[</span><span class="n">handler</span><span class="o">.</span><span class="n">stream</span><span class="p">]</span>
-
-
-<span class="c1">#Ejecuta el m&eacute;todo run del objeto app</span>
-
-
-<span class="n">daemon_runner</span><span class="o">.</span><span class="n">do_action</span><span class="p">()</span>
-</pre></div>
+        time.sleep(1)
+</code></pre>
+<h1 id="se crea la instancia de la clase">Se crea la instancia de la clase</h1>
+<p>app = App()</p>
+<h1 id="define la instancia de la clase logging para generar la bitacora">define la instancia de la clase logging para generar la bitacora</h1>
+<p>logger = logging.getLogger("demonioprueba log")</p>
+<p>logger.setLevel(logging.INFO)</p>
+<h1 id="se define el forma del log">Se define el forma del log</h1>
+<p>formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")</p>
+<p>handler = logging.FileHandler("/var/log/demonioprueba/demoniopruebas.log")</p>
+<p>handler.setFormatter(formatter)</p>
+<p>logger.addHandler(handler)</p>
+<h1 id="se ejecuta el demonio llamando al objeto app">Se ejecuta el demonio llamando al objeto app</h1>
+<p>daemon_runner = runner.DaemonRunner(app)</p>
+<h1 id="esto evita que el archivo log no se cierre durante la ejecucion del demonio">Esto evita que el archivo log no se cierre durante la ejecuci&oacute;n del demonio</h1>
+<p>daemon_runner.daemon_context.files_preserve=[handler.stream]</p>
+<h1 id="ejecuta el metodo run del objeto app">Ejecuta el m&eacute;todo run del objeto app</h1>
+<p>daemon_runner.do_action()</p>
+<p>```</p>
 <p>El archivo se salva en la ruta <code>/usr/share/demonioprueba/demonioprueba.py</code>.
-Se crean los directorios <code>/var/log/demonioprueba</code> y <code>/var/run/demonioprueba/</code>:</p>
-<div class="highlight"><pre><span></span>#mkdir -p /var/log/demonioprueba
-#mkdir -p /var/run/demonioprueba
-</pre></div>
-<p>Se puede probar el demonio al ejecutar el siguiente comando:</p>
-<div class="highlight"><pre><span></span><span class="n">python</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">demonioprueba</span><span class="o">/</span><span class="n">demonioprueba</span><span class="o">.</span><span class="n">py</span> <span class="n">start</span>
-<span class="n">root</span><span class="nd">@heimdal</span><span class="p">:</span><span class="o">~</span><span class="c1"># started with pid 5915</span>
-</pre></div>
-<p>Se muestra que el demonio se inicio con el pid 5915.
-Al ejecutar <code>ps aux  | grep demonioprueba.py</code> se ver&aacute; el proceso en ejecuci&oacute;n:  </p>
-<div class="highlight"><pre><span></span>root@heimdal:~# ps aux | grep demonioprueba.py
+Se crean los directorios <code>/var/log/demonioprueba</code> y <code>/var/run/demonioprueba/</code>:
+```</p>
+<h1 id="mkdir -p /var/log/demonioprueba">mkdir -p /var/log/demonioprueba</h1>
+<h1 id="mkdir -p /var/run/demonioprueba">mkdir -p /var/run/demonioprueba</h1>
+<p><code>Se puede probar el demonio al ejecutar el siguiente comando:</code>python
+python/usr/share/demonioprueba/demonioprueba.py start
+root@heimdal:~# started with pid 5915
+<code>Se muestra que el demonio se inicio con el pid 5915.
+Al ejecutar `ps aux  | grep demonioprueba.py` se ver&aacute; el proceso en ejecuci&oacute;n:</code>
+root@heimdal:~# ps aux | grep demonioprueba.py
 root      5915  0.0  0.1  38088  6656 ?        S    17:00   0:00 python /usr/share/demonioprueba/demonioprueba.py start
-</pre></div>
-<p>Como se ve el proceso se inicio con el pid 5915. </p>
-<p>Se puede ver la bitacora al ejecutar:</p>
-<div class="highlight"><pre><span></span>tail -f /var/log/demonioprueba/demonioprueba.log
-</pre></div>
-<p>A continuaci&oacute;n se muestra una parte del log:</p>
-<div class="highlight"><pre><span></span>2014-02-02 17:01:25,516 - demonioprueba log - WARNING - Warning message 80
+```
+Como se ve el proceso se inicio con el pid 5915. </p>
+<p>Se puede ver la bitacora al ejecutar:
+<code>tail -f /var/log/demonioprueba/demonioprueba.log</code>
+A continuaci&oacute;n se muestra una parte del log:
+<code>2014-02-02 17:01:25,516 - demonioprueba log - WARNING - Warning message 80
 2014-02-02 17:01:25,516 - demonioprueba log - ERROR - Error message 80
 2014-02-02 17:01:26,517 - demonioprueba log - INFO - Info message 81
 2014-02-02 17:01:26,517 - demonioprueba log - WARNING - Warning message 81
@@ -364,126 +301,83 @@ root      5915  0.0  0.1  38088  6656 ?        S    17:00   0:00 python /usr/sha
 2014-02-02 17:01:29,523 - demonioprueba log - ERROR - Error message 84
 2014-02-02 17:01:30,523 - demonioprueba log - INFO - Info message 85
 2014-02-02 17:01:30,524 - demonioprueba log - WARNING - Warning message 85
-2014-02-02 17:01:30,524 - demonioprueba log - ERROR - Error message 85
-</pre></div>
-<p>Se puede detener el demonio ejecutando:</p>
-<div class="highlight"><pre><span></span>root@heimdal:~# python /usr/share/demonioprueba/demonioprueba.py stop
-Terminating on signal 15
-</pre></div>
+2014-02-02 17:01:30,524 - demonioprueba log - ERROR - Error message 85</code>
+Se puede detener el demonio ejecutando:
+<code>root@heimdal:~# python /usr/share/demonioprueba/demonioprueba.py stop
+Terminating on signal 15</code></p>
 <p>Ahora se crear&aacute; el archivo init de demonio prueba ( salvar el archivo en <code>/etc/init.d/demonioprueba</code> ):</p>
-<p>A continuaci&oacute;n se muestra el script bash que se usa de plantilla como demonio init:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<p>A continuaci&oacute;n se muestra el script bash que se usa de plantilla como demonio init:
+```python</p>
+<h1 id="!/bin/bash">!/bin/bash</h1>
+<h1 id="copyright (c) 1996-2012 my company.">Copyright (c) 1996-2012 My Company.</h1>
+<h1 id="all rights reserved.">All rights reserved.</h1>
+<h1 id="_1"></h1>
+<h1 id="author: bob bobson, 2012">Author: Bob Bobson, 2012</h1>
+<h1 id="_2"></h1>
+<h1 id="please send feedback to bob@bob.com">Please send feedback to bob@bob.com</h1>
+<h1 id="_3"></h1>
+<h1 id="/etc/init.d/demonioprueba">/etc/init.d/demonioprueba</h1>
+<h1 id="_4"></h1>
+<h3 id="begin init info">BEGIN INIT INFO</h3>
+<h1 id="provides: demonioprueba_1">Provides: demonioprueba</h1>
+<h1 id="required-start:">Required-Start:</h1>
+<h1 id="should-start:">Should-Start:</h1>
+<h1 id="required-stop:">Required-Stop:</h1>
+<h1 id="should-stop:">Should-Stop:</h1>
+<h1 id="default-start: 3 5">Default-Start:  3 5</h1>
+<h1 id="default-stop: 0 1 2 6">Default-Stop:   0 1 2 6</h1>
+<h1 id="short-description: test daemon process">Short-Description: Test daemon process</h1>
+<h1 id="description: runs up the test daemon process">Description:    Runs up the test daemon process</h1>
+<h3 id="end init info">END INIT INFO</h3>
+<h1 id="activate the python virtual environment_1">Activate the python virtual environment</h1>
+<h1 id=". /path_to_virtualenv/activate">. /path_to_virtualenv/activate</h1>
+<p>case "$1" in</p>
+<p>start)</p>
+<pre><code>echo "Starting server"
 
-<span class="c1"># Copyright (c) 1996-2012 My Company.</span>
+# Start the daemon
 
-<span class="c1"># All rights reserved.</span>
+python /usr/share/demonioprueba/demonioprueba.py start
 
-<span class="c1">#</span>
+;;
+</code></pre>
+<p>stop)</p>
+<pre><code>echo "Stopping server"
 
-<span class="c1"># Author: Bob Bobson, 2012</span>
+# Stop the daemon
 
-<span class="c1">#</span>
+python /usr/share/demonioprueba/demonioprueba.py stop
 
-<span class="c1"># Please send feedback to bob@bob.com</span>
+;;
+</code></pre>
+<p>restart)</p>
+<pre><code>echo "Restarting server"
 
-<span class="c1">#</span>
+python /usr/share/demonioprueba/demonioprueba.py restart
 
-<span class="c1"># /etc/init.d/demonioprueba</span>
-
-<span class="c1">#</span>
-
-<span class="c1">### BEGIN INIT INFO</span>
-
-<span class="c1"># Provides: demonioprueba</span>
-
-<span class="c1"># Required-Start:</span>
-
-<span class="c1"># Should-Start:</span>
-
-<span class="c1"># Required-Stop:</span>
-
-<span class="c1"># Should-Stop:</span>
-
-<span class="c1"># Default-Start:  3 5</span>
-
-<span class="c1"># Default-Stop:   0 1 2 6</span>
-
-<span class="c1"># Short-Description: Test daemon process</span>
-
-<span class="c1"># Description:    Runs up the test daemon process</span>
-
-<span class="c1">### END INIT INFO</span>
-
-
-
-<span class="c1"># Activate the python virtual environment</span>
-
-<span class="c1">#    . /path_to_virtualenv/activate</span>
-
-
-
-<span class="n">case</span> <span class="s2">"$1"</span> <span class="ow">in</span>
-
-  <span class="n">start</span><span class="p">)</span>
-
-    <span class="n">echo</span> <span class="s2">"Starting server"</span>
-
-    <span class="c1"># Start the daemon</span>
-
-    <span class="n">python</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">demonioprueba</span><span class="o">/</span><span class="n">demonioprueba</span><span class="o">.</span><span class="n">py</span> <span class="n">start</span>
-
-    <span class="p">;;</span>
-
-  <span class="n">stop</span><span class="p">)</span>
-
-    <span class="n">echo</span> <span class="s2">"Stopping server"</span>
-
-    <span class="c1"># Stop the daemon</span>
-
-    <span class="n">python</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">demonioprueba</span><span class="o">/</span><span class="n">demonioprueba</span><span class="o">.</span><span class="n">py</span> <span class="n">stop</span>
-
-    <span class="p">;;</span>
-
-  <span class="n">restart</span><span class="p">)</span>
-
-    <span class="n">echo</span> <span class="s2">"Restarting server"</span>
-
-    <span class="n">python</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">demonioprueba</span><span class="o">/</span><span class="n">demonioprueba</span><span class="o">.</span><span class="n">py</span> <span class="n">restart</span>
-
-    <span class="p">;;</span>
-
-  <span class="o">*</span><span class="p">)</span>
+;;
+</code></pre>
+<p>*)</p>
+<pre><code># Refuse to do other stuff
 
 
-
-    <span class="c1"># Refuse to do other stuff</span>
-
-
-    <span class="n">echo</span> <span class="s2">"Usage: /etc/init.d/demonioprueba.sh {start|stop|restart}"</span>
+echo "Usage: /etc/init.d/demonioprueba.sh {start|stop|restart}"
 
 
-    <span class="nb">exit</span> <span class="mi">1</span>
+exit 1
 
 
-    <span class="p">;;</span>
-
-
-<span class="n">esac</span>
-
-
-
-
-
-<span class="nb">exit</span> <span class="mi">0</span>
-</pre></div>
-<p>Se le cambia el permiso al script:</p>
-<div class="highlight"><pre><span></span>chmod u+x demonioprueba.sh
-</pre></div>
-<p>Se habilita el script para la ejecuci&oacute;n autom&aacute;tica:</p>
-<div class="highlight"><pre><span></span>root@heimdal:/etc/init.d# insserv demonioprueba.sh
-</pre></div>
-<p>Ac&aacute; les dejo <a href="https://nanvel.name/weblog/python-unix-daemon/">un ejemplo parecido</a>.</p>
-<h2 id="_1"></h2>
+;;
+</code></pre>
+<p>esac</p>
+<p>exit 0</p>
+<p>```</p>
+<p>Se le cambia el permiso al script:
+<code>chmod u+x demonioprueba.sh</code>
+Se habilita el script para la ejecuci&oacute;n autom&aacute;tica:
+<code>root@heimdal:/etc/init.d# insserv demonioprueba.sh</code>
+Ac&aacute; les dejo <a href="https://nanvel.name/weblog/python-unix-daemon/">un ejemplo parecido</a>.</p>
+<h2 id="_5"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente

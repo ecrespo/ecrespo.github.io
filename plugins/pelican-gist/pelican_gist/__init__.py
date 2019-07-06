@@ -5,4 +5,5 @@ __author__ = 'Chris Streeter'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2018'
 
+
 from pelican_gist.plugin import register

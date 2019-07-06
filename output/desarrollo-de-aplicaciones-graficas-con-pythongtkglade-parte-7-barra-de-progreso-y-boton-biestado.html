@@ -168,123 +168,112 @@
 <p>En la figura se muestra el dise&ntilde;o de la aplicaci&oacute;n.</p>
 <p><img alt="Tutorial 7 Glade 1" src="./images/tutorialpythongtkglade7-1.png"/></p>
 <p>El c&oacute;digo se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1">#       sin ej6.py</span>
-<span class="c1">#       </span>
-<span class="c1">#       Copyright 2009 Ernesto Nadir Crespo Avila </span>
-<span class="c1">#       </span>
-<span class="c1">#       This program is free software; you can redistribute it and/or modify</span>
-<span class="c1">#       it under the terms of the GNU General Public License as published by</span>
-<span class="c1">#       the Free Software Foundation; either version 2 of the License, or</span>
-<span class="c1">#       (at your option) any later version.</span>
-<span class="c1">#       </span>
-<span class="c1">#       This program is distributed in the hope that it will be useful,</span>
-<span class="c1">#       but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c1">#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="c1">#       GNU General Public License for more details.</span>
-<span class="c1">#       </span>
-<span class="c1">#       You should have received a copy of the GNU General Public License</span>
-<span class="c1">#       along with this program; if not, write to the Free Software</span>
-<span class="c1">#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,</span>
-<span class="c1">#       MA 02110-1301, USA.</span>
-<span class="c1">#Importar los m&oacute;dulos gtk, time, threading, thread, gobject</span>
-<span class="kn">import</span> <span class="nn">gtk</span><span class="o">,</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">thread</span>
-<span class="kn">import</span> <span class="nn">gobject</span>
-<span class="c1">#Iniciando el hilo sin usarlo</span>
-<span class="n">gtk</span><span class="o">.</span><span class="n">gdk</span><span class="o">.</span><span class="n">threads_init</span><span class="p">()</span>
-
-
-
-<span class="c1">#La clase App hereda threading.Thread</span>
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-     <span class="c1">#M&eacute;todo constructor, asociando los widgets</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade_file</span> <span class="o">=</span> <span class="s2">"ej6.ui"</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">Builder</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">add_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">glade_file</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'window1'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">togglebutton1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'togglebutton1'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">button1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'button1'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progressbar1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'progressbar1'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">new_val</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rango</span> <span class="o">=</span><span class="mi">60</span>
-     <span class="c1">#Definiendo el valor inicial de la barra de proceso, definiendo los saltos en 0.1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progressbar1</span><span class="o">.</span><span class="n">set_fraction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_val</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">progressbar1</span><span class="o">.</span><span class="n">set_pulse_step</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window1</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"destroy"</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">on_window1_destroy</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">button1</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'clicked'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_button1_clicked</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">togglebutton1</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'toggled'</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">on_togglebutton1_toggled</span><span class="p">)</span>
-        <span class="c1">#Iniciando el hilo en el constructor</span>
-     <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window1</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
-
-
-
-
-    <span class="k">def</span> <span class="nf">__iteracion__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-     <span class="c1">#Iteraci&oacute;n en segundos cambiando el valor en la barra de progreso.</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rango</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">togglebutton1</span><span class="o">.</span><span class="n">get_active</span><span class="p">()</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">new_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">progressbar1</span><span class="o">.</span><span class="n">get_fraction</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.01</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_val</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">new_val</span> <span class="o">=</span> <span class="mf">0.0</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">togglebutton1</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
-                    <span class="k">break</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_val</span><span class="o">*</span><span class="mi">100</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">progressbar1</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">progressbar1</span><span class="o">.</span><span class="n">set_fraction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_val</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span>
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="sin ej6.py">sin ej6.py</h1>
+<h1 id="_1"></h1>
+<h1 id="copyright 2009 ernesto nadir crespo avila">Copyright 2009 Ernesto Nadir Crespo Avila</h1>
+<h1 id="_2"></h1>
+<h1 id="this program is free software; you can redistribute it and/or modify">This program is free software; you can redistribute it and/or modify</h1>
+<h1 id="it under the terms of the gnu general public license as published by">it under the terms of the GNU General Public License as published by</h1>
+<h1 id="the free software foundation; either version 2 of the license, or">the Free Software Foundation; either version 2 of the License, or</h1>
+<h1 id="(at your option) any later version.">(at your option) any later version.</h1>
+<h1 id="_3"></h1>
+<h1 id="this program is distributed in the hope that it will be useful,">This program is distributed in the hope that it will be useful,</h1>
+<h1 id="but without any warranty; without even the implied warranty of">but WITHOUT ANY WARRANTY; without even the implied warranty of</h1>
+<h1 id="merchantability or fitness for a particular purpose. see the">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</h1>
+<h1 id="gnu general public license for more details.">GNU General Public License for more details.</h1>
+<h1 id="_4"></h1>
+<h1 id="you should have received a copy of the gnu general public license">You should have received a copy of the GNU General Public License</h1>
+<h1 id="along with this program; if not, write to the free software">along with this program; if not, write to the Free Software</h1>
+<h1 id="foundation, inc., 51 franklin street, fifth floor, boston,">Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,</h1>
+<h1 id="ma 02110-1301, usa.">MA 02110-1301, USA.</h1>
+<h1 id="importar los modulos gtk, time, threading, thread, gobject">Importar los m&oacute;dulos gtk, time, threading, thread, gobject</h1>
+<p>import gtk, time
+import threading
+import thread
+import gobject</p>
+<h1 id="iniciando el hilo sin usarlo">Iniciando el hilo sin usarlo</h1>
+<p>gtk.gdk.threads_init()</p>
+<h1 id="la clase app hereda threading.thread">La clase App hereda threading.Thread</h1>
+<p>class App(threading.Thread):
+    def <strong>init</strong>(self):
+     #M&eacute;todo constructor, asociando los widgets
+        self.glade_file = "ej6.ui"
+        self.glade = gtk.Builder()
+        self.glade.add_from_file(self.glade_file)
+        self.window1 = self.glade.get_object('window1')
+        self.togglebutton1 = self.glade.get_object('togglebutton1')
+        self.button1 = self.glade.get_object('button1')
+        self.progressbar1 = self.glade.get_object('progressbar1')
+        self.new_val = 0.0
+        self.rango =60
+     #Definiendo el valor inicial de la barra de proceso, definiendo los saltos en 0.1
+        self.progressbar1.set_fraction(self.new_val)
+        self.progressbar1.set_pulse_step(0.1)
+        self.window1.connect("destroy",self.on_window1_destroy)
+        self.button1.connect('clicked', self.on_button1_clicked)
+        self.togglebutton1.connect('toggled',self.on_togglebutton1_toggled)
+        #Iniciando el hilo en el constructor
+     threading.Thread.<strong>init</strong>(self)
+        self.window1.show_all()</p>
+<pre><code>def __iteracion__(self):
+ #Iteraci&oacute;n en segundos cambiando el valor en la barra de progreso.
+    for i in range(self.rango):
+        if self.togglebutton1.get_active() == True:
+            self.new_val = self.progressbar1.get_fraction() + 0.01
+            if self.new_val &gt; 1.0:
+                self.new_val = 0.0
+                self.togglebutton1.set_active(False)
+                break
+            else:
+                time.sleep(1)
+                self.x = self.new_val*100
+                self.progressbar1.set_text("%s" %self.x)
+                self.progressbar1.set_fraction(self.new_val)
+        else:
+            return
 
 
 
 
 
-    <span class="k">def</span> <span class="nf">on_togglebutton1_toggled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="c1">#Si cambia el evento en el boton biestado se inicia la iteraci&oacute;n entre los hilos.</span>
-        <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">togglebutton1</span><span class="o">.</span><span class="n">get_active</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rango</span> <span class="o">=</span> <span class="mi">100</span>
-        <span class="k">if</span> <span class="n">variable</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">lock</span> <span class="o">=</span>  <span class="n">thread</span><span class="o">.</span><span class="n">allocate_lock</span><span class="p">()</span>
-            <span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
-            <span class="n">thread</span><span class="o">.</span><span class="n">start_new_thread</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">__iteracion__</span><span class="p">,</span> <span class="p">())</span> 
-            <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-         <span class="c1">#Se detiene la barra de progreso</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">progressbar1</span><span class="o">.</span><span class="n">set_fraction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_val</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">progressbar1</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-            <span class="k">return</span>
+def on_togglebutton1_toggled(self,*args):
+ #Si cambia el evento en el boton biestado se inicia la iteraci&oacute;n entre los hilos.
+    variable = self.togglebutton1.get_active()
+    self.rango = 100
+    if variable == True:
+        lock =  thread.allocate_lock()
+        lock.acquire()
+        thread.start_new_thread( self.__iteracion__, ()) 
+        lock.release()
+    else:
+     #Se detiene la barra de progreso
+        self.progressbar1.set_fraction(self.new_val)
+        self.progressbar1.set_text("%s" %self.x)
+        return
 
 
 
 
-    <span class="k">def</span> <span class="nf">on_window1_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="c1">#Se cierra la aplicaci&oacute;n</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
+def on_window1_destroy(self,*args):
+ #Se cierra la aplicaci&oacute;n
+    gtk.main_quit()
 
-    <span class="k">def</span> <span class="nf">on_button1_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="c1">#Se cierra la aplicaci&oacute;n al darle clip al boton salir.</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
-
-
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-     <span class="c1">#Inicia la aplicaci&oacute;n</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+def on_button1_clicked(self,*args):
+ #Se cierra la aplicaci&oacute;n al darle clip al boton salir.
+    gtk.main_quit()
 
 
-
-
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-</pre></div>
+def main(self):
+ #Inicia la aplicaci&oacute;n
+    gtk.main()
+</code></pre>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    app = App()
+    app.main()</p>
+<p>```</p>
 <p>En la siguiente figura se muestra la aplicaci&oacute;n:</p>
 <p><img alt="Tutorial 7 Glade 2" src="./images/tutorialpythongtkglade7-2.png"/></p>
 <p>===</p>

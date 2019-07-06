@@ -171,134 +171,75 @@
 <p>La idea es que se tiene el emisor, quien env&iacute;a a los "workers" unos string que son procesados de distinta manera o de igual manera (una forma de crear escalabilidad). Luego que los "workers" procesan la informaci&oacute;n recibida del emisor se la pasan a resultado quien presenta la informaci&oacute;n en pantalla.</p>
 <p>La figura muestra el proceso ya explicado:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython6-1.png"/> </p>
-<p>El c&oacute;digo del emisor es el siguiente:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python</span>
-
-<span class="c1">#Se importa zeroMQ y random</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="kn">import</span> <span class="nn">random</span>
-
-<span class="c1">#Se crea la instancia del contexto</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se crea el socket con el argumento PUSH</span>
-
-<span class="n">envio</span> <span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
-
-<span class="c1">#Se asocia el socket a escuchar todas las IPs y el puerto 5557</span>
-
-<span class="n">envio</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://*:5557"</span><span class="p">)</span>
-
-<span class="c1">#se muestra que es necesario esperar que arranquen los workers</span>
-
-<span class="k">print</span> <span class="s2">"Hay que esperar que los workers se inicien"</span>
-
-<span class="c1">#Al dar enter se inicia el proceso de transmision</span>
-
-<span class="nb">raw_input</span><span class="p">()</span>
-
-<span class="k">print</span> <span class="s2">"Se inicia la transmision del trabajo..."</span>
-
-<span class="c1">#tupla de strings que se van a enviar</span>
-
-<span class="n">cadenas</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'hola'</span><span class="p">,</span> <span class="s1">'aloha'</span><span class="p">,</span><span class="s1">'hello'</span><span class="p">,</span><span class="s1">'buenas noches'</span><span class="p">,</span><span class="s1">'buenas tardes'</span><span class="p">,</span><span class="s1">'buenos dias'</span><span class="p">,</span><span class="s1">'bienvenido'</span><span class="p">]</span>
-
-<span class="c1">#Se crea un ciclo para recorrer la tupla</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cadenas</span><span class="p">)):</span>
-
- <span class="n">cadena</span> <span class="o">=</span> <span class="n">cadenas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-
- <span class="n">envio</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">cadena</span><span class="p">)</span>
-
- <span class="k">print</span> <span class="s2">"Enviando: {0}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cadena</span><span class="p">)</span>
-</pre></div>
-<p>El c&oacute;digo del worker es el siguiente:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python</span>
-
-<span class="c1">#Se importa ZeroMQ y sleep de time</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
-
-<span class="c1">#Se crea la instancia del contexto</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se define el Socket con argumento PULL</span>
-
-<span class="n">recepcion</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
-
-<span class="c1">#Se conecta el socket a localhost puerto 5557</span>
-
-<span class="c1">#Es el puerto donde origen envia con PUSH los datos</span>
-
-<span class="n">recepcion</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://localhost:5557"</span><span class="p">)</span>
-
-<span class="c1">#Se crea el socket de envio de los datos procesados con argumento PUSH</span>
-
-<span class="n">envio</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUSH</span><span class="p">)</span>
-
-<span class="c1">#Se conecta el socket a localhost y puerto 5558</span>
-
-<span class="n">envio</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://localhost:5558"</span><span class="p">)</span>
-
-<span class="c1">#Se genera un ciclo</span>
-
-<span class="c1">#donde se recive lo transmitido por origen</span>
-
-<span class="c1">#se procesa (se coloca en mayusculas)</span>
-
-<span class="c1">#se muestra en pantalla y se envia.</span>
-
-<span class="c1">#los ciclos tienen un retardo de 1 seg</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
- <span class="n">cadena</span> <span class="o">=</span> <span class="n">recepcion</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-
- <span class="k">print</span> <span class="s2">"Proceso:{0}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cadena</span><span class="p">)</span>
-
- <span class="n">envio</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">cadena</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
-
- <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="n">El</span> <span class="n">c&oacute;digo</span> <span class="n">de</span> <span class="n">resultado</span> <span class="n">es</span> <span class="n">el</span> <span class="n">siguiente</span><span class="p">:</span>
-
-<span class="c1">#!/usr/bin/python</span>
-
-<span class="c1">#Se importa ZeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea la instancia del contexto</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se crea el socket PULL que recibe los mensajes de los workers</span>
-
-<span class="n">recepcion</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">)</span>
-
-<span class="c1">#Se asocia el socket a escuchar todas las IPs en el puerto 5558</span>
-
-<span class="c1">#el puerto donde los workers envian los mensajes</span>
-
-<span class="n">recepcion</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://*:5558"</span><span class="p">)</span>
-
-<span class="c1">#Se inicia un ciclo donde se recibe los mensajes</span>
-
-<span class="c1">#de los workers y se muestra en pantalla</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
- <span class="n">mensaje</span> <span class="o">=</span> <span class="n">recepcion</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-
- <span class="k">print</span> <span class="s2">"Recibo: {0}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
-</pre></div>
+<p>El c&oacute;digo del emisor es el siguiente:
+```python</p>
+<h1 id="!/usr/bin/python">!/usr/bin/python</h1>
+<h1 id="se importa zeromq y random">Se importa zeroMQ y random</h1>
+<p>import zmq</p>
+<p>import random</p>
+<h1 id="se crea la instancia del contexto">Se crea la instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket con el argumento push">Se crea el socket con el argumento PUSH</h1>
+<p>envio =context.socket(zmq.PUSH)</p>
+<h1 id="se asocia el socket a escuchar todas las ips y el puerto 5557">Se asocia el socket a escuchar todas las IPs y el puerto 5557</h1>
+<p>envio.bind("tcp://*:5557")</p>
+<h1 id="se muestra que es necesario esperar que arranquen los workers">se muestra que es necesario esperar que arranquen los workers</h1>
+<p>print "Hay que esperar que los workers se inicien"</p>
+<h1 id="al dar enter se inicia el proceso de transmision">Al dar enter se inicia el proceso de transmision</h1>
+<p>raw_input()</p>
+<p>print "Se inicia la transmision del trabajo..."</p>
+<h1 id="tupla de strings que se van a enviar">tupla de strings que se van a enviar</h1>
+<p>cadenas = ['hola', 'aloha','hello','buenas noches','buenas tardes','buenos dias','bienvenido']</p>
+<h1 id="se crea un ciclo para recorrer la tupla">Se crea un ciclo para recorrer la tupla</h1>
+<p>for i in range(len(cadenas)):</p>
+<p>cadena = cadenas[i]</p>
+<p>envio.send(cadena)</p>
+<p>print "Enviando: {0}".format(cadena)</p>
+<p>```</p>
+<p>El c&oacute;digo del worker es el siguiente:
+```python</p>
+<h1 id="!/usr/bin/python_1">!/usr/bin/python</h1>
+<h1 id="se importa zeromq y sleep de time">Se importa ZeroMQ y sleep de time</h1>
+<p>import zmq</p>
+<p>from time import sleep</p>
+<h1 id="se crea la instancia del contexto_1">Se crea la instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se define el socket con argumento pull">Se define el Socket con argumento PULL</h1>
+<p>recepcion = context.socket(zmq.PULL)</p>
+<h1 id="se conecta el socket a localhost puerto 5557">Se conecta el socket a localhost puerto 5557</h1>
+<h1 id="es el puerto donde origen envia con push los datos">Es el puerto donde origen envia con PUSH los datos</h1>
+<p>recepcion.connect("tcp://localhost:5557")</p>
+<h1 id="se crea el socket de envio de los datos procesados con argumento push">Se crea el socket de envio de los datos procesados con argumento PUSH</h1>
+<p>envio = context.socket(zmq.PUSH)</p>
+<h1 id="se conecta el socket a localhost y puerto 5558">Se conecta el socket a localhost y puerto 5558</h1>
+<p>envio.connect("tcp://localhost:5558")</p>
+<h1 id="se genera un ciclo">Se genera un ciclo</h1>
+<h1 id="donde se recive lo transmitido por origen">donde se recive lo transmitido por origen</h1>
+<h1 id="se procesa (se coloca en mayusculas)">se procesa (se coloca en mayusculas)</h1>
+<h1 id="se muestra en pantalla y se envia.">se muestra en pantalla y se envia.</h1>
+<h1 id="los ciclos tienen un retardo de 1 seg">los ciclos tienen un retardo de 1 seg</h1>
+<p>while True:</p>
+<p>cadena = recepcion.recv()</p>
+<p>print "Proceso:{0}".format(cadena)</p>
+<p>envio.send(cadena.upper())</p>
+<p>sleep(1)</p>
+<p>El c&oacute;digo de resultado es el siguiente:</p>
+<h1 id="!/usr/bin/python_2">!/usr/bin/python</h1>
+<h1 id="se importa zeromq">Se importa ZeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia del contexto_2">Se crea la instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket pull que recibe los mensajes de los workers">Se crea el socket PULL que recibe los mensajes de los workers</h1>
+<p>recepcion = context.socket(zmq.PULL)</p>
+<h1 id="se asocia el socket a escuchar todas las ips en el puerto 5558">Se asocia el socket a escuchar todas las IPs en el puerto 5558</h1>
+<h1 id="el puerto donde los workers envian los mensajes">el puerto donde los workers envian los mensajes</h1>
+<p>recepcion.bind("tcp://*:5558")</p>
+<h1 id="se inicia un ciclo donde se recibe los mensajes">Se inicia un ciclo donde se recibe los mensajes</h1>
+<h1 id="de los workers y se muestra en pantalla">de los workers y se muestra en pantalla</h1>
+<p>while True:</p>
+<p>mensaje = recepcion.recv()</p>
+<p>print "Recibo: {0}".format(mensaje)</p>
+<p>```</p>
 <p>Se tiene que iniciar los scripts resultado, worker (worker1 y una copia identica llamada worker2) y origen.</p>
 <p>La siguiente figura muestra el resultado de origen:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython6-2.png"/> </p>

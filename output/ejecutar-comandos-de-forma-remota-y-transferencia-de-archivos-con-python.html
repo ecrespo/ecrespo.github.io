@@ -168,94 +168,80 @@
     <p>Este art&iacute;culo explicar&aacute; como realizar conexiones ssh de forma autom&aacute;tica  y realizar transferencias de archivos por medio de python.</p>
 <p>Lo primero que se tiene que hacer es crear la clave p&uacute;blica y privada para ssh y as&iacute; poder ejecutar comandos remotos sin necesidad de clave, una gu&iacute;a de como hacerlo la tiene <a href="http://rafael.bonifaz.ec/blog/2011/01/ssh-con-claves-publicas-y-privadas/">Rafael Bonifaz en su blog</a>.</p>
 <p>El primer ejemplo permite establecer una conexi&oacute;n remota ssh y ejecutar un comando en el equipo remoto.</p>
-<div class="highlight"><pre><span></span><span class="err">!</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">env</span> <span class="n">python</span>
-<span class="c1">#Programa que ejecuta un comando de forma remota</span>
-
-
-<span class="c1">#Se importa el m&oacute;dulo paramiko</span>
-<span class="kn">import</span> <span class="nn">paramiko</span>
-
-
-<span class="c1">#Se crea la funci&oacute;n ssh donde se le pasa el usuario, la IP del equipo remoto, el comando a ejecutar, la clave</span>
-<span class="c1">#del usuario en el equipo remoto (en este caso se autentica por llaves), puerto de la conexi&oacute;n ssh y se guarda</span>
-<span class="c1">#un log de la conexi&oacute;n.</span>
-
-
-<span class="k">def</span> <span class="nf">ssh</span><span class="p">(</span><span class="n">usuario</span><span class="p">,</span><span class="n">hostname</span><span class="p">,</span><span class="n">comando</span><span class="p">,</span><span class="n">puerto</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="s2">"paramiko.log"</span><span class="p">):</span>
-        <span class="c1">#Se guarda el log</span>
-        <span class="n">paramiko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">log_to_file</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
-        <span class="c1">#Se define la ruta donde se encuentra la llave RSA</span>
-        <span class="n">llave</span> <span class="o">=</span> <span class="s2">"/home/ernesto/.ssh/id_rsa"</span>
-        <span class="c1">#Se carga la llave RSA</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">RSAKey</span><span class="o">.</span><span class="n">from_private_key_file</span><span class="p">(</span><span class="n">llave</span><span class="p">)</span>
-        <span class="c1">#Se crea la instancia del cliente ssh</span>
-        <span class="n">conexion</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span>
-        <span class="c1">#Se carga las llaves del host para validar la autenticaci&oacute;n por llaves.</span>
-        <span class="n">conexion</span><span class="o">.</span><span class="n">load_system_host_keys</span><span class="p">()</span>
-        <span class="c1">#Se establece la conexi&oacute;n pasando la IP, puerto del equipo, el usuario y su clave.</span>
-        <span class="n">conexion</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span><span class="n">puerto</span><span class="p">,</span><span class="n">usuario</span><span class="p">,</span><span class="n">pkey</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-        <span class="c1">#Se crea una tupla con la entrada est&aacute;ndar, salida est&aacute;ndar y los mensajes de error al ejecutar el comando.</span>
-        <span class="n">stdin</span><span class="p">,</span><span class="n">stdout</span><span class="p">,</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">conexion</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="n">comando</span><span class="p">)</span>
-        <span class="c1">#Se lee la salida est&aacute;ndar y se presenta la informaci&oacute;n en pantalla.</span>
-        <span class="k">print</span> <span class="n">stdout</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="c1">#Se cierra la conexi&oacute;n ssh.</span>
-        <span class="n">conexion</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-        <span class="c1">#Se ejecuta la funci&oacute;n</span>
-        <span class="n">ssh</span><span class="p">(</span><span class="s2">"admin"</span><span class="p">,</span><span class="s2">"80.13.11.25"</span><span class="p">,</span><span class="s2">"ls -l"</span><span class="p">)</span>
-</pre></div>
+<p>```python
+!/usr/bin/env python</p>
+<h1 id="programa que ejecuta un comando de forma remota">Programa que ejecuta un comando de forma remota</h1>
+<h1 id="se importa el modulo paramiko">Se importa el m&oacute;dulo paramiko</h1>
+<p>import paramiko</p>
+<h1 id="se crea la funcion ssh donde se le pasa el usuario, la ip del equipo remoto, el comando a ejecutar, la clave">Se crea la funci&oacute;n ssh donde se le pasa el usuario, la IP del equipo remoto, el comando a ejecutar, la clave</h1>
+<h1 id="del usuario en el equipo remoto (en este caso se autentica por llaves), puerto de la conexion ssh y se guarda">del usuario en el equipo remoto (en este caso se autentica por llaves), puerto de la conexi&oacute;n ssh y se guarda</h1>
+<h1 id="un log de la conexion.">un log de la conexi&oacute;n.</h1>
+<p>def ssh(usuario,hostname,comando,puerto=22,log="paramiko.log"):
+        #Se guarda el log
+        paramiko.util.log_to_file(log)
+        #Se define la ruta donde se encuentra la llave RSA
+        llave = "/home/ernesto/.ssh/id_rsa"
+        #Se carga la llave RSA
+        key = paramiko.RSAKey.from_private_key_file(llave)
+        #Se crea la instancia del cliente ssh
+        conexion = paramiko.SSHClient()
+        #Se carga las llaves del host para validar la autenticaci&oacute;n por llaves.
+        conexion.load_system_host_keys()
+        #Se establece la conexi&oacute;n pasando la IP, puerto del equipo, el usuario y su clave.
+        conexion.connect(hostname,puerto,usuario,pkey=key)
+        #Se crea una tupla con la entrada est&aacute;ndar, salida est&aacute;ndar y los mensajes de error al ejecutar el comando.
+        stdin,stdout,stderr = conexion.exec_command(comando)
+        #Se lee la salida est&aacute;ndar y se presenta la informaci&oacute;n en pantalla.
+        print stdout.read()
+        #Se cierra la conexi&oacute;n ssh.
+        conexion.close()</p>
+<p>if <strong>name</strong> == "<strong>main</strong>":
+        #Se ejecuta la funci&oacute;n
+        ssh("admin","80.13.11.25","ls -l")</p>
+<p>```</p>
 <p>El resultado del comando es el siguiente:</p>
-<div class="highlight"><pre><span></span>total 93960
-
-
-drwxr-xr-x  2 admin admin     4096 feb  3 01:00 prueba
+<p>```
+total 93960</p>
+<p>drwxr-xr-x  2 admin admin     4096 feb  3 01:00 prueba
 drwxr-xr-x  2 admin admin     4096 may  4  2010 public_html
 -rw-r--r--  1 admin admin  3180604 ene 30 16:17 web2py-manual.pdf
-</pre></div>
+```</p>
 <p>Para la transferencia de archivos se usar&aacute; las claves RSA para que no se tenga que pasar la clave del usuario por el script en python. La idea es conectarse al equipo remoto y transferir los archivos que se encuentran en un directorio.</p>
 <p>A continuaci&oacute;n el c&oacute;digo del programa:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1">#Programa que permite transferir archivos de un equipo remoto al local</span>
-<span class="c1">#Se importa los m&oacute;dulos paramiko y os.</span>
-<span class="kn">import</span> <span class="nn">paramiko</span><span class="o">,</span><span class="nn">os</span>
-
-
-<span class="c1">#Se crea la funci&oacute;n recuperar archivo con los argumentos equipo, puerto, usuario y ruta del directorio donde</span>
-<span class="c1">#se encuentran los archivos.</span>
-
-
-<span class="k">def</span> <span class="nf">recuperar_archivos</span><span class="p">(</span><span class="n">equipo</span><span class="p">,</span><span class="n">puerto</span><span class="p">,</span><span class="n">usuario</span><span class="p">,</span><span class="n">dir_path</span><span class="p">):</span>
-    <span class="c1">#Se define la ruta donde se encuentra la llave RSA</span>
-    <span class="n">llave</span> <span class="o">=</span> <span class="s2">"/home/ernesto/.ssh/id_rsa"</span>
-    <span class="c1">#Se carga las llaves en la variable key</span>
-    <span class="n">key</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">RSAKey</span><span class="o">.</span><span class="n">from_private_key_file</span><span class="p">(</span><span class="n">llave</span><span class="p">)</span>
-    <span class="c1">#Se le pasa el equipo y puerto como par&aacute;metro de transporte</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">Transport</span><span class="p">((</span><span class="n">equipo</span><span class="p">,</span><span class="n">puerto</span><span class="p">))</span>
-    <span class="c1">#Se crea la conexi&oacute;n pasando el usuario y la llave RSA.</span>
-    <span class="n">c</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">usuario</span><span class="p">,</span><span class="n">pkey</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-    <span class="c1">#Se crea la conexi&oacute;n sftp donde se le pasa la conexi&oacute;n definida anteriormente.</span>
-    <span class="n">sftp</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SFTPClient</span><span class="o">.</span><span class="n">from_transport</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-    <span class="c1">#Se captura la lista de archivos de la ruta que se le pasa a la funci&oacute;n.</span>
-    <span class="n">archivos</span> <span class="o">=</span> <span class="n">sftp</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>
-    <span class="c1">#Se presenta un mensaje de recibiendo los archivos y se realiza la transferencia.</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">archivos</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s2">"Recibiendo "</span><span class="p">,</span><span class="n">f</span>
-        <span class="n">sftp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span><span class="n">f</span><span class="p">),</span><span class="n">f</span><span class="p">)</span>
-    <span class="c1">#Al finalizar se cierra la conexi&oacute;n.</span>
-    <span class="n">c</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="c1">#Se ejecuta la funci&oacute;n donde se le pasa la IP del equipo remoto con el puerto, luego el usuario y la ruta de</span>
-    <span class="c1">#los archivos a transferir.</span>
-    <span class="n">recuperar_archivos</span><span class="p">(</span><span class="s2">"80.13.11.25"</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="s2">"admin"</span><span class="p">,</span><span class="s2">"/home/admin/prueba/"</span><span class="p">)</span>
-</pre></div>
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="programa que permite transferir archivos de un equipo remoto al local">Programa que permite transferir archivos de un equipo remoto al local</h1>
+<h1 id="se importa los modulos paramiko y os.">Se importa los m&oacute;dulos paramiko y os.</h1>
+<p>import paramiko,os</p>
+<h1 id="se crea la funcion recuperar archivo con los argumentos equipo, puerto, usuario y ruta del directorio donde">Se crea la funci&oacute;n recuperar archivo con los argumentos equipo, puerto, usuario y ruta del directorio donde</h1>
+<h1 id="se encuentran los archivos.">se encuentran los archivos.</h1>
+<p>def recuperar_archivos(equipo,puerto,usuario,dir_path):
+    #Se define la ruta donde se encuentra la llave RSA
+    llave = "/home/ernesto/.ssh/id_rsa"
+    #Se carga las llaves en la variable key
+    key = paramiko.RSAKey.from_private_key_file(llave)
+    #Se le pasa el equipo y puerto como par&aacute;metro de transporte
+    c = paramiko.Transport((equipo,puerto))
+    #Se crea la conexi&oacute;n pasando el usuario y la llave RSA.
+    c.connect(username=usuario,pkey=key)
+    #Se crea la conexi&oacute;n sftp donde se le pasa la conexi&oacute;n definida anteriormente.
+    sftp = paramiko.SFTPClient.from_transport(c)
+    #Se captura la lista de archivos de la ruta que se le pasa a la funci&oacute;n.
+    archivos = sftp.listdir(dir_path)
+    #Se presenta un mensaje de recibiendo los archivos y se realiza la transferencia.
+    for f in archivos:
+        print "Recibiendo ",f
+        sftp.get(os.path.join(dir_path,f),f)
+    #Al finalizar se cierra la conexi&oacute;n.
+    c.close()</p>
+<p>if <strong>name</strong> == "<strong>main</strong>":
+    #Se ejecuta la funci&oacute;n donde se le pasa la IP del equipo remoto con el puerto, luego el usuario y la ruta de
+    #los archivos a transferir.
+    recuperar_archivos("80.13.11.25",22,"admin","/home/admin/prueba/")</p>
+<p>```</p>
 <p>El resultado es el siguiente:</p>
-<div class="highlight"><pre><span></span>Recibiendo  control-python.pdf
-Recibiendo  web2py-manual.pdf
-</pre></div>
+<p><code>Recibiendo  control-python.pdf
+Recibiendo  web2py-manual.pdf</code></p>
 <p>===</p>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)

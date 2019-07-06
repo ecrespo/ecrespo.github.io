@@ -168,56 +168,52 @@
 <p>La idea es buscar todos los mensajes de un n&uacute;mero celular dado, presentar el mensaje en la consola y borrar dichos mensajes.</p>
 <p>Se sigue el procedimiento de ejecuci&oacute;n remota explicado en el <a href="https://www.seraph.to/ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb.html#ejecucion-remota-de-scripts-python-desde-linux-a-un-celular-con-android-version-conectado-el-celular-por-usb">post anterior</a>.</p>
 <p>El c&oacute;digo es el siguiente:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python2.6</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1">#Script que permite manejar los SMS del celular con android desde Linux.</span>
-<span class="c1">#Autor: Ernesto Crespo</span>
-<span class="c1">#Correo:ecrespo@gmail.com</span>
-<span class="c1">#Licencia: GPLv3</span>
-<span class="c1">#Versi&oacute;n:0.1</span>
-
-
-<span class="c1">#Importando el m&oacute;dulo android,sys y re</span>
-<span class="kn">import</span> <span class="nn">android</span>
-
-
-<span class="c1">#Funci&oacute;n de envio de mensajes</span>
-<span class="k">def</span> <span class="nf">Contactos</span><span class="p">():</span>
-    <span class="c1">#Se crea la instancia de la clase Android</span>
-    <span class="n">droid</span> <span class="o">=</span> <span class="n">android</span><span class="o">.</span><span class="n">Android</span><span class="p">()</span>
-    <span class="c1">#Se captura la cantidad de mensajes de texto )como en mi caso todos los </span>
-    <span class="c1">#mensajes han sido le&iacute;dos coloco 0, si quiero los no le&iacute;dos coloco 1.</span>
-    <span class="n">cantidad</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessageCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1">#El n&uacute;mero de celular a buscar</span>
-    <span class="n">numero</span> <span class="o">=</span> <span class="s2">"0xxxyyyzzww"</span>
-    <span class="c1">#Se recorren todos los mensajes.</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cantidad</span><span class="p">):</span>
-        <span class="c1">#Si el mensaje es del n&uacute;mero dado se captura el identificador</span>
-        <span class="c1">#del mensaje, se imprime un mensaje  en pantalla con la informaci&oacute;n:</span>
-        <span class="c1">#read:Si mensaje ya fue le&iacute;do</span>
-        <span class="c1">#date: la fecha del mensaje</span>
-        <span class="c1">#_id:identificador del mensaje.</span>
-        <span class="c1">#address: n&uacute;mero celular.</span>
-        <span class="c1">#body:cuerpo del mensaje.</span>
-        <span class="c1">#Toda est&aacute; informaci&oacute;n se maneja desde un diccionario.</span>
-        <span class="c1">#Si el celular no es de la persona buscada se continua con la </span>
-        <span class="c1">#siguiente iteraci&oacute;n. </span>
-        <span class="c1">#A la funci&oacute;n de borrar se le pasa el identificador del mensaje</span>
-        <span class="k">if</span> <span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">"address"</span><span class="p">]</span> <span class="o">==</span> <span class="n">numero</span><span class="p">:</span>
-            <span class="n">identificador</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">"_id"</span><span class="p">]</span>
-            <span class="k">print</span> <span class="s2">"Borrando mensaje</span><span class="se">\t</span><span class="s2">"</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">"read"</span><span class="p">],</span><span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">"date"</span><span class="p">],</span><span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">"address"</span><span class="p">],</span><span class="n">droid</span><span class="o">.</span><span class="n">smsGetMessages</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s2">"body"</span><span class="p">]</span>
-            <span class="n">droid</span><span class="o">.</span><span class="n">smsDeleteMessage</span><span class="p">(</span><span class="n">identificador</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">continue</span>
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="c1">#Ejecuci&oacute;n de la funci&oacute;n</span>
-    <span class="n">Contactos</span><span class="p">()</span>
-</pre></div>
+<p>```python</p>
+<h1 id="!/usr/bin/env python2.6">!/usr/bin/env python2.6</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="script que permite manejar los sms del celular con android desde linux.">Script que permite manejar los SMS del celular con android desde Linux.</h1>
+<h1 id="autor: ernesto crespo">Autor: Ernesto Crespo</h1>
+<h1 id="correo:ecrespo@gmail.com">Correo:ecrespo@gmail.com</h1>
+<h1 id="licencia: gplv3">Licencia: GPLv3</h1>
+<h1 id="version:0.1">Versi&oacute;n:0.1</h1>
+<h1 id="importando el modulo android,sys y re">Importando el m&oacute;dulo android,sys y re</h1>
+<p>import android</p>
+<h1 id="funcion de envio de mensajes">Funci&oacute;n de envio de mensajes</h1>
+<p>def Contactos():
+    #Se crea la instancia de la clase Android
+    droid = android.Android()
+    #Se captura la cantidad de mensajes de texto )como en mi caso todos los 
+    #mensajes han sido le&iacute;dos coloco 0, si quiero los no le&iacute;dos coloco 1.
+    cantidad = droid.smsGetMessageCount(0)[1]
+    #El n&uacute;mero de celular a buscar
+    numero = "0xxxyyyzzww"
+    #Se recorren todos los mensajes.
+    for i in range(cantidad):
+        #Si el mensaje es del n&uacute;mero dado se captura el identificador
+        #del mensaje, se imprime un mensaje  en pantalla con la informaci&oacute;n:
+        #read:Si mensaje ya fue le&iacute;do
+        #date: la fecha del mensaje
+        #_id:identificador del mensaje.
+        #address: n&uacute;mero celular.
+        #body:cuerpo del mensaje.
+        #Toda est&aacute; informaci&oacute;n se maneja desde un diccionario.
+        #Si el celular no es de la persona buscada se continua con la 
+        #siguiente iteraci&oacute;n. 
+        #A la funci&oacute;n de borrar se le pasa el identificador del mensaje
+        if droid.smsGetMessages(0)[1][i]["address"] == numero:
+            identificador = droid.smsGetMessages(0)[1][i]["_id"]
+            print "Borrando mensaje\t",i,droid.smsGetMessages(0)[1][i]["read"],droid.smsGetMessages(0)[1][i]["date"],droid.smsGetMessages(0)[1][i]["address"],droid.smsGetMessages(0)[1][i]["body"]
+            droid.smsDeleteMessage(identificador)
+        else:
+            continue
+if <strong>name</strong> == "<strong>main</strong>":
+    #Ejecuci&oacute;n de la funci&oacute;n
+    Contactos()</p>
+<p>```</p>
 <p>La salida del programa es la siguiente:</p>
 <p>Devuelve el mensaje que se ha borrado el SMS, el n&uacute;mero del mensaje, si est&aacute; le&iacute;do, la fecha, el n&uacute;mero y el cuerpo del mensaje.</p>
-<div class="highlight"><pre><span></span>Borrando mensaje 296 1 1285030227398 0xxxyyyzzww Ah bueno... Yo les aviso.
-Borrando mensaje 358 1 1283635867054 0xxxyyyzzww Ok. Ahi voy.
-</pre></div>
+<p><code>Borrando mensaje 296 1 1285030227398 0xxxyyyzzww Ah bueno... Yo les aviso.
+Borrando mensaje 358 1 1283635867054 0xxxyyyzzww Ok. Ahi voy.</code></p>
 <p>===</p>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)

@@ -180,86 +180,77 @@
 <p>La idea es listar los archivos mp3 en el widget de selecci&oacute;n simple y luego reproducir la canci&oacute;n seleccionada.</p>
 <p>Antes de reproducir la canci&oacute;n, se toma informaci&oacute;n de la canci&oacute;n, principalmente la duraci&oacute;n de la canci&oacute;n, ese tiempo es luego manejado por una barra de progreso que avanza  mientras se reproduce la canci&oacute;n.</p>
 <p>El c&oacute;digo del programa se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="c1">#Importar el modulo android,path, la funcion sleep,listdir y exit.</span>
-<span class="kn">import</span> <span class="nn">android</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">listdir</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
-<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="nb">exit</span>
-
-
-<span class="c1">#La ruta donde se encuentran los mp3s</span>
-<span class="n">ruta</span> <span class="o">=</span> <span class="s2">"/sdcard/mp3z/"</span>
-
-
-<span class="c1">#Se crea la instancia de android</span>
-<span class="n">droid</span> <span class="o">=</span> <span class="n">android</span><span class="o">.</span><span class="n">Android</span><span class="p">()</span>
-<span class="c1">#Se muestra un mensaje si se desea reproducir una cancion.si es si, se reproduce si no se sale del programa.</span>
-<span class="n">droid</span><span class="o">.</span><span class="n">dialogCreateAlert</span><span class="p">(</span><span class="s2">"Reproducir una cancion"</span><span class="p">,</span> <span class="s2">"Desea reproducir una cancion?"</span><span class="p">)</span>
-<span class="n">droid</span><span class="o">.</span><span class="n">dialogSetPositiveButtonText</span><span class="p">(</span><span class="s1">'Si'</span><span class="p">)</span>
-<span class="n">droid</span><span class="o">.</span><span class="n">dialogSetNegativeButtonText</span><span class="p">(</span><span class="s1">'No'</span><span class="p">)</span>
-<span class="n">droid</span><span class="o">.</span><span class="n">dialogShow</span><span class="p">()</span>
-
-
-<span class="c1">#Se captura la respuesta.</span>
-<span class="n">respuesta</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">dialogGetResponse</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="n">respuesta</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">'which'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"positive"</span><span class="p">:</span>
-    <span class="c1">#Se busca los archivos y directorios de la ruta definida.</span>
-    <span class="n">archivos</span> <span class="o">=</span> <span class="n">listdir</span><span class="p">(</span><span class="n">ruta</span><span class="p">)</span>
-    <span class="c1">#Se crea una lista vacia donde se agregaran los nombres de archivos mp3s</span>
-    <span class="n">listado</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1">#Se agregan los archivos mp3 a la lista</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">archivos</span><span class="p">:</span>
-        <span class="c1">#Si es un archivo se agrega a listado, se pasa la ruta y el archivo.</span>
-        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"</span><span class="si">%s%s</span><span class="s2">"</span> <span class="o">%</span><span class="p">(</span><span class="n">ruta</span><span class="p">,</span><span class="n">i</span><span class="p">)):</span>
-            <span class="n">listado</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
-    <span class="c1">#Se muestra un mensaje con la lista de canciones que se pueden reproducir.</span>
-    <span class="n">droid</span><span class="o">.</span><span class="n">dialogCreateAlert</span><span class="p">(</span><span class="s2">"Reproducir una cancion"</span><span class="p">)</span>
-    <span class="n">droid</span><span class="o">.</span><span class="n">dialogSetSingleChoiceItems</span><span class="p">(</span><span class="n">listado</span><span class="p">)</span>
-    <span class="n">droid</span><span class="o">.</span><span class="n">dialogSetPositiveButtonText</span><span class="p">(</span><span class="s1">'Seleccione'</span><span class="p">)</span>
-    <span class="n">droid</span><span class="o">.</span><span class="n">dialogSetNegativeButtonText</span><span class="p">(</span><span class="s1">'Salir'</span><span class="p">)</span>
-    <span class="n">droid</span><span class="o">.</span><span class="n">dialogShow</span><span class="p">()</span>
-    <span class="c1">#Se captura la respuesta y el item seleccionado</span>
-    <span class="n">respuesta</span>  <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">dialogGetResponse</span><span class="p">()</span><span class="o">.</span><span class="n">result</span>
-    <span class="n">item</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">dialogGetSelectedItems</span><span class="p">()</span>
-    <span class="c1">#Si la respuesta es positiva se reproduce la cancion</span>
-    <span class="k">if</span>  <span class="n">respuesta</span><span class="p">[</span><span class="s1">'which'</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"positive"</span><span class="p">:</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">makeToast</span><span class="p">(</span><span class="s2">"La cancion selecionada es: </span><span class="si">%s</span><span class="s2"> "</span> <span class="o">%</span><span class="n">listado</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])])</span>
-        <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">makeToast</span><span class="p">(</span><span class="s2">"Reproduciendo la cancion"</span><span class="p">)</span>
-        <span class="c1">#Se agrega a cancion la cancion seleccionada segun la variable item.</span>
-        <span class="n">cancion</span> <span class="o">=</span> <span class="n">listado</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
-        <span class="c1">#Se reproduce la cancion pasando la ruta donde esta el archivo y el archivo.</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">mediaPlay</span><span class="p">(</span><span class="s2">"</span><span class="si">%s%s</span><span class="s2">"</span> <span class="o">%</span><span class="p">(</span><span class="n">ruta</span><span class="p">,</span><span class="n">cancion</span><span class="p">))</span>
-        <span class="c1">#Se captura la duracion de la cancion representado en milisegundos</span>
-        <span class="n">tiempo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">droid</span><span class="o">.</span><span class="n">mediaPlayInfo</span><span class="p">()[</span><span class="mi">1</span><span class="p">][</span><span class="s2">"duration"</span><span class="p">])</span>
-        <span class="c1">#Se pasa la duracion de la cancion de milisegundos a segundos</span>
-        <span class="n">duracion</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tiempo</span> <span class="o">/</span><span class="mi">1000</span><span class="p">)</span>
-        <span class="c1">#Se crea una barra de progreso con el titulo reproduciendo, mensaje el nombre de la cancion y la duracion.</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">dialogCreateHorizontalProgress</span><span class="p">(</span><span class="s2">"Reproduciendo"</span><span class="p">,</span><span class="n">cancion</span><span class="p">,</span><span class="n">duracion</span><span class="p">)</span>
-        <span class="c1">#Se muestra el widget.</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">dialogShow</span><span class="p">()</span>
-        <span class="c1">#Se incrementa el valor de la barra de progreso cada 1 seg.</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">duracion</span><span class="p">):</span>
-            <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">droid</span><span class="o">.</span><span class="n">dialogSetCurrentProgress</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="c1">#Al finalizar la cancion se muestra un mensaje de fin de la cancion y se sale de la aplicacion.</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">makeToast</span><span class="p">(</span><span class="s2">"Fin de la reproduccion de la cancion"</span><span class="p">)</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">dialogDismiss</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1">#Si no se selecciono una cancion se sale del programa</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">makeToast</span><span class="p">(</span><span class="s2">"No se selecciono una cancion-Se sale de la aplicacion"</span><span class="p">)</span>
-        <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1">#Se selecciono que no se desea reproducir una cancion</span>
-    <span class="n">droid</span><span class="o">.</span><span class="n">makeToast</span><span class="p">(</span><span class="s2">"Fin del programa"</span><span class="p">)</span>
-    <span class="nb">exit</span><span class="p">()</span>
-</pre></div>
+<p>```python</p>
+<h1 id="importar el modulo android,path, la funcion sleep,listdir y exit.">Importar el modulo android,path, la funcion sleep,listdir y exit.</h1>
+<p>import android
+from time import sleep
+from os import listdir
+from os import path
+from sys import exit</p>
+<h1 id="la ruta donde se encuentran los mp3s">La ruta donde se encuentran los mp3s</h1>
+<p>ruta = "/sdcard/mp3z/"</p>
+<h1 id="se crea la instancia de android">Se crea la instancia de android</h1>
+<p>droid = android.Android()</p>
+<h1 id="se muestra un mensaje si se desea reproducir una cancion.si es si, se reproduce si no se sale del programa.">Se muestra un mensaje si se desea reproducir una cancion.si es si, se reproduce si no se sale del programa.</h1>
+<p>droid.dialogCreateAlert("Reproducir una cancion", "Desea reproducir una cancion?")
+droid.dialogSetPositiveButtonText('Si')
+droid.dialogSetNegativeButtonText('No')
+droid.dialogShow()</p>
+<h1 id="se captura la respuesta.">Se captura la respuesta.</h1>
+<p>respuesta = droid.dialogGetResponse()</p>
+<p>if respuesta[1]['which'] == "positive":
+    #Se busca los archivos y directorios de la ruta definida.
+    archivos = listdir(ruta)
+    #Se crea una lista vacia donde se agregaran los nombres de archivos mp3s
+    listado = []
+    #Se agregan los archivos mp3 a la lista
+    for i in archivos:
+        #Si es un archivo se agrega a listado, se pasa la ruta y el archivo.
+        if path.isfile("%s%s" %(ruta,i)):
+            listado.append(i)</p>
+<pre><code>#Se muestra un mensaje con la lista de canciones que se pueden reproducir.
+droid.dialogCreateAlert("Reproducir una cancion")
+droid.dialogSetSingleChoiceItems(listado)
+droid.dialogSetPositiveButtonText('Seleccione')
+droid.dialogSetNegativeButtonText('Salir')
+droid.dialogShow()
+#Se captura la respuesta y el item seleccionado
+respuesta  = droid.dialogGetResponse().result
+item = droid.dialogGetSelectedItems()
+#Si la respuesta es positiva se reproduce la cancion
+if  respuesta['which'] == "positive":
+    droid.makeToast("La cancion selecionada es: %s " %listado[int(item[1][0])])
+    sleep(2)
+    droid.makeToast("Reproduciendo la cancion")
+    #Se agrega a cancion la cancion seleccionada segun la variable item.
+    cancion = listado[int(item[1][0])]
+    #Se reproduce la cancion pasando la ruta donde esta el archivo y el archivo.
+    droid.mediaPlay("%s%s" %(ruta,cancion))
+    #Se captura la duracion de la cancion representado en milisegundos
+    tiempo = int(droid.mediaPlayInfo()[1]["duration"])
+    #Se pasa la duracion de la cancion de milisegundos a segundos
+    duracion = int(tiempo /1000)
+    #Se crea una barra de progreso con el titulo reproduciendo, mensaje el nombre de la cancion y la duracion.
+    droid.dialogCreateHorizontalProgress("Reproduciendo",cancion,duracion)
+    #Se muestra el widget.
+    droid.dialogShow()
+    #Se incrementa el valor de la barra de progreso cada 1 seg.
+    for i in range(0,duracion):
+        sleep(1)
+        droid.dialogSetCurrentProgress(i)
+    #Al finalizar la cancion se muestra un mensaje de fin de la cancion y se sale de la aplicacion.
+    droid.makeToast("Fin de la reproduccion de la cancion")
+    droid.dialogDismiss()
+else:
+    #Si no se selecciono una cancion se sale del programa
+    droid.makeToast("No se selecciono una cancion-Se sale de la aplicacion")
+    sleep(1)
+</code></pre>
+<p>else:
+    #Se selecciono que no se desea reproducir una cancion
+    droid.makeToast("Fin del programa")
+    exit()
+```</p>
 <p>La siguiente figura muestra la ventana donde se pregunta si se desea reproducir una canci&oacute;n:</p>
 <p><img alt="Ejecutar script " src="./images/reproductorandroid1.png"/></p>
 <p>La siguiente figura muestra la lista de canciones que se puede reproducir, se selecciona una y luego se le da al bot&oacute;n seleccione.</p>

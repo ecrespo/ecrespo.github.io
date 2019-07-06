@@ -168,145 +168,124 @@
   <div>
     <p>Continuando con los art&iacute;culos sobre profiling, otra herramienta para llevar adelante el profiling se llama <code>cProfile</code>, esta es una extensi&oacute;n en C que se introdujo en Python 2.5. Se usa para determinar Profiling deterministico (se mide el tiempo de manera precisa en vez de muestreo).</p>
 <p>El ejemplo que se desarrollar&aacute; es el mismo de la generaci&oacute;n de la matriz inversa, la diferencia ser&aacute; que la definici&oacute;n del valor de n de la matriz y su generaci&oacute;n estar&aacute; en una funci&oacute;n llamada main. Est&aacute; funci&oacute;n luego se llamar&aacute; desde <code>cProfile</code>.</p>
-<p>A continuaci&oacute;n el c&oacute;digo:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<p>A continuaci&oacute;n el c&oacute;digo:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="se importa numpy como np">Se importa numpy como np</h1>
+<p>import numpy as np</p>
+<p>import cProfile</p>
+<p>import sys</p>
+<h1 id="funcion que genera matrices inversas.">funcion que genera matrices inversas.</h1>
+<p>def Inversa(n):</p>
+<pre><code>a = np.matrix(np.random.rand(n, n))
 
-<span class="c1"># -*- coding: utf-8 -*-</span>
+return a.I
+</code></pre>
+<p>def main():</p>
+<pre><code>#Se define una lista de  tama&ntilde;os de la matriz
 
+tamagno = 2**np.arange(0,12)
 
+#Se recorre la lista de tama&ntilde;os y se invierte cada matriz con la
 
-<span class="c1">#Se importa numpy como np</span>
+#funcion.
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+for n in tamagno:
 
-<span class="kn">import</span> <span class="nn">cProfile</span>
-
-<span class="kn">import</span> <span class="nn">sys</span>
-
-<span class="c1">#funcion que genera matrices inversas.</span>
-
-<span class="k">def</span> <span class="nf">Inversa</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">I</span>
-
-
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-
-
-    <span class="c1">#Se define una lista de  tama&ntilde;os de la matriz</span>
-
-    <span class="n">tamagno</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span>
-
-    <span class="c1">#Se recorre la lista de tama&ntilde;os y se invierte cada matriz con la</span>
-
-    <span class="c1">#funcion.</span>
-
-    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tamagno</span><span class="p">:</span>
-
-        <span class="n">Inversa</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
-
-
-
-<span class="c1">#Se ejecuta la funci&oacute;n main desde la llamada run de cProfile.    </span>
-
-<span class="n">cProfile</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">'main()'</span><span class="p">)</span>
-</pre></div>
+    Inversa(n)
+</code></pre>
+<h1 id="se ejecuta la funcion main desde la llamada run de cprofile.">Se ejecuta la funci&oacute;n main desde la llamada run de cProfile.</h1>
+<p>cProfile.run('main()')
+```</p>
 <p>Al ejecutar el script se tiene como resultado el profiling de la generaci&oacute;n de la matriz inversa:</p>
-<div class="highlight"><pre><span></span>ecrespo@jewel:~/proyectos/ernesto-ecrespo.blogspot/cprofile$ python matrizinversa.py 
+<p>```
+ecrespo@jewel:~/proyectos/ernesto-ecrespo.blogspot/cprofile$ python matrizinversa.py </p>
+<pre><code>     809 function calls in 5.764 seconds
+</code></pre>
+<p>Ordered by: standard name</p>
+<p>ncalls  tottime  percall  cumtime  percall filename:lineno(function)</p>
+<pre><code>    1    0.000    0.000    5.764    5.764 &lt;string&gt;:1(&lt;module&gt;)
 
-         809 function calls in 5.764 seconds
+   24    0.000    0.000    0.058    0.002 defmatrix.py:233(__new__)
 
+   36    0.000    0.000    0.000    0.000 defmatrix.py:279(__array_finalize__)
 
+   12    0.000    0.000    0.000    0.000 defmatrix.py:55(asmatrix)
 
-   Ordered by: standard name
+   12    0.015    0.001    5.467    0.456 defmatrix.py:808(getI)
 
+    1    0.000    0.000    0.000    0.000 dual.py:12(&lt;module&gt;)
 
+   12    0.000    0.000    0.000    0.000 linalg.py:127(_to_native_byte_order)
 
-   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   12    0.000    0.000    0.257    0.021 linalg.py:139(_fastCopyAndTranspose)
 
-        1    0.000    0.000    5.764    5.764 &lt;string&gt;:1(&lt;module&gt;)
+   12    0.000    0.000    0.000    0.000 linalg.py:151(_assertRank2)
 
-       24    0.000    0.000    0.058    0.002 defmatrix.py:233(__new__)
+   12    0.000    0.000    0.000    0.000 linalg.py:157(_assertSquareness)
 
-       36    0.000    0.000    0.000    0.000 defmatrix.py:279(__array_finalize__)
+   12    0.000    0.000    5.396    0.450 linalg.py:244(solve)
 
-       12    0.000    0.000    0.000    0.000 defmatrix.py:55(asmatrix)
+   12    0.020    0.002    5.452    0.454 linalg.py:404(inv)
 
-       12    0.015    0.001    5.467    0.456 defmatrix.py:808(getI)
+   36    0.000    0.000    0.000    0.000 linalg.py:66(_makearray)
 
-        1    0.000    0.000    0.000    0.000 dual.py:12(&lt;module&gt;)
+   36    0.000    0.000    0.000    0.000 linalg.py:71(isComplexType)
 
-       12    0.000    0.000    0.000    0.000 linalg.py:127(_to_native_byte_order)
+   24    0.000    0.000    0.000    0.000 linalg.py:84(_realType)
 
-       12    0.000    0.000    0.257    0.021 linalg.py:139(_fastCopyAndTranspose)
+   12    0.000    0.000    0.000    0.000 linalg.py:99(_commonType)
 
-       12    0.000    0.000    0.000    0.000 linalg.py:151(_assertRank2)
+   12    0.007    0.001    5.751    0.479 matrizinversa.py:12(Inversa)
 
-       12    0.000    0.000    0.000    0.000 linalg.py:157(_assertSquareness)
+    1    0.013    0.013    5.764    5.764 matrizinversa.py:17(main)
 
-       12    0.000    0.000    5.396    0.450 linalg.py:244(solve)
+   36    0.000    0.000    0.000    0.000 numeric.py:167(asarray)
 
-       12    0.020    0.002    5.452    0.454 linalg.py:404(inv)
+   12    0.000    0.000    0.035    0.003 numeric.py:1830(identity)
 
-       36    0.000    0.000    0.000    0.000 linalg.py:66(_makearray)
+   36    0.000    0.000    0.000    0.000 {getattr}
 
-       36    0.000    0.000    0.000    0.000 linalg.py:71(isComplexType)
+   72    0.000    0.000    0.000    0.000 {isinstance}
 
-       24    0.000    0.000    0.000    0.000 linalg.py:84(_realType)
+   60    0.000    0.000    0.000    0.000 {issubclass}
 
-       12    0.000    0.000    0.000    0.000 linalg.py:99(_commonType)
+   60    0.000    0.000    0.000    0.000 {len}
 
-       12    0.007    0.001    5.751    0.479 matrizinversa.py:12(Inversa)
+   12    0.000    0.000    0.000    0.000 {max}
 
-        1    0.013    0.013    5.764    5.764 matrizinversa.py:17(main)
+   24    0.000    0.000    0.000    0.000 {method '__array_prepare__' of 'numpy.ndarray' objects}
 
-       36    0.000    0.000    0.000    0.000 numeric.py:167(asarray)
+   24    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
 
-       12    0.000    0.000    0.035    0.003 numeric.py:1830(identity)
+   12    0.059    0.005    0.059    0.005 {method 'astype' of 'numpy.ndarray' objects}
 
-       36    0.000    0.000    0.000    0.000 {getattr}
+   12    0.058    0.005    0.058    0.005 {method 'copy' of 'numpy.ndarray' objects}
 
-       72    0.000    0.000    0.000    0.000 {isinstance}
+    1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
 
-       60    0.000    0.000    0.000    0.000 {issubclass}
+   24    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
 
-       60    0.000    0.000    0.000    0.000 {len}
+   12    0.220    0.018    0.220    0.018 {method 'rand' of 'mtrand.RandomState' objects}
 
-       12    0.000    0.000    0.000    0.000 {max}
+   12    0.000    0.000    0.000    0.000 {method 'transpose' of 'numpy.ndarray' objects}
 
-       24    0.000    0.000    0.000    0.000 {method '__array_prepare__' of 'numpy.ndarray' objects}
+   12    0.000    0.000    0.000    0.000 {method 'view' of 'numpy.ndarray' objects}
 
-       24    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+   12    0.000    0.000    0.000    0.000 {min}
 
-       12    0.059    0.005    0.059    0.005 {method 'astype' of 'numpy.ndarray' objects}
+   24    0.257    0.011    0.257    0.011 {numpy.core.multiarray._fastCopyAndTranspose}
 
-       12    0.058    0.005    0.058    0.005 {method 'copy' of 'numpy.ndarray' objects}
+    1    0.000    0.000    0.000    0.000 {numpy.core.multiarray.arange}
 
-        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+   36    0.000    0.000    0.000    0.000 {numpy.core.multiarray.array}
 
-       24    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+   24    0.035    0.001    0.035    0.001 {numpy.core.multiarray.zeros}
 
-       12    0.220    0.018    0.220    0.018 {method 'rand' of 'mtrand.RandomState' objects}
-
-       12    0.000    0.000    0.000    0.000 {method 'transpose' of 'numpy.ndarray' objects}
-
-       12    0.000    0.000    0.000    0.000 {method 'view' of 'numpy.ndarray' objects}
-
-       12    0.000    0.000    0.000    0.000 {min}
-
-       24    0.257    0.011    0.257    0.011 {numpy.core.multiarray._fastCopyAndTranspose}
-
-        1    0.000    0.000    0.000    0.000 {numpy.core.multiarray.arange}
-
-       36    0.000    0.000    0.000    0.000 {numpy.core.multiarray.array}
-
-       24    0.035    0.001    0.035    0.001 {numpy.core.multiarray.zeros}
-
-       12    5.078    0.423    5.078    0.423 {numpy.linalg.lapack_lite.dgesv}
-</pre></div>
+   12    5.078    0.423    5.078    0.423 {numpy.linalg.lapack_lite.dgesv}
+</code></pre>
+<p>```</p>
 <p>La salida es la misma que se mostr&oacute; en el art&iacute;culo de timeit con ipython.  Como adicional al <a href="http://blog.crespo.org.ve/2012/12/profiling-de-un-script-python-con-timeit.html">art&iacute;culo de timeit</a> se muestra a continuaci&oacute;n el significado de cada columna:</p>
 <ul>
 <li><code>ncalls</code>: N&uacute;mero de llamadas.</li>

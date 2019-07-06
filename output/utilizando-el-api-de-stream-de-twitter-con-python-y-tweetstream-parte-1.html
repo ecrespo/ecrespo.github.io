@@ -170,86 +170,65 @@
 <p>En este caso como la librer&iacute;a twitter no maneja stream es necesario instalar otra librer&iacute;a llamada <a href="https://pypi.org/project/tweetstream/">tweetstream</a>. </p>
 <p>La documentaci&oacute;n del API Stream de twiitter se encuentra en el <a href="https://developer.twitter.com/docs/api/1">enlace</a>, y  en espec&iacute;fico para obtener informaci&oacute;n  objeto tweets lo pueden revisar en el <a href="https://developer.twitter.com/docs/platform-objects/tweets">enlace</a>.</p>
 <p>Ah&iacute; encontrar&aacute;n la estructura json de este objeto. El campo que se uso en el ejemplo son 'text' y 'user', text contiene el texto del tweet y user contiene otro objeto que contiene informaci&oacute;n del usuario, para este caso se usar&aacute; el campo 'screen_name' que maneja el nombre del usuario twitter que env&iacute;a el tweet.</p>
-<p>A continuaci&oacute;n el c&oacute;digo de la aplicaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<p>A continuaci&oacute;n el c&oacute;digo de la aplicaci&oacute;n:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="import tweetstram, sleep y exit">Import tweetstram, sleep y exit</h1>
+<p>import tweetstream</p>
+<p>from time import sleep</p>
+<p>from sys import exit</p>
+<h1 id="se crea la funcion streamtweet donde se le pasa el usuario y la clave de una cuenta twitter.">Se crea la funcion StreamTweet donde se le pasa el usuario y la clave de una cuenta twitter.</h1>
+<p>def StreamTweet(usuario,clave):</p>
+<pre><code>#Se captura la excepcion de error de conexion e interrupcion por teclado
 
-<span class="c1"># -*- coding: utf-8 -*-</span>
+try:
+</code></pre>
+<p>#Se intenta conectar a la funcion de stream de tweetstream con el usuario y la clave</p>
+<p>#Asignando a stream el resultado</p>
+<p>with tweetstream.TweetStream(usuario,clave) as stream:</p>
+<pre><code> #Se genera un ciclo de cada tweet
 
-<span class="c1">#Import tweetstram, sleep y exit</span>
+ for tweet in stream:
+</code></pre>
+<p>#Se captura la excepcion de KeyError e Interrupcion de teclado, de esa forma</p>
+<p>#Se devuelve un mensaje de error y se termina el programa respectivamente.</p>
+<p>try:</p>
+<pre><code>  #Se crea un texto con el numero de tweet y la velocidad de cada tweet.
 
-<span class="kn">import</span> <span class="nn">tweetstream</span>
+  adicional = "|| tweet %d || velocidad %.5f tweets/seg" %(stream.count,stream.rate)
 
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+  #Se crea un texto final donde se le pasa el nombre del usuario que envia el tweet,
 
-<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="nb">exit</span>
+  #el texto del tweet y el texto anterior
 
-<span class="c1">#Se crea la funcion StreamTweet donde se le pasa el usuario y la clave de una cuenta twitter.</span>
+  texto = tweet['user']['screen_name'] + "||" + tweet['text'] + adicional
 
-<span class="k">def</span> <span class="nf">StreamTweet</span><span class="p">(</span><span class="n">usuario</span><span class="p">,</span><span class="n">clave</span><span class="p">):</span>
+  #Se imprime dicho texto en pantalla
 
-    <span class="c1">#Se captura la excepcion de error de conexion e interrupcion por teclado</span>
+  print texto
+</code></pre>
+<p>except KeyError:</p>
+<pre><code>  print "No hay tweet"
+</code></pre>
+<p>except KeyboardInterrupt:</p>
+<pre><code>  exit()
+</code></pre>
+<p>#Se espera 5 segundos para continuar al siguiente ciclo del lazo</p>
+<p>sleep(5)</p>
+<pre><code>except tweetstream.ConnectionError, e:
+</code></pre>
+<p>print "Desconectado de twitter. Razon: ", e.reason</p>
+<p>exit()</p>
+<pre><code>except KeyboardInterrupt:
+</code></pre>
+<p>exit()</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':</p>
+<pre><code>#Se llama a la funcion pasando el usuario y la clave.
 
-    <span class="k">try</span><span class="p">:</span>
-
- <span class="c1">#Se intenta conectar a la funcion de stream de tweetstream con el usuario y la clave</span>
-
- <span class="c1">#Asignando a stream el resultado</span>
-
- <span class="k">with</span> <span class="n">tweetstream</span><span class="o">.</span><span class="n">TweetStream</span><span class="p">(</span><span class="n">usuario</span><span class="p">,</span><span class="n">clave</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
-
-     <span class="c1">#Se genera un ciclo de cada tweet</span>
-
-     <span class="k">for</span> <span class="n">tweet</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
-
-  <span class="c1">#Se captura la excepcion de KeyError e Interrupcion de teclado, de esa forma</span>
-
-  <span class="c1">#Se devuelve un mensaje de error y se termina el programa respectivamente.</span>
-
-  <span class="k">try</span><span class="p">:</span>
-
-      <span class="c1">#Se crea un texto con el numero de tweet y la velocidad de cada tweet.</span>
-
-      <span class="n">adicional</span> <span class="o">=</span> <span class="s2">"|| tweet </span><span class="si">%d</span><span class="s2"> || velocidad </span><span class="si">%.5f</span><span class="s2"> tweets/seg"</span> <span class="o">%</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">count</span><span class="p">,</span><span class="n">stream</span><span class="o">.</span><span class="n">rate</span><span class="p">)</span>
-
-      <span class="c1">#Se crea un texto final donde se le pasa el nombre del usuario que envia el tweet,</span>
-
-      <span class="c1">#el texto del tweet y el texto anterior</span>
-
-      <span class="n">texto</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="s1">'user'</span><span class="p">][</span><span class="s1">'screen_name'</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"||"</span> <span class="o">+</span> <span class="n">tweet</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span> <span class="o">+</span> <span class="n">adicional</span>
-
-      <span class="c1">#Se imprime dicho texto en pantalla</span>
-
-      <span class="k">print</span> <span class="n">texto</span>
-
-  <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-
-      <span class="k">print</span> <span class="s2">"No hay tweet"</span>
-
-  <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-
-      <span class="nb">exit</span><span class="p">()</span>
-
-  <span class="c1">#Se espera 5 segundos para continuar al siguiente ciclo del lazo</span>
-
-  <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-
-    <span class="k">except</span> <span class="n">tweetstream</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-
- <span class="k">print</span> <span class="s2">"Desconectado de twitter. Razon: "</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">reason</span>
-
- <span class="nb">exit</span><span class="p">()</span>
-
-    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-
- <span class="nb">exit</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-
-    <span class="c1">#Se llama a la funcion pasando el usuario y la clave.</span>
-
-    <span class="n">StreamTweet</span><span class="p">(</span><span class="n">usuario</span><span class="p">,</span><span class="n">clave</span><span class="p">)</span>
-</pre></div>
+StreamTweet(usuario,clave)
+</code></pre>
+<p>```</p>
 <p>En la siguiente figura se muestra la captura de pantalla del programa en funcionamiento:</p>
 <p><img alt="" src="./images/utilizandoelapidestreamdetwitterconpythonytweetstream1-1.png"/></p>
 <p>Se muestra en cada tweet, el usuario que env&iacute;a el tweet, el tweet en si, el n&uacute;mero de tweet enviado y la velocidad con que se env&iacute;a el tweet.</p>

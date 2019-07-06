@@ -173,154 +173,84 @@
 <p>Un ejemplo de su posible uso tomado del art&iacute;culo de Nicholas Pi&euml;l es que se tenga un sistema de reconocimiento de im&aacute;genes en tiempo real, el servidor captura las im&aacute;genes y se las env&iacute;a a los workers para que sean procesadas, y al terminar dicho proceso se env&iacute;an las im&aacute;genes al colector.</p>
 <p>El servidor simplemente tiene 2 listas una de cadenas de texto que al final env&iacute;a 2 "x" para que los clientes finalicen. Se crea un socket con capa de transporte tcp para env&iacute;ar la lista de n&uacute;meros, luego se crea el socket para ipc y se env&iacute;a las cadenas de texto.</p>
 <p>Se notar&aacute; que los clientes simplemente se conectan al servidor, uno de los clientes se conecta por tcp y el otro por ipc.</p>
-<p>El c&oacute;digo del servidor se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa zeroMQ y sleep de time</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
-
-
-
-<span class="c1">#Se crea la instancia del contexto</span>
-
-<span class="n">ctx</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se crea el socket con parametro DOWNSTREAM</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">DOWNSTREAM</span><span class="p">)</span>
-
-<span class="c1">#Se crea una lista de textos</span>
-
-<span class="n">lista1</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Esta es una prueba,1"</span><span class="p">,</span><span class="s2">"Desde zeroMQ,2"</span><span class="p">,</span><span class="s2">"Sigo probando,3"</span><span class="p">,</span><span class="s2">"Prueba...,4"</span><span class="p">,</span><span class="s2">"q,5"</span><span class="p">,</span><span class="s2">"1,6"</span><span class="p">,</span><span class="s2">"q,7"</span><span class="p">,</span><span class="s2">"x"</span><span class="p">,</span><span class="s2">"x"</span><span class="p">)</span>
-
-<span class="c1">#Se crea una lista de un rango de numeros</span>
-
-<span class="n">lista2</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-
-<span class="c1">#Se asocia el socket a una IP y puerto</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:12345"</span><span class="p">)</span>
-
-
-
-<span class="c1">#Se envia la lista de numeros a los clientes</span>
-
-<span class="c1">#que se conectan al servidor.</span>
-
-<span class="c1">#El envio se hace cada segundo.</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lista2</span><span class="p">:</span>
-
- <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span><span class="p">)</span>
-
- <span class="k">print</span> <span class="s2">"Enviado </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span>
-
- <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-
-
-<span class="c1">#Se asocia el socket a un archivo por</span>
-
-<span class="c1">#medio del transporte ipc</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"ipc:///tmp/zmqdemo"</span><span class="p">)</span>
-
-<span class="c1">#Se envia la lista de textos a los clientes conectados</span>
-
-<span class="c1">#el envio se realiza cada segundo.</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lista1</span><span class="p">:</span>
-
- <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
- <span class="k">print</span> <span class="s2">"Enviado </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span>
-
- <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
+<p>El c&oacute;digo del servidor se muestra a continuaci&oacute;n:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="se importa zeromq y sleep de time">Se importa zeroMQ y sleep de time</h1>
+<p>import zmq</p>
+<p>from time import sleep</p>
+<h1 id="se crea la instancia del contexto">Se crea la instancia del contexto</h1>
+<p>ctx = zmq.Context()</p>
+<h1 id="se crea el socket con parametro downstream">Se crea el socket con parametro DOWNSTREAM</h1>
+<p>socket = ctx.socket(zmq.DOWNSTREAM)</p>
+<h1 id="se crea una lista de textos">Se crea una lista de textos</h1>
+<p>lista1 = ("Esta es una prueba,1","Desde zeroMQ,2","Sigo probando,3","Prueba...,4","q,5","1,6","q,7","x","x")</p>
+<h1 id="se crea una lista de un rango de numeros">Se crea una lista de un rango de numeros</h1>
+<p>lista2 = range(1,4)</p>
+<h1 id="se asocia el socket a una ip y puerto">Se asocia el socket a una IP y puerto</h1>
+<p>socket.bind("tcp://127.0.0.1:12345")</p>
+<h1 id="se envia la lista de numeros a los clientes">Se envia la lista de numeros a los clientes</h1>
+<h1 id="que se conectan al servidor.">que se conectan al servidor.</h1>
+<h1 id="el envio se hace cada segundo.">El envio se hace cada segundo.</h1>
+<p>for i in lista2:</p>
+<p>socket.send("%s" %i)</p>
+<p>print "Enviado %s" %i</p>
+<p>sleep(1)</p>
+<h1 id="se asocia el socket a un archivo por">Se asocia el socket a un archivo por</h1>
+<h1 id="medio del transporte ipc">medio del transporte ipc</h1>
+<p>socket.bind("ipc:///tmp/zmqdemo")</p>
+<h1 id="se envia la lista de textos a los clientes conectados">Se envia la lista de textos a los clientes conectados</h1>
+<h1 id="el envio se realiza cada segundo.">el envio se realiza cada segundo.</h1>
+<p>for i in lista1:</p>
+<p>socket.send(i)</p>
+<p>print "Enviado %s" %i</p>
+<p>sleep(1)
+```</p>
 <p>El c&oacute;digo del cliente que usa tcp como transporte se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa el modulo zeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea la instancia del contexto</span>
-
-<span class="n">ctx</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se crea el socket con Parametro UPSTREAM</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">UPSTREAM</span><span class="p">)</span>
-
-<span class="c1">#Se conecta el socket (tcp) al servidor y su puerto</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:12345"</span><span class="p">)</span>
-
-<span class="c1">#Se crea un ciclo que recibe lo que envia el </span>
-
-<span class="c1">#servidor y lo muestra en pantalla</span>
-
-<span class="c1">#y se recibe la letra x finaliza la conexion del cliente</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
- <span class="n">rcv</span> <span class="o">=</span>  <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-
- <span class="k">if</span> <span class="n">rcv</span> <span class="o">==</span> <span class="s2">"x"</span> <span class="p">:</span>
-
-  <span class="k">print</span> <span class="n">rcv</span>
-
-  <span class="k">break</span>
-
- <span class="k">print</span> <span class="n">rcv</span> 
-</pre></div>
-<p>Se muestra el c&oacute;digo del cliente utilizando como transporte ipc:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa el modulo zeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea la instancia del contexto</span>
-
-<span class="n">ctx</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se crea el socket con parametro UPSTREAM</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">UPSTREAM</span><span class="p">)</span>
-
-
-<span class="c1">#Se conecta el socket a un archivo temporal</span>
-
-<span class="c1">#por medio de ipc como transporte</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"ipc:///tmp/zmqdemo"</span><span class="p">)</span>
-
-<span class="c1">#Se crea un ciclo para recibir</span>
-
-<span class="c1">#la informacion del servidor</span>
-
-<span class="c1">#se muestra en pantalla </span>
-
-<span class="c1">#si se recibe la letra x </span>
-
-<span class="c1">#finaliza la conexion con el servidor</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
- <span class="n">rcv</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-
- <span class="k">if</span> <span class="n">rcv</span> <span class="o">==</span>  <span class="s1">'x'</span><span class="p">:</span>
-
-  <span class="k">print</span> <span class="n">rcv</span>
-
-  <span class="k">break</span>
-
- <span class="k">print</span> <span class="n">rcv</span>
-</pre></div>
+<p>```python</p>
+<h1 id="!/usr/bin/env python_1">!/usr/bin/env python</h1>
+<h1 id="se importa el modulo zeromq">Se importa el modulo zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia del contexto_1">Se crea la instancia del contexto</h1>
+<p>ctx = zmq.Context()</p>
+<h1 id="se crea el socket con parametro upstream">Se crea el socket con Parametro UPSTREAM</h1>
+<p>socket = ctx.socket(zmq.UPSTREAM)</p>
+<h1 id="se conecta el socket (tcp) al servidor y su puerto">Se conecta el socket (tcp) al servidor y su puerto</h1>
+<p>socket.connect("tcp://127.0.0.1:12345")</p>
+<h1 id="se crea un ciclo que recibe lo que envia el">Se crea un ciclo que recibe lo que envia el</h1>
+<h1 id="servidor y lo muestra en pantalla">servidor y lo muestra en pantalla</h1>
+<h1 id="y se recibe la letra x finaliza la conexion del cliente">y se recibe la letra x finaliza la conexion del cliente</h1>
+<p>while True:</p>
+<p>rcv =  socket.recv()</p>
+<p>if rcv == "x" :</p>
+<p>print rcv</p>
+<p>break</p>
+<p>print rcv 
+```</p>
+<p>Se muestra el c&oacute;digo del cliente utilizando como transporte ipc:
+```python</p>
+<h1 id="!/usr/bin/env python_2">!/usr/bin/env python</h1>
+<h1 id="se importa el modulo zeromq_1">Se importa el modulo zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia del contexto_2">Se crea la instancia del contexto</h1>
+<p>ctx = zmq.Context()</p>
+<h1 id="se crea el socket con parametro upstream_1">Se crea el socket con parametro UPSTREAM</h1>
+<p>socket = ctx.socket(zmq.UPSTREAM)</p>
+<h1 id="se conecta el socket a un archivo temporal">Se conecta el socket a un archivo temporal</h1>
+<h1 id="por medio de ipc como transporte">por medio de ipc como transporte</h1>
+<p>socket.connect("ipc:///tmp/zmqdemo")</p>
+<h1 id="se crea un ciclo para recibir">Se crea un ciclo para recibir</h1>
+<h1 id="la informacion del servidor">la informacion del servidor</h1>
+<h1 id="se muestra en pantalla">se muestra en pantalla</h1>
+<h1 id="si se recibe la letra x">si se recibe la letra x</h1>
+<h1 id="finaliza la conexion con el servidor">finaliza la conexion con el servidor</h1>
+<p>while True:</p>
+<p>rcv = socket.recv()</p>
+<p>if rcv ==  'x':</p>
+<p>print rcv</p>
+<p>break</p>
+<p>print rcv</p>
+<p>```</p>
 <p>La siguientes figuras muestran el resultado en el servidor y ambos clientes:
 Servidor:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython7-2.png"/> </p>

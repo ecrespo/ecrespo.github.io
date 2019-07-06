@@ -171,71 +171,49 @@
 <p>Socket par son muy similares a los sockets regulares. La comunicaci&oacute;n es bidireccional, no hay un espec&iacute;fico estado almacenado dentro del socket y solamente se puede conectar con un compa&ntilde;ero.</p>
 <p>La figura representa la estructura de sockets pares, el servidor escucha en un puerto seguro y un cliente se conecta a el. Las l&iacute;neas rojas muestran el flujo de los mensajes, en este patr&oacute;n ambos extremos usan el patr&oacute;n par, y los mensajes fluyen de manera bidireccional.</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython2-1.png"/> </p>
-<p>Se muestra a continuaci&oacute;n el c&oacute;digo del servidor:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Importar zmq</span>
-<span class="kn">import</span> <span class="nn">zmq</span>
-<span class="c1">#Se crea la instancia del contexto</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="c1">#Se crea el socket del tipo PAR</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PAIR</span><span class="p">)</span>
-<span class="c1">#Se asocia a una IP y puerto donde escucha el servidor.</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5555"</span><span class="p">)</span>
-<span class="c1">#Se crea un ciclo.</span>
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="c1">#Se recibe un mensaje del cliente</span>
-    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="c1">#Se muestra en pantalla</span>
-    <span class="k">print</span> <span class="s2">"Recivo"</span><span class="p">,</span> <span class="n">mensaje</span>
-    <span class="c1">#Se envia de vuelta el mensaje</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
-</pre></div>
-<p>El c&oacute;digo del cliente es el siguiente:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1">#Se importa zmq</span>
-<span class="kn">import</span> <span class="nn">zmq</span>
-<span class="c1">#Se crea la instancia del contexto</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="c1">#Se crea el socket con argumento del tipo de mensaje Par.</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PAIR</span><span class="p">)</span>
-<span class="c1">#Se conecta al servidor dado la IP y puerto.</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5555"</span><span class="p">)</span>
-<span class="c1">#Se crea un cilo de 100 repeticiones.</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="c1">#Se define el mensaje a pasar</span>
-    <span class="n">mensaje</span> <span class="o">=</span> <span class="s2">"mensaje </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">i</span>
-    <span class="c1">#Se pasa el mensaje al servidor</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
-    <span class="c1">#Se presenta en pantalla el mensaje</span>
-    <span class="k">print</span> <span class="s2">"Enviando"</span><span class="p">,</span> <span class="n">mensaje</span>
-    <span class="c1">#Se recibe el mensaje de vuelta</span>
-    <span class="n">msg_in</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="c1">#Se presenta en pantalla el mensaje de vuelta</span>
-    <span class="k">print</span> <span class="s2">"Recibido:"</span><span class="p">,</span> <span class="n">msg_in</span>
-</pre></div>
-</td></tr></table>
-<p>El resultado del lado del servidor se muestra en la siguiente figura:</p>
+<p>Se muestra a continuaci&oacute;n el c&oacute;digo del servidor:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="importar zmq">Importar zmq</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia del contexto">Se crea la instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket del tipo par">Se crea el socket del tipo PAR</h1>
+<p>socket = context.socket(zmq.PAIR)</p>
+<h1 id="se asocia a una ip y puerto donde escucha el servidor.">Se asocia a una IP y puerto donde escucha el servidor.</h1>
+<p>socket.bind("tcp://127.0.0.1:5555")</p>
+<h1 id="se crea un ciclo.">Se crea un ciclo.</h1>
+<p>while True:
+    #Se recibe un mensaje del cliente
+    mensaje = socket.recv()
+    #Se muestra en pantalla
+    print "Recivo", mensaje
+    #Se envia de vuelta el mensaje
+    socket.send(mensaje)
+<code>El c&oacute;digo del cliente es el siguiente:</code></p>
+<h1 id="!/usr/bin/env python_1">!/usr/bin/env python</h1>
+<h1 id="se importa zmq">Se importa zmq</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia del contexto_1">Se crea la instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket con argumento del tipo de mensaje par.">Se crea el socket con argumento del tipo de mensaje Par.</h1>
+<p>socket = context.socket(zmq.PAIR)</p>
+<h1 id="se conecta al servidor dado la ip y puerto.">Se conecta al servidor dado la IP y puerto.</h1>
+<p>socket.connect("tcp://127.0.0.1:5555")</p>
+<h1 id="se crea un cilo de 100 repeticiones.">Se crea un cilo de 100 repeticiones.</h1>
+<p>for i in range(100):
+    #Se define el mensaje a pasar
+    mensaje = "mensaje %s" % i
+    #Se pasa el mensaje al servidor
+    socket.send(mensaje)
+    #Se presenta en pantalla el mensaje
+    print "Enviando", mensaje
+    #Se recibe el mensaje de vuelta
+    msg_in = socket.recv()
+    #Se presenta en pantalla el mensaje de vuelta
+    print "Recibido:", msg_in
+```  <br/>
+El resultado del lado del servidor se muestra en la siguiente figura:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython2-2.png"/> </p>
 <p>El resultado del lado del cliente se muestra en la siguiente figura:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython2-3.png"/> </p>

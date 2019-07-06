@@ -103,8 +103,7 @@ El resultado de reproducir el script se muestra en el siguiente vídeo:
 
 [https://youtu.be/todhoMD1jBY](https://youtu.be/todhoMD1jBY "https://youtu.be/todhoMD1jBY")
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/todhoMD1jBY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+[!embed](https://youtu.be/todhoMD1jBY)
 
 
 Nota: El vídeo del reproductor no tiene problemas con el audio, el problema generador de screencast no he logrado hacer que grabe audio :-/ ...

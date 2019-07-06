@@ -174,120 +174,116 @@
 </ul>
 <p>En los art&iacute;culos mencionados anteriormente se explica como usar el comando adb del sdk de Android y la creaci&oacute;n de variables de entorno para poder ejecutar remotamente scripts desde Linux al celular con Android. En este caso todo ese proceso se automatiza  en el script, pero es necesario para el caso USB ejecutar SL4A con la opci&oacute;n de privado y en el caso wifi con la opci&oacute;n de p&uacute;blico. Adem&aacute;s se tiene que verificar el n&uacute;mero del puerto asignado en el servidor SL4A para pasarle como par&aacute;metro dichos datos al programa desde la l&iacute;nea de comandos.</p>
 <p>A continuaci&oacute;n se muestra el c&oacute;digo del programa:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<p>```python </p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="script que permite enviar mensaje de texto a un celular android desde linux.">Script que permite enviar mensaje de texto a un celular android desde Linux.</h1>
+<h1 id="autor: ernesto crespo">Autor: Ernesto Crespo</h1>
+<h1 id="correo:ecrespo@gmail.com">Correo:ecrespo@gmail.com</h1>
+<h1 id="licencia: gplv3">Licencia: GPLv3</h1>
+<h1 id="version:0.4">Version:0.4</h1>
+<h1 id="importando el modulo android,sys,re y getstatusoutput">Importando el modulo android,sys,re y getstatusoutput</h1>
+<p>import android,sys,re
+from commands import getstatusoutput</p>
+<p>class AndroidSMS:
+    def <strong>init</strong>(self,conexion,puerto,host="192.168.0.100"):
+        #Asignacion de la estructura de datos del Objeto
+        self.__adb = "/home/ernesto/android-sdk-linux_x86/platform-tools/adb"
+        self.__puerto = puerto
+        self.__host = host
+        self.__conexion = conexion</p>
+<pre><code>def __ValidarNumero__(self,numero):
+    """Valida si los numeros tienen 11 digitos y que sean
+    de los proveedores movilnet, digitel y movistar
+    """
+    if len(numero) == 11 and ((re.search("041[2|4|6]\d\d\d\d\d\d\d",numero)) or (re.search("042[4|6]\d\d\d\d\d\d\d",numero))) :
+        return 1
+    else:
+        return 0
 
-<span class="c1">#Script que permite enviar mensaje de texto a un celular android desde Linux.</span>
-<span class="c1">#Autor: Ernesto Crespo</span>
-<span class="c1">#Correo:ecrespo@gmail.com</span>
-<span class="c1">#Licencia: GPLv3</span>
-<span class="c1">#Version:0.4</span>
-
-<span class="c1">#Importando el modulo android,sys,re y getstatusoutput</span>
-<span class="kn">import</span> <span class="nn">android</span><span class="o">,</span><span class="nn">sys</span><span class="o">,</span><span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">commands</span> <span class="kn">import</span> <span class="n">getstatusoutput</span>
-
-<span class="k">class</span> <span class="nc">AndroidSMS</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">conexion</span><span class="p">,</span><span class="n">puerto</span><span class="p">,</span><span class="n">host</span><span class="o">=</span><span class="s2">"192.168.0.100"</span><span class="p">):</span>
-        <span class="c1">#Asignacion de la estructura de datos del Objeto</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__adb</span> <span class="o">=</span> <span class="s2">"/home/ernesto/android-sdk-linux_x86/platform-tools/adb"</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__puerto</span> <span class="o">=</span> <span class="n">puerto</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__host</span> <span class="o">=</span> <span class="n">host</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__conexion</span> <span class="o">=</span> <span class="n">conexion</span>
-
-    <span class="k">def</span> <span class="nf">__ValidarNumero__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">numero</span><span class="p">):</span>
-        <span class="sd">"""Valida si los numeros tienen 11 digitos y que sean</span>
-<span class="sd">        de los proveedores movilnet, digitel y movistar</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numero</span><span class="p">)</span> <span class="o">==</span> <span class="mi">11</span> <span class="ow">and</span> <span class="p">((</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">"041[2|4|6]\d\d\d\d\d\d\d"</span><span class="p">,</span><span class="n">numero</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">"042[4|6]\d\d\d\d\d\d\d"</span><span class="p">,</span><span class="n">numero</span><span class="p">)))</span> <span class="p">:</span>
-            <span class="k">return</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-
-    <span class="k">def</span> <span class="nf">__ConfigAndroid__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""__ConfigAndroid: Metodo que permite habilitar el funcionamiento</span>
-<span class="sd">        del celular Android desde Linux tanto para wifi como para conexion USB</span>
-<span class="sd">        """</span>
-        <span class="c1">#Se apaga el servidor adb en el Linux</span>
-        <span class="n">getstatusoutput</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> kill-server"</span> <span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__adb</span><span class="p">)</span>
-        <span class="c1">#Se borra las variables de entorno AP_PORT y AP_HOST</span>
-        <span class="n">getstatusoutput</span><span class="p">(</span><span class="s2">"export AP_PORT=</span><span class="se">\"\"</span><span class="s2">"</span><span class="p">)</span>
-        <span class="n">getstatusoutput</span><span class="p">(</span><span class="s2">"export AP_HOST=</span><span class="se">\"\"</span><span class="s2">"</span><span class="p">)</span>
-        <span class="c1">#Se inicia el servidor adb y se verifica que funciona correctamente</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">getstatusoutput</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> devices"</span> <span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__adb</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s2">"Problemas con la configuracion del celular"</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__conexion</span> <span class="o">==</span> <span class="s2">"usb"</span><span class="p">:</span>
-                <span class="c1">#Se verifica que el dispositivo aparece identificado</span>
-                <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
-                    <span class="k">print</span> <span class="s2">"NO hay un celular conectado"</span>
-                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span>
-        <span class="c1">#En este punto se tiene el dispositivo funcionando</span>
-        <span class="c1">#Tanto por wifi como por usb.</span>
-        <span class="n">getstatusoutput</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">  forward tcp:9999 tcp:</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__adb</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__puerto</span><span class="p">))</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__conexion</span> <span class="o">==</span> <span class="s2">"wifi"</span><span class="p">:</span>
-            <span class="c1">#Se crean las variables de entorno AP_PORT y AP_HOST</span>
-            <span class="c1">#para el caso de wifi</span>
-            <span class="n">getstatusoutput</span><span class="p">(</span><span class="s2">"export AP_PORT=</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__puerto</span><span class="p">)</span>
-            <span class="n">getstatusoutput</span><span class="p">(</span><span class="s2">"export AP_HOST=</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">__host</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__conexion</span> <span class="o">==</span> <span class="s2">"usb"</span><span class="p">:</span>
-            <span class="c1">#Se crea la variable de entorno AP_PORT</span>
-            <span class="c1">#para el caso conexion usb</span>
-            <span class="n">getstatusoutput</span><span class="p">(</span><span class="s2">"export AP_PORT=9999"</span><span class="p">)</span>
-        <span class="k">print</span> <span class="s2">"Se configuro el celular sin problemas"</span>
+def __ConfigAndroid__(self):
+    """__ConfigAndroid: Metodo que permite habilitar el funcionamiento
+    del celular Android desde Linux tanto para wifi como para conexion USB
+    """
+    #Se apaga el servidor adb en el Linux
+    getstatusoutput("%s kill-server" %self.__adb)
+    #Se borra las variables de entorno AP_PORT y AP_HOST
+    getstatusoutput("export AP_PORT=\"\"")
+    getstatusoutput("export AP_HOST=\"\"")
+    #Se inicia el servidor adb y se verifica que funciona correctamente
+    r = getstatusoutput("%s devices" %self.__adb)
+    if r[0] &lt;&gt; 0:
+        print "Problemas con la configuracion del celular"
+        sys.exit
+    else:
+        if self.__conexion == "usb":
+            #Se verifica que el dispositivo aparece identificado
+            if r[1].split("\n")[1] == "":
+                print "NO hay un celular conectado"
+                sys.exit
+    #En este punto se tiene el dispositivo funcionando
+    #Tanto por wifi como por usb.
+    getstatusoutput("%s  forward tcp:9999 tcp:%s" %(self.__adb,self.__puerto))
+    if self.__conexion == "wifi":
+        #Se crean las variables de entorno AP_PORT y AP_HOST
+        #para el caso de wifi
+        getstatusoutput("export AP_PORT=%s" %self.__puerto)
+        getstatusoutput("export AP_HOST=%s" %self.__host)
+    elif self.__conexion == "usb":
+        #Se crea la variable de entorno AP_PORT
+        #para el caso conexion usb
+        getstatusoutput("export AP_PORT=9999")
+    print "Se configuro el celular sin problemas"
 
 
-    <span class="k">def</span> <span class="nf">EnviarMensaje</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">numero</span><span class="p">,</span><span class="n">mensaje</span><span class="p">):</span>
-        <span class="sd">"""EnviarMensaje: Metodo que permite enviar un mensaje de texto</span>
-<span class="sd">        pasando el numero y el mensaje</span>
-<span class="sd">        Maneja ambos casos conexion USB o por red wifi.</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ValidarNumero__</span><span class="p">(</span><span class="n">numero</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s2">"Numero invalido"</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span>
-        <span class="c1">#Creando la instancia droid del objeto Android</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__ConfigAndroid__</span><span class="p">()</span>
-        <span class="c1">#Se crea la instancia del objeto Android dependiendo si es conexion</span>
-        <span class="c1">#wifi se le pasa el host y el puerto</span>
-        <span class="c1">#Si es conexion USB simplemente se crea la instancia</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__conexion</span> <span class="o">==</span> <span class="s2">"wifi"</span><span class="p">:</span>
-            <span class="n">droid</span> <span class="o">=</span> <span class="n">android</span><span class="o">.</span><span class="n">Android</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__host</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__puerto</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__conexion</span> <span class="o">==</span> <span class="s2">"usb"</span><span class="p">:</span>
-            <span class="n">droid</span> <span class="o">=</span> <span class="n">android</span><span class="o">.</span><span class="n">Android</span><span class="p">()</span>
-        <span class="c1">#Enviando el mensaje de texto</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">smsSend</span><span class="p">(</span><span class="n">numero</span><span class="p">,</span><span class="n">mensaje</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="sd">"""Se capturan los valores de:</span>
-<span class="sd">    *numero</span>
-<span class="sd">    *mensaje</span>
-<span class="sd">    *conexion</span>
-<span class="sd">    *puerto</span>
-<span class="sd">    *host</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-        <span class="n">numero</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">mensaje</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">conexion</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">puerto</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-        <span class="n">host</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-        <span class="n">numero</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">mensaje</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">conexion</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">puerto</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-        <span class="n">host</span> <span class="o">=</span> <span class="s2">""</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s2">"Error: No se pasaron los parametros completos"</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span>
-    <span class="c1">#Se crea la instancia de la clase AndroidSM pasando conexion,puerto y host</span>
-    <span class="n">androidsms</span> <span class="o">=</span> <span class="n">AndroidSMS</span><span class="p">(</span><span class="n">conexion</span><span class="p">,</span><span class="n">puerto</span><span class="p">,</span><span class="n">host</span><span class="p">)</span>
-    <span class="c1">#Se envie el mensaje de texto</span>
-    <span class="n">androidsms</span><span class="o">.</span><span class="n">EnviarMensaje</span><span class="p">(</span><span class="n">numero</span><span class="p">,</span><span class="n">mensaje</span><span class="p">)</span>
-</pre></div>
+def EnviarMensaje(self,numero,mensaje):
+    """EnviarMensaje: Metodo que permite enviar un mensaje de texto
+    pasando el numero y el mensaje
+    Maneja ambos casos conexion USB o por red wifi.
+    """
+    if self.__ValidarNumero__(numero) == 0:
+        print "Numero invalido"
+        sys.exit
+    #Creando la instancia droid del objeto Android
+    self.__ConfigAndroid__()
+    #Se crea la instancia del objeto Android dependiendo si es conexion
+    #wifi se le pasa el host y el puerto
+    #Si es conexion USB simplemente se crea la instancia
+    if self.__conexion == "wifi":
+        droid = android.Android((self.__host,self.__puerto))
+    elif self.__conexion == "usb":
+        droid = android.Android()
+    #Enviando el mensaje de texto
+    droid.smsSend(numero,mensaje)
+</code></pre>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    """Se capturan los valores de:
+    <em>numero
+    </em>mensaje
+    <em>conexion
+    </em>puerto
+    *host
+    """
+    if len(sys.argv) == 6:
+        numero = sys.argv[1]
+        mensaje = sys.argv[2]
+        conexion = sys.argv[3]
+        puerto = sys.argv[4]
+        host = sys.argv[5]
+    elif len(sys.argv) == 5:
+        numero = sys.argv[1]
+        mensaje = sys.argv[2]
+        conexion = sys.argv[3]
+        puerto = sys.argv[4]
+        host = ""
+    else:
+        print "Error: No se pasaron los parametros completos"
+        sys.exit
+    #Se crea la instancia de la clase AndroidSM pasando conexion,puerto y host
+    androidsms = AndroidSMS(conexion,puerto,host)
+    #Se envie el mensaje de texto
+    androidsms.EnviarMensaje(numero,mensaje)
+```</p>
 <p>La ejecuci&oacute;n del programa se muestra a continuaci&oacute;n:
 Se pasa primero el n&uacute;mero de celular, luego el mensaje, luego el tipo de conexi&oacute;n (usb,wifi), luego el puerto y por &uacute;ltimo la IP si es el caso de wifi.</p>
 <ul>

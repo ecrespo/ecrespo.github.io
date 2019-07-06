@@ -169,131 +169,82 @@
     <p>En Linux se pueden ejecutar procesos de forma periodica gracias a <code>cron</code> o en un momento determinado gracias a <code>at</code>.</p>
 <p>En python se tiene una librer&iacute;a que permite ejecutar de forma periodica o en una fecha determinada al estilo de <code>cron</code> o <code>at</code>, la librer&iacute;a se llama <a href="https://pypi.org/project/APScheduler/">APScheduler</a> (Advanced Python Scheduler). La documentaci&oacute;n de <code>SPScheduler</code> lo pueden revisar en este <a href="https://apscheduler.readthedocs.io/en/latest/">enlace</a>.</p>
 <p>El ejemplo a mostrar a continuaci&oacute;n permite ejecutar 2 tareas, la primera tarea se ejecuta a intervalos de 1 minuto, la segunda tarea se ejecuta de lunes a viernes en una hora espec&iacute;fica.</p>
-<p>El c&oacute;digo del ejemplo se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<p>El c&oacute;digo del ejemplo se muestra a continuaci&oacute;n:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="se importa scheduler">Se importa Scheduler</h1>
+<p>from apscheduler.scheduler import Scheduler</p>
+<h1 id="se importa ctime y sleep">Se importa ctime y sleep</h1>
+<p>from time import ctime,sleep</p>
+<h1 id="se crea la instancia de la clase scheduler">Se crea la instancia de la clase Scheduler</h1>
+<p>sched = Scheduler()</p>
+<h1 id="se crea una funcion con la tarea1, pero se dfine">Se crea una funcion con la tarea1, pero se dfine</h1>
+<h1 id="un decorador para la tarea para que sea periodica">un decorador para la tarea para que sea periodica</h1>
+<h1 id="cada minuto se ejecutara la tarea.">Cada minuto se ejecutara la tarea.</h1>
+<p>@sched.interval_schedule(minutes=1)</p>
+<p>def Tarea1():</p>
+<pre><code>#Muestra en pantalla la fecha y hora
 
-<span class="c1">#Se importa Scheduler</span>
+print "Se ejecuta cada minuto: %s" %ctime()
+</code></pre>
+<h1 id="se crea la tarea2 al estilo cron por medio de un decorador cron">Se crea la tarea2 al estilo cron por medio de un decorador cron</h1>
+<h1 id="que se ejecuta de lunes a viernes a las 9:40pm.">que se ejecuta de lunes a viernes a las 9:40pm.</h1>
+<p>@sched.cron_schedule(day_of_week='mon-fri', hour=21,minute=30)</p>
+<p>def Tarea2():</p>
+<pre><code>#Se muestra en pantalla la hora del momento que se ejecuta la aplicacion.
 
-<span class="kn">from</span> <span class="nn">apscheduler.scheduler</span> <span class="kn">import</span> <span class="n">Scheduler</span>
+print "Se ejecuto a las : %s" %ctime()
+</code></pre>
+<h1 id="se pasa la configuracion al scheduler">Se pasa la configuracion al scheduler</h1>
+<p>sched.configure()</p>
+<h1 id="se inicia el scheduler">Se inicia el scheduler</h1>
+<p>sched.start()</p>
+<h1 id="se muestra las tareas definidas.">Se muestra las tareas definidas.</h1>
+<p>print sched.print_jobs()</p>
+<h1 id="se crea un ciclo de 10 iteraciones">Se crea un ciclo de 10 iteraciones</h1>
+<h1 id="donde se espera un minuto por cada iteracion">Donde se espera un minuto por cada iteracion</h1>
+<h1 id="se muestra en pantalla las veces que se ejecuta.">Se muestra en pantalla las veces que se ejecuta.</h1>
+<p>for i in range(10):</p>
+<pre><code>print "---- %s" %i
 
-<span class="c1">#Se importa ctime y sleep</span>
+sleep(60)
+</code></pre>
+<h1 id="se detiene las tareas del scheduler al finalizar">Se detiene las tareas del scheduler al finalizar</h1>
+<h1 id="las iteraciones">las iteraciones</h1>
+<p>sched.shutdown(wait=False)
+```
+La salida de la ejecuci&oacute;n del programa se muestra a continuaci&oacute;n:</p>
+<p>```
+ernesto@clara:~/bin/python/procesos$ sudo ./procesos2.py </p>
+<p>Jobstore default:</p>
+<pre><code>Tarea1 (trigger: interval[0:01:00], next run at: 2012-07-18 21:27:59.911483)
 
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">ctime</span><span class="p">,</span><span class="n">sleep</span>
-
-<span class="c1">#Se crea la instancia de la clase Scheduler</span>
-
-<span class="n">sched</span> <span class="o">=</span> <span class="n">Scheduler</span><span class="p">()</span>
-
-<span class="c1">#Se crea una funcion con la tarea1, pero se dfine</span>
-
-<span class="c1">#un decorador para la tarea para que sea periodica</span>
-
-<span class="c1">#Cada minuto se ejecutara la tarea.</span>
-
-<span class="nd">@sched.interval_schedule</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">Tarea1</span><span class="p">():</span>
-
-    <span class="c1">#Muestra en pantalla la fecha y hora</span>
-
-    <span class="k">print</span> <span class="s2">"Se ejecuta cada minuto: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">ctime</span><span class="p">()</span>
-
-<span class="c1">#Se crea la tarea2 al estilo cron por medio de un decorador cron</span>
-
-<span class="c1">#que se ejecuta de lunes a viernes a las 9:40pm.</span>
-
-<span class="nd">@sched.cron_schedule</span><span class="p">(</span><span class="n">day_of_week</span><span class="o">=</span><span class="s1">'mon-fri'</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span><span class="n">minute</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">Tarea2</span><span class="p">():</span>
-
-    <span class="c1">#Se muestra en pantalla la hora del momento que se ejecuta la aplicacion.</span>
-
-    <span class="k">print</span> <span class="s2">"Se ejecuto a las : </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">ctime</span><span class="p">()</span>
-
-<span class="c1">#Se pasa la configuracion al scheduler</span>
-
-<span class="n">sched</span><span class="o">.</span><span class="n">configure</span><span class="p">()</span>
-
-<span class="c1">#Se inicia el scheduler</span>
-
-<span class="n">sched</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-
-<span class="c1">#Se muestra las tareas definidas.</span>
-
-<span class="k">print</span> <span class="n">sched</span><span class="o">.</span><span class="n">print_jobs</span><span class="p">()</span>
-
-<span class="c1">#Se crea un ciclo de 10 iteraciones</span>
-
-<span class="c1">#Donde se espera un minuto por cada iteracion</span>
-
-<span class="c1">#Se muestra en pantalla las veces que se ejecuta.</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-
-    <span class="k">print</span> <span class="s2">"---- </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">i</span>
-
-    <span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
-
-<span class="c1">#Se detiene las tareas del scheduler al finalizar</span>
-
-<span class="c1">#las iteraciones</span>
-
-<span class="n">sched</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-</pre></div>
-<p>La salida de la ejecuci&oacute;n del programa se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span>ernesto@clara:~/bin/python/procesos$ sudo ./procesos2.py 
-
-Jobstore default:
-
-    Tarea1 (trigger: interval[0:01:00], next run at: 2012-07-18 21:27:59.911483)
-
-    Tarea2 (trigger: cron[day_of_week='mon-fri', hour='21', minute='30'], next run at: 2012-07-18 21:30:00)
-
-None
-
----- 0
-
-Se ejecuta cada minuto: Wed Jul 18 21:27:59 2012
-
----- 1
-
-Se ejecuta cada minuto: Wed Jul 18 21:28:59 2012
-
----- 2
-
-Se ejecuta cada minuto: Wed Jul 18 21:29:59 2012
-
-Se ejecuto a las : Wed Jul 18 21:30:00 2012
-
----- 3
-
-Se ejecuta cada minuto: Wed Jul 18 21:30:59 2012
-
----- 4
-
-Se ejecuta cada minuto: Wed Jul 18 21:31:59 2012
-
----- 5
-
-Se ejecuta cada minuto: Wed Jul 18 21:32:59 2012
-
----- 6
-
-Se ejecuta cada minuto: Wed Jul 18 21:33:59 2012
-
----- 7
-
-Se ejecuta cada minuto: Wed Jul 18 21:34:59 2012
-
----- 8
-
-Se ejecuta cada minuto: Wed Jul 18 21:35:59 2012
-
----- 9
-
-Se ejecuta cada minuto: Wed Jul 18 21:36:59 2012
-</pre></div>
-<p>Con est&aacute; librer&iacute;a se puede definir la ejecuci&oacute;n de procesos a ciertos d&iacute;as y horas, o de forma peri&oacute;dica.</p>
+Tarea2 (trigger: cron[day_of_week='mon-fri', hour='21', minute='30'], next run at: 2012-07-18 21:30:00)
+</code></pre>
+<p>None</p>
+<p>---- 0</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:27:59 2012</p>
+<p>---- 1</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:28:59 2012</p>
+<p>---- 2</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:29:59 2012</p>
+<p>Se ejecuto a las : Wed Jul 18 21:30:00 2012</p>
+<p>---- 3</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:30:59 2012</p>
+<p>---- 4</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:31:59 2012</p>
+<p>---- 5</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:32:59 2012</p>
+<p>---- 6</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:33:59 2012</p>
+<p>---- 7</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:34:59 2012</p>
+<p>---- 8</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:35:59 2012</p>
+<p>---- 9</p>
+<p>Se ejecuta cada minuto: Wed Jul 18 21:36:59 2012
+```
+Con est&aacute; librer&iacute;a se puede definir la ejecuci&oacute;n de procesos a ciertos d&iacute;as y horas, o de forma peri&oacute;dica.</p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)

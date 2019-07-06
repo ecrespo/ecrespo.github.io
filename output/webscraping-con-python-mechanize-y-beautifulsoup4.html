@@ -172,274 +172,201 @@
 <p>En este caso se extraer&aacute; informaci&oacute;n del mismo sitio <a href="https://www.timeanddate.com/astronomy/venezuela/caracas">timeanddate</a>, la diferencia es que en vez de s&oacute;lo pasarle el c&oacute;digo de Venezuela (58), se le pasar&aacute; el mes y el a&ntilde;o.</p>
 <p>El c&oacute;digo muestra la informaci&oacute;n del amanecer y atardecer de todo el mes de Octubre y Noviembre.</p>
 <p>A continuaci&oacute;n se muestra el c&oacute;digo:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="se importa mechanize y cookielib">Se importa mechanize y cookielib</h1>
+<p>import mechanize</p>
+<p>import cookielib</p>
+<h1 id="se importa beautifulsoup">Se importa beautifulSoup</h1>
+<p>from BeautifulSoup import BeautifulSoup</p>
+<p>def DefinirUrl(mes,agno):</p>
+<pre><code>#Se pasa el url del sitio timeanddate con la informacion
 
-<span class="c1">#Se importa mechanize y cookielib</span>
 
-<span class="kn">import</span> <span class="nn">mechanize</span>
+#de la salida y ocultamiento del sol en Venezuela.
 
-<span class="kn">import</span> <span class="nn">cookielib</span>
 
-<span class="c1">#Se importa beautifulSoup</span>
+return "http://www.timeanddate.com/worldclock/astronomy.htmln=58&amp;month=%s&amp;year=%s&amp;obj=sun&amp;afl=-11&amp;day=1" %(mes,agno)
+</code></pre>
+<p>def CapturarInformacion(mes,agno):</p>
+<pre><code>#Se crea una instancia de Browser
 
-<span class="kn">from</span> <span class="nn">BeautifulSoup</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
 
-<span class="k">def</span> <span class="nf">DefinirUrl</span><span class="p">(</span><span class="n">mes</span><span class="p">,</span><span class="n">agno</span><span class="p">):</span>
+br = mechanize.Browser()
 
 
-    <span class="c1">#Se pasa el url del sitio timeanddate con la informacion</span>
+#Se crea una instancia para la Cookie
 
 
-    <span class="c1">#de la salida y ocultamiento del sol en Venezuela.</span>
+cj = cookielib.LWPCookieJar()
 
 
-    <span class="k">return</span> <span class="s2">"http://www.timeanddate.com/worldclock/astronomy.htmln=58&amp;month=</span><span class="si">%s</span><span class="s2">&amp;year=</span><span class="si">%s</span><span class="s2">&amp;obj=sun&amp;afl=-11&amp;day=1"</span> <span class="o">%</span><span class="p">(</span><span class="n">mes</span><span class="p">,</span><span class="n">agno</span><span class="p">)</span>
+#Se asocia la instancia del cookie con el navegador.
 
-<span class="k">def</span> <span class="nf">CapturarInformacion</span><span class="p">(</span><span class="n">mes</span><span class="p">,</span><span class="n">agno</span><span class="p">):</span>
 
+br.set_cookiejar(cj)
 
-    <span class="c1">#Se crea una instancia de Browser</span>
 
+#Se deshabilita el manejo de robots.txt
 
-    <span class="n">br</span> <span class="o">=</span> <span class="n">mechanize</span><span class="o">.</span><span class="n">Browser</span><span class="p">()</span>
 
+br.set_handle_robots(False)
 
-    <span class="c1">#Se crea una instancia para la Cookie</span>
 
+#Se define el tiempo de refrescamiento
 
-    <span class="n">cj</span> <span class="o">=</span> <span class="n">cookielib</span><span class="o">.</span><span class="n">LWPCookieJar</span><span class="p">()</span>
 
+br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
 
-    <span class="c1">#Se asocia la instancia del cookie con el navegador.</span>
 
+#Se pasa el url del sitio timeanddate con la informacion
 
-    <span class="n">br</span><span class="o">.</span><span class="n">set_cookiejar</span><span class="p">(</span><span class="n">cj</span><span class="p">)</span>
 
+url = DefinirUrl(mes,agno)
 
-    <span class="c1">#Se deshabilita el manejo de robots.txt</span>
 
+#de la salida y ocultamiento del sol en Venezuela.
 
-    <span class="n">br</span><span class="o">.</span><span class="n">set_handle_robots</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 
+#Se define las cabeceras del navegador, en este caso se le esta diciendo
 
-    <span class="c1">#Se define el tiempo de refrescamiento</span>
 
+# que el navegador es un firefox desde Linux Debian
 
-    <span class="n">br</span><span class="o">.</span><span class="n">set_handle_refresh</span><span class="p">(</span><span class="n">mechanize</span><span class="o">.</span><span class="n">_http</span><span class="o">.</span><span class="n">HTTPRefreshProcessor</span><span class="p">(),</span> <span class="n">max_time</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
+br.addheaders = [('User-agent',
 
-    <span class="c1">#Se pasa el url del sitio timeanddate con la informacion</span>
 
+     'Mozilla/5.0 (X11; U; Linux i686; es-VE; rv:1.9.0.1)Gecko/2008071615 Debian/6.0 Firefox/9')]
 
-    <span class="n">url</span> <span class="o">=</span> <span class="n">DefinirUrl</span><span class="p">(</span><span class="n">mes</span><span class="p">,</span><span class="n">agno</span><span class="p">)</span>
 
+#Se abre el url
 
-    <span class="c1">#de la salida y ocultamiento del sol en Venezuela.</span>
 
+r = br.open(url)
 
-    <span class="c1">#Se define las cabeceras del navegador, en este caso se le esta diciendo</span>
 
+#Se lee el htmml de la pagina
 
-    <span class="c1"># que el navegador es un firefox desde Linux Debian</span>
 
+html = br.response().read()
 
-    <span class="n">br</span><span class="o">.</span><span class="n">addheaders</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">'User-agent'</span><span class="p">,</span>
 
+#Se crea una instancia de BeautifulSoup pasando el html
 
-         <span class="s1">'Mozilla/5.0 (X11; U; Linux i686; es-VE; rv:1.9.0.1)Gecko/2008071615 Debian/6.0 Firefox/9'</span><span class="p">)]</span>
 
+#a verificar
 
-    <span class="c1">#Se abre el url</span>
 
+soup = BeautifulSoup(html)
 
-    <span class="n">r</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
+#Se busca la palabra table, y de ahi class y se
 
-    <span class="c1">#Se lee el htmml de la pagina</span>
 
+#busca el contenido
 
-    <span class="n">html</span> <span class="o">=</span> <span class="n">br</span><span class="o">.</span><span class="n">response</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
+#de cada columna de la tabla.
 
-    <span class="c1">#Se crea una instancia de BeautifulSoup pasando el html</span>
 
+for row in soup('table', {'class': 'spad'})[0].tbody('tr'):
 
-    <span class="c1">#a verificar</span>
 
+    tds = row('td')
 
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
 
+    #Se muestra la fecha y hora de la salida del sol
 
-    <span class="c1">#Se busca la palabra table, y de ahi class y se</span>
 
+    print tds[0].string, tds[1].string,tds[2].string
+</code></pre>
+<p>if <strong>name</strong>== "<strong>main</strong>":</p>
+<pre><code>print "Se muestra la informacion del mes de Octubre"
 
-    <span class="c1">#busca el contenido</span>
 
+print "--------------------------------------------"
 
-    <span class="c1">#de cada columna de la tabla.</span>
 
+CapturarInformacion(10,2013)
 
-    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">soup</span><span class="p">(</span><span class="s1">'table'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'class'</span><span class="p">:</span> <span class="s1">'spad'</span><span class="p">})[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tbody</span><span class="p">(</span><span class="s1">'tr'</span><span class="p">):</span>
 
+print "Se muestra la informacion del mes de Noviembre"
 
-        <span class="n">tds</span> <span class="o">=</span> <span class="n">row</span><span class="p">(</span><span class="s1">'td'</span><span class="p">)</span>
 
+print "--------------------------------------------"
 
-        <span class="c1">#Se muestra la fecha y hora de la salida del sol</span>
-
-
-        <span class="k">print</span> <span class="n">tds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="p">,</span> <span class="n">tds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="p">,</span><span class="n">tds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">string</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-
-
-    <span class="k">print</span> <span class="s2">"Se muestra la informacion del mes de Octubre"</span>
-
-
-    <span class="k">print</span> <span class="s2">"--------------------------------------------"</span>
-
-
-    <span class="n">CapturarInformacion</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">2013</span><span class="p">)</span>
-
-
-    <span class="k">print</span> <span class="s2">"Se muestra la informacion del mes de Noviembre"</span>
-
-
-    <span class="k">print</span> <span class="s2">"--------------------------------------------"</span> 
-
-    <span class="n">CapturarInformacion</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">2013</span><span class="p">)</span>
-</pre></div>
+CapturarInformacion(11,2013)
+</code></pre>
+<p>```</p>
 <p>A continuaci&oacute;n se muestra el resultado del script:</p>
-<p>Se muestra la informacion del mes de Octubre</p>
-<div class="highlight"><pre><span></span>--------------------------------------------
-
-1 Oct 2013 05:46 17:48
-
-2 Oct 2013 05:46 17:47
-
-3 Oct 2013 05:46 17:47
-
-4 Oct 2013 05:46 17:46
-
-5 Oct 2013 05:46 17:45
-
-6 Oct 2013 05:46 17:45
-
-7 Oct 2013 05:46 17:44
-
-8 Oct 2013 05:46 17:44
-
-9 Oct 2013 05:46 17:43
-
-10 Oct 2013 05:46 17:43
-
-11 Oct 2013 05:46 17:42
-
-12 Oct 2013 05:46 17:42
-
-13 Oct 2013 05:46 17:41
-
-14 Oct 2013 05:46 17:41
-
-15 Oct 2013 05:46 17:40
-
-16 Oct 2013 05:46 17:40
-
-17 Oct 2013 05:46 17:39
-
-18 Oct 2013 05:47 17:39
-
-19 Oct 2013 05:47 17:38
-
-20 Oct 2013 05:47 17:38
-
-21 Oct 2013 05:47 17:37
-
-22 Oct 2013 05:47 17:37
-
-23 Oct 2013 05:47 17:36
-
-24 Oct 2013 05:47 17:36
-
-25 Oct 2013 05:47 17:36
-
-26 Oct 2013 05:48 17:35
-
-27 Oct 2013 05:48 17:35
-
-28 Oct 2013 05:48 17:35
-
-29 Oct 2013 05:48 17:34
-
-30 Oct 2013 05:48 17:34
-
-31 Oct 2013 05:48 17:34
-
-Se muestra la informacion del mes de Noviembre
-
---------------------------------------------
-
-1 Nov 2013 05:49 17:33
-
-2 Nov 2013 05:49 17:33
-
-3 Nov 2013 05:49 17:33
-
-4 Nov 2013 05:49 17:33
-
-5 Nov 2013 05:50 17:33
-
-6 Nov 2013 05:50 17:32
-
-7 Nov 2013 05:50 17:32
-
-8 Nov 2013 05:51 17:32
-
-9 Nov 2013 05:51 17:32
-
-10 Nov 2013 05:51 17:32
-
-11 Nov 2013 05:51 17:32
-
-12 Nov 2013 05:52 17:32
-
-13 Nov 2013 05:52 17:32
-
-14 Nov 2013 05:53 17:31
-
-15 Nov 2013 05:53 17:31
-
-16 Nov 2013 05:53 17:31
-
-17 Nov 2013 05:54 17:31
-
-18 Nov 2013 05:54 17:31
-
-19 Nov 2013 05:54 17:32
-
-20 Nov 2013 05:55 17:32
-
-21 Nov 2013 05:55 17:32
-
-22 Nov 2013 05:56 17:32
-
-23 Nov 2013 05:56 17:32
-
-24 Nov 2013 05:57 17:32
-
-25 Nov 2013 05:57 17:32
-
-26 Nov 2013 05:58 17:32
-
-27 Nov 2013 05:58 17:32
-
-28 Nov 2013 05:59 17:33
-
-29 Nov 2013 05:59 17:33
-
-30 Nov 2013 06:00 17:33
-</pre></div>
+<p>Se muestra la informacion del mes de Octubre
+```</p>
+<hr/>
+<p>1 Oct 2013 05:46 17:48</p>
+<p>2 Oct 2013 05:46 17:47</p>
+<p>3 Oct 2013 05:46 17:47</p>
+<p>4 Oct 2013 05:46 17:46</p>
+<p>5 Oct 2013 05:46 17:45</p>
+<p>6 Oct 2013 05:46 17:45</p>
+<p>7 Oct 2013 05:46 17:44</p>
+<p>8 Oct 2013 05:46 17:44</p>
+<p>9 Oct 2013 05:46 17:43</p>
+<p>10 Oct 2013 05:46 17:43</p>
+<p>11 Oct 2013 05:46 17:42</p>
+<p>12 Oct 2013 05:46 17:42</p>
+<p>13 Oct 2013 05:46 17:41</p>
+<p>14 Oct 2013 05:46 17:41</p>
+<p>15 Oct 2013 05:46 17:40</p>
+<p>16 Oct 2013 05:46 17:40</p>
+<p>17 Oct 2013 05:46 17:39</p>
+<p>18 Oct 2013 05:47 17:39</p>
+<p>19 Oct 2013 05:47 17:38</p>
+<p>20 Oct 2013 05:47 17:38</p>
+<p>21 Oct 2013 05:47 17:37</p>
+<p>22 Oct 2013 05:47 17:37</p>
+<p>23 Oct 2013 05:47 17:36</p>
+<p>24 Oct 2013 05:47 17:36</p>
+<p>25 Oct 2013 05:47 17:36</p>
+<p>26 Oct 2013 05:48 17:35</p>
+<p>27 Oct 2013 05:48 17:35</p>
+<p>28 Oct 2013 05:48 17:35</p>
+<p>29 Oct 2013 05:48 17:34</p>
+<p>30 Oct 2013 05:48 17:34</p>
+<p>31 Oct 2013 05:48 17:34</p>
+<p>Se muestra la informacion del mes de Noviembre</p>
+<hr/>
+<p>1 Nov 2013 05:49 17:33</p>
+<p>2 Nov 2013 05:49 17:33</p>
+<p>3 Nov 2013 05:49 17:33</p>
+<p>4 Nov 2013 05:49 17:33</p>
+<p>5 Nov 2013 05:50 17:33</p>
+<p>6 Nov 2013 05:50 17:32</p>
+<p>7 Nov 2013 05:50 17:32</p>
+<p>8 Nov 2013 05:51 17:32</p>
+<p>9 Nov 2013 05:51 17:32</p>
+<p>10 Nov 2013 05:51 17:32</p>
+<p>11 Nov 2013 05:51 17:32</p>
+<p>12 Nov 2013 05:52 17:32</p>
+<p>13 Nov 2013 05:52 17:32</p>
+<p>14 Nov 2013 05:53 17:31</p>
+<p>15 Nov 2013 05:53 17:31</p>
+<p>16 Nov 2013 05:53 17:31</p>
+<p>17 Nov 2013 05:54 17:31</p>
+<p>18 Nov 2013 05:54 17:31</p>
+<p>19 Nov 2013 05:54 17:32</p>
+<p>20 Nov 2013 05:55 17:32</p>
+<p>21 Nov 2013 05:55 17:32</p>
+<p>22 Nov 2013 05:56 17:32</p>
+<p>23 Nov 2013 05:56 17:32</p>
+<p>24 Nov 2013 05:57 17:32</p>
+<p>25 Nov 2013 05:57 17:32</p>
+<p>26 Nov 2013 05:58 17:32</p>
+<p>27 Nov 2013 05:58 17:32</p>
+<p>28 Nov 2013 05:59 17:33</p>
+<p>29 Nov 2013 05:59 17:33</p>
+<p>30 Nov 2013 06:00 17:33
+```</p>
 <p>Como se muestra ya se puede agregar dinamismo a las busquedas que se quiera realizar en una p&aacute;gina web, extrayendo su informaci&oacute;n al pasarle datos al url. Adem&aacute;s se muestra como usar <code>Python Mechanize</code> para la captura de la p&aacute;gina web y <code>BeautifulSoup4</code> para capturar la informaci&oacute;n necesaria.</p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!

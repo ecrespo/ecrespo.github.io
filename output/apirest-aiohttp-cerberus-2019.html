@@ -175,7 +175,7 @@ por &uacute;ltimo la tercera, usar&aacute; cerberus pero el esquema estar&aacute
 art&iacute;culo <a href="https://blog.apcelent.com/create-rest-api-using-aiohttp.html">How to create REST API using aiohttp</a>, donde se explica como hacer un API rest sincr&oacute;nico con aiohttp.</p>
 <p>La documentaci&oacute;n de cerberus la pueden ver en el siguiente <a href="https://cerberus-sanhe.readthedocs.io/usage.html">cerberus</a>.</p>
 <p>Se tiene la siguiente estructura de directorios y archivos del API rest:</p>
-<div class="highlight"><pre><span></span>async-api-rest-example
+<p><code>async-api-rest-example
 ├── app.py
 ├── README.md
 ├── resources
@@ -183,8 +183,7 @@ art&iacute;culo <a href="https://blog.apcelent.com/create-rest-api-using-aiohttp
 │&nbsp;&nbsp; ├── home.py
 │&nbsp;&nbsp; ├── __init__.py
 │&nbsp;&nbsp; └── rethink_async.py
-└── run.py
-</pre></div>
+└── run.py</code></p>
 <p>Descripci&oacute;n de los archivos:</p>
 <ul>
 <li>app.py: Se definen las rutas de los endpoint del API rest.</li>
@@ -195,246 +194,209 @@ art&iacute;culo <a href="https://blog.apcelent.com/create-rest-api-using-aiohttp
 </ul>
 <h3 id="script run.py">Script run.py</h3>
 <p>Este script permite iniciar el API rest, a continuaci&oacute;n el c&oacute;digo:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
-
-<span class="c1">#Se importa aiohttp</span>
-<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
-
-<span class="c1">#Se importa las rutas de los endpoint</span>
-<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">setup_routes</span>
-
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">init_app</span><span class="p">():</span>
-    <span class="c1">#Se instancia la aplicaci&oacute;n</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
-    <span class="c1">#A la aplicaci&oacute;n se le pasa las rutas</span>
-    <span class="n">setup_routes</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
-    <span class="c1">#Se retorna la aplicaci&oacute;n</span>
-    <span class="k">return</span> <span class="n">app</span>
-
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="c1">#Se define la direcci&oacute;n del host, el puerto y se corre la Ap en dicha IP y puerto</span>
-    <span class="n">host</span> <span class="o">=</span> <span class="s1">'0.0.0.0'</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="mi">5000</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">init_app</span><span class="p">()</span>
-
-    <span class="n">web</span><span class="o">.</span><span class="n">run_app</span><span class="p">(</span><span class="n">app</span><span class="p">,</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
-
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
-</pre></div>
+<p>```python</p>
+<h1 id="!/usr/bin/env python3_1">!/usr/bin/env python3</h1>
+<h1 id="se importa aiohttp">Se importa aiohttp</h1>
+<p>from aiohttp import web</p>
+<h1 id="se importa las rutas de los endpoint">Se importa las rutas de los endpoint</h1>
+<p>from app import setup_routes</p>
+<p>async def init_app():
+    #Se instancia la aplicaci&oacute;n
+    app = web.Application()
+    #A la aplicaci&oacute;n se le pasa las rutas
+    setup_routes(app)
+    #Se retorna la aplicaci&oacute;n
+    return app</p>
+<p>def main():
+    #Se define la direcci&oacute;n del host, el puerto y se corre la Ap en dicha IP y puerto
+    host = '0.0.0.0'
+    port = 5000
+    app = init_app()</p>
+<pre><code>web.run_app(app,host=host, port=port)
+</code></pre>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    main()</p>
+<p>```</p>
 <h3 id="script app.py">Script app.py</h3>
 <p>Este script define las rutas y URLs de los endpoint del API rest. A continuaci&oacute;n el c&oacute;digo:</p>
-<div class="highlight"><pre><span></span><span class="c1">#Se importa los recursos del api rest y el home .</span>
-<span class="kn">from</span> <span class="nn">resources.api_resources</span> <span class="kn">import</span> <span class="n">Student</span>
-<span class="kn">from</span> <span class="nn">resources.home</span> <span class="kn">import</span> <span class="n">getIndex</span>
-
-
-
-
-
-<span class="k">def</span> <span class="nf">setup_routes</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
-    <span class="n">student</span> <span class="o">=</span> <span class="n">Student</span><span class="p">()</span>
-    <span class="c1">#Se tiene 3 endpoints, el primero validaci&oacute;n cl&aacute;sica,</span>
-    <span class="c1"># el segundo validando con cerberus, y el 3ero con cerberus</span>
-    <span class="c1">#pero guardando el esquema de validaci&oacute;n en una base de datos</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/api/v1/student1'</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData1</span><span class="p">)</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/api/v1/student2'</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData2</span><span class="p">)</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">'/api/v1/student3'</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData3</span><span class="p">)</span>
-    <span class="c1">#Por seguridad no se permite ingresar a la raiz del API rest</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/api/v1/'</span><span class="p">,</span> <span class="n">getIndex</span><span class="p">)</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">getIndex</span><span class="p">)</span>
-</pre></div>
+<p>```python</p>
+<h1 id="se importa los recursos del api rest y el home ._1">Se importa los recursos del api rest y el home .</h1>
+<p>from resources.api_resources import Student
+from resources.home import getIndex</p>
+<p>def setup_routes(app):
+    student = Student()
+    #Se tiene 3 endpoints, el primero validaci&oacute;n cl&aacute;sica,
+    # el segundo validando con cerberus, y el 3ero con cerberus
+    #pero guardando el esquema de validaci&oacute;n en una base de datos
+    app.router.add_post('/api/v1/student1',student.getData1)
+    app.router.add_post('/api/v1/student2',student.getData2)
+    app.router.add_post('/api/v1/student3',student.getData3)
+    #Por seguridad no se permite ingresar a la raiz del API rest
+    app.router.add_get('/api/v1/', getIndex)
+    app.router.add_get('/', getIndex)</p>
+<p>```</p>
 <h3 id="script rethink_async.py">Script rethink_async.py</h3>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<p>```python</p>
+<h1 id="!/usr/bin/env python3_3">!/usr/bin/env python3</h1>
+<p>import rethinkdb as r
+import asyncio
+from datetime import datetime</p>
+<p>r.set_loop_type("asyncio")</p>
+<p>async def createDB(server,port,database):
+    """
+    Create DB to database server.</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+database: Database name to create
 
-<span class="kn">import</span> <span class="nn">rethinkdb</span> <span class="kn">as</span> <span class="nn">r</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+"""
+conn = await r.connect(server, port)
+if database not in await r.db_list().run(conn):
+    return await r.db_create(database).run(conn)
+</code></pre>
+<p>async def createTable(server,port,database,table):
+    """
+    Create Table in database.</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+database: Database name to connect
+"""
+conn = await r.connect(server, port)
+return await r.db(database).table_create(table).run(conn)
+</code></pre>
+<p>async def listdb(server,port):
+    """
+    List all database in database server.</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+"""
+conn = await r.connect(server, port)
+return await r.db_list(conn)
+</code></pre>
+<p>async def listtables(server,port,database):
+    """
+    Lista tables from database.</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+database: Database name to list tables
+"""
+conn = await r.connect(server, port)
+return await r.db(database).table_list().run(conn)
+</code></pre>
+<p>async def insert(server,port,database,table,data):
+    """
+    Insert dictionary  in table.</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+database: Database name to connect
+table: table to insert Dictionary
+data: Dictionary data to insert
+"""
+conn = await r.connect(server, port)
+result = await r.db(database).table(table).insert(data).run(conn)
+await conn.close()
+return result
+</code></pre>
+<p>async def getAll(server,port,database,table,pattern=None):
+    """
+    Get All documents from pattern search</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+database: Database name to connect
+table: table name to search
+pattern: Dictionary with pattern search
+"""
+conn = await r.connect(server, port)
+if pattern == None:
+    cursor = await r.db(database).table(table).run(conn)
+else:
+    cursor = await r.db(database).table(table).filter(pattern).run(conn)
+elements = list()
 
+while (await cursor.fetch_next()):
+    item = await cursor.next()
+    elements.append(item)
 
-<span class="n">r</span><span class="o">.</span><span class="n">set_loop_type</span><span class="p">(</span><span class="s2">"asyncio"</span><span class="p">)</span>
+await conn.close()
 
+return elements
+</code></pre>
+<p>async def getFirst(server, port, database, table, pattern = None):
+    """
+    Get first document from pattern search</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+database: Database name to connect
+table: table name to search
+pattern: Dictionary with pattern search
+"""
+conn = await r.connect(server, port)
+if pattern == None:
+    cursor = await r.db(database).table(table).run(conn)
+else:
+    cursor = await  r.db(database).table(table).filter(pattern).run(conn)
+elements = list()
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">createDB</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Create DB to database server.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    database: Database name to create</span>
-
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">database</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_list</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_create</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">createTable</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Create Table in database.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    database: Database name to connect</span>
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table_create</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">listdb</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    List all database in database server.</span>
-
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_list</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">listtables</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Lista tables from database.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    database: Database name to list tables</span>
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table_list</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Insert dictionary  in table.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    database: Database name to connect</span>
-<span class="sd">    table: table to insert Dictionary</span>
-<span class="sd">    data: Dictionary data to insert</span>
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">result</span>
-
-
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">getAll</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">pattern</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Get All documents from pattern search</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    database: Database name to connect</span>
-<span class="sd">    table: table name to search</span>
-<span class="sd">    pattern: Dictionary with pattern search</span>
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-    <span class="n">elements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-
-    <span class="k">while</span> <span class="p">(</span><span class="n">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetch_next</span><span class="p">()):</span>
-        <span class="n">item</span> <span class="o">=</span> <span class="n">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-
-    <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="n">elements</span>
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">getFirst</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pattern</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Get first document from pattern search</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    database: Database name to connect</span>
-<span class="sd">    table: table name to search</span>
-<span class="sd">    pattern: Dictionary with pattern search</span>
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="n">await</span>  <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-    <span class="n">elements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-
-    <span class="k">while</span> <span class="p">(</span><span class="n">await</span>  <span class="n">cursor</span><span class="o">.</span><span class="n">fetch_next</span><span class="p">()):</span>
-        <span class="n">item</span> <span class="o">=</span> <span class="n">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="k">break</span>
-    <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">elements</span>
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">pattern</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Delete a  document from pattern search</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    database: Database name to connect</span>
-<span class="sd">    table: table name to search</span>
-<span class="sd">    pattern: Dictionary with pattern search</span>
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span>  <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-    <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">result</span>
-
-
-<span class="n">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">pattern</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">"""</span>
-<span class="sd">    Update a document from pattern search</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    server: IP server to connect</span>
-<span class="sd">    port: Port server to connect</span>
-<span class="sd">    database: Database name to connect</span>
-<span class="sd">    table: table name to search</span>
-<span class="sd">    pattern: Dictionary with pattern search</span>
-<span class="sd">    """</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="nb">dict</span><span class="p">())):</span>
-        <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="bp">None</span> <span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-            <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">result</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span>  <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
-            <span class="n">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">result</span>
-</pre></div>
+while (await  cursor.fetch_next()):
+    item = await cursor.next()
+    elements.append(item)
+    break
+await conn.close()
+return elements
+</code></pre>
+<p>async def delete(server,port,database,table,pattern):
+    """
+    Delete a  document from pattern search</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+database: Database name to connect
+table: table name to search
+pattern: Dictionary with pattern search
+"""
+conn = await r.connect(server, port)
+result =  await r.db(database).table(table).filter(pattern).delete().run(conn)
+await conn.close()
+return result
+</code></pre>
+<p>async def update(server,port,database,table,data,pattern=None):
+    """
+    Update a document from pattern search</p>
+<pre><code>Parameters
+----------
+server: IP server to connect
+port: Port server to connect
+database: Database name to connect
+table: table name to search
+pattern: Dictionary with pattern search
+"""
+conn = await r.connect(server, port)
+if (type(data) == type(dict())):
+    if pattern == None :
+        result = await r.db(database).table(table).update(data).run(conn)
+        await conn.close()
+        return result
+    else:
+        result =  await r.db(database).table(table).filter(pattern).update(data).run(conn)
+        await conn.close()
+        return result
+</code></pre>
+<p>```</p>
 <h3 id="script api_resouces.py">Script api_resouces.py</h3>
 <p>En el script se tienen 3 m&eacute;todos:</p>
 <ul>
@@ -443,185 +405,180 @@ art&iacute;culo <a href="https://blog.apcelent.com/create-rest-api-using-aiohttp
 <li>getData3: Este m&eacute;todo vuelve a usar cerberus pero ahora tomando el esquema a validar usando rethinkdb.</li>
 </ul>
 <p>A continuaci&oacute;n se muestra el c&oacute;digo:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
-<span class="kn">from</span> <span class="nn">cerberus</span> <span class="kn">import</span> <span class="n">Validator</span>
-<span class="kn">import</span> <span class="nn">rethinkdb</span> <span class="kn">as</span> <span class="nn">r</span>
+<p>```python</p>
+<p>import json
+from aiohttp import web
+from cerberus import Validator
+import rethinkdb as r</p>
+<p>from .rethink_async import *</p>
+<p><strong>version</strong> = '0.0.1'</p>
+<p>student_schema = {
+    'uid': {
+        'required': True,
+        'type': 'integer',
+    },
+    'age': {
+        'required': True,
+        'type': 'integer',
+        'min': 18,
+        'max': 35,
+    },
+    'name': {
+        'required': True,
+        'type': 'string',
+        'maxlength': 50,
+    },
+    'grade': {
+        'required': False,
+        'type': 'string',
+        'allowed': ['A', 'B', 'C'],
+    }
+}</p>
+<p>class Student(object):</p>
+<pre><code>def __init__(self):
+    pass
 
-<span class="kn">from</span> <span class="nn">.rethink_async</span> <span class="kn">import</span> <span class="o">*</span>
+async def getData1(self,request):
 
-<span class="n">__version__</span> <span class="o">=</span> <span class="s1">'0.0.1'</span>
+    #Se convierte el json a un diccionario
 
+    try:
+        data = json.loads(await request.text())
+    except json.JSONDecodeError:
+        response_obj = {'status': 'failed', 'reason': "Ill-formed JSON"}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
-<span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'uid'</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">'required'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
-        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'integer'</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s1">'age'</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">'required'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
-        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'integer'</span><span class="p">,</span>
-        <span class="s1">'min'</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
-        <span class="s1">'max'</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s1">'name'</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">'required'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
-        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'string'</span><span class="p">,</span>
-        <span class="s1">'maxlength'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="s1">'grade'</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">'required'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
-        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'string'</span><span class="p">,</span>
-        <span class="s1">'allowed'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">],</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+    #Se valida los datos de entrada
+    try:
+        uid = int(data['uid'])
+    except (KeyError, ValueError):
+        response_obj = {'status': 'failed', 'reason': "Expecting uid:int"}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
+    try:
+        age = int(data['age'])
+        if not 18 &lt; age &lt; 35:
+            raise ValueError('Bad age')
+    except (KeyError, ValueError):
+        response_obj = {'status': 'failed', 'reason': "Expecting age:int within the range [18:35]"}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
-<span class="k">class</span> <span class="nc">Student</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    try:
+        name = str(data['name'])
+        if len(name) &gt; 50:
+            raise ValueError('Max limit 50')
+    except (KeyError, ValueError):
+        response_obj = {'status': 'failed', 'reason': "Expecting name:str within the range [0:50]"}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
+    try:
+        grade = data.get('grade')
+        if grade is None:
+            grade = 'A'
+        if grade not in ('A', 'B', 'C'):
+            response_obj = {'status': 'failed', 'reason': "A, B or C expected"}
+            return web.Response(text=json.dumps(response_obj), status=205)
+    except (KeyError, ValueError):
+        response_obj = {'status': 'failed', 'reason': "Expecting grade:str A, B or C expected"}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">getData1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+    #Luego de validar se construye el diccionario de salida de datos como json
 
-        <span class="c1">#Se convierte el json a un diccionario</span>
+    data_output = dict()
+    data_output['uid'] = data['uid']
+    data_output['age'] = data['age']
+    data_output['name'] = data['name']
+    data_output['grade'] = data.get('grade', 'A')
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
-        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Ill-formed JSON"</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
-
-        <span class="c1">#Se valida los datos de entrada</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">uid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">])</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Expecting uid:int"</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">age</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'age'</span><span class="p">])</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="mi">18</span> <span class="o">&lt;</span> <span class="n">age</span> <span class="o">&lt;</span> <span class="mi">35</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Bad age'</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Expecting age:int within the range [18:35]"</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">])</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Max limit 50'</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Expecting name:str within the range [0:50]"</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">grade</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grade'</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">grade</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">grade</span> <span class="o">=</span> <span class="s1">'A'</span>
-            <span class="k">if</span> <span class="n">grade</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">):</span>
-                <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"A, B or C expected"</span><span class="p">}</span>
-                <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Expecting grade:str A, B or C expected"</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
-
-        <span class="c1">#Luego de validar se construye el diccionario de salida de datos como json</span>
-
-        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grade'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">)</span>
-
-        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'success'</span><span class="p">,</span>
-            <span class="s1">'data'</span><span class="p">:</span> <span class="n">data_output</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">'application/json'</span><span class="p">)</span>
+    response_obj = {
+        'status': 'success',
+        'data': data_output
+    }
+    return web.Response(text=json.dumps(response_obj), status=200, content_type='application/json')
 
 
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">getData2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+async def getData2(self,request):
 
-        <span class="c1">#Se convierte el json del post en un diccionario</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
-        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Ill-formed JSON"</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+    #Se convierte el json del post en un diccionario
+    try:
+        data = json.loads(await request.text())
+    except json.JSONDecodeError:
+        response_obj = {'status': 'failed', 'reason': "Ill-formed JSON"}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
-        <span class="c1">#Con la variable que contiene el esquema se realiza la validaci&oacute;n del json</span>
-        <span class="n">student_validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">student_schema</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">errors</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+    #Con la variable que contiene el esquema se realiza la validaci&oacute;n del json
+    student_validator = Validator(student_schema)
+    if not student_validator.validate(data):
+        msg = student_validator.errors
+        response_obj = {'status': 'failed', 'reason': msg}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
-        <span class="c1">#Se construye el diccionario de la salida de los datos v&iacute;a json</span>
-        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grade'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">)</span>
+    #Se construye el diccionario de la salida de los datos v&iacute;a json
+    data_output = dict()
+    data_output['uid'] = data['uid']
+    data_output['age'] = data['age']
+    data_output['name'] = data['name']
+    data_output['grade'] = data.get('grade', 'A')
 
-        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'success'</span><span class="p">,</span>
-            <span class="s1">'data'</span><span class="p">:</span> <span class="n">data_output</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">'application/json'</span><span class="p">)</span>
+    response_obj = {
+        'status': 'success',
+        'data': data_output
+    }
+    return web.Response(text=json.dumps(response_obj), status=200, content_type='application/json')
 
 
-    <span class="n">async</span> <span class="k">def</span> <span class="nf">getData3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+async def getData3(self,request):
 
-        <span class="c1">#Se convierte el json en un diccionario</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
-        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="s2">"Ill-formed JSON"</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+    #Se convierte el json en un diccionario
+    try:
+        data = json.loads(await request.text())
+    except json.JSONDecodeError:
+        response_obj = {'status': 'failed', 'reason': "Ill-formed JSON"}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
-        <span class="c1">#Si yo se, no deber&iacute;a tener  la configuraci&oacute;n de la base de datos ac&aacute;,</span>
-        <span class="c1">#pero era para no alargar el c&oacute;digo de ejemplo</span>
-        <span class="c1">#Se definen el servidor, puerto, base de datos, la tabla y el patr&oacute;n de busqueda</span>
-        <span class="n">server</span> <span class="o">=</span> <span class="s2">"localhost"</span>
-        <span class="n">port</span> <span class="o">=</span> <span class="mi">28015</span>
-        <span class="n">db</span> <span class="o">=</span> <span class="s2">"student"</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="s2">"student_schema"</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"endpoint"</span><span class="p">:</span> <span class="s2">"student3"</span><span class="p">}</span>
+    #Si yo se, no deber&iacute;a tener  la configuraci&oacute;n de la base de datos ac&aacute;,
+    #pero era para no alargar el c&oacute;digo de ejemplo
+    #Se definen el servidor, puerto, base de datos, la tabla y el patr&oacute;n de busqueda
+    server = "localhost"
+    port = 28015
+    db = "student"
+    table = "student_schema"
+    pattern = {"endpoint": "student3"}
 
-        <span class="c1">#Se realiza la consulta a rethinkdb de manera asincrona</span>
-        <span class="n">student_schemadb</span> <span class="o">=</span> <span class="n">await</span> <span class="n">getFirst</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+    #Se realiza la consulta a rethinkdb de manera asincrona
+    student_schemadb = await getFirst(server, port, db, table, pattern)
 
-        <span class="c1">#Se quitan del diccionario el id y el endpoint a fin de realizar la evaluaci&oacute;n del esquema</span>
-        <span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="p">:</span> <span class="n">student_schemadb</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">student_schemadb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="s1">'id'</span><span class="p">}</span>
-        <span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="p">:</span> <span class="n">student_schema</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">student_schema</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="s1">'endpoint'</span><span class="p">}</span>
+    #Se quitan del diccionario el id y el endpoint a fin de realizar la evaluaci&oacute;n del esquema
+    student_schema = {item: student_schemadb[0][item] for item in list(student_schemadb[0].keys()) if item != 'id'}
+    student_schema = {item: student_schema[item] for item in list(student_schema.keys()) if item != 'endpoint'}
 
-        <span class="c1">#Se valida el esquema con los datos suministrados v&iacute;a post</span>
-        <span class="n">student_validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">student_schema</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">errors</span>
-            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'status'</span><span class="p">:</span> <span class="s1">'failed'</span><span class="p">,</span> <span class="s1">'reason'</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
-            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+    #Se valida el esquema con los datos suministrados v&iacute;a post
+    student_validator = Validator(student_schema)
+    if not student_validator.validate(data):
+        msg = student_validator.errors
+        response_obj = {'status': 'failed', 'reason': msg}
+        return web.Response(text=json.dumps(response_obj), status=205)
 
-        <span class="c1">#Se toman los datos y se colocan en el diccionario para el json de salida</span>
-        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
-        <span class="n">data_output</span><span class="p">[</span><span class="s1">'grade'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'grade'</span><span class="p">,</span> <span class="s1">'A'</span><span class="p">)</span>
+    #Se toman los datos y se colocan en el diccionario para el json de salida
+    data_output = dict()
+    data_output['uid'] = data['uid']
+    data_output['age'] = data['age']
+    data_output['name'] = data['name']
+    data_output['grade'] = data.get('grade', 'A')
 
-        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'success'</span><span class="p">,</span>
-            <span class="s1">'data'</span><span class="p">:</span> <span class="n">data_output</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">'application/json'</span><span class="p">)</span>
-</pre></div>
+    response_obj = {
+        'status': 'success',
+        'data': data_output
+    }
+    return web.Response(text=json.dumps(response_obj), status=200, content_type='application/json')
+</code></pre>
+<p>```</p>
 <h3 id="base de datos rethinkdb con el esquema para cerberus">Base de datos rethinkdb con el esquema para cerberus</h3>
 <p>Para que el m&eacute;todo getData3 funcione es necesario tener almacenado en la base de datos rethinkdb el esquema.</p>
 <p>El proceso de instalaci&oacute;n de rethinkDB v&iacute;a docker, se deja en el siguiente <a href="https://platzi.com/blog/como-instalar-rethinkdb-docker/">art&iacute;culo de platzi</a>.</p>
 <p>Para insertar los datos se ejecuta en el dashboard de rethinkDB (http://localhost:8080) el siguiente comando:</p>
-<div class="highlight"><pre><span></span>r.db("student").table("student_schema").insert({id:1,endpoint: 'student3',uid: {
+<p><code>r.db("student").table("student_schema").insert({id:1,endpoint: 'student3',uid: {
         'required': true,
         'type': 'integer'},
     age: {
@@ -639,35 +596,34 @@ art&iacute;culo <a href="https://blog.apcelent.com/create-rest-api-using-aiohttp
         'required': false,
         'type': 'string',
         'allowed': ['A', 'B', 'C']
-  }})
-</pre></div>
+  }})</code></p>
 <p>De esa forma se inserta los datos en la tabla.</p>
 <p>Para consultar la tabla v&iacute;a dashboard se ejecuta:</p>
-<div class="highlight"><pre><span></span>r.db("student").table("student_schema")
-</pre></div>
+<p><code>r.db("student").table("student_schema")</code></p>
 <p>A continuaci&oacute;n se muestra la tabla:</p>
 <p><img alt="Tabla esquema" src="./images/2019-apirest-cerberus-5.png"/></p>
 <h3 id="iniciar el api rest.">Iniciar el API rest.</h3>
 <p>Para iniciar el API rest se tiene que tener instalado la librer&iacute;a rethinkdb y aiohttp:</p>
-<div class="highlight"><pre><span></span>pip install rethinkdb aiohttp
-</pre></div>
+<p><code>pip install rethinkdb aiohttp</code></p>
 <p>Luego de instalada se ejecuta el script run.py:</p>
-<div class="highlight"><pre><span></span>python run.py
-</pre></div>
+<p>```
+python run.py</p>
+<p>```</p>
 <p>Si se tiene la siguiente salida el API rest est&aacute; corriendo sin problemas:</p>
-<div class="highlight"><pre><span></span>======== Running on http://0.0.0.0:5000 ========
-(Press CTRL+C to quit)
-</pre></div>
+<p>```
+======== Running on http://0.0.0.0:5000 ========
+(Press CTRL+C to quit)</p>
+<p>```</p>
 <h3 id="consultas al api rest">Consultas al API rest</h3>
 <p>Para consultar el API rest se puede usar insomia o postman, ambos son clientes API rest.</p>
 <p>Se tienen 3 endpoint todos v&iacute;a m&eacute;todo post que se le pasar&aacute; un json como el siguiente:</p>
-<div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">"uid"</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
-  <span class="nt">"age"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
-  <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"John Doe"</span><span class="p">,</span>
-  <span class="nt">"grade"</span><span class="p">:</span> <span class="s2">"A"</span>
-<span class="p">}</span>
-</pre></div>
+<p><code>json
+{
+  "uid": 42,
+  "age": 25,
+  "name": "John Doe",
+  "grade": "A"
+}</code></p>
 <p>Los urls son los siguientes:</p>
 <ul>
 <li>http://localhost:5000/api/v1/student1 : Usa el m&eacute;todo getData1.</li>

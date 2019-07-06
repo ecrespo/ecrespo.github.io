@@ -165,150 +165,92 @@
     <p>El programa <code>pysms-send</code> tendr&aacute; algunas mejoras, entre ellas manejar&aacute; libreta de contactos.</p>
 <p>Para ello se probar&aacute; con <code>sqlite3</code> o con <code>mongoDB</code>. Para est&eacute; art&iacute;culo se trabajar&aacute; con <code>sqlite3</code>. Se crear&aacute;n 2 tablas, una de contactos y otra de grupos. La de contactos tiene los campos de id, nombre del contacto, telefono y grupo. La tabla grupo tendr&aacute; los campos id, nombre del grupo y descripci&oacute;n del grupo.</p>
 <p>En la tabla contactos el campo grupo es una referencia al id de la tabla grupo de esa forma cada contacto est&aacute; relacionado a un grupo.</p>
-<p>El archivo <code>contactos.sql</code> contiene lo siguiente:  </p>
-<div class="highlight"><pre><span></span>create table contactos (
+<p>El archivo <code>contactos.sql</code> contiene lo siguiente:<br/>
+```
+create table contactos (
 id integer primary key,
 nombre text not null,
 grupo integer references grupos(id)
 on delete restrict
 deferrable initially deferred,
 telefono text not null default 'Desconocido',
-unique (nombre,telefono));
-
-create table grupos (
+unique (nombre,telefono));</p>
+<p>create table grupos (
 id integer primary key,
-nombre text not null,  
+nombre text not null,<br/>
 descripcion text not null CHECK(descripcion !=''),
 unique (nombre)); 
-</pre></div>
+```</p>
 <p>En la tabla <code>contactos</code> se tiene el campo id que es entero y clave primaria, luego el campo nombre es no nulo, el campo grupo hace referencia a la tabla grupos al campo id, el campo telefono es un texto no nulo con valor por defecto desconocido, los valores &uacute;nicos son el nombre y el tel&eacute;fono, con eso se evita que existan n&uacute;meros de tel&eacute;fonos repetidos.</p>
 <p>En la tabla <code>grupos</code> tiene el campo id es un entero y es clave primaria, el campo nombre es texto no nulo, el campo descripci&oacute;n es no nulo y se verifica que no sea un string vacio, el campo &uacute;nico es el nombre.</p>
 <p>Para generar la base de datos se ejecuta la siguiente instrucci&oacute;n:  </p>
-<div class="highlight"><pre><span></span>sqlite3 sms.db &lt; sms.sql
-</pre></div>
+<p><code>sqlite3 sms.db &lt; sms.sql</code></p>
 <p>De est&aacute; manera se crea la base de datos <code>sqlite</code> en el archivo <code>sms.db</code>.</p>
-<p>Si se desea interactuar con la base de datos se ejecuta <code>sqlite3</code> con el nombre de la base de datos, se abrir&aacute; un interprete:</p>
-<div class="highlight"><pre><span></span>ecrespo@jewel:~/bin/python$ sqlite3 sms.db 
+<p>Si se desea interactuar con la base de datos se ejecuta <code>sqlite3</code> con el nombre de la base de datos, se abrir&aacute; un interprete:
+<code>ecrespo@jewel:~/bin/python$ sqlite3 sms.db 
 SQLite version 3.7.11 2012-03-20 11:35:50
 Enter ".help" for instructions
 Enter SQL statements terminated with a ";"
-sqlite&gt;
-</pre></div>
+sqlite&gt;</code></p>
 <p>A continuaci&oacute;n se agrega un grupo a la tabla <code>grupos</code>:  </p>
-<div class="highlight"><pre><span></span>sqlite&gt; insert into grupos (nombre,descripcion) values ('Guacara','Ciudad del Estado Carabobo');
-</pre></div>
+<p><code>sqlite&gt; insert into grupos (nombre,descripcion) values ('Guacara','Ciudad del Estado Carabobo');</code></p>
 <p>Ahora se agrega un contacto a la tabla <code>contactos</code>:  </p>
-<div class="highlight"><pre><span></span>insert into contactos (nombre,grupo,telefono) values ('Ernesto Crespo',1,'04315633119');
-</pre></div>
-<p>Se consulta a la tabla <code>grupos</code> y luego a la tabla <code>contactos</code>:  </p>
-<div class="highlight"><pre><span></span>sqlite&gt; select * from grupos;
+<p><code>insert into contactos (nombre,grupo,telefono) values ('Ernesto Crespo',1,'04315633119');</code></p>
+<p>Se consulta a la tabla <code>grupos</code> y luego a la tabla <code>contactos</code>:<br/>
+<code>sqlite&gt; select * from grupos;
 1|Guacara|Ciudad del Estado Carabobo
 sqlite&gt; select * from contactos ;
-1|Ernesto Crespo|1|04315633119
-</pre></div>
+1|Ernesto Crespo|1|04315633119</code></p>
 <p>Para eliminar el <code>contacto</code> se ejecuta:  </p>
-<div class="highlight"><pre><span></span>sqlite&gt; delete from contactos where id=1;
-</pre></div>
+<p><code>sqlite&gt; delete from contactos where id=1;</code></p>
 <p>Se uso el id para eliminar el contacto.</p>
-<p>A continuaci&oacute;n  se crear&aacute;n una serie de scripts en python que permitir&aacute;n insertar datos a la base de datos, consultar datos y eliminarlos (las acciones b&aacute;sicas en una base de datos).</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-
-<span class="c1">#Se importa el modulo sqlite3</span>
-<span class="kn">import</span> <span class="nn">sqlite3</span>
-
-<span class="c1">#Se crea la funcion main</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-<span class="c1">#Se establece la instancia connect a la base de datos sms.db</span>
-<span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"sms.db"</span><span class="p">)</span>
-<span class="c1">#Se crea el cursor que permite la ejecucion de instrucciones sql</span>
-<span class="n">cur</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-
-<span class="c1">#Se crea una lista con tuplas como sus elementos.</span>
-<span class="c1">#Las tuplas contienen los datos a insertar en la tabla grupos.</span>
-<span class="n">datos</span> <span class="o">=</span><span class="p">[(</span><span class="s1">'valencia'</span> <span class="p">,</span><span class="s1">'Capital Estado Carabobo'</span><span class="p">),</span>
-<span class="p">(</span><span class="s1">'Maracay'</span><span class="p">,</span><span class="s1">'Capital Estado Aragua'</span><span class="p">),</span>
-<span class="p">(</span><span class="s1">'Barquisimeto'</span><span class="p">,</span><span class="s1">'Capital del Estado Lara'</span><span class="p">),]</span>
-<span class="c1">#Se recorre la lista</span>
-<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">datos</span><span class="p">:</span>
-<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'insert into grupos (nombre,descripcion) values (?,?)'</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
-<span class="c1">#Se realiza la transaccion.</span>
-<span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-
-<span class="c1">#Ahora se lista los datos de la tabla grupos</span>
-<span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'select * from grupos'</span><span class="p">)</span>
-<span class="c1">#Se captura uno</span>
-<span class="n">fila</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-<span class="c1">#Se recorre cada fila</span>
-<span class="k">while</span> <span class="n">fila</span><span class="p">:</span>
-<span class="c1">#Se muestra los elementos nombre y descripcion.</span>
-<span class="k">print</span> <span class="n">fila</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-<span class="c1">#Se pasa a la siguiente fila</span>
-<span class="n">fila</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-
-<span class="c1">#Se cierra el cursor</span>
-<span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="c1">#Se cierra la conexion.</span>
-<span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-<span class="c1">#Se sale de la funcion .</span>
-<span class="k">return</span> <span class="mi">0</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-<span class="n">main</span><span class="p">()</span>
-</pre></div>
-</td></tr></table>
-<p>Al ejecutar el script devuelve la lista de <code>grupos</code> con su descripci&oacute;n:</p>
-<div class="highlight"><pre><span></span>ecrespo@jewel:~/bin/python$ python grupos-sms.py 
+<p>A continuaci&oacute;n  se crear&aacute;n una serie de scripts en python que permitir&aacute;n insertar datos a la base de datos, consultar datos y eliminarlos (las acciones b&aacute;sicas en una base de datos).
+```</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="se importa el modulo sqlite3">Se importa el modulo sqlite3</h1>
+<p>import sqlite3</p>
+<h1 id="se crea la funcion main">Se crea la funcion main</h1>
+<p>def main():</p>
+<h1 id="se establece la instancia connect a la base de datos sms.db">Se establece la instancia connect a la base de datos sms.db</h1>
+<p>con = sqlite3.connect("sms.db")</p>
+<h1 id="se crea el cursor que permite la ejecucion de instrucciones sql">Se crea el cursor que permite la ejecucion de instrucciones sql</h1>
+<p>cur = con.cursor()</p>
+<h1 id="se crea una lista con tuplas como sus elementos.">Se crea una lista con tuplas como sus elementos.</h1>
+<h1 id="las tuplas contienen los datos a insertar en la tabla grupos.">Las tuplas contienen los datos a insertar en la tabla grupos.</h1>
+<p>datos =[('valencia' ,'Capital Estado Carabobo'),
+('Maracay','Capital Estado Aragua'),
+('Barquisimeto','Capital del Estado Lara'),]</p>
+<h1 id="se recorre la lista">Se recorre la lista</h1>
+<p>for t in datos:
+cur.execute('insert into grupos (nombre,descripcion) values (?,?)',t)</p>
+<h1 id="se realiza la transaccion.">Se realiza la transaccion.</h1>
+<p>con.commit()</p>
+<h1 id="ahora se lista los datos de la tabla grupos">Ahora se lista los datos de la tabla grupos</h1>
+<p>cur.execute('select * from grupos')</p>
+<h1 id="se captura uno">Se captura uno</h1>
+<p>fila = cur.fetchone()</p>
+<h1 id="se recorre cada fila">Se recorre cada fila</h1>
+<p>while fila:</p>
+<h1 id="se muestra los elementos nombre y descripcion.">Se muestra los elementos nombre y descripcion.</h1>
+<p>print fila[1],fila[2]</p>
+<h1 id="se pasa a la siguiente fila">Se pasa a la siguiente fila</h1>
+<p>fila = cur.fetchone()</p>
+<h1 id="se cierra el cursor">Se cierra el cursor</h1>
+<p>cur.close()</p>
+<h1 id="se cierra la conexion.">Se cierra la conexion.</h1>
+<p>con.close()</p>
+<h1 id="se sale de la funcion .">Se sale de la funcion .</h1>
+<p>return 0</p>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+main()
+```</p>
+<p>Al ejecutar el script devuelve la lista de <code>grupos</code> con su descripci&oacute;n:
+<code>ecrespo@jewel:~/bin/python$ python grupos-sms.py 
 Guacara Ciudad del Estado Carabobo
 valencia Capital Estado Carabobo
 Maracay Capital Estado Aragua
-Barquisimeto Capital del Estado Lara
-</pre></div>
+Barquisimeto Capital del Estado Lara</code></p>
 <h2 id="_1"></h2>
 <p>===
 &iexcl;Haz tu donativo!

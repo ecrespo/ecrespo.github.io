@@ -37,6 +37,16 @@ AUTHOR_FEED_RSS = None
 
 MARKUP = ('md', 'ipynb')
 
+
+MARKDOWN = {
+  'extension_configs': {
+    'pyembed.markdown': {}
+  }
+}
+
+
+
+
 COMPILERS = {
     "rest": ('.rst', '.txt'),
     "markdown": ('.md', '.mdown', '.markdown'),
@@ -103,6 +113,7 @@ PLUGIN_PATHS = ['./plugins','/home/ernesto/proyectos/pelican-plugins']
 PLUGINS = ['i18n_subsites',
            'related_posts',
            'tag_cloud',
+           'pelican_youtube',
            'pelican-ert',
            #'github_activity',
            #'pelican-gist',

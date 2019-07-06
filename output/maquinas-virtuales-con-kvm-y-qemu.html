@@ -173,75 +173,66 @@
 <li><code>libvirt-bin</code></li>
 <li><code>qemu-kvm</code></li>
 </ul>
-<p>Instalaci&oacute;n:</p>
-<div class="highlight"><pre><span></span>apt-get install kvm virt-manager libvirt-bin qemu-kvm
-</pre></div>
+<p>Instalaci&oacute;n:
+<code>apt-get install kvm virt-manager libvirt-bin qemu-kvm</code></p>
 <p>Prueba inicial:
-Se iniciar&aacute; una m&aacute;quina virtual que arranca un live-cd, por ejemplo el live-cd de Linuxmint 15 con 720M de RAM:</p>
-<div class="highlight"><pre><span></span>kvm -m 720 -cdrom  linuxmint-15-cinnamon-dvd-32bit.iso
-</pre></div>
-<p>En la siguiente figura se muestra la captura de pantalla de la m&aacute;quina virtual:</p>
+Se iniciar&aacute; una m&aacute;quina virtual que arranca un live-cd, por ejemplo el live-cd de Linuxmint 15 con 720M de RAM:
+<code>kvm -m 720 -cdrom  linuxmint-15-cinnamon-dvd-32bit.iso</code>
+En la siguiente figura se muestra la captura de pantalla de la m&aacute;quina virtual:</p>
 <p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-1.png"/></p>
 <p>Crear un disco duro para la m&aacute;quina virtual:
-Se crea el disco duro virtual en un archivo, en este caso se crear&aacute; un disco duro virtual de 10 GB para instalar Debian en dicho disco duro virtual:</p>
-<div class="highlight"><pre><span></span>qemu-img create debian.img 10G
-Formatting 'debian.img', fmt=raw size=10737418240
-</pre></div>
-<p>Ahora se tiene: </p>
-<div class="highlight"><pre><span></span>ernesto@debian:~/imagenes$ ls -l
+Se crea el disco duro virtual en un archivo, en este caso se crear&aacute; un disco duro virtual de 10 GB para instalar Debian en dicho disco duro virtual:
+<code>qemu-img create debian.img 10G
+Formatting 'debian.img', fmt=raw size=10737418240</code>
+Ahora se tiene: 
+<code>ernesto@debian:~/imagenes$ ls -l
 total 1808024
 -rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 16:22 debian.img
 -rw-r--r-- 1 root    root    10737418240 jun  2 16:00 debianserver.img
--rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 15:30 linuxmint.img
-</pre></div>
-<p>Instalaci&oacute;n de  Debian en la m&aacute;quina virtual:</p>
-<p>Ahora se instalar&aacute; en el disco duro virtual llamado debian.img la distribuci&oacute;n Debian para i386 con 720MB de RAM, se le define el disco duro a usar y el iso a utilizar:</p>
-<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img  -cdrom ../Isos/debian-7.0.0-i386-lxde-CD-1.iso
-</pre></div>
-<p>En la siguiente captura de pantalla se muestra el inicio del cd de Debian:</p>
+-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 15:30 linuxmint.img</code>
+Instalaci&oacute;n de  Debian en la m&aacute;quina virtual:</p>
+<p>Ahora se instalar&aacute; en el disco duro virtual llamado debian.img la distribuci&oacute;n Debian para i386 con 720MB de RAM, se le define el disco duro a usar y el iso a utilizar:
+<code>qemu -m 720 -hda debian.img  -cdrom ../Isos/debian-7.0.0-i386-lxde-CD-1.iso</code>
+En la siguiente captura de pantalla se muestra el inicio del cd de Debian:</p>
 <p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-2.png"/></p>
-<p>Luego de terminar el proceso de instalaci&oacute;n se inicia la m&aacute;quina virtual de la siguiente forma:</p>
-<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img
-</pre></div>
-<p>La siguiente figura muestra el escritorio de LXDE de Debian con la consola abierta mostrando la IP que tiene la m&aacute;quina virtual:</p>
+<p>Luego de terminar el proceso de instalaci&oacute;n se inicia la m&aacute;quina virtual de la siguiente forma:
+<code>qemu -m 720 -hda debian.img</code>
+La siguiente figura muestra el escritorio de LXDE de Debian con la consola abierta mostrando la IP que tiene la m&aacute;quina virtual:</p>
 <p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-3.png"/></p>
 <p>Como se puede ver la IP que tiene la m&aacute;quina virtual es una IP privada, la &uacute;nica forma de acceder a la m&aacute;quina virtual es directamente desde <code>qemu</code>, no se podr&aacute; abrir una sesi&oacute;n remota por que desde el equipo que aloja la m&aacute;quina virtual no se tiene una ruta de como llegar a la IP de la m&aacute;quina virtual.</p>
-<p>Para ello necesitaremos darle unas opciones de redes a <code>qemu</code>, estas son <code>nic</code> y <code>tap</code>, la &uacute;ltima crea una interfaz <code>tap</code> en el equipo que aloja la m&aacute;quina virtual con la ruta de una red.</p>
-<div class="highlight"><pre><span></span>qemu -m 720 -hda debian.img   -net nic -net tap
-</pre></div>
-<p>Adicional a esto es necesario instalar <code>dnsmasq</code> y configurar una regla de <code>iptables</code> en la configuraci&oacute;n de <code>kvm</code> para poder navegar desde la m&aacute;quina virtual.</p>
-<p>Instalar dnsmasq:</p>
-<div class="highlight"><pre><span></span>apt-get install dnsmasq
-</pre></div>
-<p>Agregar la siguiente configuraci&oacute;n en el archivo <code>/etc/dnsmasq.conf</code>:</p>
-<div class="highlight"><pre><span></span>#Archivo de resolv.conf con la configuraci&oacute;n de dns de la red local.
-resolv-file=/etc/resolv-orig.conf
-#Interface a la cual acepta peticiones, en este caso tap0 para la m&aacute;quina virtual (dns y dhcp) y wlan0 (s&oacute;lo dns).
-interface=tap0,wlan0
-#No se activa el dhcp a la interfaz wlan0
-no-dhcp-interface=wlan0
-#Se define el rango de red de dhcp y el tiempo de liberaci&oacute;n de las IPs.
-dhcp-range=172.20.0.10,172.20.0.15,12h
-</pre></div>
-<p>Se agrega la siguiente regla de iptables al archivo <code>/etc/kvm/kvm-ifup</code>:</p>
-<div class="highlight"><pre><span></span>vim /etc/kvm/kvm-ifup
+<p>Para ello necesitaremos darle unas opciones de redes a <code>qemu</code>, estas son <code>nic</code> y <code>tap</code>, la &uacute;ltima crea una interfaz <code>tap</code> en el equipo que aloja la m&aacute;quina virtual con la ruta de una red.
+<code>qemu -m 720 -hda debian.img   -net nic -net tap</code>
+Adicional a esto es necesario instalar <code>dnsmasq</code> y configurar una regla de <code>iptables</code> en la configuraci&oacute;n de <code>kvm</code> para poder navegar desde la m&aacute;quina virtual.</p>
+<p>Instalar dnsmasq:
+<code>apt-get install dnsmasq</code>
+Agregar la siguiente configuraci&oacute;n en el archivo <code>/etc/dnsmasq.conf</code>:
+```</p>
+<h1 id="archivo de resolv.conf con la configuracion de dns de la red local.">Archivo de resolv.conf con la configuraci&oacute;n de dns de la red local.</h1>
+<p>resolv-file=/etc/resolv-orig.conf</p>
+<h1 id="interface a la cual acepta peticiones, en este caso tap0 para la maquina virtual (dns y dhcp) y wlan0 (solo dns).">Interface a la cual acepta peticiones, en este caso tap0 para la m&aacute;quina virtual (dns y dhcp) y wlan0 (s&oacute;lo dns).</h1>
+<p>interface=tap0,wlan0</p>
+<h1 id="no se activa el dhcp a la interfaz wlan0">No se activa el dhcp a la interfaz wlan0</h1>
+<p>no-dhcp-interface=wlan0</p>
+<h1 id="se define el rango de red de dhcp y el tiempo de liberacion de las ips.">Se define el rango de red de dhcp y el tiempo de liberaci&oacute;n de las IPs.</h1>
+<p>dhcp-range=172.20.0.10,172.20.0.15,12h
+<code>Se agrega la siguiente regla de iptables al archivo `/etc/kvm/kvm-ifup`:</code>
+vim /etc/kvm/kvm-ifup
 exec iptables  -t nat -A POSTROUTING -s 172.20.0.0/16 -o wlan0 -j MASQUERADE
-</pre></div>
-<p>Est&aacute; regla aplica nat a la red 172.20.0.0/255.255.0.0.</p>
+```
+Est&aacute; regla aplica nat a la red 172.20.0.0/255.255.0.0.</p>
 <p>Ya con esta configuraci&oacute;n ya se puede navegar y acceder remotamente a la m&aacute;quina virtual.</p>
-<p>Para terminar las configuraciones se agrega una regla de iptables que borre las tablas de nat en el archivo /etc/kvm/kvm-ifdown:</p>
-<div class="highlight"><pre><span></span>vim /etc/kvm/kvm-ifdown
-
-exec iptables -t nat -F
-</pre></div>
-<p>La tabla de enrutamiento del equipo donde se levanta la m&aacute;quina virtual es la siguiente:</p>
-<div class="highlight"><pre><span></span>root@debian:~# route -n
+<p>Para terminar las configuraciones se agrega una regla de iptables que borre las tablas de nat en el archivo /etc/kvm/kvm-ifdown:
+```
+vim /etc/kvm/kvm-ifdown</p>
+<p>exec iptables -t nat -F
+<code>La tabla de enrutamiento del equipo donde se levanta la m&aacute;quina virtual es la siguiente:</code>
+root@debian:~# route -n
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 0.0.0.0         185.29.52.131   0.0.0.0         UG    0      0        0 wlan0
 172.20.0.0      0.0.0.0         255.255.0.0     U     0      0        0 tap0
 185.29.52.128   0.0.0.0         255.255.255.128 U     0      0        0 wlan0
-</pre></div>
+```</p>
 <p>En la siguiente captura de pantalla se muestra la p&aacute;gina de este blog desde la m&aacute;quina virtual y la consola donde se muestra la IP que est&aacute; usando la m&aacute;quina virtual, con esa IP se puede acceder desde el equipo que aloja la m&aacute;quina virtual.</p>
 <p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-4.png"/></p>
 <h2 id="_1"></h2>

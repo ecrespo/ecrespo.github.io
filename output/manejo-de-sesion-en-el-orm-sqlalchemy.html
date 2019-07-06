@@ -166,233 +166,122 @@
 <p>Antes de comenzar a probar lo que se escribe en este art&iacute;culo es necesario que realicen pruebas con el art&iacute;culo mencionado anteriormente para que tengan la base de datos con sus datos listas para ser utilizadas en este art&iacute;culo.</p>
 <p>Ahora se explica como usar unas tablas con sus datos ya creada, creando una sesi&oacute;n para la base de datos.</p>
 <p>Este art&iacute;culo se basa en un <a href="mapfish.org/doc/tutorials/sqlalchemy.html">tutorial en ingl&eacute;s de sqlalchemy</a> o el <a href="http://www.rmunn.com/sqlalchemy-tutorial/tutorial.html">tutorial paso a paso de sqlalchemy</a>.</p>
-<p>Lo primero que se har&aacute; es crear un archivo <code>model.py</code> que contendr&aacute; el modelo de la base de datos.</p>
-<div class="highlight"><pre><span></span><span class="c1">#Se importa el m&oacute;dulo datetime</span>
+<p>Lo primero que se har&aacute; es crear un archivo <code>model.py</code> que contendr&aacute; el modelo de la base de datos.
+```python</p>
+<h1 id="se importa el modulo datetime">Se importa el m&oacute;dulo datetime</h1>
+<p>import datetime</p>
+<h1 id="se importa schema y tupes de sqlalchemy">Se importa schema y tupes de sqlalchemy</h1>
+<p>from sqlalchemy import schema, types</p>
+<h1 id="se instancia la clase metadata.">Se instancia la clase MetaData.</h1>
+<p>metadata = schema.MetaData()</p>
+<h1 id="se crea la funcion now que devuelve la hora actual.">Se crea la funci&oacute;n now que devuelve la hora actual.</h1>
+<p>def now():</p>
+<pre><code>return datetime.datetime.now()
+</code></pre>
+<h1 id="se crea la instancia table con los campos de la tabla grupos">Se crea la instancia table con los campos de la tabla grupos</h1>
+<p>grupos_table = schema.Table('grupos',metadata,</p>
+<pre><code>    schema.Column('id',types.Integer,primary_key=True),
 
-<span class="kn">import</span> <span class="nn">datetime</span>
+    schema.Column('grupo',types.String(300),nullable=False),
 
-<span class="c1">#Se importa schema y tupes de sqlalchemy</span>
+    schema.Column('descripcion',types.String(500),nullable=False),
+</code></pre>
+<p>)</p>
+<h1 id="se crea la instancia table con los campos de la tabla contactos">Se crea la instancia table con los campos de la tabla contactos</h1>
+<p>contactos_table = schema.Table('contactos',metadata,</p>
+<pre><code>    schema.Column('id',types.Integer,primary_key=True),
 
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">schema</span><span class="p">,</span> <span class="n">types</span>
+    schema.Column('nombre',types.String(100),nullable=False),
 
+    schema.Column('telefono',types.String(11),nullable=False),
 
-
-<span class="c1">#Se instancia la clase MetaData.</span>
-
-<span class="n">metadata</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">MetaData</span><span class="p">()</span>
-
-
-
-<span class="c1">#Se crea la funci&oacute;n now que devuelve la hora actual.</span>
-
-<span class="k">def</span> <span class="nf">now</span><span class="p">():</span>
-
-    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-
-
-
-<span class="c1">#Se crea la instancia table con los campos de la tabla grupos</span>
-
-<span class="n">grupos_table</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">'grupos'</span><span class="p">,</span><span class="n">metadata</span><span class="p">,</span>
-
-        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-
-        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'grupo'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">300</span><span class="p">),</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-
-        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'descripcion'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-
-<span class="p">)</span>
-
-
-<span class="c1">#Se crea la instancia table con los campos de la tabla contactos</span>
-
-<span class="n">contactos_table</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">'contactos'</span><span class="p">,</span><span class="n">metadata</span><span class="p">,</span>
-
-        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-
-        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'nombre'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-
-        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'telefono'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-
-        <span class="n">schema</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'grupo_id'</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span><span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
-
-<span class="p">)</span>
-
-
-
-<span class="c1">#Se crea la clase Contactos y Grupos que heredan de object y s&oacute;lo tienen pass.</span>
-
-<span class="k">class</span> <span class="nc">Contactos</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span> <span class="k">pass</span>
-
-<span class="k">class</span> <span class="nc">Grupos</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span> <span class="k">pass</span>
-
-
-
-<span class="c1">#Se mapea la Clase Contactos con la tabla contactos_table</span>
-
-<span class="n">orm</span><span class="o">.</span><span class="n">mapper</span><span class="p">(</span><span class="n">Contactos</span><span class="p">,</span> <span class="n">contactos_table</span><span class="p">)</span>
-
-<span class="c1">#Se mapea la Clase Grupos con la tabla grupos_table</span>
-
-<span class="n">orm</span><span class="o">.</span><span class="n">mapper</span><span class="p">(</span><span class="n">Grupos</span><span class="p">,</span><span class="n">grupos_table</span><span class="p">)</span>
-</pre></div>
+    schema.Column('grupo_id',types.Integer,nullable=False),
+</code></pre>
+<p>)</p>
+<h1 id="se crea la clase contactos y grupos que heredan de object y solo tienen pass.">Se crea la clase Contactos y Grupos que heredan de object y s&oacute;lo tienen pass.</h1>
+<p>class Contactos(object): pass</p>
+<p>class Grupos(object): pass</p>
+<h1 id="se mapea la clase contactos con la tabla contactos_table">Se mapea la Clase Contactos con la tabla contactos_table</h1>
+<p>orm.mapper(Contactos, contactos_table)</p>
+<h1 id="se mapea la clase grupos con la tabla grupos_table">Se mapea la Clase Grupos con la tabla grupos_table</h1>
+<p>orm.mapper(Grupos,grupos_table)
+```</p>
 <p>Ya con este c&oacute;digo se logra el mapeo de las tablas existentes con sus campos.</p>
-<p>Ahora se crea un archivo llamado <code>prueba-db.py</code> que va a realizar la sesi&oacute;n a la base de datos por medio del m&oacute;dulo <code>model.py</code>  donde se realizar&aacute; unas consultas, inserciones y remociones de datos.</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1"># -*- coding: utf-8 -*-</span>
-
-
-
-<span class="kn">import</span> <span class="nn">model</span>
-
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">orm</span>
-
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
-
-
-
-<span class="c1">#Crear un engine y crear todas las tablas necesarias</span>
-
-<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">'sqlite:///tutorial.db'</span><span class="p">,</span> <span class="n">echo</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">bind</span> <span class="o">=</span> <span class="n">engine</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">()</span>
-
-
-
-<span class="c1"># Configurar la sesion</span>
-
-
-
-<span class="n">sm</span> <span class="o">=</span> <span class="n">orm</span><span class="o">.</span><span class="n">sessionmaker</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="n">autoflush</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">autocommit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-
-            <span class="n">expire_on_commit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-<span class="n">session</span> <span class="o">=</span> <span class="n">orm</span><span class="o">.</span><span class="n">scoped_session</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
-
-
-
-<span class="c1">#Se realiza una consulta a la tabla grupos</span>
-
-<span class="k">print</span> <span class="s2">"Consulta inicial de la tabla contactos"</span>
-
-<span class="n">consulta</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Contactos</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">consulta</span><span class="p">:</span>
-
-    <span class="k">print</span> <span class="n">lista</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="n">lista</span><span class="o">.</span><span class="n">telefono</span>
-
-<span class="k">print</span> <span class="s2">"--------------------------------"</span>
-
-
-
-
-
-<span class="c1">#Agregar un contacto</span>
-
-<span class="n">contacto</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Contactos</span><span class="p">()</span>
-
-<span class="n">contacto</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="sa">u</span><span class="s2">"Luisa Gonzalez"</span>
-
-<span class="n">contacto</span><span class="o">.</span><span class="n">telefono</span> <span class="o">=</span> <span class="sa">u</span><span class="s2">"04155555555"</span>
-
-<span class="n">contacto</span><span class="o">.</span><span class="n">grupo_id</span> <span class="o">=</span> <span class="mi">2</span>
-
-<span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">contacto</span><span class="p">)</span>
-
-<span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-
-<span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-
-
-
-
-
-<span class="c1">#Se realiza una consulta a la tabla grupos</span>
-
-<span class="k">print</span> <span class="s2">"Consulta la tabla contactos con el dato incorporado"</span>
-
-<span class="n">consulta</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Contactos</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">consulta</span><span class="p">:</span>
-
-    <span class="k">print</span> <span class="n">lista</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="n">lista</span><span class="o">.</span><span class="n">telefono</span>
-
-<span class="k">print</span> <span class="s2">"--------------------------------"</span>
-
-
-
-
-
-<span class="c1">#Borrar un contacto</span>
-
-<span class="n">session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">contacto</span><span class="p">)</span>
-
-<span class="n">session</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-
-<span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-
-
-
-<span class="c1">#Se realiza una consulta a la tabla grupos</span>
-
-<span class="k">print</span> <span class="s2">"Consulta la tabla contactos luego de borrar el dato"</span>
-
-<span class="n">consulta</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Contactos</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">consulta</span><span class="p">:</span>
-
-    <span class="k">print</span> <span class="n">lista</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="n">lista</span><span class="o">.</span><span class="n">telefono</span>
-
-<span class="k">print</span> <span class="s2">"--------------------------------"</span>
-</pre></div>
-<p>El resultado de ejecutar el script <code>pruebas-db.py</code> se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span>Consulta inicial de la tabla contactos
-
-Ernesto Crespo 04155673029
-
-Pedro Perez 0295212223
-
-Jhon Doe 04184488484
-
-Jane Doe 04184488482
-
-Pepito de los palotes 04184588484
-
---------------------------------
-
-Consulta la tabla contactos con el dato incorporado
-
-Ernesto Crespo 04155673029
-
-Pedro Perez 0295212223
-
-Jhon Doe 04184488484
-
-Jane Doe 04184488482
-
-Pepito de los palotes 04184588484
-
-Luisa Gonzalez 04155555555
-
---------------------------------
-
-Consulta la tabla contactos luego de borrar el dato
-
-Ernesto Crespo 04155673029
-
-Pedro Perez 0295212223
-
-Jhon Doe 04184488484
-
-Jane Doe 04184488482
-
-Pepito de los palotes 04184588484
-
---------------------------------
-</pre></div>
+<p>Ahora se crea un archivo llamado <code>prueba-db.py</code> que va a realizar la sesi&oacute;n a la base de datos por medio del m&oacute;dulo <code>model.py</code>  donde se realizar&aacute; unas consultas, inserciones y remociones de datos.
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<p>import model</p>
+<p>from sqlalchemy import orm</p>
+<p>from sqlalchemy import create_engine</p>
+<h1 id="crear un engine y crear todas las tablas necesarias">Crear un engine y crear todas las tablas necesarias</h1>
+<p>engine = create_engine('sqlite:///tutorial.db', echo=False)</p>
+<p>model.metadata.bind = engine</p>
+<p>model.metadata.create_all()</p>
+<h1 id="configurar la sesion">Configurar la sesion</h1>
+<p>sm = orm.sessionmaker(bind=engine, autoflush=True, autocommit=False,</p>
+<pre><code>        expire_on_commit=True)
+</code></pre>
+<p>session = orm.scoped_session(sm)</p>
+<h1 id="se realiza una consulta a la tabla grupos">Se realiza una consulta a la tabla grupos</h1>
+<p>print "Consulta inicial de la tabla contactos"</p>
+<p>consulta = session.query(model.Contactos).all()</p>
+<p>for lista in consulta:</p>
+<pre><code>print lista.nombre,lista.telefono
+</code></pre>
+<p>print "--------------------------------"</p>
+<h1 id="agregar un contacto">Agregar un contacto</h1>
+<p>contacto = model.Contactos()</p>
+<p>contacto.nombre = u"Luisa Gonzalez"</p>
+<p>contacto.telefono = u"04155555555"</p>
+<p>contacto.grupo_id = 2</p>
+<p>session.add(contacto)</p>
+<p>session.flush()</p>
+<p>session.commit()</p>
+<h1 id="se realiza una consulta a la tabla grupos_1">Se realiza una consulta a la tabla grupos</h1>
+<p>print "Consulta la tabla contactos con el dato incorporado"</p>
+<p>consulta = session.query(model.Contactos).all()</p>
+<p>for lista in consulta:</p>
+<pre><code>print lista.nombre,lista.telefono
+</code></pre>
+<p>print "--------------------------------"</p>
+<h1 id="borrar un contacto">Borrar un contacto</h1>
+<p>session.delete(contacto)</p>
+<p>session.flush()</p>
+<p>session.commit()</p>
+<h1 id="se realiza una consulta a la tabla grupos_2">Se realiza una consulta a la tabla grupos</h1>
+<p>print "Consulta la tabla contactos luego de borrar el dato"</p>
+<p>consulta = session.query(model.Contactos).all()</p>
+<p>for lista in consulta:</p>
+<pre><code>print lista.nombre,lista.telefono
+</code></pre>
+<p>print "--------------------------------"
+```</p>
+<p>El resultado de ejecutar el script <code>pruebas-db.py</code> se muestra a continuaci&oacute;n:
+```
+Consulta inicial de la tabla contactos</p>
+<p>Ernesto Crespo 04155673029</p>
+<p>Pedro Perez 0295212223</p>
+<p>Jhon Doe 04184488484</p>
+<p>Jane Doe 04184488482</p>
+<p>Pepito de los palotes 04184588484</p>
+<hr/>
+<p>Consulta la tabla contactos con el dato incorporado</p>
+<p>Ernesto Crespo 04155673029</p>
+<p>Pedro Perez 0295212223</p>
+<p>Jhon Doe 04184488484</p>
+<p>Jane Doe 04184488482</p>
+<p>Pepito de los palotes 04184588484</p>
+<p>Luisa Gonzalez 04155555555</p>
+<hr/>
+<p>Consulta la tabla contactos luego de borrar el dato</p>
+<p>Ernesto Crespo 04155673029</p>
+<p>Pedro Perez 0295212223</p>
+<p>Jhon Doe 04184488484</p>
+<p>Jane Doe 04184488482</p>
+<p>Pepito de los palotes 04184588484</p>
+<hr/>
+<p>```</p>
 <p>De esta forma se puede realizar consultas, remociones e inserciones por medio de <code>sqlalchemy</code> con sesiones.</p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!

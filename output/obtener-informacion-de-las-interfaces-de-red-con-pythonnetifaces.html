@@ -169,55 +169,53 @@
     <p>Existe un m&oacute;dulo en python que permite obtener la informaci&oacute;n de las interfaces de red.</p>
 <p>Dicho m&oacute;dulo se llama <code>netifaces</code>, con &eacute;l se puede obtener la lista de interfaces de su equipo, obtener la informaci&oacute;n de Enlace de Red de cada interfaz, su direcci&oacute;n IPv4 y su Direcci&oacute;n IPv6.</p>
 <p>Para instalar el m&oacute;dulo se ejecuta <code>apt-get</code> para el caso de Debian/Canaima/Ubuntu.  </p>
-<div class="highlight"><pre><span></span>#apt-get install python-netifaces
-</pre></div>
+<p>```</p>
+<h1 id="apt-get install python-netifaces">apt-get install python-netifaces</h1>
+<p>```</p>
 <p>La idea es crear un script que capture la lista de interfaces del equipo y muestre la informaci&oacute;n de cada una de dichas interfaces.</p>
 <p>El c&oacute;digo del programa se muestra a continuaci&oacute;n:  </p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa el modulo netifaces</span>
-<span class="kn">import</span> <span class="nn">netifaces</span>
-
-<span class="c1">#Se captura la lista de interfaces en el equipo</span>
-<span class="n">interfaces</span> <span class="o">=</span> <span class="n">netifaces</span><span class="o">.</span><span class="n">interfaces</span><span class="p">()</span>
-<span class="c1">#Se muestra las interfaces</span>
-<span class="k">print</span> <span class="s2">"interfaces: "</span><span class="p">,</span> <span class="n">interfaces</span>
-
-<span class="c1">#Se recorre la lista de interfaces</span>
-<span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="p">:</span>
-<span class="c1">#Se captura la informacion de cada interfaz</span>
-<span class="n">datos</span> <span class="o">=</span> <span class="n">netifaces</span><span class="o">.</span><span class="n">ifaddresses</span><span class="p">(</span><span class="n">interface</span><span class="p">)</span>
-<span class="k">print</span> <span class="s2">"--------------------------"</span>
-<span class="c1">#Se muestra el nombre de la interface</span>
-<span class="k">print</span> <span class="s2">"Interface: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">interface</span>
-<span class="c1">#Se captura la lista de parametros que tiene la interface</span>
-<span class="n">variables</span> <span class="o">=</span> <span class="n">datos</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="c1">#Se muestra la direccion de la capa de enlace de red de la interface</span>
-<span class="k">print</span> <span class="s2">"Capa de enlace de red: "</span><span class="p">,</span> <span class="n">datos</span><span class="p">[</span><span class="n">netifaces</span><span class="o">.</span><span class="n">AF_LINK</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">'addr'</span><span class="p">]</span>
-<span class="c1">#Si esta presente la informacion de IPV4 se muestra</span>
-<span class="k">if</span> <span class="n">netifaces</span><span class="o">.</span><span class="n">AF_INET</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
-<span class="k">print</span> <span class="s2">"IPv4: IP: </span><span class="si">%s</span><span class="s2">, Mascara: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="p">(</span><span class="n">datos</span><span class="p">[</span><span class="n">netifaces</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">'addr'</span><span class="p">],</span> <span class="n">datos</span><span class="p">[</span><span class="n">netifaces</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">'netmask'</span><span class="p">])</span>
-<span class="c1">#Si esta presente la informacion de IPv6 se muestra</span>
-<span class="k">if</span> <span class="n">netifaces</span><span class="o">.</span><span class="n">AF_INET</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
-<span class="k">print</span> <span class="s2">"IPv6: IP: </span><span class="si">%s</span><span class="s2">, Mascara: </span><span class="si">%s</span><span class="s2"> "</span> <span class="o">%</span><span class="p">(</span><span class="n">datos</span><span class="p">[</span><span class="n">netifaces</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>   <span class="p">[</span><span class="s1">'addr'</span><span class="p">],</span> <span class="n">datos</span><span class="p">[</span><span class="n">netifaces</span><span class="o">.</span><span class="n">AF_INET6</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">'netmask'</span><span class="p">])</span>
-</pre></div>
-<p>El resultado del programa se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="n">interfaces</span><span class="p">:</span> <span class="p">[</span><span class="s1">'lo'</span><span class="p">,</span> <span class="s1">'eth0'</span><span class="p">,</span> <span class="s1">'wlan0'</span><span class="p">]</span>
-<span class="o">--------------------------</span>
-<span class="n">Interface</span><span class="p">:</span> <span class="n">lo</span>
-<span class="n">Capa</span> <span class="n">de</span> <span class="n">enlace</span> <span class="n">de</span> <span class="n">red</span><span class="p">:</span> <span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span><span class="p">:</span><span class="mo">00</span>
-<span class="n">IPv4</span><span class="p">:</span> <span class="n">IP</span><span class="p">:</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">Mascara</span><span class="p">:</span> <span class="mf">255.0</span><span class="o">.</span><span class="mf">0.0</span>
-<span class="n">IPv6</span><span class="p">:</span> <span class="n">IP</span><span class="p">:</span> <span class="p">::</span><span class="mi">1</span><span class="p">,</span> <span class="n">Mascara</span><span class="p">:</span> <span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span>
-<span class="o">--------------------------</span>
-<span class="n">Interface</span><span class="p">:</span> <span class="n">eth0</span>
-<span class="n">Capa</span> <span class="n">de</span> <span class="n">enlace</span> <span class="n">de</span> <span class="n">red</span><span class="p">:</span> <span class="mi">71</span><span class="p">:</span><span class="mi">6</span><span class="n">a</span><span class="p">:</span><span class="n">b7</span><span class="p">:</span><span class="mi">77</span><span class="p">:</span><span class="mi">46</span><span class="p">:</span><span class="mi">5</span><span class="n">f</span>
-<span class="o">--------------------------</span>
-<span class="n">Interface</span><span class="p">:</span> <span class="n">wlan0</span>
-<span class="n">Capa</span> <span class="n">de</span> <span class="n">enlace</span> <span class="n">de</span> <span class="n">red</span><span class="p">:</span> <span class="mo">00</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mi">85</span><span class="p">:</span><span class="mi">74</span><span class="p">:</span><span class="n">fe</span><span class="p">:</span><span class="mi">89</span>
-<span class="n">IPv4</span><span class="p">:</span> <span class="n">IP</span><span class="p">:</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">10.108</span><span class="p">,</span> <span class="n">Mascara</span><span class="p">:</span> <span class="mf">255.255</span><span class="o">.</span><span class="mf">255.0</span>
-<span class="n">IPv6</span><span class="p">:</span> <span class="n">IP</span><span class="p">:</span> <span class="n">fe80</span><span class="p">::</span><span class="mi">236</span><span class="p">:</span><span class="mi">92</span><span class="n">ff</span><span class="p">:</span><span class="n">fa54</span><span class="p">:</span><span class="n">fe89</span><span class="o">%</span><span class="n">wlan0</span><span class="p">,</span> <span class="n">Mascara</span><span class="p">:</span> <span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">:</span><span class="n">ffff</span><span class="p">::</span>
-</pre></div>
-<p>Para m&aacute;s informaci&oacute;n sobre el m&oacute;dulo pueden visitar la informaci&oacute;n en la p&aacute;gina de <a href="https://pypi.org/project/netifaces/">Python</a> o el sitio de la <a href="https://alastairs-place.net/projects/netifaces/">aplicaci&oacute;n</a>. </p>
+<p>```python </p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="se importa el modulo netifaces">Se importa el modulo netifaces</h1>
+<p>import netifaces</p>
+<h1 id="se captura la lista de interfaces en el equipo">Se captura la lista de interfaces en el equipo</h1>
+<p>interfaces = netifaces.interfaces()</p>
+<h1 id="se muestra las interfaces">Se muestra las interfaces</h1>
+<p>print "interfaces: ", interfaces</p>
+<h1 id="se recorre la lista de interfaces">Se recorre la lista de interfaces</h1>
+<p>for interface in interfaces:</p>
+<h1 id="se captura la informacion de cada interfaz">Se captura la informacion de cada interfaz</h1>
+<p>datos = netifaces.ifaddresses(interface)
+print "--------------------------"</p>
+<h1 id="se muestra el nombre de la interface">Se muestra el nombre de la interface</h1>
+<p>print "Interface: %s" %interface</p>
+<h1 id="se captura la lista de parametros que tiene la interface">Se captura la lista de parametros que tiene la interface</h1>
+<p>variables = datos.keys()</p>
+<h1 id="se muestra la direccion de la capa de enlace de red de la interface">Se muestra la direccion de la capa de enlace de red de la interface</h1>
+<p>print "Capa de enlace de red: ", datos[netifaces.AF_LINK][0]['addr']</p>
+<h1 id="si esta presente la informacion de ipv4 se muestra">Si esta presente la informacion de IPV4 se muestra</h1>
+<p>if netifaces.AF_INET in variables:
+print "IPv4: IP: %s, Mascara: %s" %(datos[netifaces.AF_INET][0]['addr'], datos[netifaces.AF_INET][0]['netmask'])</p>
+<h1 id="si esta presente la informacion de ipv6 se muestra">Si esta presente la informacion de IPv6 se muestra</h1>
+<p>if netifaces.AF_INET in variables:
+print "IPv6: IP: %s, Mascara: %s " %(datos[netifaces.AF_INET6][0]   ['addr'], datos[netifaces.AF_INET6][0]['netmask'])
+<code>El resultado del programa se muestra a continuaci&oacute;n:</code>python 
+interfaces: ['lo', 'eth0', 'wlan0']</p>
+<hr/>
+<p>Interface: lo
+Capa de enlace de red: 00:00:00:00:00:00
+IPv4: IP: 127.0.0.1, Mascara: 255.0.0.0
+IPv6: IP: ::1, Mascara: ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff</p>
+<hr/>
+<p>Interface: eth0
+Capa de enlace de red: 71:6a:b7:77:46:5f</p>
+<hr/>
+<p>Interface: wlan0
+Capa de enlace de red: 00:26:85:74:fe:89
+IPv4: IP: 192.168.10.108, Mascara: 255.255.255.0
+IPv6: IP: fe80::236:92ff:fa54:fe89%wlan0, Mascara: ffff:ffff:ffff:ffff::
+```
+Para m&aacute;s informaci&oacute;n sobre el m&oacute;dulo pueden visitar la informaci&oacute;n en la p&aacute;gina de <a href="https://pypi.org/project/netifaces/">Python</a> o el sitio de la <a href="https://alastairs-place.net/projects/netifaces/">aplicaci&oacute;n</a>. </p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)

@@ -22,14 +22,14 @@
 &lt;/ul&gt;
 &lt;p&gt;Para bajar  Rasbian lo pueden hacer desde el siguiente &lt;a href="downloads.raspberrypi.org/images/raspbian/2012-12-16-wheezy-raspbian/2012-12-16-wheezy-raspbian.zip"&gt;enlace&lt;/a&gt;, el n&amp;uacute;mero SHA-1 para verificar la integridad del archivo es el siguiente:  &lt;code&gt;514974a5fcbbbea02151d79a715741c2159d4b0a&lt;/code&gt;. &lt;/p&gt;
 &lt;p&gt;El usuario del sistema es &lt;code&gt;pi&lt;/code&gt; y la clave &lt;code&gt;raspberry&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Para instalar la imagen del Raspbian en la memoria SD es necesario colocar la memoria en un equipo, descomprimir el archivo descargado y desde la l&amp;iacute;nea de comandos ejecutar un dd (para este caso la memoria se encuentra en /dev/sdb, es necesario verificar la identificaci&amp;oacute;n de la memoria antes de ejecutar el comando):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dd dd bs=1M if=./2012-12-16-wheezy-raspbian.img of=/dev/sdb
-
-1850+0 registros le&amp;iacute;dos
+&lt;p&gt;Para instalar la imagen del Raspbian en la memoria SD es necesario colocar la memoria en un equipo, descomprimir el archivo descargado y desde la l&amp;iacute;nea de comandos ejecutar un dd (para este caso la memoria se encuentra en /dev/sdb, es necesario verificar la identificaci&amp;oacute;n de la memoria antes de ejecutar el comando):
+```
+dd dd bs=1M if=./2012-12-16-wheezy-raspbian.img of=/dev/sdb&lt;/p&gt;
+&lt;p&gt;1850+0 registros le&amp;iacute;dos
 1850+0 registros escritos
 1939865600 bytes (1,9 GB) copiados, 1610,06 s, 1,2 MB/s
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;El siguiente v&amp;iacute;deo muestra el proceso de arranque de raspbian. &lt;/p&gt;
+```
+El siguiente v&amp;iacute;deo muestra el proceso de arranque de raspbian. &lt;/p&gt;
 &lt;p&gt;&lt;a href="https://youtu.be/WQ3pezQsApE"&gt;https://youtu.be/WQ3pezQsApE&lt;/a&gt; &lt;/p&gt;
 &lt;p&gt;V&amp;iacute;deo donde se muestra la configuraci&amp;oacute;n del raspbian:&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://youtu.be/Xc2pMabUWAo"&gt;https://youtu.be/Xc2pMabUWAo&lt;/a&gt; &lt;/p&gt;
@@ -52,108 +52,97 @@ direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;En este caso se usar&amp;aacute; el m&amp;eacute;todo manual y se selecciona en la ventana de dialogo.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Texto alternativo" src="./images/servidorproxydnsconpdnsd-2.png"/&gt;&lt;/p&gt;
 &lt;p&gt;Se edita el archivo &lt;code&gt;/etc/pdnsd.conf&lt;/code&gt;.  &lt;/p&gt;
-&lt;p&gt;Se agrega la siguiente informaci&amp;oacute;n:  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;server {
+&lt;p&gt;Se agrega la siguiente informaci&amp;oacute;n:&lt;br/&gt;
+&lt;code&gt;server {
     label = "OpenNIC";
     ip = 192.121.86.100; //IP del servidor DNS
     uptest = query;     //Lrealiza consultas  DNS de una solicitud DNS.
     interface=wlan0;     //La interface conectada a la red.
-}
-&lt;/pre&gt;&lt;/div&gt;
+}&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Se modifica a &lt;code&gt;yes&lt;/code&gt; el par&amp;aacute;metro &lt;code&gt;START_DAEMON&lt;/code&gt; del archivo &lt;code&gt;/etc/default/pdnsd&lt;/code&gt; para iniciar autom&amp;aacute;ticamente el servicio &lt;code&gt;pdnsd&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;START_DAEMON=yes&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Al editar el archivo &lt;code&gt;/etc/resolv.conf&lt;/code&gt; y agregar el servidor de DNS 127.0.0.1.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;nameserver 127.0.0.1&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Se reinicia el servicio &lt;code&gt;pdnsd&lt;/code&gt;:  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# invoke-rc.d pdnsd restart
-Stopping pdnsd.
+&lt;p&gt;Se reinicia el servicio &lt;code&gt;pdnsd&lt;/code&gt;:&lt;br/&gt;
+```&lt;/p&gt;
+&lt;h1 id="invoke-rc.d pdnsd restart"&gt;invoke-rc.d pdnsd restart&lt;/h1&gt;
+&lt;p&gt;Stopping pdnsd.
 Starting pdnsd.
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Se hace una consulta con &lt;code&gt;dig&lt;/code&gt;:  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dig www.barrapunto.com|grep "Query time"
-;; Query time: 316 msec
-
+&lt;code&gt;Se hace una consulta con `dig`:&lt;/code&gt;
 dig www.barrapunto.com|grep "Query time"
+;; Query time: 316 msec&lt;/p&gt;
+&lt;p&gt;dig www.barrapunto.com|grep "Query time"
 ;; Query time: 2 msec
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Para verificar el funcionamiento del servidor se ejecuta el siguiente comando:  &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# pdnsd-ctl status
-
-Opening socket /var/cache/pdnsd/pdnsd.status
-
-pdnsd-1.2.8-par running on jewel.
-
-Cache status:
-=============
-2048 kB maximum disk cache size.
-56894 of 2107392 bytes (2.7%) memory cache used in 216 entries.
-
-Thread status:
-==============
-server status thread is running.
+&lt;code&gt;Para verificar el funcionamiento del servidor se ejecuta el siguiente comando:&lt;/code&gt;&lt;/p&gt;
+&lt;h1 id="pdnsd-ctl status"&gt;pdnsd-ctl status&lt;/h1&gt;
+&lt;p&gt;Opening socket /var/cache/pdnsd/pdnsd.status&lt;/p&gt;
+&lt;p&gt;pdnsd-1.2.8-par running on jewel.&lt;/p&gt;
+&lt;h1 id="cache status:"&gt;Cache status:&lt;/h1&gt;
+&lt;p&gt;2048 kB maximum disk cache size.
+56894 of 2107392 bytes (2.7%) memory cache used in 216 entries.&lt;/p&gt;
+&lt;h1 id="thread status:"&gt;Thread status:&lt;/h1&gt;
+&lt;p&gt;server status thread is running.
 pdnsd control thread is running.
 tcp server thread is running.
 udp server thread is running.
 19 query threads spawned in total (0 queries dropped).
-10 running query threads (10 active, 0 queued).
-
-Configuration:
-==============
-Global:
--------
-    Cache size: 2048 kB
-    Server directory: /var/cache/pdnsd
-    Scheme file (for Linux pcmcia support): /var/lib/pcmcia/scheme
-    Server port: 53
-    Server ip (0.0.0.0=any available one): 127.0.0.1
-    Ignore cache when link is down: off
-    Maximum ttl: 604800
-    Minimum ttl: 900
-    Negative ttl: 900
-    Negative RRS policy: default
-    Negative domain policy: auth
-    Run as: pdnsd
-    Strict run as: on
-    Use NSS: on
-    Paranoid mode (cache pollution prevention): on
-    Ignore CD ('checking disabled') flag in queries: on
-    Control socket permissions (mode): 600
-    Maximum parallel queries served: 40
-    Maximum queries queued for serving: 60
-    Global timeout setting: 10
-    Parallel queries increment: 2
-    Randomize records in answer: on
-    Query method: udp_only
-    Query port start: 1024
-    Query port end: 65535
-    TCP server thread: on
-    TCP query timeout: 30
-    Delegation-only zones: (none)
-Server 0:
-------
-    label: OpenNIC
-    ip: 192.121.86.100
-    server assumed available: yes
-    port: 53
-    uptest: query
-    timeout: 120
-    uptest interval: 900
-    ping timeout: 600
-    ping ip: (using server ip)
-    interface: wlan0
-    device (for special Linux ppp device support):
-    uptest command:
-    uptest user: (process owner)
-    force cache purging: off
-    server is cached: on
-    lean query: on
-    Use only proxy?: off
-    Assumed root server: no
-    Randomize server query order: no
-    Default policy: included
-    Policies: (none)
-Succeeded
-&lt;/pre&gt;&lt;/div&gt;
+10 running query threads (10 active, 0 queued).&lt;/p&gt;
+&lt;h1 id="configuration:"&gt;Configuration:&lt;/h1&gt;
+&lt;h2 id="global:"&gt;Global:&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Cache size: 2048 kB
+Server directory: /var/cache/pdnsd
+Scheme file (for Linux pcmcia support): /var/lib/pcmcia/scheme
+Server port: 53
+Server ip (0.0.0.0=any available one): 127.0.0.1
+Ignore cache when link is down: off
+Maximum ttl: 604800
+Minimum ttl: 900
+Negative ttl: 900
+Negative RRS policy: default
+Negative domain policy: auth
+Run as: pdnsd
+Strict run as: on
+Use NSS: on
+Paranoid mode (cache pollution prevention): on
+Ignore CD ('checking disabled') flag in queries: on
+Control socket permissions (mode): 600
+Maximum parallel queries served: 40
+Maximum queries queued for serving: 60
+Global timeout setting: 10
+Parallel queries increment: 2
+Randomize records in answer: on
+Query method: udp_only
+Query port start: 1024
+Query port end: 65535
+TCP server thread: on
+TCP query timeout: 30
+Delegation-only zones: (none)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id="server 0:"&gt;Server 0:&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;label: OpenNIC
+ip: 192.121.86.100
+server assumed available: yes
+port: 53
+uptest: query
+timeout: 120
+uptest interval: 900
+ping timeout: 600
+ping ip: (using server ip)
+interface: wlan0
+device (for special Linux ppp device support):
+uptest command:
+uptest user: (process owner)
+force cache purging: off
+server is cached: on
+lean query: on
+Use only proxy?: off
+Assumed root server: no
+Randomize server query order: no
+Default policy: included
+Policies: (none)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Succeeded
+```&lt;/p&gt;
 &lt;p&gt;Se pueden agregar tantas IPS como se quiera.&lt;/p&gt;
 &lt;p&gt;Si desea m&amp;aacute;s informaci&amp;oacute;n para configurar pdnsd revise los siguientes enlaces:  &lt;/p&gt;
 &lt;p&gt;&lt;a href="https://wiki.archlinux.org/index.php/Pdnsd_(Espa%C3%B1ol)"&gt;https://wiki.archlinux.org/index.php/Pdnsd_(Espa%C3%B1ol)&lt;/a&gt; &lt;/p&gt;
@@ -173,73 +162,67 @@ direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;li&gt;Instalar eCryptfs:&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Se ejecuta:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install ecryptfs-utils
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;aptitude install ecryptfs-utils&lt;/code&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Cifrar un directorio.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Respaldar los archivos y directorios del home del usuario:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cp -pfr /home/ecrespo /tmp/
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+cp -pfr /home/ecrespo /tmp/&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;Cifrar el directorio /home/ecrespo/ al montar el sistema de archivos ecryptfs:&lt;/p&gt;
 &lt;p&gt;Se selecciona aes, 16, no se habilita frase plana, no se habilita cifrado del nombre del archivo, as&amp;iacute; que con estas opciones s&amp;oacute;lo hay que presionar enter a la informaci&amp;oacute;n que solicite al montar la partici&amp;oacute;n cifrada.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;mount&lt;/span&gt; &lt;span class="nt"&gt;-t&lt;/span&gt; &lt;span class="nt"&gt;ecryptfs&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;ecrespo&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;ecrespo&lt;/span&gt;
-
-&lt;span class="nt"&gt;Passphrase&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-&lt;span class="nt"&gt;Select&lt;/span&gt; &lt;span class="nt"&gt;cipher&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
- &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;aes&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;blocksize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;min&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;max&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;32&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
- &lt;span class="nt"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;blowfish&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;blocksize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;min&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;max&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;56&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
- &lt;span class="nt"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;des3_ede&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;blocksize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;8&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;min&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;24&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;max&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;24&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
- &lt;span class="nt"&gt;4&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;twofish&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;blocksize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;min&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;max&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;32&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
- &lt;span class="nt"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;cast6&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;blocksize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;min&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;max&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;32&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
- &lt;span class="nt"&gt;6&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;cast5&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;blocksize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;8&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;min&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;5&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;max&lt;/span&gt; &lt;span class="nt"&gt;keysize&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
-&lt;span class="nt"&gt;Selection&lt;/span&gt; &lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;aes&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-&lt;span class="nt"&gt;Select&lt;/span&gt; &lt;span class="nt"&gt;key&lt;/span&gt; &lt;span class="nt"&gt;bytes&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
- &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;16&lt;/span&gt;
- &lt;span class="nt"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;32&lt;/span&gt;
- &lt;span class="nt"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;24&lt;/span&gt;
-&lt;span class="nt"&gt;Selection&lt;/span&gt; &lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-&lt;span class="nt"&gt;Enable&lt;/span&gt; &lt;span class="nt"&gt;plaintext&lt;/span&gt; &lt;span class="nt"&gt;passthrough&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;y&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;n&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;Enter&lt;/span&gt;
-&lt;span class="nt"&gt;Enable&lt;/span&gt; &lt;span class="nt"&gt;filename&lt;/span&gt; &lt;span class="nt"&gt;encryption&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;y&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;n&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;Enter&lt;/span&gt;
-&lt;span class="nt"&gt;Attempting&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;mount&lt;/span&gt; &lt;span class="nt"&gt;with&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;following&lt;/span&gt; &lt;span class="nt"&gt;options&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-  &lt;span class="nt"&gt;ecryptfs_unlink_sigs&lt;/span&gt;
-  &lt;span class="nt"&gt;ecryptfs_key_bytes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nt"&gt;16&lt;/span&gt;
-  &lt;span class="nt"&gt;ecryptfs_cipher&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nt"&gt;aes&lt;/span&gt;
-  &lt;span class="nt"&gt;ecryptfs_sig&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nt"&gt;162827f20fdadf4e&lt;/span&gt;
-&lt;span class="nt"&gt;Mounted&lt;/span&gt; &lt;span class="nt"&gt;eCryptfs&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+mount -t ecryptfs /home/ecrespo /home/ecrespo&lt;/p&gt;
+&lt;p&gt;Passphrase:
+Select cipher:
+ 1) aes: blocksize = 16; min keysize = 16; max keysize = 32 (not loaded)
+ 2) blowfish: blocksize = 16; min keysize = 16; max keysize = 56 (not loaded)
+ 3) des3_ede: blocksize = 8; min keysize = 24; max keysize = 24 (not loaded)
+ 4) twofish: blocksize = 16; min keysize = 16; max keysize = 32 (not loaded)
+ 5) cast6: blocksize = 16; min keysize = 16; max keysize = 32 (not loaded)
+ 6) cast5: blocksize = 8; min keysize = 5; max keysize = 16 (not loaded)
+Selection [aes]:
+Select key bytes:
+ 1) 16
+ 2) 32
+ 3) 24
+Selection [16]:
+Enable plaintext passthrough (y/n) [n]: Enter
+Enable filename encryption (y/n) [n]: Enter
+Attempting to mount with the following options:
+  ecryptfs_unlink_sigs
+  ecryptfs_key_bytes=16
+  ecryptfs_cipher=aes
+  ecryptfs_sig=162827f20fdadf4e
+Mounted eCryptfs
+```&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Verificar que la partici&amp;oacute;n se ha montado.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;El comando mount s&amp;oacute;lo devuelve las particiones que se encuentran montadas en el Linux.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mount /home/ecrespo on /home/ecrespo type ecryptfs (rw,ecryptfs_sig=162827f20fdadf4e,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_unlink_sigs)
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;mount /home/ecrespo on /home/ecrespo type ecryptfs (rw,ecryptfs_sig=162827f20fdadf4e,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_unlink_sigs)&lt;/code&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Recuperar el respaldo y borrar el respaldo del directorio /tmp/&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cp -pfr /tmp/ecrespo /home/
-rm -fr /tmp/ecrespo
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;cp -pfr /tmp/ecrespo /home/
+rm -fr /tmp/ecrespo&lt;/code&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Verificar el funcionamiento del cifrado de archivos.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Para prop&amp;oacute;sitos de prueba se copia un archivo de /etc/ al home del usuario.
 Mostrar la informaci&amp;oacute;n que contiene el archivo hostname en /etc/&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat /etc/hostname 
-canaima-popular
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;cat /etc/hostname 
+canaima-popular&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Copiar el archivo hostname al home del usuario:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cp /etc/hostname /home/ecrespo/
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;cp /etc/hostname /home/ecrespo/&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Mientras la partici&amp;oacute;n cifrada se encuentra montada se puede visualizar los archivos:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat /home/ecrespo/hostname 
-canaima-popular
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;cat /home/ecrespo/hostname 
+canaima-popular&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Desmontar la partici&amp;oacute;n.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;umount /home/ecrespo/
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;umount /home/ecrespo/&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Verificar que el archivo est&amp;aacute; cifrado:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat /home/ecrespo/hostname
+&lt;p&gt;&lt;code&gt;cat /home/ecrespo/hostname
 4��ˉ�s|| � "3DUfw`�6���D �̬�����{� _CONSOLE ('��N�pD���-� \ٛn�Ś/��TD��xҝD[:�$] �wq�V��
 �n /�k�a:�H.�{ USj�@u)�c ������T� �� �m�иや� � Z�&amp;amp;��0�Q��B�� /��q�e��E��li�"dx�tDs���k����h�J��20��&amp;amp;T�?R�x� �W�$�
                                                                                                                    �$�@ �&amp;amp;
@@ -252,30 +235,27 @@ eb �� f ��?��
 �ՙ��R�mќet ���7B�_�Dz.[�6&amp;gt;�ĸؓ�� �Nc��#��NR��@� 4 �/���M?Om �|;/�Oe9�6��&amp;amp;6D*U�A�e��� �V
 �ZM�&amp;lt;ɝ��"�0��0�W&amp;Yuml;L�H�,r
                         �&amp;gt;��f��4�$�wA�rѫ� �0H�����CP�i��&amp;amp;���!b���-#
-$ލ;�X!y�� ~� I5e��V|Y�\� �H^&amp;pound;�7�0�Z��{�}"!��͡�� 6�M�!LNȆXvF         )� ��G�Nuɍ� � ӧ��s���t ���t��o&amp;amp;� C������W�#��Cpk�&amp;gt;&amp;lt;&amp;bdquo;
-&lt;/pre&gt;&lt;/div&gt;
+$ލ;�X!y�� ~� I5e��V|Y�\� �H^&amp;pound;�7�0�Z��{�}"!��͡�� 6�M�!LNȆXvF         )� ��G�Nuɍ� � ӧ��s���t ���t��o&amp;amp;� C������W�#��Cpk�&amp;gt;&amp;lt;&amp;bdquo;&lt;/code&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Montar autom&amp;aacute;ticamente  la partici&amp;oacute;n o directorio.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Conecte un pendrive y ejecute el comando fdisk -l donde aparecer&amp;aacute; la partici&amp;oacute;n del pendrive:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;fdisk -l
+&lt;p&gt;```
+fdisk -l
  Disk /dev/sdb: 16.0 GB, 16011542528 bytes
 32 heads, 63 sectors/track, 15512 cylinders, 31272544 sectores en total
 Units = sectores of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
-Identificador del disco: 0x59a4123d
-
-Disposit. Inicio    Comienzo      Fin      Bloques  Id  Sistema
+Identificador del disco: 0x59a4123d&lt;/p&gt;
+&lt;p&gt;Disposit. Inicio    Comienzo      Fin      Bloques  Id  Sistema
 /dev/sdb1   *          63    31272191    15636064+   b  W95 FAT32
-&lt;/pre&gt;&lt;/div&gt;
+```&lt;/p&gt;
 &lt;p&gt;Montar el pendrive:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir /mnt/usb
-mount /dev/sdb1 /mnt/usb
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;mkdir /mnt/usb
+mount /dev/sdb1 /mnt/usb&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Al ejecutar mount s&amp;oacute;lo mostrar&amp;aacute; las particiones montadas en el equipo:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mount /dev/sdb1 on /mnt/usb type vfat (rw)
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;mount /dev/sdb1 on /mnt/usb type vfat (rw)&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;A diferencia del art&amp;iacute;culo original el pendrive y la partici&amp;oacute;n cifrada no se monta automaticamente.&lt;/p&gt;
 &lt;p&gt;===&lt;/p&gt;
 &lt;p&gt;&amp;iexcl;Haz tu donativo!
@@ -290,38 +270,31 @@ direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;En el siguiente enlace tienen una gu&amp;iacute;a de como crear las &lt;a href="http://rafael.bonifaz.ec/blog/2011/01/ssh-con-claves-publicas-y-privadas/"&gt;llaves p&amp;uacute;blicas&lt;/a&gt;.&lt;/p&gt;
 &lt;h3 id="acceso inicial al mercurial-server."&gt;Acceso inicial al mercurial-server.&lt;/h3&gt;
 &lt;p&gt;Instalar mercurial-server:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install mercurial-server 
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;aptitude install mercurial-server&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Conectarse al servidor grievous habilitando el forwarding.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~$ ssh -A grievous
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;ernesto@jewel:~$ ssh -A grievous&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Agregar llave privada al agente de autenticaci&amp;oacute;n. &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@grievous:~$ ssh-add -L &amp;gt; my-key
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;ernesto@grievous:~$ ssh-add -L &amp;gt; my-key&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Crear el directorio para el usuario ernesto en el mercurial-server, copiar la llave y actualizar el repositorio de autenticaci&amp;oacute;n. &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@grievous:~$ sudo mkdir -p /etc/mercurial-server/keys/root/ernesto
+&lt;p&gt;&lt;code&gt;ernesto@grievous:~$ sudo mkdir -p /etc/mercurial-server/keys/root/ernesto
 ernesto@grievous:~$ sudo cp my-key /etc/mercurial-server/keys/root/ernesto/jewel
 ernesto@grievous:~$ sudo -u hg /usr/share/mercurial-server/refresh-auth
-ernesto@grievous:~$ exit
-&lt;/pre&gt;&lt;/div&gt;
+ernesto@grievous:~$ exit&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Crear un repositorio.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; cd proyectos/pysms-send
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;cd proyectos/pysms-send&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Clonar el proyecto en el servidor grievous: &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~/proyectos/pysms-send$ hg clone . ssh://hg@grievous/ernesto/pysms-send
+&lt;p&gt;&lt;code&gt;ernesto@jewel:~/proyectos/pysms-send$ hg clone . ssh://hg@grievous/ernesto/pysms-send
 searching for changes
 27 changesets found
 remote: adding changesets
 remote: adding manifests
 remote: adding file changes
-remote: added 27 changesets with 52 changes to 24 files
-&lt;/pre&gt;&lt;/div&gt;
+remote: added 27 changesets with 52 changes to 24 files&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Revisar si hay cambios en el repositorio.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@jewel:~/proyectos/pysms-send$ hg pull ssh://hg@grievous/ernesto/pysms-send
+&lt;p&gt;&lt;code&gt;ernesto@jewel:~/proyectos/pysms-send$ hg pull ssh://hg@grievous/ernesto/pysms-send
 pulling from ssh://hg@grievous/ernesto/pysms-send
 searching for changes
-no changes found
-&lt;/pre&gt;&lt;/div&gt;
+no changes found&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Siguiente art&amp;iacute;culo se explicar&amp;aacute; como agregar usuarios al repositorio, controlar el acceso al repositorio&lt;/p&gt;
 &lt;p&gt;===&lt;/p&gt;
 &lt;p&gt;&amp;iexcl;Haz tu donativo!
@@ -336,63 +309,48 @@ direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;Tambi&amp;eacute;n se puede agregar equipos con su IP como de un servidor de DNS con Bind9 en funcionamiento.&lt;/p&gt;
 &lt;p&gt;Se tiene una m&amp;aacute;quina virtual de nombre grievous e IP 192.168.10.53.&lt;/p&gt;
 &lt;p&gt;Para instalr dnsmasq se ejecuta apt-get.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install dnsmasq
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;apt-get install dnsmasq&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Configurar dnsmasq como DNS cache y local.&lt;/p&gt;
 &lt;p&gt;Se define la ruta del archivo resolv.conf que hace consultas al servidor de DNS externo.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;resolv-file=/etc/resolv-orig.conf
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;resolv-file=/etc/resolv-orig.conf&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Definir respuestas de peticiones locales dadas por el archivo /etc/hosts.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; local=/localnet/
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;local=/localnet/&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Y eso es todo lo que hay que cambiarse en el archivo /etc/dnsmasq.conf para resolver nombres de equipos locales por medio de /etc/hosts.&lt;/p&gt;
 &lt;p&gt;Agregar los equipos en el archivo /etc/hosts.&lt;/p&gt;
 &lt;p&gt;En este caso se tiene el equipo grievous:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;192.168.10.53   grievous        grievous
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;192.168.10.53   grievous        grievous&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Si se necesita agregar m&amp;aacute;s equipos al servidor de DNS simplemente se edita el archivo /etc/hosts agregando los equipos en dicho archivo.&lt;/p&gt;
 &lt;p&gt;Se crea el archivo /etc/resolv-orig.conf donde se encuentra las IPs de los servidores de DNS externos.
 En este caso se est&amp;aacute; usando los servidores de DNS de Google, OpenDNS y de la red del trabajo.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nameserver 8.8.8.8 
+&lt;p&gt;&lt;code&gt;nameserver 8.8.8.8 
 nameserver 8.8.4.4
 nameserver 208.67.222.222
 nameserver 208.67.220.220
-nameserver 192.168.32.254
-&lt;/pre&gt;&lt;/div&gt;
+nameserver 192.168.32.254&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Ya se tiene configurado el servidor de DNS, s&amp;oacute;lo falta que el equipo realice las consultas por medio del archivo /etc/resolv.conf, el cual debe apuntar al servidor local de DNS (127.0.0.1).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nameserver 127.0.0.1
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;nameserver 127.0.0.1&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Ahora se puede probar la resoluci&amp;oacute;n de nombres en el equipo.&lt;/p&gt;
 &lt;p&gt;Probar que devuelve respuestas el servidor DNS al consultar el nombre del equipo grievous:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;host&lt;/span&gt; &lt;span class="nt"&gt;grievous&lt;/span&gt;
-&lt;span class="nt"&gt;grievous&lt;/span&gt; &lt;span class="nt"&gt;has&lt;/span&gt; &lt;span class="nt"&gt;address&lt;/span&gt; &lt;span class="nt"&gt;192&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;168&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;10&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;53&lt;/span&gt;
-
-
-&lt;span class="nt"&gt;dig&lt;/span&gt; &lt;span class="nt"&gt;grievous&lt;/span&gt;
-
-&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nt"&gt;DiG&lt;/span&gt; &lt;span class="nt"&gt;9&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;7&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;3&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="nt"&gt;grievous&lt;/span&gt;
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;global&lt;/span&gt; &lt;span class="nt"&gt;options&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nt"&gt;cmd&lt;/span&gt;
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;Got&lt;/span&gt; &lt;span class="nt"&gt;answer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;-&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="nt"&gt;HEADER&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;opcode&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;QUERY&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;status&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;NOERROR&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;id&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;19819&lt;/span&gt;
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;flags&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;qr&lt;/span&gt; &lt;span class="nt"&gt;aa&lt;/span&gt; &lt;span class="nt"&gt;rd&lt;/span&gt; &lt;span class="nt"&gt;ra&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;QUERY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ANSWER&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;AUTHORITY&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ADDITIONAL&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;
-
-
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;QUESTION&lt;/span&gt; &lt;span class="nt"&gt;SECTION&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="nt"&gt;grievous&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;          &lt;span class="nt"&gt;IN&lt;/span&gt;  &lt;span class="nt"&gt;A&lt;/span&gt;
-
-
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;ANSWER&lt;/span&gt; &lt;span class="nt"&gt;SECTION&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-&lt;span class="nt"&gt;grievous&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;       &lt;span class="nt"&gt;0&lt;/span&gt;   &lt;span class="nt"&gt;IN&lt;/span&gt;  &lt;span class="nt"&gt;A&lt;/span&gt;   &lt;span class="nt"&gt;192&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;168&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;10&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;53&lt;/span&gt;
-
-
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;Query&lt;/span&gt; &lt;span class="nt"&gt;time&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;6&lt;/span&gt; &lt;span class="nt"&gt;msec&lt;/span&gt;
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;SERVER&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;127&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;1&lt;/span&gt;&lt;span class="p"&gt;#&lt;/span&gt;&lt;span class="nn"&gt;53&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;127&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;WHEN&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;Sat&lt;/span&gt; &lt;span class="nt"&gt;Aug&lt;/span&gt; &lt;span class="nt"&gt;20&lt;/span&gt; &lt;span class="nt"&gt;10&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;06&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;45&lt;/span&gt; &lt;span class="nt"&gt;2011&lt;/span&gt;
-&lt;span class="o"&gt;;;&lt;/span&gt; &lt;span class="nt"&gt;MSG&lt;/span&gt; &lt;span class="nt"&gt;SIZE&lt;/span&gt;  &lt;span class="nt"&gt;rcvd&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;42&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+host grievous
+grievous has address 192.168.10.53&lt;/p&gt;
+&lt;p&gt;dig grievous&lt;/p&gt;
+&lt;p&gt;; &amp;lt;&amp;lt;&amp;gt;&amp;gt; DiG 9.7.3 &amp;lt;&amp;lt;&amp;gt;&amp;gt; grievous
+;; global options: +cmd
+;; Got answer:
+;; -&amp;gt;&amp;gt;HEADER&amp;lt;&amp;lt;- opcode: QUERY, status: NOERROR, id: 19819
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0&lt;/p&gt;
+&lt;p&gt;;; QUESTION SECTION:
+;grievous.          IN  A&lt;/p&gt;
+&lt;p&gt;;; ANSWER SECTION:
+grievous.       0   IN  A   192.168.10.53&lt;/p&gt;
+&lt;p&gt;;; Query time: 6 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; WHEN: Sat Aug 20 10:06:45 2011
+;; MSG SIZE  rcvd: 42
+```&lt;/p&gt;
 &lt;p&gt;Ahora se puede verificar los rendimientos de los servidores de DNS con NameBench. Para instalarlo se ejecuta apt-get.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install  namebench
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;apt-get install  namebench&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;En la siguiente figura se muestra la ejecuci&amp;oacute;n de namebench donde se le define el servidor de Nombres a utilizar.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="namebench" src="./images/namebench.png"/&gt;&lt;/p&gt;
 &lt;p&gt;A continuaci&amp;oacute;n se muestra las figuras del resultado de Namebench.&lt;/p&gt;
@@ -422,28 +380,26 @@ direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
  Es necesario tener mercurial instalado.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install mercurial etckeeper
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;aptitude install mercurial etckeeper&lt;/code&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Configuraci&amp;oacute;n de etckeeper:&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Se edita el archivo /etc/etckeeper/etckeeper.conf se comenta los distintos sistemas de control de versiones y se deja hg, adicionalmente se deja la opci&amp;oacute;n de env&amp;iacute;o de correo a un usuario.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;VCS="hg"
-# Options passed to hg commit when run by etckeeper.
-HG_COMMIT_OPTIONS="-u ecrespo@gmail.com"
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+VCS="hg"&lt;/p&gt;
+&lt;h1 id="options passed to hg commit when run by etckeeper."&gt;Options passed to hg commit when run by etckeeper.&lt;/h1&gt;
+&lt;p&gt;HG_COMMIT_OPTIONS="-u ecrespo@gmail.com"
+```&lt;/p&gt;
 &lt;p&gt;Luego se edita el archivo /etc/mercurial/hgrc&lt;/p&gt;
 &lt;p&gt;Se agrega el correo del usuario:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[ui]&lt;/span&gt;
-&lt;span class="na"&gt;username&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;ecrespo@gmail.com&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;[ui]
+username = ecrespo@gmail.com&lt;/code&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Se inicializa el control de versiones:&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;etckeeper init
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;etckeeper init&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;A continuaci&amp;oacute;n se muestra como se ha agregado los archivos dentro de /etc en el control de versiones:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;adding xdg/xfce4/Xft.xrdb
+&lt;p&gt;&lt;code&gt;adding xdg/xfce4/Xft.xrdb
 adding xdg/xfce4/helpers.rc
 adding xdg/xfce4/mount.rc
 adding xdg/xfce4/panel/clock-14.rc
@@ -462,22 +418,19 @@ adding xml/docbook-xml.xml
 adding xml/docbook-xsl.xml
 adding xml/rarian-compat.xml
 adding xml/sgml-data.xml
-adding xml/xml-core.xml
-&lt;/pre&gt;&lt;/div&gt;
+adding xml/xml-core.xml&lt;/code&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Se hace el primer commit:&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;etckeeper commit "Inicializacion del control de versiones"
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;etckeeper commit "Inicializacion del control de versiones"&lt;/code&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Usando etckeeper.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Al realizar la instalaci&amp;oacute;n de un programa se ejecutar&amp;aacute; autom&amp;aacute;ticamente el agregado de los archivos de configuraci&amp;oacute;n en el control de versiones.
 Se instalar&amp;aacute; el paquete lighttpd para mostar el proceso de agregar los archivos al control de versiones:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install lighttpd
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;apt-get install lighttpd&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Al final aparece una serie de archivos agregados:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;adding lighttpd/conf-available/15-fastcgi-php.conf
+&lt;p&gt;&lt;code&gt;adding lighttpd/conf-available/15-fastcgi-php.conf
 adding lighttpd/conf-available/90-debian-doc.conf
 adding lighttpd/conf-available/README
 adding lighttpd/lighttpd.conf
@@ -488,50 +441,47 @@ adding rc2.d/S20lighttpd
 adding rc3.d/S20lighttpd
 adding rc4.d/S20lighttpd
 adding rc5.d/S20lighttpd
-adding rc6.d/K01lighttpd
-&lt;/pre&gt;&lt;/div&gt;
+adding rc6.d/K01lighttpd&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Se revisa el estatus de mercurial en el directorio /etc:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg status /etc/
-M ../etc/.etckeeper
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;hg status /etc/
+M ../etc/.etckeeper&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Al revisar el log de mercurial en el directorio /etc/ muestra los cambios realizados (commit):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg log /etc/
-
-changeset:   1:ba22869a3179
+&lt;p&gt;```
+hg log /etc/&lt;/p&gt;
+&lt;p&gt;changeset:   1:ba22869a3179
 tag:         tip
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:02:27 2011 -0430
-summary:     committing changes in /etc after apt run
-
-changeset:   0:f2a3f337ecc0
+summary:     committing changes in /etc after apt run&lt;/p&gt;
+&lt;p&gt;changeset:   0:f2a3f337ecc0
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 21:54:21 2011 -0430
 summary:     Inicializacion del control de versiones
-&lt;/pre&gt;&lt;/div&gt;
+```&lt;/p&gt;
 &lt;p&gt;Se tiene una descripci&amp;oacute;n de los cambios en el changeset 0 se muestra la inicializaci&amp;oacute;n del control de versiones, en el changeset 1 se muestra el cambio luego de instalar lighttpd.&lt;/p&gt;
 &lt;p&gt;Se modifica un archivo de configuraci&amp;oacute;n /etc/hosts :&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;etckeeper commit "Se elimina el dominio  del host jewel en /etc/hosts" /etc/hosts
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+etckeeper commit "Se elimina el dominio  del host jewel en /etc/hosts" /etc/hosts&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;Al volver a revisar el log de mercurial sobre el directorio /etc/ aparece el commit del cambio del archivo hosts:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg log /etc/
+&lt;p&gt;```
+hg log /etc/
 changeset:   2:6efc1189bd8b
 tag:         tip
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:08:25 2011 -0430
-summary:     Se elimina el dominio del host jewel en /etc/hosts
-
-changeset:   1:ba22869a3179
+summary:     Se elimina el dominio del host jewel en /etc/hosts&lt;/p&gt;
+&lt;p&gt;changeset:   1:ba22869a3179
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:02:27 2011 -0430
-summary:     committing changes in /etc after apt run
-
-changeset:   0:f2a3f337ecc0
+summary:     committing changes in /etc after apt run&lt;/p&gt;
+&lt;p&gt;changeset:   0:f2a3f337ecc0
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 21:54:21 2011 -0430
 summary:     Inicializacion del control de versiones
-&lt;/pre&gt;&lt;/div&gt;
+```&lt;/p&gt;
 &lt;p&gt;Se puede ver las diferencias entre los cambios realizados en archivos dentro del directorio /etc:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg diff /etc/
+&lt;p&gt;&lt;code&gt;hg diff /etc/
 diff -r 6efc1189bd8b hosts
 --- a/hosts    Wed Jul 27 22:08:25 2011 -0430
 +++ b/hosts    Wed Jul 27 22:13:41 2011 -0430
@@ -542,79 +492,73 @@ diff -r 6efc1189bd8b hosts
 +127.0.0.1    sofia   sofia
  # The following lines are desirable for IPv6 capable hosts
  ::1     ip6-localhost ip6-loopback
- fe00::0 ip6-localnet
-&lt;/pre&gt;&lt;/div&gt;
+ fe00::0 ip6-localnet&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Al realizar el commit y volver a hacer el diff est&amp;aacute; vez no muestra informaci&amp;oacute;n por que ya los cambios se subieron al control de versiones:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;etckeeper commit "Agregado el nombre sofia al host 127.0.0.1 en el archivo /etc/hosts" /etc/hosts
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;etckeeper commit "Agregado el nombre sofia al host 127.0.0.1 en el archivo /etc/hosts" /etc/hosts&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Al revisar los logs ahora aparece el cambio de agreado el nombre sofia al host 127.0.0.1:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg log /etc/
+&lt;p&gt;```
+hg log /etc/
 changeset:   3:452065708a7e
 tag:         tip
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:16:13 2011 -0430
-summary:     Agregado el nombre sofia al host 127.0.0.1 en el archivo /etc/hosts
-
-changeset:   2:6efc1189bd8b
+summary:     Agregado el nombre sofia al host 127.0.0.1 en el archivo /etc/hosts&lt;/p&gt;
+&lt;p&gt;changeset:   2:6efc1189bd8b
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:08:25 2011 -0430
-summary:     Se elimina pdvsa.com del host jewel en /etc/hosts
-
-changeset:   1:ba22869a3179
+summary:     Se elimina pdvsa.com del host jewel en /etc/hosts&lt;/p&gt;
+&lt;p&gt;changeset:   1:ba22869a3179
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:02:27 2011 -0430
-summary:     committing changes in /etc after apt run
-
-changeset:   0:f2a3f337ecc0
+summary:     committing changes in /etc after apt run&lt;/p&gt;
+&lt;p&gt;changeset:   0:f2a3f337ecc0
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 21:54:21 2011 -0430
 summary:     Inicializacion del control de versiones
-&lt;/pre&gt;&lt;/div&gt;
+```&lt;/p&gt;
 &lt;p&gt;Para ver el tip de cada repo se ejecuta hg tip dentro del repositorio:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;root@jewel:/etc# hg tip
+&lt;p&gt;```
+root@jewel:/etc# hg tip
 changeset:   3:452065708a7e
 tag:         tip
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:16:13 2011 -0430
-summary:     Agregado el nombre sofia al host 127.0.0.1 en el archivo /etc/hosts
-&lt;/pre&gt;&lt;/div&gt;
+summary:     Agregado el nombre sofia al host 127.0.0.1 en el archivo /etc/hosts&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;Ahora se mostrar&amp;aacute; todas las revisiones con los logs y luego se revertir&amp;aacute; un cambio:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg log 
+&lt;p&gt;```
+hg log 
 changeset:   3:452065708a7e
 tag:         tip
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:16:13 2011 -0430
-summary:     Agregado el nombre sofia al host 127.0.0.1 en el archivo /etc/hosts
-
-changeset:   2:6efc1189bd8b
+summary:     Agregado el nombre sofia al host 127.0.0.1 en el archivo /etc/hosts&lt;/p&gt;
+&lt;p&gt;changeset:   2:6efc1189bd8b
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:08:25 2011 -0430
-summary:     Se elimina pdvsa.com del host jewel en /etc/hosts
-
-changeset:   1:ba22869a3179
+summary:     Se elimina pdvsa.com del host jewel en /etc/hosts&lt;/p&gt;
+&lt;p&gt;changeset:   1:ba22869a3179
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 22:02:27 2011 -0430
-summary:     committing changes in /etc after apt run
-
-changeset:   0:f2a3f337ecc0
+summary:     committing changes in /etc after apt run&lt;/p&gt;
+&lt;p&gt;changeset:   0:f2a3f337ecc0
 user:        ecrespo@gmail.com
 date:        Wed Jul 27 21:54:21 2011 -0430
 summary:     Inicializacion del control de versiones
-&lt;/pre&gt;&lt;/div&gt;
+```&lt;/p&gt;
 &lt;p&gt;Se pueden ver los cambios con respecto a cada revisi&amp;oacute;n, en el siguiente comando se revisa la revisi&amp;oacute;n 1 con respecto a la 2 en /etc/hosts:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg diff -r 1 -r 2 /etc/hosts
+&lt;p&gt;```
+hg diff -r 1 -r 2 /etc/hosts
 diff -r ba22869a3179 -r 6efc1189bd8b hosts
 --- a/hosts    Wed Jul 27 22:02:27 2011 -0430
 +++ b/hosts    Wed Jul 27 22:08:25 2011 -0430
 @@ -1,5 +1,5 @@
  127.0.0.1    localhost
 -127.0.1.1    jewel.dst.pdvsa.com    jewel
-+127.0.1.1    jewel    jewel
-
- # The following lines are desirable for IPv6 capable hosts
- ::1     ip6-localhost ip6-loopback
-
-Ahora se mostrar&amp;aacute; la 1 con respecto a la 3:
++127.0.1.1    jewel    jewel&lt;/p&gt;
+&lt;p&gt;# The following lines are desirable for IPv6 capable hosts
+ ::1     ip6-localhost ip6-loopback&lt;/p&gt;
+&lt;p&gt;Ahora se mostrar&amp;aacute; la 1 con respecto a la 3:
 hg diff -r 1 -r 3 /etc/hosts
 diff -r ba22869a3179 -r 452065708a7e hosts
 --- a/hosts    Wed Jul 27 22:02:27 2011 -0430
@@ -628,23 +572,24 @@ diff -r ba22869a3179 -r 452065708a7e hosts
  # The following lines are desirable for IPv6 capable hosts
  ::1     ip6-localhost ip6-loopback
  fe00::0 ip6-localnet
-&lt;/pre&gt;&lt;/div&gt;
+```&lt;/p&gt;
 &lt;p&gt;Ahora se revierte el cambio de la revisi&amp;oacute;n 3 a la 2 en el archivo /etc/hosts.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg revert -r 2 /etc/hosts
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+hg revert -r 2 /etc/hosts&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;Ahora el host sofia ya no aparece en el archivo /etc/hosts:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;127.0.0.1       localhost
-127.0.1.1       jewel   jewel
-
-# The following lines are desirable for IPv6 capable hosts
-::1     ip6-localhost ip6-loopback
+&lt;p&gt;```
+127.0.0.1       localhost
+127.0.1.1       jewel   jewel&lt;/p&gt;
+&lt;h1 id="the following lines are desirable for ipv6 capable hosts"&gt;The following lines are desirable for IPv6 capable hosts&lt;/h1&gt;
+&lt;p&gt;::1     ip6-localhost ip6-loopback
 fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-&lt;/pre&gt;&lt;/div&gt;
+ff02::2 ip6-allrouters&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;Si se desea respaldar los archivos en un servidor se puede usar bitbucket como ejemplo, se crea el proyecto configuracion-jewel y se sube el contenido del directorio /etc/ con el comando hg push:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hg push https://bitbucket.org/ecrespo/configuracion-jewel
+&lt;p&gt;&lt;code&gt;hg push https://bitbucket.org/ecrespo/configuracion-jewel
 http authorization required
 realm: Bitbucket.org HTTP
 user: ecrespo
@@ -655,8 +600,7 @@ remote: adding changesets
 remote: adding manifests
 remote: adding file changes
 remote: added 4 changesets with 5764 changes to 5759 files
-remote: bb/acl: ecrespo is allowed. accepted payload.
-&lt;/pre&gt;&lt;/div&gt;
+remote: bb/acl: ecrespo is allowed. accepted payload.&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;En la siguiente figura se muestra una captura de pantalla de los cambios del proyecto en bitbucket.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Web mercurial" src="./images/mercurial-1.png"/&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Web mercurial" src="./images/mercurial-2.png"/&gt;&lt;/p&gt;
@@ -671,42 +615,35 @@ direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;En Debian/Ubuntu/Canaima existe los paquetes libpam-usb y pamusb-tools, estos permiten crear una llave, dicha llave se guarda en el pendrive. Luego se configura …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Cuando no se pasa uno a modo paranoico se le ocurren ideas de como validar usuarios al ingresar en una sesi&amp;oacute;n de escritorio v&amp;iacute;a GDM.&lt;/p&gt;
 &lt;p&gt;En Debian/Ubuntu/Canaima existe los paquetes libpam-usb y pamusb-tools, estos permiten crear una llave, dicha llave se guarda en el pendrive. Luego se configura pam para que se pida la llave al momento de ingresar usuario y clave en el GDM del equipo; si no se conecta el pendrive el GDM colocar&amp;aacute; un mensaje que clave invalida.&lt;/p&gt;
 &lt;p&gt;Para instalar estos paquetes se ejecuta aptitude:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;aptitude install libpam-usb pamusb-tools
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;aptitude install libpam-usb pamusb-tools&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Luego se conecta el pendrive en el equipo y se agrega el dispositivo en /etc/pamusb.conf con el comando pamusb-conf:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pamusb-conf --add-device /media/F060-785C/
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;pamusb-conf --add-device /media/F060-785C/&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Donde /media/F060-785C/ es la ruta del pendrive.&lt;/p&gt;
 &lt;p&gt;Se agrega el usuario en /etc/pamusb.conf el cual iniciar&amp;aacute; sesi&amp;oacute;n en el equipo:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pamusb-conf --add-user ecrespo
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;pamusb-conf --add-user ecrespo&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Se verifica la configuraci&amp;oacute;n de pamusb con el usuario agregado:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pamusb-check ecrespo
+&lt;p&gt;&lt;code&gt;pamusb-check ecrespo
 * Authentication request for user "ecrespo" (pamusb-check)
 * Device "/media/F060-785C/" is connected (good).
 * Performing one time pad verification...
 * Regenerating new pads...
 * Unable to update pads.
-* Access granted.
-&lt;/pre&gt;&lt;/div&gt;
+* Access granted.&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Al devolver el programa acceso garantizado ya se tiene todo listo para usar el pendrive en el momento de inicio de sesi&amp;oacute;n, s&amp;oacute;lo falta modificar pam para que permita la autenticaci&amp;oacute;n con el pendrive.&lt;/p&gt;
 &lt;p&gt;Se edita el archivo /etc/pam.d/common-aut y se agrega la siguiente l&amp;iacute;nea:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;auth sufficient pam_usb.so
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;auth sufficient pam_usb.so&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Con esta l&amp;iacute;nea el GDM verifica el token de la llave, si se quiere que pida tanto la contrase&amp;ntilde;a como el token se cambia sufficient a required.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;auth required pam_usb.so
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;auth required pam_usb.so&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;A partir de ahora al iniciar sesi&amp;oacute;n se necesita la contrase&amp;ntilde;a y el token.&lt;/p&gt;
 &lt;p&gt;A continuaci&amp;oacute;n se muestra el mensaje que env&amp;iacute;a la consola al ejecutar sudo -s :&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[sudo] password for ecrespo: 
+&lt;p&gt;&lt;code&gt;[sudo] password for ecrespo: 
 * pam_usb v0.4.2
 * Authentication request for user "ecrespo" (sudo)
 * Device "/media/F060-785C/" is connected (good).
 * Performing one time pad verification...
 * Regenerating new pads...
 * Unable to update pads.
-* Access granted.
-&lt;/pre&gt;&lt;/div&gt;
+* Access granted.&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;===&lt;/p&gt;
 &lt;p&gt;&amp;iexcl;Haz tu donativo!
 Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
@@ -734,40 +671,36 @@ La siguiente imagen muestra el repositorio del proyecto en google code.&lt;/p&gt
 &lt;p&gt;MANIFEST.in es un archivo plantilla de entra que define que archivos se van a colocar en el archivo MANIFEST, este archivo final le dira a setup.py cuales ser&amp;aacute;n los archivos que se incluir&amp;aacute;n en el paquete .tar.gz o .tar.bz2.
 El archivo tiene una directiva include donde se le dir&amp;aacute; los archivos que se quieren incluir.
 Por ejemplo:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;include COPYING pyconfig-accessgnome.glade pyconfig-accessgnome-ui.desktop README TODO
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;include COPYING pyconfig-accessgnome.glade pyconfig-accessgnome-ui.desktop README TODO&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;El archivo setup.py contiene lo siguiente:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;env&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;
-&lt;span class="c1"&gt;#importar setup de distutils&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;distutils.core&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;setup&lt;/span&gt;  
-&lt;span class="c1"&gt;#Crear la variable data_files que contiene las rutas de donde se van a colocar los archivos.&lt;/span&gt;
-&lt;span class="n"&gt;data_files&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="s1"&gt;'share/applications'&lt;/span&gt;&lt;span class="p"&gt;,[&lt;/span&gt;&lt;span class="s1"&gt;'pyconfig-accessgnome-ui.desktop'&lt;/span&gt;&lt;span class="p"&gt;]),&lt;/span&gt;
-    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'share/python-config-accesskey-gnome'&lt;/span&gt;&lt;span class="p"&gt;,[&lt;/span&gt;&lt;span class="s1"&gt;'COPYING'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'configGconf.py'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'pyconfig-accessgnome.glade'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'pyconfig-accessgnome-ui.py'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'README'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'TODO'&lt;/span&gt;&lt;span class="p"&gt;])]&lt;/span&gt;
-
-
-&lt;span class="c1"&gt;#se define el nombre del programa, la versi&amp;oacute;n, una descripci&amp;oacute;n corta, el autor y su correo, &lt;/span&gt;
-&lt;span class="c1"&gt;#el url del proyecto, la licencia, los scripts principales del programa, los archivos de datos adicionales,&lt;/span&gt;
-&lt;span class="c1"&gt;#La plataforma soportadas,los m&amp;oacute;dulos que se requieren para el funcionamiento del programa.&lt;/span&gt;
-&lt;span class="c1"&gt;#Y el m&amp;oacute;dulo que se desarrollo y necesita el programa principal.&lt;/span&gt;
-
-
-&lt;span class="n"&gt;setup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'python-gconf-keybinding'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-      &lt;span class="n"&gt;version&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'0.4'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-      &lt;span class="n"&gt;description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'Allow config keyboard access application with gconf'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-      &lt;span class="n"&gt;author&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'Ernesto Nadir Crespo Avila'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-      &lt;span class="n"&gt;author_email&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'ecrespo@gmail.com'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-      &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'http://code.google.com/p/python-config-accesskey-gnome/'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-      &lt;span class="n"&gt;license&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"GPL v3"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-      &lt;span class="n"&gt;scripts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'pyconfig-accessgnome-ui.py'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'configGconf.py'&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
-      &lt;span class="n"&gt;data_files&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;data_files&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-      &lt;span class="n"&gt;platforms&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'i386'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'AMD64'&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
-      &lt;span class="n"&gt;requires&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'gtk'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'gconf'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'pygtk'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'gtk.glade'&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
-      &lt;span class="n"&gt;py_modules&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'configGconf'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-      &lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```python
+!/usr/bin/env python&lt;/p&gt;
+&lt;h1 id="importar setup de distutils"&gt;importar setup de distutils&lt;/h1&gt;
+&lt;p&gt;from distutils.core import setup  &lt;/p&gt;
+&lt;h1 id="crear la variable data_files que contiene las rutas de donde se van a colocar los archivos."&gt;Crear la variable data_files que contiene las rutas de donde se van a colocar los archivos.&lt;/h1&gt;
+&lt;p&gt;data_files = [('share/applications',['pyconfig-accessgnome-ui.desktop']),
+    ('share/python-config-accesskey-gnome',['COPYING','configGconf.py','pyconfig-accessgnome.glade','pyconfig-accessgnome-ui.py','README','TODO'])]&lt;/p&gt;
+&lt;h1 id="se define el nombre del programa, la version, una descripcion corta, el autor y su correo,"&gt;se define el nombre del programa, la versi&amp;oacute;n, una descripci&amp;oacute;n corta, el autor y su correo,&lt;/h1&gt;
+&lt;h1 id="el url del proyecto, la licencia, los scripts principales del programa, los archivos de datos adicionales,"&gt;el url del proyecto, la licencia, los scripts principales del programa, los archivos de datos adicionales,&lt;/h1&gt;
+&lt;h1 id="la plataforma soportadas,los modulos que se requieren para el funcionamiento del programa."&gt;La plataforma soportadas,los m&amp;oacute;dulos que se requieren para el funcionamiento del programa.&lt;/h1&gt;
+&lt;h1 id="y el modulo que se desarrollo y necesita el programa principal."&gt;Y el m&amp;oacute;dulo que se desarrollo y necesita el programa principal.&lt;/h1&gt;
+&lt;p&gt;setup(name='python-gconf-keybinding',
+      version='0.4',
+      description='Allow config keyboard access application with gconf',
+      author='Ernesto Nadir Crespo Avila', 
+      author_email='ecrespo@gmail.com',
+      url = 'http://code.google.com/p/python-config-accesskey-gnome/',
+      license = "GPL v3",
+      scripts = ['pyconfig-accessgnome-ui.py', 'configGconf.py'],
+      data_files =data_files,
+      platforms=['i386','AMD64'],
+      requires = ['gtk','gconf','pygtk','gtk.glade'],
+      py_modules = ['configGconf']
+      )
+```&lt;/p&gt;
 &lt;p&gt;Al tener los archivos necesarios para instalar el programa y para crear los paquetes s&amp;oacute;lo queda ejecutar los comandos:
 Listar los archivos existentes:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls -l
+&lt;p&gt;&lt;code&gt;ls -l
 total 92
 -rwxr-xr-x 1 ernesto ernesto  8036 ago  7 17:49 configGconf.py
 -rw-r--r-- 1 ernesto ernesto 33353 jul 27 20:41 COPYING
@@ -777,11 +710,10 @@ total 92
 -rwxr-xr-x 1 ernesto ernesto  8420 ago  8 17:06 pyconfig-accessgnome-ui.py
 -rw-r--r-- 1 ernesto ernesto  4260 jul 27 20:41 README
 -rwxr-xr-x 1 ernesto ernesto  1021 ago  8 18:12 setup.py
--rw-r--r-- 1 ernesto ernesto     0 jul 27 20:41 TODO
-&lt;/pre&gt;&lt;/div&gt;
+-rw-r--r-- 1 ernesto ernesto     0 jul 27 20:41 TODO&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Probar la instalaci&amp;oacute;n del programa:
 Se ejecuta el install para el setup.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo python setup.py install
+&lt;p&gt;&lt;code&gt;sudo python setup.py install
 running install
 running build
 running build_py
@@ -803,20 +735,19 @@ changing mode of /usr/local/bin/configGconf.py to 755
 running install_data
 running install_egg_info
 Removing /usr/local/lib/python2.6/dist-packages/python_gconf_keybinding-0.4.egg-info
-Writing /usr/local/lib/python2.6/dist-packages/python_gconf_keybinding-0.4.egg-info
-&lt;/pre&gt;&lt;/div&gt;
+Writing /usr/local/lib/python2.6/dist-packages/python_gconf_keybinding-0.4.egg-info&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Esto crea un directorio build que contiene los scripts y la librer&amp;iacute;as, luego los copia en /usr/local/  tanto en bin como en share. &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls share/python-config-accesskey-gnome/
-configGconf.py  COPYING  pyconfig-accessgnome.glade  pyconfig-accessgnome-ui.py  README  TODO
-
-ls bin/
-configGconf.py  pyconfig-accessgnome-ui.py  pyloro.py
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+ls share/python-config-accesskey-gnome/
+configGconf.py  COPYING  pyconfig-accessgnome.glade  pyconfig-accessgnome-ui.py  README  TODO&lt;/p&gt;
+&lt;p&gt;ls bin/
+configGconf.py  pyconfig-accessgnome-ui.py  pyloro.py&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;Ya en este momento se puede ejecutar el programa tanto de forma gr&amp;aacute;fica como desde la l&amp;iacute;nea de comandos.&lt;/p&gt;
 &lt;p&gt;A continuaci&amp;oacute;n viene el proceso de construcci&amp;oacute;n del tar.gz y tar.bz:
 El comando para el setup.py es sdist el cual crea el paquete para ser distribu&amp;iacute;do, adicionalmente se le pasa el formato con la opci&amp;oacute;n --formats=bztar, gztar. Los argumentos bztar y gztar es para crear un tar.bz2 y un tar.gz respectivamente.&lt;/p&gt;
 &lt;p&gt;El comando es el siguiente:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python setup.py sdist --formats=bztar,gztar
+&lt;p&gt;&lt;code&gt;python setup.py sdist --formats=bztar,gztar
 running sdist
 reading manifest template 'MANIFEST.in'
 writing manifest file 'MANIFEST'
@@ -835,16 +766,14 @@ tar -cf dist/python-gconf-keybinding-0.4.tar python-gconf-keybinding-0.4
 bzip2 -f9 dist/python-gconf-keybinding-0.4.tar
 tar -cf dist/python-gconf-keybinding-0.4.tar python-gconf-keybinding-0.4
 gzip -f9 dist/python-gconf-keybinding-0.4.tar
-removing 'python-gconf-keybinding-0.4' (and everything under it)
-&lt;/pre&gt;&lt;/div&gt;
+removing 'python-gconf-keybinding-0.4' (and everything under it)&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Ya se tiene un directorio dist con los 2 paquetes creados:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls -l dist/
+&lt;p&gt;&lt;code&gt;ls -l dist/
 total 40
 -rw-r--r-- 1 ernesto ernesto 16539 ago  8 19:12 python-gconf-keybinding-0.4.tar.bz2
--rw-r--r-- 1 ernesto ernesto 18331 ago  8 19:12 python-gconf-keybinding-0.4.tar.gz
-&lt;/pre&gt;&lt;/div&gt;
+-rw-r--r-- 1 ernesto ernesto 18331 ago  8 19:12 python-gconf-keybinding-0.4.tar.gz&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;El contenido de un paquete es el siguiente:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar -tvzf dist/python-gconf-keybinding-0.4.tar.gz 
+&lt;p&gt;&lt;code&gt;tar -tvzf dist/python-gconf-keybinding-0.4.tar.gz 
 drwxr-xr-x ernesto/ernesto   0 2010-08-08 19:12 python-gconf-keybinding-0.4/
 -rwxr-xr-x ernesto/ernesto 8420 2010-08-08 17:06 python-gconf-keybinding-0.4/pyconfig-accessgnome-ui.py
 -rw-r--r-- ernesto/ernesto 33353 2010-07-27 20:41 python-gconf-keybinding-0.4/COPYING
@@ -854,10 +783,9 @@ drwxr-xr-x ernesto/ernesto   0 2010-08-08 19:12 python-gconf-keybinding-0.4/
 -rwxr-xr-x ernesto/ernesto  1021 2010-08-08 18:12 python-gconf-keybinding-0.4/setup.py
 -rw-r--r-- ernesto/ernesto 14729 2010-07-27 20:45 python-gconf-keybinding-0.4/pyconfig-accessgnome.glade
 -rw-r--r-- ernesto/ernesto  4260 2010-07-27 20:41 python-gconf-keybinding-0.4/README
--rw-r--r-- ernesto/ernesto   394 2010-08-08 19:12 python-gconf-keybinding-0.4/PKG-INFO
-&lt;/pre&gt;&lt;/div&gt;
+-rw-r--r-- ernesto/ernesto   394 2010-08-08 19:12 python-gconf-keybinding-0.4/PKG-INFO&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;S&amp;oacute;lo queda probar la instalaci&amp;oacute;n del paquete, primero se descomprime y luego se ejecuta el setup.py con la opci&amp;oacute;n install:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tar -xvzf python-gconf-keybinding-0.4.tar.gz 
+&lt;p&gt;&lt;code&gt;tar -xvzf python-gconf-keybinding-0.4.tar.gz 
 python-gconf-keybinding-0.4/
 python-gconf-keybinding-0.4/pyconfig-accessgnome-ui.py
 python-gconf-keybinding-0.4/COPYING
@@ -867,13 +795,11 @@ python-gconf-keybinding-0.4/pyconfig-accessgnome-ui.desktop
 python-gconf-keybinding-0.4/setup.py
 python-gconf-keybinding-0.4/pyconfig-accessgnome.glade
 python-gconf-keybinding-0.4/README
-python-gconf-keybinding-0.4/PKG-INFO
-&lt;/pre&gt;&lt;/div&gt;
+python-gconf-keybinding-0.4/PKG-INFO&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Se cambia al directorio python-gconf-keybinding-0.4.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd python-gconf-keybinding-0.4/ 
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;cd python-gconf-keybinding-0.4/&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Instalaci&amp;oacute;n del paquete:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo python setup.py install 
+&lt;p&gt;&lt;code&gt;sudo python setup.py install 
 running install
 running build
 running build_py
@@ -895,8 +821,7 @@ changing mode of /usr/local/bin/configGconf.py to 755
 running install_data
 running install_egg_info
 Removing /usr/local/lib/python2.6/dist-packages/python_gconf_keybinding-0.4.egg-info
-Writing /usr/local/lib/python2.6/dist-packages/python_gconf_keybinding-0.4.egg-info
-&lt;/pre&gt;&lt;/div&gt;
+Writing /usr/local/lib/python2.6/dist-packages/python_gconf_keybinding-0.4.egg-info&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Como ya se explico antes el programa se instala en /usr/local .&lt;/p&gt;
 &lt;p&gt;El pr&amp;oacute;ximo art&amp;iacute;culo explicar&amp;aacute; como crear un paquete Debian a partir del tar.gz.&lt;/p&gt;
 &lt;p&gt;Para m&amp;aacute;s informaci&amp;oacute;n pueden visitar los siguientes enlaces:&lt;/p&gt;

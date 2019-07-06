@@ -170,142 +170,91 @@
 <p>La idea es usar <code>twython</code> con la clase <a href="https://twython.readthedocs.org/en/latest/usage/streaming_api.html">TwythonStreamer</a> para acceder a la API stream de twitter.</p>
 <p>Del API de twitter se mostrar&aacute; <a href="https://developer.twitter.com/docs/api/1.1/get/user">GET user</a>  el cual muestra los mensajes en flujo de un s&oacute;lo usuario.</p>
 <p>Tambi&eacute;n se mostrar&aacute; como usar <a href="https://developer.twitter.com/docs/api/1.1/post/statuses/filter">POST status filter</a>, el cual muestra todos los tweets p&uacute;blicos que contengan una palabra (track).</p>
-<p>El primer ejemplo es con el <code>GET user</code>, el c&oacute;digo a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1"># -*- coding: utf-8 -*-</span>
-
-<span class="c1">#Se define el token de la aplicacion</span>
-
-<span class="n">CONSUMER_KEY</span> <span class="o">=</span> <span class="s1">'xxxxx'</span>
-
-<span class="n">CONSUMER_SECRET</span> <span class="o">=</span> <span class="s1">'xxxxx'</span>
-
-<span class="c1">#Se define el acceso al usuario</span>
-
-<span class="n">ACCESS_KEY</span> <span class="o">=</span> <span class="s1">'xxxxx'</span>
-
-<span class="n">ACCESS_SECRET</span> <span class="o">=</span> <span class="s1">'xxxxx'</span>
-
-<span class="c1">#Se importa TwythonStreamer</span>
-
-<span class="kn">from</span> <span class="nn">twython</span> <span class="kn">import</span> <span class="n">TwythonStreamer</span>
-
-<span class="c1">#Se crea la clase MiStream que hereda de TwythonStreamer </span>
-
-<span class="k">class</span> <span class="nc">MiStream</span><span class="p">(</span><span class="n">TwythonStreamer</span><span class="p">):</span>
-
-    <span class="c1">#Se crea el metodo on_success que recibe data</span>
-
-    <span class="k">def</span> <span class="nf">on_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-
-        <span class="c1">#Si la palabra 'text' se encuentra en data se muestra en pantalla</span>
-
-        <span class="c1">#su contenido</span>
-
-        <span class="k">if</span> <span class="s1">'text'</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-
-            <span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
-
-            <span class="c1">#Si se desea desconectar luego del primer resultado?</span>
-
-            <span class="c1">#self.disconnect()</span>
-
-    <span class="c1">#Se crea el metodo on_error que recibe el codigo de estatus y data y se muestra en pantalla</span>
-
-    <span class="k">def</span> <span class="nf">on_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status_code</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-
-        <span class="k">print</span> <span class="n">status_code</span><span class="p">,</span> <span class="n">data</span>
-
-<span class="c1"># Requires Authentication as of Twitter API v1.1</span>
-
-<span class="c1">#Se crea la instancia de la clase MiStream con los parametros de autenticacion del API v1.1 de twittter.</span>
-
-<span class="n">stream</span> <span class="o">=</span> <span class="n">MiStreame</span><span class="p">(</span><span class="n">CONSUMER_KEY</span><span class="p">,</span><span class="n">CONSUMER_SECRET</span><span class="p">,</span><span class="n">ACCESS_KEY</span><span class="p">,</span><span class="n">ACCESS_SECRET</span><span class="p">)</span>
-
-<span class="c1">#Se recibe los tweets del usuario.</span>
-
-<span class="n">stream</span><span class="o">.</span><span class="n">user</span><span class="p">()</span>
-</pre></div>
-<p>El resultado se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="n">NASA</span> <span class="n">puts</span> <span class="n">papers</span> <span class="kn">from</span> <span class="nn">Curiosity</span> <span class="nn">rover</span> <span class="nn">behind</span> <span class="nn">paywall</span><span class="p">;</span> <span class="nd">@mbeisen</span> <span class="n">points</span> <span class="n">out</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">illegal</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">shares</span> <span class="n">them</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">UB1jQfRpLR</span> <span class="c1">#openaccess</span>
-
-<span class="n">ICYMI</span><span class="p">:</span> <span class="n">Boost</span> <span class="n">Mobile</span> <span class="n">now</span> <span class="n">offering</span> <span class="n">Boost</span> <span class="n">Warp</span> <span class="mi">4</span><span class="n">G</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">qvZKtZXqOn</span>
-
-<span class="n">Empoderando</span> <span class="n">a</span> <span class="n">la</span> <span class="n">ciudadan&iacute;a</span> <span class="n">para</span> <span class="n">mejorar</span> <span class="n">la</span> <span class="n">educaci&oacute;n</span> <span class="n">en</span> <span class="n">M&eacute;xico</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">GnTqhDWqzv</span>
-
-<span class="n">BREAKING</span><span class="p">:</span> <span class="n">Dodgers</span> <span class="n">say</span> <span class="n">man</span> <span class="n">killed</span> <span class="ow">in</span> <span class="n">altercation</span> <span class="k">with</span> <span class="n">Giants</span> <span class="n">fans</span> <span class="ow">in</span> <span class="n">SF</span> <span class="n">was</span> <span class="n">son</span> <span class="n">of</span> <span class="n">team</span> <span class="n">security</span> <span class="n">guard</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">CkB75Nkt0V</span>
-
-<span class="n">RT</span> <span class="nd">@Anonymous_Prodi</span><span class="p">:</span> <span class="n">Posible</span> <span class="n">bomba</span> <span class="n">nuclear</span> <span class="n">de</span> <span class="n">baja</span> <span class="n">intensidad</span> <span class="n">en</span> <span class="n">Siria</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">uSjjVI1T3A</span> <span class="nd">@Famelica_legion</span> <span class="nd">@AquiyAhora_2013</span> <span class="nd">@wikinotici</span><span class="err">&hellip;</span>
-
-<span class="n">gu&iacute;a</span> <span class="n">de</span> <span class="n">gobierno</span> <span class="n">electr&oacute;nico</span> <span class="n">local</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">X6i7f8NHFe</span>  <span class="n">servicios</span> <span class="n">electr&oacute;nicos</span> <span class="n">orientados</span> <span class="n">al</span> <span class="n">ciudadano</span> <span class="c1">#eGov</span>
-
-<span class="err">&iexcl;</span><span class="n">Felicidades</span> <span class="n">tambi&eacute;n</span> <span class="n">a</span> <span class="nd">@jenniferpsayago</span> <span class="n">por</span> <span class="n">ser</span> <span class="n">la</span> <span class="n">ganadora</span> <span class="n">de</span> <span class="n">estos</span> <span class="n">incre&iacute;bles</span> <span class="n">productos</span> <span class="c1">#Samsung y @Oakley_VE! http://t.co/ZfZnNtZtCf</span>
-
-<span class="c1">#linux #fedora  #art  Re: Request to join the Design Team http://t.co/CuAuncfFPU</span>
-
-<span class="n">Del</span> <span class="n">Gobierno</span> <span class="n">Abierto</span> <span class="n">como</span> <span class="n">Pol&iacute;tica</span> <span class="n">y</span> <span class="n">la</span> <span class="n">Apertura</span> <span class="n">de</span> <span class="n">Datos</span> <span class="n">como</span> <span class="n">Programa</span> <span class="n">P&uacute;blico</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="mi">4</span><span class="n">fmZAHA8x6</span>  <span class="c1">#OpenData #OGov</span>
-
-<span class="c1">#linux #fedora  #art  Re: Request to join the Design Team http://t.co/RiHSMifvBQ</span>
-
-<span class="mi">3</span><span class="n">D</span> <span class="n">printer</span> <span class="n">duplicates</span> <span class="n">paintings</span> <span class="n">down</span> <span class="n">to</span> <span class="n">the</span> <span class="n">last</span> <span class="n">brush</span> <span class="n">stroke</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">suC4T3P2Lr</span> <span class="c1">#3DPrinting #art</span>
-
-<span class="n">Maduro</span><span class="p">:</span> <span class="n">Mi</span> <span class="n">ausencia</span> <span class="n">en</span> <span class="n">la</span> <span class="n">ONU</span> <span class="n">se</span> <span class="n">debi&oacute;</span> <span class="n">a</span> <span class="n">provocaciones</span> <span class="n">que</span> <span class="n">hab&iacute;an</span> <span class="n">en</span> <span class="n">mi</span> <span class="n">contra</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">Ed1ufBiPCW</span>
-
-<span class="n">Venezuela</span><span class="p">:</span> <span class="n">Turismo</span> <span class="err">&ldquo;</span><span class="n">raspatarjetas</span><span class="err">&rdquo;</span> <span class="n">mat&oacute;</span> <span class="n">al</span> <span class="n">turismo</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">Rd18XiZYZu</span> <span class="nd">@kaosenlarednet</span> <span class="n">mm</span>
-
-<span class="n">Como</span> <span class="n">las</span> <span class="n">iniciativas</span> <span class="n">de</span> <span class="n">Datos</span> <span class="n">Abiertos</span> <span class="n">pueden</span> <span class="n">mejorar</span> <span class="n">la</span> <span class="n">vida</span> <span class="n">en</span> <span class="n">las</span> <span class="n">Ciudades</span><span class="err">?</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">j8FJOUd5mk</span>  <span class="c1">#OpenData</span>
-
-<span class="n">RT</span> <span class="nd">@csoghoian</span><span class="p">:</span> <span class="n">Want</span> <span class="n">to</span> <span class="n">read</span> <span class="n">the</span> <span class="n">details</span> <span class="n">of</span> <span class="n">some</span> <span class="n">NSA</span> <span class="c1">#LOVEINT surveillance abuses? Now you can, thanks to Senator @ChuckGrassley http://t.co&hellip;</span>
-
-<span class="err">&iquest;</span><span class="n">Me</span> <span class="n">est&aacute;</span> <span class="n">diciendo</span> <span class="n">usted</span> <span class="n">q</span> <span class="n">su</span> <span class="n">teor&iacute;a</span> <span class="n">m&aacute;gica</span> <span class="n">es</span><span class="p">:</span> <span class="n">no</span> <span class="n">tener</span> <span class="n">teor&iacute;a</span><span class="err">?</span> <span class="n">Creo</span> <span class="n">que</span> <span class="n">eso</span> <span class="n">no</span> <span class="n">es</span> <span class="n">muy</span> <span class="n">anarquista</span><span class="p">,</span> <span class="n">ni</span> <span class="n">l&oacute;gico</span> <span class="n">tampoco</span> <span class="nd">@fascaso</span> <span class="nd">@loadupyourgun</span>
-
-<span class="n">Venezuela</span><span class="p">:</span> <span class="n">Turismo</span> <span class="err">&ldquo;</span><span class="n">raspatarjetas</span><span class="err">&rdquo;</span> <span class="n">mat&oacute;</span> <span class="n">al</span> <span class="n">turismo</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">Rd18XiZYZu</span> <span class="nd">@kaosenlarednetmmmmm</span>
-
-<span class="n">RT</span> <span class="nd">@C354R_B3RMUD3Z</span><span class="p">:</span> <span class="n">Te</span> <span class="n">interesa</span> <span class="n">saber</span> <span class="n">de</span> <span class="c1">#Soporte Tecnico en #Gnu/Linux? #inscribete, es totalmente #gratuito informate por 04243165766</span>
-
-<span class="n">RT</span> <span class="nd">@csoghoian</span><span class="p">:</span> <span class="n">Are</span> <span class="n">you</span> <span class="n">an</span> <span class="n">NSA</span> <span class="n">analyst</span><span class="err">?</span> <span class="n">Suspect</span> <span class="n">that</span> <span class="n">your</span> <span class="n">husband</span> <span class="ow">is</span> <span class="n">cheating</span> <span class="n">on</span> <span class="n">you</span><span class="err">?</span> <span class="n">Tap</span> <span class="n">his</span> <span class="n">phone</span><span class="p">,</span> <span class="n">don</span><span class="s1">'t get prosecuted. Page 3 of http://&hellip;</span>
-
-<span class="n">Saturday</span> <span class="n">Night</span> <span class="n">Live</span> <span class="n">lanza</span> <span class="n">canal</span> <span class="n">oficial</span> <span class="n">de</span> <span class="n">YouTube</span> <span class="n">disponible</span> <span class="n">para</span> <span class="n">todo</span> <span class="n">el</span> <span class="n">mundo</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">LDFcwFxsx0</span>
-
-<span class="n">Microsoft</span> <span class="n">donated</span> <span class="err">$</span><span class="mi">100</span><span class="n">k</span> <span class="n">to</span> <span class="n">IPython</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">sU2UP07dJ8</span>
-
-<span class="n">Crece</span> <span class="n">el</span> <span class="n">hurac&aacute;n</span><span class="p">:</span> <span class="n">exitosos</span> <span class="n">Ni&ntilde;os</span> <span class="n">Cantores</span> <span class="n">de</span> <span class="n">diversas</span> <span class="n">tendencias</span> <span class="n">pol&iacute;ticas</span> <span class="n">nos</span> <span class="n">dieron</span> <span class="n">hoy</span> <span class="n">p&uacute;blicamente</span> <span class="n">su</span> <span class="n">apoyo</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">SGDvxPrczA</span>
-
-<span class="n">How</span> <span class="ow">is</span> <span class="n">everyone</span><span class="err">?</span> <span class="n">I</span> <span class="n">feel</span> <span class="n">like</span> <span class="n">I</span><span class="s1">'ve been away for years when it'</span><span class="n">s</span> <span class="n">only</span> <span class="n">been</span> <span class="n">a</span> <span class="n">few</span> <span class="n">days</span><span class="o">.</span>
-</pre></div>
-<p>Ahora se muestran todos los tweets p&uacute;blicos que contengan la palabra python, esto se logra al  sustituir la &uacute;ltima l&iacute;nea del c&oacute;digo anterior por <code>stream.statuses.filter</code> pasando el argumento <code>track</code> con la palabra a buscar:</p>
-<div class="highlight"><pre><span></span><span class="n">stream</span><span class="o">.</span><span class="n">statuses</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">track</span><span class="o">=</span><span class="s1">'python'</span><span class="p">)</span>
-</pre></div>
-<p>El resultado se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="n">lunes</span> <span class="n">que</span> <span class="n">viene</span> <span class="c1">#PUG  con pizza, cerveza, #python en @Dlabs_co . Yo no me la perder&iacute;a...</span>
-
-<span class="n">Monty</span> <span class="n">Python</span> <span class="o">-</span> <span class="n">The</span> <span class="n">man</span> <span class="n">who</span> <span class="ow">is</span> <span class="n">alternately</span> <span class="n">rude</span> <span class="ow">and</span> <span class="n">polite</span><span class="p">:</span> <span class="p">:</span><span class="c1">#NowPlaying.#ClassicComedies..#ComedyGreats ,,,#Comedy.  http://t.co/IO3juw6nfD</span>
-
-<span class="n">Like</span> <span class="n">a</span> <span class="n">Kungfu</span> <span class="n">master</span><span class="p">,</span> <span class="n">a</span> <span class="n">Pythonista</span> <span class="n">knows</span> <span class="n">how</span> <span class="n">to</span> <span class="n">kill</span> <span class="k">with</span> <span class="n">a</span> <span class="n">single</span> <span class="n">finger</span><span class="p">,</span> <span class="ow">and</span> <span class="n">never</span> <span class="n">to</span> <span class="n">actually</span> <span class="n">do</span> <span class="n">it</span><span class="o">.</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">xx0Sb8SsWV</span>
-
-<span class="n">RT</span> <span class="nd">@jpcolino</span><span class="p">:</span> <span class="n">Python</span> <span class="o">+</span> <span class="n">Hadoop</span><span class="p">:</span> <span class="n">Real</span> <span class="n">Python</span> <span class="ow">in</span> <span class="n">Pig</span> <span class="n">trunk</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">i4NZXrofvq</span>
-
-<span class="n">Affiliate</span> <span class="n">Freelancer</span><span class="p">,</span> <span class="n">Freelancing</span> <span class="n">September</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">2013</span> <span class="n">at</span> <span class="mo">04</span><span class="p">:</span><span class="mi">51</span><span class="n">PM</span> <span class="n">Python</span> <span class="n">web</span> <span class="n">front</span> <span class="n">end</span> <span class="n">development</span> <span class="n">by</span> <span class="n">vishalchavda</span><span class="o">...</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">V45nPv3LVI</span>
-
-
-<span class="n">Compressed</span> <span class="mi">4</span><span class="n">h</span> <span class="n">of</span> <span class="n">Python</span><span class="p">,</span> <span class="n">Win32</span> <span class="n">dbg</span> <span class="n">API</span> <span class="ow">and</span> <span class="n">Intel</span> <span class="n">PIN</span> <span class="ow">in</span> <span class="mi">2</span><span class="n">h</span><span class="o">.</span> <span class="n">Still</span> <span class="n">people</span> <span class="n">seemed</span> <span class="n">to</span> <span class="n">like</span> <span class="n">it</span><span class="o">.</span> <span class="n">I</span> <span class="n">guess</span> <span class="n">a</span> <span class="n">lot</span> <span class="n">of</span> <span class="n">people</span> <span class="n">are</span> <span class="n">into</span> <span class="n">BSDM</span> <span class="n">at</span> <span class="nd">@brucon</span>
-
-
-<span class="n">Go</span> <span class="n">vs</span><span class="o">.</span> <span class="n">Python</span><span class="p">:</span> <span class="mi">10</span><span class="o">%</span> <span class="n">longer</span><span class="p">,</span> <span class="mi">10</span> <span class="n">times</span> <span class="n">faster</span><span class="o">.</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">t</span><span class="o">.</span><span class="n">co</span><span class="o">/</span><span class="n">v640YolHW4</span> <span class="ow">and</span> <span class="n">concurrent</span><span class="p">,</span> <span class="n">statically</span> <span class="n">compiled</span><span class="p">,</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">libraries</span> <span class="n">are</span> <span class="nb">all</span> <span class="n">modern</span><span class="o">.</span>
-
-
-<span class="n">Quantitative</span> <span class="n">Economics</span> <span class="o">|</span> <span class="c1">#python #ebook http://t.co/eVjlO9VBoE</span>
-
-
-<span class="nd">@MikeKellyofEM</span> <span class="n">Hopefully</span> <span class="n">a</span> <span class="n">Monty</span> <span class="n">Python</span> <span class="n">style</span> <span class="n">parrot</span><span class="o">...</span>
-
-
-<span class="n">por</span> <span class="n">um</span> <span class="n">tutorial</span> <span class="n">de</span> <span class="n">como</span> <span class="n">aprender</span> <span class="n">python</span> <span class="n">em</span> <span class="n">um</span> <span class="n">dia</span>
-
-
-<span class="nd">@tommyd_95</span> <span class="n">this</span> <span class="n">could</span> <span class="n">descend</span> <span class="n">into</span> <span class="n">a</span> <span class="n">scene</span> <span class="kn">from</span> <span class="nn">a</span> <span class="nn">Monty</span> <span class="nn">Python</span> <span class="nn">movie</span> <span class="p">))</span>
-</pre></div>
+<p>El primer ejemplo es con el <code>GET user</code>, el c&oacute;digo a continuaci&oacute;n:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="se define el token de la aplicacion">Se define el token de la aplicacion</h1>
+<p>CONSUMER_KEY = 'xxxxx'</p>
+<p>CONSUMER_SECRET = 'xxxxx'</p>
+<h1 id="se define el acceso al usuario">Se define el acceso al usuario</h1>
+<p>ACCESS_KEY = 'xxxxx'</p>
+<p>ACCESS_SECRET = 'xxxxx'</p>
+<h1 id="se importa twythonstreamer">Se importa TwythonStreamer</h1>
+<p>from twython import TwythonStreamer</p>
+<h1 id="se crea la clase mistream que hereda de twythonstreamer">Se crea la clase MiStream que hereda de TwythonStreamer</h1>
+<p>class MiStream(TwythonStreamer):</p>
+<pre><code>#Se crea el metodo on_success que recibe data
+
+def on_success(self, data):
+
+    #Si la palabra 'text' se encuentra en data se muestra en pantalla
+
+    #su contenido
+
+    if 'text' in data:
+
+        print data['text'].encode('utf-8')
+
+        #Si se desea desconectar luego del primer resultado?
+
+        #self.disconnect()
+
+#Se crea el metodo on_error que recibe el codigo de estatus y data y se muestra en pantalla
+
+def on_error(self, status_code, data):
+
+    print status_code, data
+</code></pre>
+<h1 id="requires authentication as of twitter api v1.1">Requires Authentication as of Twitter API v1.1</h1>
+<h1 id="se crea la instancia de la clase mistream con los parametros de autenticacion del api v1.1 de twittter.">Se crea la instancia de la clase MiStream con los parametros de autenticacion del API v1.1 de twittter.</h1>
+<p>stream = MiStreame(CONSUMER_KEY,CONSUMER_SECRET,ACCESS_KEY,ACCESS_SECRET)</p>
+<h1 id="se recibe los tweets del usuario.">Se recibe los tweets del usuario.</h1>
+<p>stream.user()
+```
+El resultado se muestra a continuaci&oacute;n:</p>
+<p>```python
+NASA puts papers from Curiosity rover behind paywall; @mbeisen points out this is illegal &amp; shares them http://t.co/UB1jQfRpLR #openaccess</p>
+<p>ICYMI: Boost Mobile now offering Boost Warp 4G http://t.co/qvZKtZXqOn</p>
+<p>Empoderando a la ciudadan&iacute;a para mejorar la educaci&oacute;n en M&eacute;xico http://t.co/GnTqhDWqzv</p>
+<p>BREAKING: Dodgers say man killed in altercation with Giants fans in SF was son of team security guard: http://t.co/CkB75Nkt0V</p>
+<p>RT @Anonymous_Prodi: Posible bomba nuclear de baja intensidad en Siria http://t.co/uSjjVI1T3A @Famelica_legion @AquiyAhora_2013 @wikinotici&hellip;</p>
+<p>gu&iacute;a de gobierno electr&oacute;nico local: http://t.co/X6i7f8NHFe  servicios electr&oacute;nicos orientados al ciudadano #eGov</p>
+<p>&iexcl;Felicidades tambi&eacute;n a @jenniferpsayago por ser la ganadora de estos incre&iacute;bles productos #Samsung y @Oakley_VE! http://t.co/ZfZnNtZtCf</p>
+<h1 id="linux #fedora #art re: request to join the design team http://t.co/cuauncffpu">linux #fedora  #art  Re: Request to join the Design Team http://t.co/CuAuncfFPU</h1>
+<p>Del Gobierno Abierto como Pol&iacute;tica y la Apertura de Datos como Programa P&uacute;blico http://t.co/4fmZAHA8x6  #OpenData #OGov</p>
+<h1 id="linux #fedora #art re: request to join the design team http://t.co/rihsmifvbq">linux #fedora  #art  Re: Request to join the Design Team http://t.co/RiHSMifvBQ</h1>
+<p>3D printer duplicates paintings down to the last brush stroke http://t.co/suC4T3P2Lr #3DPrinting #art</p>
+<p>Maduro: Mi ausencia en la ONU se debi&oacute; a provocaciones que hab&iacute;an en mi contra http://t.co/Ed1ufBiPCW</p>
+<p>Venezuela: Turismo &ldquo;raspatarjetas&rdquo; mat&oacute; al turismo http://t.co/Rd18XiZYZu @kaosenlarednet mm</p>
+<p>Como las iniciativas de Datos Abiertos pueden mejorar la vida en las Ciudades? http://t.co/j8FJOUd5mk  #OpenData</p>
+<p>RT @csoghoian: Want to read the details of some NSA #LOVEINT surveillance abuses? Now you can, thanks to Senator @ChuckGrassley http://t.co&hellip;</p>
+<p>&iquest;Me est&aacute; diciendo usted q su teor&iacute;a m&aacute;gica es: no tener teor&iacute;a? Creo que eso no es muy anarquista, ni l&oacute;gico tampoco @fascaso @loadupyourgun</p>
+<p>Venezuela: Turismo &ldquo;raspatarjetas&rdquo; mat&oacute; al turismo http://t.co/Rd18XiZYZu @kaosenlarednetmmmmm</p>
+<p>RT @C354R_B3RMUD3Z: Te interesa saber de #Soporte Tecnico en #Gnu/Linux? #inscribete, es totalmente #gratuito informate por 04243165766</p>
+<p>RT @csoghoian: Are you an NSA analyst? Suspect that your husband is cheating on you? Tap his phone, don't get prosecuted. Page 3 of http://&hellip;</p>
+<p>Saturday Night Live lanza canal oficial de YouTube disponible para todo el mundo http://t.co/LDFcwFxsx0</p>
+<p>Microsoft donated $100k to IPython http://t.co/sU2UP07dJ8</p>
+<p>Crece el hurac&aacute;n: exitosos Ni&ntilde;os Cantores de diversas tendencias pol&iacute;ticas nos dieron hoy p&uacute;blicamente su apoyo http://t.co/SGDvxPrczA</p>
+<p>How is everyone? I feel like I've been away for years when it's only been a few days.
+```</p>
+<p>Ahora se muestran todos los tweets p&uacute;blicos que contengan la palabra python, esto se logra al  sustituir la &uacute;ltima l&iacute;nea del c&oacute;digo anterior por <code>stream.statuses.filter</code> pasando el argumento <code>track</code> con la palabra a buscar:
+<code>python
+stream.statuses.filter(track='python')</code>
+El resultado se muestra a continuaci&oacute;n:
+```python
+lunes que viene #PUG  con pizza, cerveza, #python en @Dlabs_co . Yo no me la perder&iacute;a...</p>
+<p>Monty Python - The man who is alternately rude and polite: :#NowPlaying.#ClassicComedies..#ComedyGreats ,,,#Comedy.  http://t.co/IO3juw6nfD</p>
+<p>Like a Kungfu master, a Pythonista knows how to kill with a single finger, and never to actually do it. http://t.co/xx0Sb8SsWV</p>
+<p>RT @jpcolino: Python + Hadoop: Real Python in Pig trunk http://t.co/i4NZXrofvq</p>
+<p>Affiliate Freelancer, Freelancing September 26, 2013 at 04:51PM Python web front end development by vishalchavda... http://t.co/V45nPv3LVI</p>
+<p>Compressed 4h of Python, Win32 dbg API and Intel PIN in 2h. Still people seemed to like it. I guess a lot of people are into BSDM at @brucon</p>
+<p>Go vs. Python: 10% longer, 10 times faster. http://t.co/v640YolHW4 and concurrent, statically compiled, and the libraries are all modern.</p>
+<p>Quantitative Economics | #python #ebook http://t.co/eVjlO9VBoE</p>
+<p>@MikeKellyofEM Hopefully a Monty Python style parrot...</p>
+<p>por um tutorial de como aprender python em um dia</p>
+<p>@tommyd_95 this could descend into a scene from a Monty Python movie ))
+```</p>
 <p>De esta forma se puede mejorar la captura de tweets en tiempo real  del timeline de un usuario o de todos los tweets p&uacute;blicos. </p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!

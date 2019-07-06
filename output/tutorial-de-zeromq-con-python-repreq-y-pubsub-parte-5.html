@@ -172,143 +172,83 @@
 <p>La siguiente figura muestra la simulaci&oacute;n:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython5-1.png"/> </p>
 <p>El emisor genera los mensajes, el twitter los recibe y los publica, luego cada receptor se suscribe al twitter y recibe la informaci&oacute;n que le interesa.</p>
-<p>EL c&oacute;digo del emisor es el siguiente:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python</span>
-
-<span class="c1">#Se importa zeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea el contexto</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se crea el socket con el parametro REQ</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
-
-<span class="c1">#Se asocia la IP y el puerto del socket.</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:4000"</span><span class="p">)</span>
-
-<span class="c1">#Se genera los mensajes estilo tuiter y se envia al socket.</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'@_seraph1 Esta es una prueba'</span><span class="p">,</span><span class="s1">'@otro viendo el juego'</span><span class="p">,</span> <span class="s1">'@_seraph1 otra prueba'</span><span class="p">,</span><span class="s1">'@otro otro'</span><span class="p">]:</span>
-
- <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
- <span class="n">msg_in</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-</pre></div>
-<p>El c&oacute;digo del tuiter es el siguiente:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa zeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se importa choice de random</span>
-
-<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">choice</span>
-
-<span class="c1">#Se crea el contexto</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se define el socket de recepcion con argumento REP</span>
-
-<span class="n">socket_recv</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REP</span><span class="p">)</span>
-
-<span class="c1">#Se asocia a una IP y puerto el socket de recepcion</span>
-
-<span class="n">socket_recv</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:4000"</span><span class="p">)</span>
-
-<span class="c1">#Se define el socket de publicacion con argumento PUB</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
-
-<span class="c1">#Se asocia la ip y un puerto distinto al anterio socket</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5000"</span><span class="p">)</span>
-
-<span class="c1">#Se crea un ciclo</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
- <span class="c1">#Se recibe el mensaje del socket de recepcion</span>
-
- <span class="n">msg</span> <span class="o">=</span> <span class="n">socket_recv</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-
- <span class="c1">#Se envia el mensaje de recepcion</span>
-
- <span class="n">socket_recv</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
- <span class="c1">#Se muestra el mensaje en pantalla</span>
-
- <span class="k">print</span> <span class="s2">"Reenvio: {0}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
- <span class="c1">#Se envia  el mensaje al socket de publicacion</span>
-
- <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-</pre></div>
-<p>Se muestra ahora el c&oacute;digo de los receptores:  </p>
+<p>EL c&oacute;digo del emisor es el siguiente:
+```python</p>
+<h1 id="!/usr/bin/python">!/usr/bin/python</h1>
+<h1 id="se importa zeromq">Se importa zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea el contexto">Se crea el contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket con el parametro req">Se crea el socket con el parametro REQ</h1>
+<p>socket = context.socket(zmq.REQ)</p>
+<h1 id="se asocia la ip y el puerto del socket.">Se asocia la IP y el puerto del socket.</h1>
+<p>socket.connect("tcp://127.0.0.1:4000")</p>
+<h1 id="se genera los mensajes estilo tuiter y se envia al socket.">Se genera los mensajes estilo tuiter y se envia al socket.</h1>
+<p>for i in ['@_seraph1 Esta es una prueba','@otro viendo el juego', '@_seraph1 otra prueba','@otro otro']:</p>
+<p>socket.send(i)</p>
+<p>msg_in = socket.recv()
+<code>El c&oacute;digo del tuiter es el siguiente:</code>python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="se importa zeromq_1">Se importa zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se importa choice de random">Se importa choice de random</h1>
+<p>from random import choice</p>
+<h1 id="se crea el contexto_1">Se crea el contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se define el socket de recepcion con argumento rep">Se define el socket de recepcion con argumento REP</h1>
+<p>socket_recv = context.socket(zmq.REP)</p>
+<h1 id="se asocia a una ip y puerto el socket de recepcion">Se asocia a una IP y puerto el socket de recepcion</h1>
+<p>socket_recv.bind("tcp://127.0.0.1:4000")</p>
+<h1 id="se define el socket de publicacion con argumento pub">Se define el socket de publicacion con argumento PUB</h1>
+<p>socket = context.socket(zmq.PUB)</p>
+<h1 id="se asocia la ip y un puerto distinto al anterio socket">Se asocia la ip y un puerto distinto al anterio socket</h1>
+<p>socket.bind("tcp://127.0.0.1:5000")</p>
+<h1 id="se crea un ciclo">Se crea un ciclo</h1>
+<p>while True:</p>
+<p>#Se recibe el mensaje del socket de recepcion</p>
+<p>msg = socket_recv.recv()</p>
+<p>#Se envia el mensaje de recepcion</p>
+<p>socket_recv.send(msg)</p>
+<p>#Se muestra el mensaje en pantalla</p>
+<p>print "Reenvio: {0}".format(msg)</p>
+<p>#Se envia  el mensaje al socket de publicacion</p>
+<p>socket.send(msg)
+```
+Se muestra ahora el c&oacute;digo de los receptores:  </p>
 <p>Receptor 1:  </p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python</span>
-
-<span class="c1">#Se importa zeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea el contexto</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se crea el socket de suscripcion</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
-
-<span class="c1">#Se asocia ese socket a la IP y puerto donde publica tuiter</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5000"</span><span class="p">)</span>
-
-<span class="c1">#Se suscribe a escuchar los mensajes de @_seraph1</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s2">"@_seraph1"</span><span class="p">)</span>
-
-<span class="c1">#se crea un ciclo donde se recibe los mensajes</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
- <span class="k">print</span> <span class="s2">"-&gt;"</span><span class="p">,</span><span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-</pre></div>
-<p>Receptor 2:  </p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python</span>
-
-<span class="c1">#Se importa zeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea el contexto</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se crea el socket de suscripcion</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
-
-<span class="c1">#Se asocia ese socket a la IP y puerto donde publica tuiter</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5000"</span><span class="p">)</span>
-
-<span class="c1">#Se suscribe a escuchar los mensajes de @otro</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s2">"@otro"</span><span class="p">)</span>
-
-<span class="c1">#se crea un ciclo donde se recibe los mensajes</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
- <span class="k">print</span> <span class="s2">"-&gt;"</span><span class="p">,</span><span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-</pre></div>
+<p>```python</p>
+<h1 id="!/usr/bin/python_1">!/usr/bin/python</h1>
+<h1 id="se importa zeromq_2">Se importa zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea el contexto_2">Se crea el contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket de suscripcion">Se crea el socket de suscripcion</h1>
+<p>socket = context.socket(zmq.SUB)</p>
+<h1 id="se asocia ese socket a la ip y puerto donde publica tuiter">Se asocia ese socket a la IP y puerto donde publica tuiter</h1>
+<p>socket.connect("tcp://127.0.0.1:5000")</p>
+<h1 id="se suscribe a escuchar los mensajes de @_seraph1">Se suscribe a escuchar los mensajes de @_seraph1</h1>
+<p>socket.setsockopt(zmq.SUBSCRIBE, "@_seraph1")</p>
+<h1 id="se crea un ciclo donde se recibe los mensajes">se crea un ciclo donde se recibe los mensajes</h1>
+<p>while True:</p>
+<p>print "-&gt;",socket.recv()
+```  </p>
+<p>Receptor 2:<br/>
+```python</p>
+<h1 id="!/usr/bin/python_2">!/usr/bin/python</h1>
+<h1 id="se importa zeromq_3">Se importa zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea el contexto_3">Se crea el contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket de suscripcion_1">Se crea el socket de suscripcion</h1>
+<p>socket = context.socket(zmq.SUB)</p>
+<h1 id="se asocia ese socket a la ip y puerto donde publica tuiter_1">Se asocia ese socket a la IP y puerto donde publica tuiter</h1>
+<p>socket.connect("tcp://127.0.0.1:5000")</p>
+<h1 id="se suscribe a escuchar los mensajes de @otro">Se suscribe a escuchar los mensajes de @otro</h1>
+<p>socket.setsockopt(zmq.SUBSCRIBE, "@otro")</p>
+<h1 id="se crea un ciclo donde se recibe los mensajes_1">se crea un ciclo donde se recibe los mensajes</h1>
+<p>while True:</p>
+<p>print "-&gt;",socket.recv()
+```</p>
 <p>En la figura se muestra el resultado de twitter:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython5-2.png"/> </p>
 <p>En la siguiente figura se muestra el resultado del receptor 1:</p>

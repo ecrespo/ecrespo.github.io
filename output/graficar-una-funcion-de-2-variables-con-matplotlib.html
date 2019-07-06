@@ -170,93 +170,81 @@
   <div>
     <p>Este art&iacute;culo se basa en el art&iacute;culo en Ingles "<a href="https://glowingpython.blogspot.com/2012/01/how-to-plot-two-variable-functions-with.html">How to plot a function of two variables with matplotlib</a>".</p>
 <p>Se tendr&aacute; 2 gr&aacute;ficas de una funci&oacute;n de 2 variables, la primera ser&aacute; la gr&aacute;fica de intensidad y la segunda gr&aacute;fica ser&aacute; una gr&aacute;fica 3D.</p>
-<p>A continuaci&oacute;n se muestra el c&oacute;digo:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<p>A continuaci&oacute;n se muestra el c&oacute;digo:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="de numpy se explorta arange y exp">De numpy se explorta arange y exp</h1>
+<p>from numpy import exp,arange</p>
+<h1 id="de pylab se importa meshgrid, cm, imshow, contour, clabel, clorbar, axis, title y show">De pylab se importa meshgrid, cm, imshow, contour, clabel, clorbar, axis, title y show</h1>
+<p>from pylab import meshgrid,cm,imshow,contour,clabel,colorbar,axis,title,show</p>
+<p>from mpl_toolkits.mplot3d import Axes3D</p>
+<p>from matplotlib import cm</p>
+<p>from matplotlib.ticker import LinearLocator, FormatStrFormatter</p>
+<p>import matplotlib.pyplot as plt</p>
+<h1 id="se define la funcion que se va a graficar">Se define la funcion que se va a graficar</h1>
+<p>def z_func(x,y):</p>
+<pre><code>return (1-(x**2+y**3))*exp(-(x**2+y**2)/2)
+</code></pre>
+<p>def graficaIntencidad(Z):</p>
+<pre><code>#Se dibuja la funcion
 
-<span class="c1">#De numpy se explorta arange y exp</span>
+im = imshow(Z,cmap=cm.RdBu)
 
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">exp</span><span class="p">,</span><span class="n">arange</span>
+#Se agrega el contorno de lineas con sus etiquetas
 
-<span class="c1">#De pylab se importa meshgrid, cm, imshow, contour, clabel, clorbar, axis, title y show</span>
+cset = contour(Z,arange(-1,1.5,0.2),linewidths=2,cmap=cm.Set2)
 
-<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">meshgrid</span><span class="p">,</span><span class="n">cm</span><span class="p">,</span><span class="n">imshow</span><span class="p">,</span><span class="n">contour</span><span class="p">,</span><span class="n">clabel</span><span class="p">,</span><span class="n">colorbar</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">show</span>
+clabel(cset,inline=True,fmt='%1.1f',fontsize=10)
 
-<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+#Se agrega la barra de colores a la derecha
 
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+colorbar(im)
 
-<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">LinearLocator</span><span class="p">,</span> <span class="n">FormatStrFormatter</span>
+#Se crea el titulo de la grafica con estilo latex
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+title('$z=(1-x^2+y^3) e^{-(x^2+y^3)/2}$')
 
-<span class="c1">#Se define la funcion que se va a graficar</span>
+#Se muestra la grafica
 
-<span class="k">def</span> <span class="nf">z_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+show()
+</code></pre>
+<p>def grafica3D(X,Y,Z):</p>
+<pre><code>fig = plt.figure()
 
-    <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">3</span><span class="p">))</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+ax = fig.gca(projection='3d')
 
-<span class="k">def</span> <span class="nf">graficaIntencidad</span><span class="p">(</span><span class="n">Z</span><span class="p">):</span>
+surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1,
 
-    <span class="c1">#Se dibuja la funcion</span>
+                       cmap=cm.RdBu,linewidth=0, antialiased=False)
 
-    <span class="n">im</span> <span class="o">=</span> <span class="n">imshow</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">)</span>
+ax.zaxis.set_major_locator(LinearLocator(10))
 
-    <span class="c1">#Se agrega el contorno de lineas con sus etiquetas</span>
+ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
-    <span class="n">cset</span> <span class="o">=</span> <span class="n">contour</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span><span class="mf">0.2</span><span class="p">),</span><span class="n">linewidths</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">Set2</span><span class="p">)</span>
+fig.colorbar(surf, shrink=0.5, aspect=5)
 
-    <span class="n">clabel</span><span class="p">(</span><span class="n">cset</span><span class="p">,</span><span class="n">inline</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">fmt</span><span class="o">=</span><span class="s1">'</span><span class="si">%1.1f</span><span class="s1">'</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+plt.show()
+</code></pre>
+<p>if <strong>name</strong> == '<strong>main</strong>':</p>
+<pre><code>#rango de valores para x y y.
 
-    <span class="c1">#Se agrega la barra de colores a la derecha</span>
+x = arange(-3.0,3.0,0.1)
 
-    <span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+y = arange(-3.0,3.0,0.1)
 
-    <span class="c1">#Se crea el titulo de la grafica con estilo latex</span>
+#Se define la grilla de puntos
 
-    <span class="n">title</span><span class="p">(</span><span class="s1">'$z=(1-x^2+y^3) e^{-(x^2+y^3)/2}$'</span><span class="p">)</span>
+X,Y = meshgrid(x, y)
 
-    <span class="c1">#Se muestra la grafica</span>
+#Se evalua la funcion segun los valores de X y Y
 
-    <span class="n">show</span><span class="p">()</span>
+Z = z_func(X, Y)
 
-<span class="k">def</span> <span class="nf">grafica3D</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">Z</span><span class="p">):</span>
+graficaIntencidad(Z)
 
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">'3d'</span><span class="p">)</span>
-
-    <span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-
-                           <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">RdBu</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">antialiased</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">LinearLocator</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
-
-    <span class="n">ax</span><span class="o">.</span><span class="n">zaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="s1">'</span><span class="si">%.02f</span><span class="s1">'</span><span class="p">))</span>
-
-    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-
-    <span class="c1">#rango de valores para x y y.</span>
-
-    <span class="n">x</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
-
-    <span class="n">y</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">0.1</span><span class="p">)</span>
-
-    <span class="c1">#Se define la grilla de puntos</span>
-
-    <span class="n">X</span><span class="p">,</span><span class="n">Y</span> <span class="o">=</span> <span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
-    <span class="c1">#Se evalua la funcion segun los valores de X y Y</span>
-
-    <span class="n">Z</span> <span class="o">=</span> <span class="n">z_func</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span> 
-
-    <span class="n">graficaIntencidad</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
-
-    <span class="n">grafica3D</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">,</span><span class="n">Z</span><span class="p">)</span>
-</pre></div>
+grafica3D(X,Y,Z)
+</code></pre>
+<p>```    </p>
 <p>Al ejecutar el script se mostrar&aacute; la primera gr&aacute;fica, al cerrarla aparecer&aacute; la segunda gr&aacute;fica.</p>
 <p>La gr&aacute;fica de intensidad se muestra a continuaci&oacute;n:</p>
 <p><img alt="" src="./images/graficarunafuncionde2variablesconmatplotlib-1.png"/> </p>

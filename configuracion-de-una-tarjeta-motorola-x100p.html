@@ -173,68 +173,60 @@ todos los m&oacute;dulos que no se van a utilizar.</p>
 <p>Visualizar el dispositivo</p>
 </li>
 </ol>
-<div class="highlight"><pre><span></span>zaptel_hardware -v
-pci:0000:01:00.0 wcfxo- 1057:5608 Wildcard X100P
-</pre></div>
+<p><code>zaptel_hardware -v
+pci:0000:01:00.0 wcfxo- 1057:5608 Wildcard X100P</code></p>
 <ol>
 <li>Verificar funcionamiento de la tarjeta</li>
 </ol>
-<div class="highlight"><pre><span></span>ztcfg -vvvvvvvvvvvvvv
+<p>```
+ztcfg -vvvvvvvvvvvvvv
 Zaptel Version: 1.4.9.2
 Echo Canceller: MG2
 Configuration
-======================
-
-
-Channel map:
-
-Channel 01: FXS Kewlstart (Default) (Slaves: 01)
-
-1 channels to configure.
-</pre></div>
+======================</p>
+<p>Channel map:</p>
+<p>Channel 01: FXS Kewlstart (Default) (Slaves: 01)</p>
+<p>1 channels to configure.
+```</p>
 <ol>
 <li>Editar el archivo /etc/asterisk/zapata.conf. Colocar las siguientes l&iacute;neas:</li>
 </ol>
-<div class="highlight"><pre><span></span><span class="k">[channels]</span>
-<span class="na">language</span><span class="o">=</span><span class="s">es</span>
-<span class="na">context</span><span class="o">=</span><span class="s">entrantes</span>
-<span class="na">signalling</span><span class="o">=</span><span class="s">fxs_ks</span>
-<span class="na">usecallerid</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">hidecallerid</span><span class="o">=</span><span class="s">no</span>
-<span class="na">callwaiting</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">callwaitingcallerid</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">threewaycalling</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">transfer</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">cancallforward</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">callreturn</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">echocancel</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">echocancelwhenbridged</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">rxgain</span><span class="o">=</span><span class="s">0.0</span>
-<span class="na">txgain</span><span class="o">=</span><span class="s">0.0</span>
-<span class="na">group</span><span class="o">=</span><span class="s">1</span>
-<span class="na">pickupgroup</span><span class="o">=</span><span class="s">1</span>
-<span class="na">immediate</span><span class="o">=</span><span class="s">yes</span>
-<span class="na">musiconhold</span><span class="o">=</span><span class="s">default channel =&gt; 1</span>
-</pre></div>
+<p><code>[channels]
+language=es
+context=entrantes
+signalling=fxs_ks
+usecallerid=yes
+hidecallerid=no
+callwaiting=yes
+callwaitingcallerid=yes
+threewaycalling=yes
+transfer=yes
+cancallforward=yes
+callreturn=yes
+echocancel=yes
+echocancelwhenbridged=yes
+rxgain=0.0
+txgain=0.0
+group=1
+pickupgroup=1
+immediate=yes
+musiconhold=default channel =&gt; 1</code></p>
 <ol>
 <li>Recargar m&oacute;dulos</li>
 </ol>
-<div class="highlight"><pre><span></span>asterisk -rx "module reload"
-</pre></div>
+<p><code>asterisk -rx "module reload"</code></p>
 <ol>
 <li>A&ntilde;adir extensi&oacute;n que permita a llamar por la tarjeta. Editar /etc/asterisk/extension.conf</li>
 </ol>
-<div class="highlight"><pre><span></span><span class="k">[entrantes]</span>
-<span class="na">exten</span> <span class="o">=</span><span class="s">&gt; s,1,Dial(SIP/1000,60,tr)</span>
-<span class="na">exten</span> <span class="o">=</span><span class="s">&gt; s,2,Voicemail,u1000</span>
-<span class="na">exten</span> <span class="o">=</span><span class="s">&gt; s,102,Voicemail,b1000 </span>
-</pre></div>
+<p><code>[entrantes]
+exten =&gt; s,1,Dial(SIP/1000,60,tr)
+exten =&gt; s,2,Voicemail,u1000
+exten =&gt; s,102,Voicemail,b1000</code></p>
 <p>Esta lineas le dice al Asterisk que todas las llamadas que recibe la tarjeta 
 las dirija al telefono "1000", y despues de 60 segundos salta el buzon de voz.</p>
 <p>Para realizar llamadas a&ntilde;adiremos las siguientes lineas:</p>
-<div class="highlight"><pre><span></span><span class="k">[salientes]</span>
-<span class="na">exten</span> <span class="o">=</span><span class="s">&gt; _[9]XXXXXXXX,1,Dial,Zap/1/${EXTEN}</span>
-</pre></div>
+<p><code>[salientes]
+exten =&gt; _[9]XXXXXXXX,1,Dial,Zap/1/${EXTEN}</code></p>
 <p>Todas las numeros que comienzan con 9 se hacen usando la tarjeta.</p>
 <p>Ahora falta configurar las extenxiones, llamada en espera, llamada en conferencia 
 entre otras cosas.</p>

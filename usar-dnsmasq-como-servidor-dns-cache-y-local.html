@@ -169,63 +169,48 @@
 <p>Tambi&eacute;n se puede agregar equipos con su IP como de un servidor de DNS con Bind9 en funcionamiento.</p>
 <p>Se tiene una m&aacute;quina virtual de nombre grievous e IP 192.168.10.53.</p>
 <p>Para instalr dnsmasq se ejecuta apt-get.</p>
-<div class="highlight"><pre><span></span>apt-get install dnsmasq
-</pre></div>
+<p><code>apt-get install dnsmasq</code></p>
 <p>Configurar dnsmasq como DNS cache y local.</p>
 <p>Se define la ruta del archivo resolv.conf que hace consultas al servidor de DNS externo.</p>
-<div class="highlight"><pre><span></span>resolv-file=/etc/resolv-orig.conf
-</pre></div>
+<p><code>resolv-file=/etc/resolv-orig.conf</code></p>
 <p>Definir respuestas de peticiones locales dadas por el archivo /etc/hosts.</p>
-<div class="highlight"><pre><span></span> local=/localnet/
-</pre></div>
+<p><code>local=/localnet/</code></p>
 <p>Y eso es todo lo que hay que cambiarse en el archivo /etc/dnsmasq.conf para resolver nombres de equipos locales por medio de /etc/hosts.</p>
 <p>Agregar los equipos en el archivo /etc/hosts.</p>
 <p>En este caso se tiene el equipo grievous:</p>
-<div class="highlight"><pre><span></span>192.168.10.53   grievous        grievous
-</pre></div>
+<p><code>192.168.10.53   grievous        grievous</code></p>
 <p>Si se necesita agregar m&aacute;s equipos al servidor de DNS simplemente se edita el archivo /etc/hosts agregando los equipos en dicho archivo.</p>
 <p>Se crea el archivo /etc/resolv-orig.conf donde se encuentra las IPs de los servidores de DNS externos.
 En este caso se est&aacute; usando los servidores de DNS de Google, OpenDNS y de la red del trabajo.</p>
-<div class="highlight"><pre><span></span>nameserver 8.8.8.8 
+<p><code>nameserver 8.8.8.8 
 nameserver 8.8.4.4
 nameserver 208.67.222.222
 nameserver 208.67.220.220
-nameserver 192.168.32.254
-</pre></div>
+nameserver 192.168.32.254</code></p>
 <p>Ya se tiene configurado el servidor de DNS, s&oacute;lo falta que el equipo realice las consultas por medio del archivo /etc/resolv.conf, el cual debe apuntar al servidor local de DNS (127.0.0.1).</p>
-<div class="highlight"><pre><span></span>nameserver 127.0.0.1
-</pre></div>
+<p><code>nameserver 127.0.0.1</code></p>
 <p>Ahora se puede probar la resoluci&oacute;n de nombres en el equipo.</p>
 <p>Probar que devuelve respuestas el servidor DNS al consultar el nombre del equipo grievous:</p>
-<div class="highlight"><pre><span></span><span class="nt">host</span> <span class="nt">grievous</span>
-<span class="nt">grievous</span> <span class="nt">has</span> <span class="nt">address</span> <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">10</span><span class="p">.</span><span class="nc">53</span>
-
-
-<span class="nt">dig</span> <span class="nt">grievous</span>
-
-<span class="o">;</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">DiG</span> <span class="nt">9</span><span class="p">.</span><span class="nc">7</span><span class="p">.</span><span class="nc">3</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">grievous</span>
-<span class="o">;;</span> <span class="nt">global</span> <span class="nt">options</span><span class="o">:</span> <span class="o">+</span><span class="nt">cmd</span>
-<span class="o">;;</span> <span class="nt">Got</span> <span class="nt">answer</span><span class="o">:</span>
-<span class="o">;;</span> <span class="nt">-</span><span class="o">&gt;&gt;</span><span class="nt">HEADER</span><span class="o">&lt;&lt;</span><span class="nt">-</span> <span class="nt">opcode</span><span class="o">:</span> <span class="nt">QUERY</span><span class="o">,</span> <span class="nt">status</span><span class="o">:</span> <span class="nt">NOERROR</span><span class="o">,</span> <span class="nt">id</span><span class="o">:</span> <span class="nt">19819</span>
-<span class="o">;;</span> <span class="nt">flags</span><span class="o">:</span> <span class="nt">qr</span> <span class="nt">aa</span> <span class="nt">rd</span> <span class="nt">ra</span><span class="o">;</span> <span class="nt">QUERY</span><span class="o">:</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">ANSWER</span><span class="o">:</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">AUTHORITY</span><span class="o">:</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">ADDITIONAL</span><span class="o">:</span> <span class="nt">0</span>
-
-
-<span class="o">;;</span> <span class="nt">QUESTION</span> <span class="nt">SECTION</span><span class="o">:</span>
-<span class="o">;</span><span class="nt">grievous</span><span class="o">.</span>          <span class="nt">IN</span>  <span class="nt">A</span>
-
-
-<span class="o">;;</span> <span class="nt">ANSWER</span> <span class="nt">SECTION</span><span class="o">:</span>
-<span class="nt">grievous</span><span class="o">.</span>       <span class="nt">0</span>   <span class="nt">IN</span>  <span class="nt">A</span>   <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">10</span><span class="p">.</span><span class="nc">53</span>
-
-
-<span class="o">;;</span> <span class="nt">Query</span> <span class="nt">time</span><span class="o">:</span> <span class="nt">6</span> <span class="nt">msec</span>
-<span class="o">;;</span> <span class="nt">SERVER</span><span class="o">:</span> <span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="p">#</span><span class="nn">53</span><span class="o">(</span><span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="o">)</span>
-<span class="o">;;</span> <span class="nt">WHEN</span><span class="o">:</span> <span class="nt">Sat</span> <span class="nt">Aug</span> <span class="nt">20</span> <span class="nt">10</span><span class="p">:</span><span class="nd">06</span><span class="p">:</span><span class="nd">45</span> <span class="nt">2011</span>
-<span class="o">;;</span> <span class="nt">MSG</span> <span class="nt">SIZE</span>  <span class="nt">rcvd</span><span class="o">:</span> <span class="nt">42</span>
-</pre></div>
+<p>```
+host grievous
+grievous has address 192.168.10.53</p>
+<p>dig grievous</p>
+<p>; &lt;&lt;&gt;&gt; DiG 9.7.3 &lt;&lt;&gt;&gt; grievous
+;; global options: +cmd
+;; Got answer:
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 19819
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0</p>
+<p>;; QUESTION SECTION:
+;grievous.          IN  A</p>
+<p>;; ANSWER SECTION:
+grievous.       0   IN  A   192.168.10.53</p>
+<p>;; Query time: 6 msec
+;; SERVER: 127.0.0.1#53(127.0.0.1)
+;; WHEN: Sat Aug 20 10:06:45 2011
+;; MSG SIZE  rcvd: 42
+```</p>
 <p>Ahora se puede verificar los rendimientos de los servidores de DNS con NameBench. Para instalarlo se ejecuta apt-get.</p>
-<div class="highlight"><pre><span></span>apt-get install  namebench
-</pre></div>
+<p><code>apt-get install  namebench</code></p>
 <p>En la siguiente figura se muestra la ejecuci&oacute;n de namebench donde se le define el servidor de Nombres a utilizar.</p>
 <p><img alt="namebench" src="./images/namebench.png"/></p>
 <p>A continuaci&oacute;n se muestra las figuras del resultado de Namebench.</p>

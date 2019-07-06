@@ -172,82 +172,77 @@
 </ul>
 <p>Como est&eacute; widget hereda del widget Button se puede usar la se&ntilde;al clicked para capturar el momento de seleccionar una de las opciones.</p>
 <p>El c&oacute;digo que muestra el programa se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<p>```python </p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="se importa el modulo sys">Se importa el modulo sys</h1>
+<p>import sys</p>
+<h1 id="de pyqt4 importar qtgui y qtcore.">De PyQt4 importar QtGui y QtCore.</h1>
+<p>from PyQt4 import QtGui
+from PyQt4 import QtCore</p>
+<p>class App(QtGui.QWidget):
+    def <strong>init</strong>(self,parent=None):
+        QtGui.QWidget.<strong>init</strong>(self, parent)
+        #Se define el tamano de la ventana
+        self.setGeometry(0, 50, 350, 250)
+        #Se le coloca un titulo a la ventana y se asocia un icono.
+        self.setWindowTitle('Prueba')
+        self.setWindowIcon(QtGui.QIcon('./openlogo-50.png'))</p>
+<pre><code>    #Se define la etiqueta donde se pregunta por el sexo.
+    etiqueta = QtGui.QLabel("Sexo:")
+    #Se define la etiqueta que muestra la palabra resultado.
+    resultado = QtGui.QLabel("Resultado:")
+    #Se define la etiqueta donde se mostrara la informacion
+    #seleccionada del boton de radio
+    self.texto = QtGui.QLabel("")
 
-<span class="c1">#Se importa el modulo sys</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+    #Se crea los botones de radio para seleccionar masculino o femenino.
+    #Se define ahi el uso del alt+m y alt+f para seleccionar
+    #un boton.
+    self.botonradio1 = QtGui.QRadioButton("&amp;Masculino",self)
+    self.botonradio2 = QtGui.QRadioButton("&amp;Femenino",self)
 
-<span class="c1">#De PyQt4 importar QtGui y QtCore.</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtCore</span>
+    #Se crea el boton para salir del programa
+    quit = QtGui.QPushButton('Salir', self)
 
+    #Empaquetamiento de los widgets en una cuadricula.
+    grid = QtGui.QGridLayout()
+    grid.setSpacing(10)
+    #Se agrega los widgets de etiquetas,radiobuttons y
+    #el boton salir
+    grid.addWidget(etiqueta, 0, 0)
+    grid.addWidget(self.botonradio1,0,1)
+    grid.addWidget(self.botonradio2,0,3)
+    grid.addWidget(resultado,2,0)
+    grid.addWidget(self.texto,2,1)
+    grid.addWidget(quit,3,0)
+    self.setLayout(grid)
 
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
-        <span class="c1">#Se define el tamano de la ventana</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">350</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
-        <span class="c1">#Se le coloca un titulo a la ventana y se asocia un icono.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">'Prueba'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="s1">'./openlogo-50.png'</span><span class="p">))</span>
+    #Se conecta la segnal con los 2 botones de radio y el boton para
+    #salir del programa, se asocian a los metodos respectivos.
+    self.connect(quit, QtCore.SIGNAL('clicked()'),QtGui.qApp, QtCore.SLOT('quit()'))
+    self.connect(self.botonradio1,QtCore.SIGNAL('clicked()'),self.Mostrar1)
+    self.connect(self.botonradio2,QtCore.SIGNAL('clicked()'),self.Mostrar2)
 
-        <span class="c1">#Se define la etiqueta donde se pregunta por el sexo.</span>
-        <span class="n">etiqueta</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Sexo:"</span><span class="p">)</span>
-        <span class="c1">#Se define la etiqueta que muestra la palabra resultado.</span>
-        <span class="n">resultado</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Resultado:"</span><span class="p">)</span>
-        <span class="c1">#Se define la etiqueta donde se mostrara la informacion</span>
-        <span class="c1">#seleccionada del boton de radio</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">texto</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+def Mostrar1(self):
+    #Se muestra el resultado seleccionado
+    self.texto.setText("Masculino")
 
-        <span class="c1">#Se crea los botones de radio para seleccionar masculino o femenino.</span>
-        <span class="c1">#Se define ahi el uso del alt+m y alt+f para seleccionar</span>
-        <span class="c1">#un boton.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">botonradio1</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">(</span><span class="s2">"&amp;Masculino"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">botonradio2</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">(</span><span class="s2">"&amp;Femenino"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-
-        <span class="c1">#Se crea el boton para salir del programa</span>
-        <span class="n">quit</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s1">'Salir'</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-
-        <span class="c1">#Empaquetamiento de los widgets en una cuadricula.</span>
-        <span class="n">grid</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">()</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-        <span class="c1">#Se agrega los widgets de etiquetas,radiobuttons y</span>
-        <span class="c1">#el boton salir</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">etiqueta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">botonradio1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">botonradio2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">resultado</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texto</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">quit</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-
-        <span class="c1">#Se conecta la segnal con los 2 botones de radio y el boton para</span>
-        <span class="c1">#salir del programa, se asocian a los metodos respectivos.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">quit</span><span class="p">,</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s1">'clicked()'</span><span class="p">),</span><span class="n">QtGui</span><span class="o">.</span><span class="n">qApp</span><span class="p">,</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">SLOT</span><span class="p">(</span><span class="s1">'quit()'</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">botonradio1</span><span class="p">,</span><span class="n">QtCore</span><span class="o">.</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s1">'clicked()'</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">Mostrar1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">botonradio2</span><span class="p">,</span><span class="n">QtCore</span><span class="o">.</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s1">'clicked()'</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">Mostrar2</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">Mostrar1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Se muestra el resultado seleccionado</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">texto</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"Masculino"</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">Mostrar2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Se muestra el resultado seleccionado</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">texto</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"Femenino"</span><span class="p">)</span>
-
-
-<span class="c1">#Se ejecuta el programa principal</span>
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>    
-   <span class="c1">#Se instancia la clase QApplication    </span>
-   <span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>    
-   <span class="c1">#Se instancia el objeto QuitButton    </span>
-   <span class="n">qb</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>    
-   <span class="c1">#Se muestra la aplicacion    </span>
-   <span class="n">qb</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    
-   <span class="c1">#Se sale de la aplicacion    </span>
-   <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
-</pre></div>
+def Mostrar2(self):
+    #Se muestra el resultado seleccionado
+    self.texto.setText("Femenino")
+</code></pre>
+<h1 id="se ejecuta el programa principal">Se ejecuta el programa principal</h1>
+<p>if <strong>name</strong> == "<strong>main</strong>":  <br/>
+   #Se instancia la clase QApplication  <br/>
+   app = QtGui.QApplication(sys.argv)  <br/>
+   #Se instancia el objeto QuitButton  <br/>
+   qb = App()  <br/>
+   #Se muestra la aplicacion  <br/>
+   qb.show()  <br/>
+   #Se sale de la aplicacion  <br/>
+   sys.exit(app.exec_())
+```</p>
 <p>A continuaci&oacute;n se muestra la figura del programa iniciando:</p>
 <p><img alt="Radio button - Inicio" src="./images/pyqt7-1.png"/></p>
 <p>La siguiente figura muestra el resultado de darle clip al bot&oacute;n de radio Masculino:</p>

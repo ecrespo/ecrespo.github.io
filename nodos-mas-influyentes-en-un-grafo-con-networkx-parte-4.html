@@ -172,93 +172,64 @@
 <p><img alt="" src="./images/nodosmasinfluyentesenungrafoconnetworkx4-1.png"/></p>
 <p>Donde s(s,t) es el n&uacute;mero total de rutas m&aacute;s cortas desde el nodo s al nodo t, y sv(s,t) es el n&uacute;mero de los camions que pasan a trav&eacute;s de v. </p>
 <p>A continuaci&oacute;n se muestra el c&oacute;digo python que permite calcular los nodos m&aacute;s influyentes por medio de la centralidad por intermediaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<p>import networkx as nx</p>
+<p>from pylab import show, hist, figure</p>
+<h1 id="leer los datos del archivo lesmiserables.gml">Leer los datos del archivo lesmiserables.gml</h1>
+<p>G = nx.read_gml('lesmiserables.gml',relabel=True)</p>
+<h1 id="funcion que devuelve los nodos mas importantes">Funcion que devuelve los nodos mas importantes</h1>
+<p>def most_important(G):</p>
+<p>""" retorna una copia de G con los nodos mas importantes(mas influencia, conexion entre nodos) """ </p>
+<pre><code>#Se calcula el ranking segun la centralidad
 
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+ranking = nx.betweenness_centrality(G).items(
 
-<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">show</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="n">figure</span>
+#Se imprime los nodos mas importantes
 
-<span class="c1">#Leer los datos del archivo lesmiserables.gml</span>
+print ranking
 
-<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">read_gml</span><span class="p">(</span><span class="s1">'lesmiserables.gml'</span><span class="p">,</span><span class="n">relabel</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+r = [x[1] for x in ranking]
 
-<span class="c1">#Funcion que devuelve los nodos mas importantes</span>
+m = sum(r)/len(r) # centralidad
 
-<span class="k">def</span> <span class="nf">most_important</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-
- <span class="sd">""" retorna una copia de G con los nodos mas importantes(mas influencia, conexion entre nodos) """</span> 
-
-    <span class="c1">#Se calcula el ranking segun la centralidad</span>
-
-    <span class="n">ranking</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">(</span>
-
-    <span class="c1">#Se imprime los nodos mas importantes</span>
-
-    <span class="k">print</span> <span class="n">ranking</span>
-
-    <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ranking</span><span class="p">]</span>
-
-    <span class="n">m</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="c1"># centralidad</span>
-
-    <span class="n">t</span> <span class="o">=</span> <span class="n">m</span><span class="o">*</span><span class="mi">3</span> <span class="c1"># se mantiene los nodos  con promedio de aparicion de 3 veces</span>
+t = m*3 # se mantiene los nodos  con promedio de aparicion de 3 veces
 
 
-    <span class="n">Gt</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+Gt = G.copy()
 
 
-    <span class="c1">#Se remueve los nodos que no aparecen</span>
+#Se remueve los nodos que no aparecen
 
 
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ranking</span><span class="p">:</span>
+for k, v in ranking:
 
 
-        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">t</span><span class="p">:</span>
+    if v &lt; t:
 
 
-            <span class="n">Gt</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        Gt.remove_node(k)
 
 
-    <span class="c1">#Se retorna los nodos mas importantes</span>
+#Se retorna los nodos mas importantes
 
 
-    <span class="k">return</span> <span class="n">Gt</span>
-
-<span class="c1">#Se recibe los nodos mas importantes</span>
-
-
-<span class="n">Gt</span> <span class="o">=</span> <span class="n">most_important</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="c1"># trimming</span>
-
-<span class="c1"># se crea el layout</span>
-
-
-<span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-
-
-<span class="c1">#Se dibuja los nodos y sus bordes</span>
-
-
-<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">node_color</span><span class="o">=</span><span class="s1">'b'</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span><span class="n">node_size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-
-
-<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-
-<span class="c1">#Se dibuja los nodos mas importantes con un estilo diferente</span>
-
-
-<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_nodes</span><span class="p">(</span><span class="n">Gt</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">node_color</span><span class="o">=</span><span class="s1">'r'</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span><span class="n">node_size</span><span class="o">=</span><span class="mi">254</span><span class="p">)</span>
-
-
-<span class="c1"># se define las etiquetas</span>
-
-
-<span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">Gt</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span><span class="n">font_color</span><span class="o">=</span><span class="s1">'b'</span><span class="p">)</span>
-
-
-<span class="c1">#Se muestra la grafica</span>
-
-
-<span class="n">show</span><span class="p">()</span>
-</pre></div>
+return Gt
+</code></pre>
+<h1 id="se recibe los nodos mas importantes">Se recibe los nodos mas importantes</h1>
+<p>Gt = most_important(G) # trimming</p>
+<h1 id="se crea el layout">se crea el layout</h1>
+<p>pos = nx.spring_layout(G)</p>
+<h1 id="se dibuja los nodos y sus bordes">Se dibuja los nodos y sus bordes</h1>
+<p>nx.draw_networkx_nodes(G,pos,node_color='b',alpha=0.2,node_size=8)</p>
+<p>nx.draw_networkx_edges(G,pos,alpha=0.1)</p>
+<h1 id="se dibuja los nodos mas importantes con un estilo diferente">Se dibuja los nodos mas importantes con un estilo diferente</h1>
+<p>nx.draw_networkx_nodes(Gt,pos,node_color='r',alpha=0.4,node_size=254)</p>
+<h1 id="se define las etiquetas">se define las etiquetas</h1>
+<p>nx.draw_networkx_labels(Gt,pos,font_size=12,font_color='b')</p>
+<h1 id="se muestra la grafica">Se muestra la grafica</h1>
+<p>show()
+```</p>
 <p>La gr&aacute;fica donde se ve los personajes m&aacute;s influyentes en la novela Los miserables se muestra a continuaci&oacute;n:</p>
 <p><img alt="" src="./images/nodosmasinfluyentesenungrafoconnetworkx4-2.png"/></p>
 <p>Esto es &uacute;til a la hora de manejar la influencia en redes sociales como twitter.</p>

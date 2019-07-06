@@ -172,94 +172,52 @@ El teorema de muestreo de una se&ntilde;al continua que x (t) limitada en banda 
 <p>Si se desea m&aacute;s informaci&oacute;n sobre el Teorema de Muestreo se puede consultar a <a href="https://es.wikipedia.org/wiki/Teorema_de_muestreo_de_Nyquist-Shannon">wikipedia</a>.</p>
 <p>Este art&iacute;culo se basa en un art&iacute;culo en Ingl&eacute;s "<a href="glowingpython.blogspot.com/2011/09/sampling-theorem-explained-with-numpy.html">The sampling theorem explained with numpy</a>".</p>
 <p>El c&oacute;digo se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#De numpy se importa lo necesario para graficar la</span>
-
-<span class="c1">#funcion seno</span>
-
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linspace</span><span class="p">,</span><span class="n">sin</span><span class="p">,</span><span class="n">cos</span><span class="p">,</span><span class="n">pi</span><span class="p">,</span><span class="n">ceil</span><span class="p">,</span><span class="n">floor</span><span class="p">,</span><span class="n">arange</span>
-
-<span class="c1">#De pylab se importa plot, show y axis. Lo necesario para crear</span>
-
-<span class="c1">#la grafica</span>
-
-<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">plot</span><span class="p">,</span><span class="n">show</span><span class="p">,</span><span class="n">axis</span>
-
-<span class="c1">#Muestreo de una seganl de ancho de banda 40 hz</span>
-
-<span class="c1"># con velocidad de muestreo de 80 Hz</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="mi">40</span><span class="p">;</span>  <span class="c1"># Hz</span>
-
-<span class="c1">#Tiempo minimo y maximo</span>
-
-<span class="n">tmin</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">;</span>
-
-<span class="n">tmax</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
-
-<span class="c1">#Se define el tiempo de la segnal.</span>
-
-<span class="n">t</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="mi">400</span><span class="p">);</span>
-
-<span class="c1">#Se define la segnal de muestreo</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">f</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
-
-<span class="c1">#Se grafica el tiempo y la segnal.</span>
-
-<span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-
-<span class="c1"># sampling the signal with a sampling rate of 80 Hz</span>
-
-<span class="c1"># in this case, we are using the Nyquist rate.</span>
-
-<span class="c1">#Muestreo de la segnal con una velocidad de muestreo de 80 Hz.</span>
-
-<span class="c1">#Periodo de muestreo</span>
-
-<span class="n">T</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">80.0</span><span class="p">;</span>
-
-<span class="c1">#Tiempo minimo</span>
-
-<span class="n">nmin</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">tmin</span> <span class="o">/</span> <span class="n">T</span><span class="p">);</span>
-
-<span class="c1">#Tiempo maximo</span>
-
-<span class="n">nmax</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">tmax</span> <span class="o">/</span> <span class="n">T</span><span class="p">);</span>
-
-<span class="c1">#Tiempo de la segnal.</span>
-
-<span class="n">n</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="n">nmin</span><span class="p">,</span><span class="n">nmax</span><span class="p">);</span>
-
-<span class="c1">#Segnal a la velocidad de muestreo</span>
-
-<span class="n">x1</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">f</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">T</span><span class="p">);</span>
-
-<span class="c1">#Se grafica la segnal.</span>
-
-<span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">T</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="s1">'bo'</span><span class="p">)</span>
-
-<span class="c1">#Muestreo de la segnal con una velocidad de muestreo de 35Hz.</span>
-
-<span class="c1">#Note que 35Hz esta por debajo de la velocidad de Nyquist.</span>
-
-<span class="n">T</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">35.0</span><span class="p">;</span>
-
-<span class="n">nmin</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">tmin</span> <span class="o">/</span> <span class="n">T</span><span class="p">);</span>
-
-<span class="n">nmax</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">tmax</span> <span class="o">/</span> <span class="n">T</span><span class="p">);</span>
-
-<span class="n">n</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="n">nmin</span><span class="p">,</span><span class="n">nmax</span><span class="p">);</span>
-
-<span class="n">x2</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">f</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="n">T</span><span class="p">);</span>
-
-<span class="n">plot</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">T</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="s1">'-r.'</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-
-<span class="n">axis</span><span class="p">([</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">])</span>
-
-<span class="n">show</span><span class="p">()</span>
-</pre></div>
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="de numpy se importa lo necesario para graficar la">De numpy se importa lo necesario para graficar la</h1>
+<h1 id="funcion seno">funcion seno</h1>
+<p>from numpy import linspace,sin,cos,pi,ceil,floor,arange</p>
+<h1 id="de pylab se importa plot, show y axis. lo necesario para crear">De pylab se importa plot, show y axis. Lo necesario para crear</h1>
+<h1 id="la grafica">la grafica</h1>
+<p>from pylab import plot,show,axis</p>
+<h1 id="muestreo de una seganl de ancho de banda 40 hz">Muestreo de una seganl de ancho de banda 40 hz</h1>
+<h1 id="con velocidad de muestreo de 80 hz">con velocidad de muestreo de 80 Hz</h1>
+<p>f = 40;  # Hz</p>
+<h1 id="tiempo minimo y maximo">Tiempo minimo y maximo</h1>
+<p>tmin = -0.3;</p>
+<p>tmax = 0.3;</p>
+<h1 id="se define el tiempo de la segnal.">Se define el tiempo de la segnal.</h1>
+<p>t = linspace(tmin, tmax, 400);</p>
+<h1 id="se define la segnal de muestreo">Se define la segnal de muestreo</h1>
+<p>x = cos(2<em>pi</em>t) + cos(2<em>pi</em>f*t)</p>
+<h1 id="se grafica el tiempo y la segnal.">Se grafica el tiempo y la segnal.</h1>
+<p>plot(t, x)</p>
+<h1 id="sampling the signal with a sampling rate of 80 hz">sampling the signal with a sampling rate of 80 Hz</h1>
+<h1 id="in this case, we are using the nyquist rate.">in this case, we are using the Nyquist rate.</h1>
+<h1 id="muestreo de la segnal con una velocidad de muestreo de 80 hz.">Muestreo de la segnal con una velocidad de muestreo de 80 Hz.</h1>
+<h1 id="periodo de muestreo">Periodo de muestreo</h1>
+<p>T = 1/80.0;</p>
+<h1 id="tiempo minimo">Tiempo minimo</h1>
+<p>nmin = ceil(tmin / T);</p>
+<h1 id="tiempo maximo">Tiempo maximo</h1>
+<p>nmax = floor(tmax / T);</p>
+<h1 id="tiempo de la segnal.">Tiempo de la segnal.</h1>
+<p>n = arange(nmin,nmax);</p>
+<h1 id="segnal a la velocidad de muestreo">Segnal a la velocidad de muestreo</h1>
+<p>x1 = cos(2<em>pi</em>n<em>T) + cos(2</em>pi<em>f</em>n*T);</p>
+<h1 id="se grafica la segnal.">Se grafica la segnal.</h1>
+<p>plot(n*T, x1, 'bo')</p>
+<h1 id="muestreo de la segnal con una velocidad de muestreo de 35hz.">Muestreo de la segnal con una velocidad de muestreo de 35Hz.</h1>
+<h1 id="note que 35hz esta por debajo de la velocidad de nyquist.">Note que 35Hz esta por debajo de la velocidad de Nyquist.</h1>
+<p>T = 1/35.0;</p>
+<p>nmin = ceil(tmin / T);</p>
+<p>nmax = floor(tmax / T);</p>
+<p>n = arange(nmin,nmax);</p>
+<p>x2 = cos(2<em>pi</em>n<em>T) + cos(2</em>pi<em>f</em>n*T);</p>
+<p>plot(n*T, x2, '-r.',markersize=15)</p>
+<p>axis([-0.3, 0.3, -1.5, 2.3])</p>
+<p>show()
+```</p>
 <p>La gr&aacute;fica generada es la siguiente:</p>
 <p><img alt="" src="./images/teoremademuestreoexplicadoconnumpy-1.png"/> </p>
 <p>Con puntos azules se tiene el muestreo a 80Hz, con puntos rojos se tiene el muestreo a 35 Hz, se nota que el muestreo a 80 Hz es suficiente para capturar la oscilaci&oacute;n de la se&ntilde;al.</p>

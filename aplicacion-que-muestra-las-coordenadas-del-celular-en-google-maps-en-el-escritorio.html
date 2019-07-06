@@ -173,102 +173,94 @@
 <p><img alt="Glade webkit - Navegador" src="./images/tutorialpythongtkglade12-1.png"/></p>
 <p>En realidad es la misma aplicaci&oacute;n del navegador lo &uacute;nico es que se le quito la entrada de texto y el bot&oacute;n de "ir".</p>
 <p>A continuaci&oacute;n se muestra el c&oacute;digo de la aplicaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python2.6</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">"""</span>
-<span class="sd">Nombre:Geolocalizacion</span>
-<span class="sd">Descripci&oacute;n: Programa que captura la localizaci&oacute;n del GPS del Celular y lo</span>
-<span class="sd">    muestra en google maps en el escritorio Linux.</span>
-<span class="sd">Versi&oacute;n:0.1</span>
-<span class="sd">Licencia:GPLv3</span>
-<span class="sd">Autor: Ernesto Crespo</span>
-<span class="sd">correo: ecrespo@gmail.com</span>
-<span class="sd">"""</span>
-<span class="c1">#Import gtk and webkit</span>
+<p>```python</p>
+<h1 id="!/usr/bin/env python2.6">!/usr/bin/env python2.6</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<p>"""
+Nombre:Geolocalizacion
+Descripci&oacute;n: Programa que captura la localizaci&oacute;n del GPS del Celular y lo
+    muestra en google maps en el escritorio Linux.
+Versi&oacute;n:0.1
+Licencia:GPLv3
+Autor: Ernesto Crespo
+correo: ecrespo@gmail.com
+"""</p>
+<h1 id="import gtk and webkit">Import gtk and webkit</h1>
+<p>import gtk
+import webkit</p>
+<h1 id="importando el modulo android">Importando el m&oacute;dulo android</h1>
+<p>import android
+from time import sleep</p>
+<h1 id="class app">class App</h1>
+<p>class App:
+    def <strong>init</strong>(self):
+        #Constructor
+        #Se asocia el archivo glade al Builder
+        self.glade_file = "geolocalizcion.glade"
+        self.glade = gtk.Builder()
+        self.glade.add_from_file(self.glade_file)
+        #Se asocia la ventana geo
+        self.window = self.glade.get_object('geo')
+        #Se asocia el bot&oacute;n salir
+        self.exit = self.glade.get_object('salir')
+        #Se asocia la ventana deslizante
+        self.scrolledwindow1 = self.glade.get_object('scrolledwindow1')
+        #
+        #Se conecta el evento destruir
+        self.window.connect("destroy",self.on_geo_destroy)
+        #Se asocia el evento del bot&oacute;n salir
+        self.exit.connect('clicked', self.on_salir_clicked)
+        #Se abre la p&aacute;gina de google maps
+        #Se instancia la clase webview
+        self.webview = webkit.WebView()
+        #Se agrega a la ventana deslizante
+        self.scrolledwindow1.add(self.webview)
+        #Se captura la localizaci&oacute;n
+        tupla = localizacion()
+        #Se abre el url de google maps pasandole la longitud y latitud
+        self.__go("http://maps.google.com/maps?q=%s,%s" %tupla)</p>
+<pre><code>    #Se muestra la ventana principal de la aplicaci&oacute;n
+    self.window.show_all()
 
 
-<span class="kn">import</span> <span class="nn">gtk</span>
-<span class="kn">import</span> <span class="nn">webkit</span>
-<span class="c1">#Importando el m&oacute;dulo android</span>
-<span class="kn">import</span> <span class="nn">android</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+def __go(self,url):
+    #Se abre el url
+    self.webview.open(url)
 
 
+def on_geo_destroy(self,*args):
+    #Se cierra la apliaci&oacute;n
+    gtk.main_quit()
 
-<span class="c1">#class App</span>
-<span class="k">class</span> <span class="nc">App</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Constructor</span>
-        <span class="c1">#Se asocia el archivo glade al Builder</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade_file</span> <span class="o">=</span> <span class="s2">"geolocalizcion.glade"</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">Builder</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">add_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">glade_file</span><span class="p">)</span>
-        <span class="c1">#Se asocia la ventana geo</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'geo'</span><span class="p">)</span>
-        <span class="c1">#Se asocia el bot&oacute;n salir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'salir'</span><span class="p">)</span>
-        <span class="c1">#Se asocia la ventana deslizante</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scrolledwindow1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'scrolledwindow1'</span><span class="p">)</span>
-        <span class="c1">#</span>
-        <span class="c1">#Se conecta el evento destruir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"destroy"</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">on_geo_destroy</span><span class="p">)</span>
-        <span class="c1">#Se asocia el evento del bot&oacute;n salir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'clicked'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_salir_clicked</span><span class="p">)</span>
-        <span class="c1">#Se abre la p&aacute;gina de google maps</span>
-        <span class="c1">#Se instancia la clase webview</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">webview</span> <span class="o">=</span> <span class="n">webkit</span><span class="o">.</span><span class="n">WebView</span><span class="p">()</span>
-        <span class="c1">#Se agrega a la ventana deslizante</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scrolledwindow1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">webview</span><span class="p">)</span>
-        <span class="c1">#Se captura la localizaci&oacute;n</span>
-        <span class="n">tupla</span> <span class="o">=</span> <span class="n">localizacion</span><span class="p">()</span>
-        <span class="c1">#Se abre el url de google maps pasandole la longitud y latitud</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__go</span><span class="p">(</span><span class="s2">"http://maps.google.com/maps?q=</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">tupla</span><span class="p">)</span>
-
-        <span class="c1">#Se muestra la ventana principal de la aplicaci&oacute;n</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+def on_salir_clicked(self,*args):
+ #Se cierra la aplicaci&oacute;n
+    gtk.main_quit()
 
 
-    <span class="k">def</span> <span class="nf">__go</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">url</span><span class="p">):</span>
-        <span class="c1">#Se abre el url</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">webview</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-
-
-    <span class="k">def</span> <span class="nf">on_geo_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="c1">#Se cierra la apliaci&oacute;n</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">on_salir_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="c1">#Se cierra la aplicaci&oacute;n</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
-
-
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Se inicia la aplicaci&oacute;n</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-
-
-<span class="k">def</span> <span class="nf">localizacion</span><span class="p">():</span>
-
-        <span class="c1">#Se crea la instancia de la clase Android</span>
-        <span class="n">droid</span> <span class="o">=</span> <span class="n">android</span><span class="o">.</span><span class="n">Android</span><span class="p">()</span>
-        <span class="c1">#Se inicia la localizacion</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">startLocating</span><span class="p">()</span>
-        <span class="c1">#Se espera 15 segundos</span>
-        <span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
-        <span class="c1">#Se presenta en la consola la informaci&oacute;n de la localizaci&oacute;n</span>
-        <span class="c1">#Se maneja la informaci&oacute;n de un diccionario.</span>
-        <span class="n">latitud</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">readLocation</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="s2">"network"</span><span class="p">][</span><span class="s2">"latitude"</span><span class="p">]</span>
-        <span class="n">longitud</span> <span class="o">=</span> <span class="n">droid</span><span class="o">.</span><span class="n">readLocation</span><span class="p">()</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="s2">"network"</span><span class="p">][</span><span class="s2">"longitude"</span><span class="p">]</span>
-        <span class="c1">#Se detiene la localizaci&oacute;n</span>
-        <span class="n">droid</span><span class="o">.</span><span class="n">stopLocating</span><span class="p">()</span>
-        <span class="c1">#Se retorna la latitud y longitud capturada por medio del GPS del celular.</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">latitud</span><span class="p">,</span><span class="n">longitud</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-</pre></div>
+def main(self):
+    #Se inicia la aplicaci&oacute;n
+    gtk.main()
+</code></pre>
+<p>def localizacion():</p>
+<pre><code>    #Se crea la instancia de la clase Android
+    droid = android.Android()
+    #Se inicia la localizacion
+    droid.startLocating()
+    #Se espera 15 segundos
+    sleep(15)
+    #Se presenta en la consola la informaci&oacute;n de la localizaci&oacute;n
+    #Se maneja la informaci&oacute;n de un diccionario.
+    latitud = droid.readLocation().result["network"]["latitude"]
+    longitud = droid.readLocation().result["network"]["longitude"]
+    #Se detiene la localizaci&oacute;n
+    droid.stopLocating()
+    #Se retorna la latitud y longitud capturada por medio del GPS del celular.
+    return (latitud,longitud)
+</code></pre>
+<p>if <strong>name</strong> == '<strong>main</strong>':
+    app = App()
+    app.main()</p>
+<p>```</p>
 <p>La figura de la aplicaci&oacute;n funcionando mostrando el mapa y la posici&oacute;n que devuelve el GPS del celular.</p>
 <p><img alt="Navegador " src="./images/tutorialpythongtkglade12-2.png"/></p>
 <p>===</p>

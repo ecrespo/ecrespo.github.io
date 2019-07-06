@@ -169,65 +169,65 @@ El siguiente ejemplo se explicar&aacute; el uso del widget textview. Se crear&aa
 con 4 widgets, una etiqueta que menciona la lectura de archivos, luego el textview donde
 se mostrar&aacute; el contenido de un archivo, el boton de selecci&oacute;n de archivo y el boton de salir.</p>
 <p>A continuaci&oacute;n se explica el c&oacute;digo del desarrollo:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1">#Importaci&oacute;n de m&oacute;dulos</span>
-<span class="kn">import</span> <span class="nn">pygtk</span>
-<span class="n">pygtk</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">'2.0'</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">gtk</span><span class="o">,</span> <span class="nn">gtk.glade</span><span class="o">,</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">sys</span>
-<span class="c1">#Creaci&oacute;n de la clase ej8</span>
-<span class="k">class</span> <span class="nc">ej8</span><span class="p">:</span>
-    <span class="c1">#Creaci&oacute;n del m&eacute;todo constructor de la clase.</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Se captura el archivo xml de la interfaz</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">XML</span><span class="p">(</span><span class="s1">'ej8.glade'</span><span class="p">)</span>
-        <span class="c1">#Se asocia la ventana1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ventana1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'ventana1'</span><span class="p">)</span>
-        <span class="c1">#Se asocia el widget textview1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">textview1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'textview1'</span><span class="p">)</span>
-        <span class="c1">#Se asocia el widget de la selecci&oacute;n de archivo</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">seleccionararchivo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'seleccionararchivo'</span><span class="p">)</span>
-        <span class="c1">#Se asocia el boton salir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">botonsalir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'botonsalir'</span><span class="p">)</span>
-        <span class="c1">#Se asocia los eventos con las se&ntilde;ales</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">signal_autoconnect</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
-        <span class="c1">#Se asocia el objeto buffer de texto</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">buffertexto</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">TextBuffer</span><span class="p">()</span>
-        <span class="c1">#Se crea una lista vac&iacute;a</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lista</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1">#Se crea la variable que contendr&aacute; el nombre del archivo seleccionado</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">archivo_name</span> <span class="o">=</span> <span class="s2">""</span>
-    <span class="c1">#Se crea el m&eacute;todo de selecci&oacute;n de archivo</span>
-    <span class="k">def</span> <span class="nf">on_seleccionararchivo_file_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="c1">#Se captura el nombre del archivo en la variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">archivo_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seleccionararchivo</span><span class="o">.</span><span class="n">get_filename</span><span class="p">()</span>
-        <span class="c1">#Se abre el archivo colocando su contenido en una lista</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lista</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">archivo_name</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-        <span class="c1">#Se recorre la lista y se coloca el contenido en el buffer de texto</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lista</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">buffertexto</span><span class="o">.</span><span class="n">insert_at_cursor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lista</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="c1">#Se coloca el contenido del buffer en el textview</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">textview1</span><span class="o">.</span><span class="n">set_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffertexto</span><span class="p">)</span>
-        <span class="c1">#Se oculta la ventana de selecci&oacute;n de archivo</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">seleccionararchivo</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="importacion de modulos">Importaci&oacute;n de m&oacute;dulos</h1>
+<p>import pygtk
+pygtk.require('2.0')
+import gtk, gtk.glade, inspect, sys</p>
+<h1 id="creacion de la clase ej8">Creaci&oacute;n de la clase ej8</h1>
+<p>class ej8:
+    #Creaci&oacute;n del m&eacute;todo constructor de la clase.
+    def <strong>init</strong>(self):
+        #Se captura el archivo xml de la interfaz
+        self.w_tree = gtk.glade.XML('ej8.glade')
+        #Se asocia la ventana1
+        self.ventana1 = self.w_tree.get_widget('ventana1')
+        #Se asocia el widget textview1
+        self.textview1 = self.w_tree.get_widget('textview1')
+        #Se asocia el widget de la selecci&oacute;n de archivo
+        self.seleccionararchivo = self.w_tree.get_widget('seleccionararchivo')
+        #Se asocia el boton salir
+        self.botonsalir = self.w_tree.get_widget('botonsalir')
+        #Se asocia los eventos con las se&ntilde;ales
+        self.w_tree.signal_autoconnect(dict(inspect.getmembers(self)))
+        #Se asocia el objeto buffer de texto
+        self.buffertexto = gtk.TextBuffer()
+        #Se crea una lista vac&iacute;a
+        self.lista = []
+        #Se crea la variable que contendr&aacute; el nombre del archivo seleccionado
+        self.archivo_name = ""
+    #Se crea el m&eacute;todo de selecci&oacute;n de archivo
+    def on_seleccionararchivo_file_set(self,*args):
+        #Se captura el nombre del archivo en la variable
+        self.archivo_name = self.seleccionararchivo.get_filename()
+        #Se abre el archivo colocando su contenido en una lista
+        self.lista = open(self.archivo_name,"r").readlines()
+        #Se recorre la lista y se coloca el contenido en el buffer de texto
+        for i in range(len(self.lista)):
+            self.buffertexto.insert_at_cursor(self.lista[i])
+        #Se coloca el contenido del buffer en el textview
+        self.textview1.set_buffer(self.buffertexto)
+        #Se oculta la ventana de selecci&oacute;n de archivo
+        self.seleccionararchivo.hide()</p>
+<pre><code>#Se crea el m&eacute;todo para el boton salir
+def on_botonsalir_clicked(self,*args):
+    gtk.main_quit()
 
-    <span class="c1">#Se crea el m&eacute;todo para el boton salir</span>
-    <span class="k">def</span> <span class="nf">on_botonsalir_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
+#Se crea el m&eacute;todo para cerrar la aplicaci&oacute;n
+def on_ventana1_destroy(self,*args):
+    gtk.main_quit()
 
-    <span class="c1">#Se crea el m&eacute;todo para cerrar la aplicaci&oacute;n</span>
-    <span class="k">def</span> <span class="nf">on_ventana1_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
-
-    <span class="c1">#Se crea el m&eacute;todo main que muestra la ventana</span>
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ventana1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">ej8</span><span class="p">()</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-</pre></div>
+#Se crea el m&eacute;todo main que muestra la ventana
+def main(self,*args):
+    self.ventana1.show()
+    gtk.main()
+</code></pre>
+<p>if <strong>name</strong> == "<strong>main</strong>":
+    app = ej8()
+    app.main()
+```</p>
 <p>El c&oacute;digo de la aplicaci&oacute;n lo pueden descargar de github en el siguiente
 <a href="https://github.com/ecrespo/ecrespo.github.io/blob/master/content/code/2009/tutorialgtkglade5.py">enlace</a>.</p>
 <p>===</p>

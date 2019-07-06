@@ -171,110 +171,69 @@
 <p>El ejemplo que se mostrar&aacute; se basa en el art&iacute;culo de Saghul Ibarra en su blog <a href="code.saghul.net/implementing-a-pubsub-based-application-with">Saghul Ibarra en su blog</a>.
 El productor crea una l&iacute;nea de comandos donde se pasa el texto al consumidor, el consumidor recibe el texto y s&oacute;lo se muestra en pantalla el texto que est&aacute; definido en la subscripci&oacute;n.</p>
 <p>En el productor se define unas opciones en el socket, en el sitio de ZeroMQ tiene una explicaci&oacute;n de las <a href="api.zeromq.org/2-1:zmq-setsockopt">opciones para crear el socket</a>. LINGER con par&aacute;metro cero define que se descarte mensajes que no son enviados.</p>
-<p>El c&oacute;digo del productor se muestra a continuaci&oacute;n:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<p>El c&oacute;digo del productor se muestra a continuaci&oacute;n:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="_1"></h1>
+<h1 id="producer">producer</h1>
+<h1 id="se importa zeromq">Se importa ZeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia de la clase context.">Se crea la instancia de la clase Context.</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se define el socket con parametro pub">Se define el socket con parametro PUB</h1>
+<p>socket = context.socket(zmq.PUB)</p>
+<h1 id="se define unas opciones en el socket">Se define unas opciones en el socket</h1>
+<h1 id="esta opcion linger con valor cero, descarta mensajes no enviados">esta opcion LINGER con valor cero, descarta mensajes no enviados</h1>
+<p>socket.setsockopt(zmq.LINGER, 0)    </p>
+<h1 id="se conecta al socket a la ip y puerto">Se conecta al socket a la IP y puerto</h1>
+<h1 id="por medio de multicast">por medio de multicast</h1>
+<p>socket.connect('epgm://192.168.10.96:5000')</p>
+<h1 id="se crea un ciclo">Se crea un ciclo</h1>
+<h1 id="si se envia el texto salir, se envia y luego finaliza el ciclo">si se envia el texto salir, se envia y luego finaliza el ciclo</h1>
+<h1 id="si no, se envia el texto">si no, se envia el texto</h1>
+<p>while True:</p>
+<p>mensaje = raw_input("-&gt;")</p>
+<p>print mensaje</p>
+<p>socket.send(mensaje)</p>
+<p>if mensaje == "salir": break</p>
+<p>socket.close()
+```</p>
+<p>El c&oacute;digo del programa consumidor es el siguiente: 
+```python</p>
+<h1 id="!/usr/bin/env python_1">!/usr/bin/env python</h1>
+<h1 id="importar zeromq">Importar zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia de la clase contexto">Se crea la instancia de la clase contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se define el socket con parametro sub">Se define el socket con parametro SUB</h1>
+<p>socket = context.socket(zmq.SUB)</p>
+<h1 id="se conecta el socket a la ip y puerto del productor">Se conecta el socket a la IP y puerto del productor</h1>
+<h1 id="con el transporte epgm">con el transporte epgm</h1>
+<p>socket.connect('epgm://192.168.10.96:5000')</p>
+<h1 id="se define los textos que se recibe la informacion.">Se define los textos que se recibe la informacion.</h1>
+<h1 id="prueba, hora y salir.">prueba, hora y salir.</h1>
+<p>socket.setsockopt(zmq.SUBSCRIBE, 'prueba')</p>
+<p>socket.setsockopt(zmq.SUBSCRIBE, 'hora')</p>
+<p>socket.setsockopt(zmq.SUBSCRIBE, 'salir')</p>
+<h1 id="se define un ciclo,">Se define un ciclo,</h1>
+<h1 id="se recibe la informacion">se recibe la informacion</h1>
+<h1 id="si el texto es salir se muestra en pantalla">Si el texto es salir se muestra en pantalla</h1>
+<h1 id="finaliza el ciclo, si no se muestra">finaliza el ciclo, si no se muestra</h1>
+<h1 id="el texto en pantalla">el texto en pantalla</h1>
+<p>while True:</p>
+<pre><code>rcv = socket.recv()
 
-<span class="c1"># </span>
+print rcv
 
-<span class="c1"># producer</span>
-
-<span class="c1">#Se importa ZeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea la instancia de la clase Context.</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se define el socket con parametro PUB</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PUB</span><span class="p">)</span>
-
-<span class="c1">#Se define unas opciones en el socket</span>
-
-<span class="c1">#esta opcion LINGER con valor cero, descarta mensajes no enviados</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">LINGER</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>    
-
-<span class="c1">#Se conecta al socket a la IP y puerto</span>
-
-<span class="c1">#por medio de multicast</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'epgm://192.168.10.96:5000'</span><span class="p">)</span>
-
-<span class="c1">#Se crea un ciclo</span>
-
-<span class="c1">#si se envia el texto salir, se envia y luego finaliza el ciclo</span>
-
-<span class="c1">#si no, se envia el texto</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
- <span class="n">mensaje</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s2">"-&gt;"</span><span class="p">)</span>
-
- <span class="k">print</span> <span class="n">mensaje</span>
-
- <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
-
- <span class="k">if</span> <span class="n">mensaje</span> <span class="o">==</span> <span class="s2">"salir"</span><span class="p">:</span> <span class="k">break</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-<p>El c&oacute;digo del programa consumidor es el siguiente: </p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Importar zeroMQ</span>
-
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea la instancia de la clase contexto</span>
-
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-
-<span class="c1">#Se define el socket con parametro SUB</span>
-
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
-
-<span class="c1">#Se conecta el socket a la IP y puerto del productor</span>
-
-<span class="c1">#con el transporte epgm</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'epgm://192.168.10.96:5000'</span><span class="p">)</span>
-
-<span class="c1">#Se define los textos que se recibe la informacion.</span>
-
-<span class="c1">#prueba, hora y salir.</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s1">'prueba'</span><span class="p">)</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s1">'hora'</span><span class="p">)</span>
-
-<span class="n">socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span> <span class="s1">'salir'</span><span class="p">)</span>
-
-<span class="c1">#Se define un ciclo,</span>
-
-<span class="c1">#se recibe la informacion</span>
-
-<span class="c1">#Si el texto es salir se muestra en pantalla </span>
-
-<span class="c1">#finaliza el ciclo, si no se muestra</span>
-
-<span class="c1">#el texto en pantalla</span>
-
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-
-    <span class="n">rcv</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-
-    <span class="k">print</span> <span class="n">rcv</span>
-
-    <span class="k">if</span> <span class="n">rcv</span> <span class="o">==</span> <span class="s2">"salir"</span><span class="p">:</span> <span class="k">break</span>
-</pre></div>
+if rcv == "salir": break
+</code></pre>
+<p>```</p>
 <p>Las siguientes figuras muestran el resultado de la ejecuci&oacute;n de ambos programas: 
 Productor:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython8-1.png"/> </p>
 <p>Consumidor:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython8-2.png"/> </p>
-<h2 id="_1"></h2>
+<h2 id="_2"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente

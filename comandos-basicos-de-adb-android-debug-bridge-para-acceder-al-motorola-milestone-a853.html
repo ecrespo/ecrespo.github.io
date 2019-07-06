@@ -165,67 +165,65 @@
   <div>
     <p>En el <a href="https://www.seraph.to/instalacion-del-sdk-de-android-en-linux.html#instalacion-del-sdk-de-android-en-linux">art&iacute;culo anterior</a> se explico como instalar el SDK de Android en Debian, a continuaci&oacute;n se explicar&aacute; el comando que permite dar acceso al celular como ver la microsd, instalar aplicaciones en el celular desde el computador entre otras cosas. </p>
 <p>Cambiarse al directorio tools del SDK de Android. </p>
-<div class="highlight"><pre><span></span>cd android-sdk_r06-linux_86/tools 
-</pre></div>
+<p><code>cd android-sdk_r06-linux_86/tools</code></p>
 <p>Crear un enlace de la aplicaci&oacute;n adb a /usr/bin . </p>
-<div class="highlight"><pre><span></span>sudo ln -s /home/ernesto/android-sdk-linux_86/tools/adb /usr/bin/adb 
-
-ls -l /usr/bin/adb 
+<p>```
+sudo ln -s /home/ernesto/android-sdk-linux_86/tools/adb /usr/bin/adb </p>
+<p>ls -l /usr/bin/adb 
 lrwxrwxrwx 1 root root 44 may 27 20:12 /usr/bin/adb -&gt; /home/ernesto/android-sdk-linux_86/tools/adb 
-</pre></div>
+```</p>
 <p>Crear el archivo 50-android.rules en el directorio /etc/udev/rules.d </p>
-<div class="highlight"><pre><span></span>vim /etc/udev/rules.d/50-android.rules 
-</pre></div>
+<p>```
+vim /etc/udev/rules.d/50-android.rules </p>
+<p>```</p>
 <p>Agregar el siguiente contenido al archivo: </p>
-<div class="highlight"><pre><span></span>SUBSYSTEMS=="usb", ATTRS{idVendor}=="0bb4", ATTRS{idProduct}=="0c02", GROUP="androiddev", SYMLINK+="android%n" 
-</pre></div>
+<p><code>SUBSYSTEMS=="usb", ATTRS{idVendor}=="0bb4", ATTRS{idProduct}=="0c02", GROUP="androiddev", SYMLINK+="android%n"</code></p>
 <p>Se crea el grupo androiddev. </p>
-<div class="highlight"><pre><span></span>sudo addgroup --system androiddev 
-</pre></div>
+<p>```
+sudo addgroup --system androiddev </p>
+<p>```</p>
 <p>Se cambia los permisos del archivo y se recarga las reglas udev. </p>
-<div class="highlight"><pre><span></span>sudo chmod a+rx /etc/udev/rules.d/50-android.rules 
-sudo /etc/init.d/udev reload 
-</pre></div>
+<p><code>sudo chmod a+rx /etc/udev/rules.d/50-android.rules 
+sudo /etc/init.d/udev reload</code></p>
 <p>En el celular asegurarse que est&aacute; en modo depuraci&oacute;n de la conexi&oacute;n USB. Esto es: 
 Ajustes-&gt;Aplicaciones-&gt;Desarrollo. </p>
 <p>Iniciar adb como servidor: </p>
-<div class="highlight"><pre><span></span>sudo ./adb start-server 
-</pre></div>
+<p>```
+sudo ./adb start-server </p>
+<p>```</p>
 <p>Luego se verifica que se tiene acceso al celular con el comando adb devices. </p>
-<div class="highlight"><pre><span></span>adb devices 
+<p><code>adb devices 
 * daemon not running. starting it now * 
 * daemon started successfully * 
 List of devices attached 
-0403725B09015010 device 
-</pre></div>
+0403725B09015010 device</code></p>
 <p>Cuando aparece est&aacute; informaci&oacute;n y no caracteres raros o ??? o no aparece nada es que ya se tiene conectado el celular al computador. </p>
 <p>El comando adb shell nos crea un shell desde el celular y se ejecuta el comando ls -l: </p>
-<div class="highlight"><pre><span></span>$ ls -l 
-drwxrwxrwt root root <span class="m">2010</span>-05-29 <span class="m">08</span>:01 tmp 
-drwxrwxr-x system system <span class="m">2010</span>-02-23 <span class="m">07</span>:41 pds 
-drwxrwxrwt root root <span class="m">2010</span>-05-29 <span class="m">13</span>:21 sqlite_stmt_journals 
-dr-x------ root root <span class="m">2010</span>-05-29 <span class="m">08</span>:00 config 
-drwxrwx--- system cache <span class="m">2010</span>-05-27 <span class="m">11</span>:00 cache 
-d---rwxr-x system sdcard_rw <span class="m">2010</span>-05-29 <span class="m">08</span>:01 sdcard 
-lrwxrwxrwx root root <span class="m">2010</span>-05-29 <span class="m">08</span>:00 d -&gt; /sys/kernel/debug 
-lrwxrwxrwx root root <span class="m">2010</span>-05-29 <span class="m">08</span>:00 etc -&gt; /system/etc 
-drwxr-xr-x root root <span class="m">2010</span>-01-06 <span class="m">09</span>:29 system 
-drwxr-xr-x root root <span class="m">1969</span>-12-31 <span class="m">20</span>:00 sys 
-drwxr-x--- root root <span class="m">1969</span>-12-31 <span class="m">20</span>:00 sbin 
-dr-xr-xr-x root root <span class="m">1969</span>-12-31 <span class="m">20</span>:00 proc 
--rwxr-x--- root root <span class="m">453</span> <span class="m">1969</span>-12-31 <span class="m">20</span>:00 init_prep_keypad.sh 
--rwxr-x--- root root <span class="m">13218</span> <span class="m">1969</span>-12-31 <span class="m">20</span>:00 init.rc 
--rwxr-x--- root root <span class="m">14824</span> <span class="m">1969</span>-12-31 <span class="m">20</span>:00 init.mapphone_umts.rc 
--rwxr-x--- root root <span class="m">6840</span> <span class="m">1969</span>-12-31 <span class="m">20</span>:00 init.mapphone_cdma.rc 
--rwxr-x--- root root <span class="m">1677</span> <span class="m">1969</span>-12-31 <span class="m">20</span>:00 init.goldfish.rc 
--rwxr-x--- root root <span class="m">104324</span> <span class="m">1969</span>-12-31 <span class="m">20</span>:00 init 
--rw-r--r-- root root <span class="m">118</span> <span class="m">1969</span>-12-31 <span class="m">20</span>:00 default.prop 
-drwxrwx--x system system <span class="m">2010</span>-05-29 <span class="m">08</span>:01 data 
-drwx------ root root <span class="m">2009</span>-11-19 <span class="m">15</span>:42 root 
-drwxr-xr-x root root <span class="m">2010</span>-05-29 <span class="m">08</span>:01 dev 
-</pre></div>
+<p><code>$ ls -l 
+drwxrwxrwt root root 2010-05-29 08:01 tmp 
+drwxrwxr-x system system 2010-02-23 07:41 pds 
+drwxrwxrwt root root 2010-05-29 13:21 sqlite_stmt_journals 
+dr-x------ root root 2010-05-29 08:00 config 
+drwxrwx--- system cache 2010-05-27 11:00 cache 
+d---rwxr-x system sdcard_rw 2010-05-29 08:01 sdcard 
+lrwxrwxrwx root root 2010-05-29 08:00 d -&gt; /sys/kernel/debug 
+lrwxrwxrwx root root 2010-05-29 08:00 etc -&gt; /system/etc 
+drwxr-xr-x root root 2010-01-06 09:29 system 
+drwxr-xr-x root root 1969-12-31 20:00 sys 
+drwxr-x--- root root 1969-12-31 20:00 sbin 
+dr-xr-xr-x root root 1969-12-31 20:00 proc 
+-rwxr-x--- root root 453 1969-12-31 20:00 init_prep_keypad.sh 
+-rwxr-x--- root root 13218 1969-12-31 20:00 init.rc 
+-rwxr-x--- root root 14824 1969-12-31 20:00 init.mapphone_umts.rc 
+-rwxr-x--- root root 6840 1969-12-31 20:00 init.mapphone_cdma.rc 
+-rwxr-x--- root root 1677 1969-12-31 20:00 init.goldfish.rc 
+-rwxr-x--- root root 104324 1969-12-31 20:00 init 
+-rw-r--r-- root root 118 1969-12-31 20:00 default.prop 
+drwxrwx--x system system 2010-05-29 08:01 data 
+drwx------ root root 2009-11-19 15:42 root 
+drwxr-xr-x root root 2010-05-29 08:01 dev</code></p>
 <p>Este comando muestra los archivos y directorios que se tienen en el celular. Noten que son comandos unix/Linux as&iacute; que si se cambian de directorio al system y luego app en el encontrar&aacute;n los paquetes apk que se encuentran instalados en el celular. </p>
-<div class="highlight"><pre><span></span>$cd /system/app 
+<p><code>$cd /system/app 
 pwd 
 $pwd 
 /system/app 
@@ -240,8 +238,7 @@ $ls -l
 -rw-r--r-- root root 735409 2010-01-06 09:28 Gmail.apk 
 -rw-r--r-- root root 380550 2010-01-06 09:28 GoogleApps.apk 
 -rw-r--r-- root root 778098 2010-01-06 09:28 SetupWizard.apk 
--rw-r--r-- root root 53777 2010-01-06 09:28 TalkProvider.apk 
-</pre></div>
+-rw-r--r-- root root 53777 2010-01-06 09:28 TalkProvider.apk</code></p>
 <p>Estos son algunos programas que se tienen instalados en el celular. </p>
 <p>Los comandos que se pueden utilizar en el shell son los siguientes: </p>
 <ul>
@@ -257,30 +254,25 @@ $ls -l
 <li>mv Mueve o renombra un archivo </li>
 </ul>
 <p>Se puede ejecutar un ls dentro del sdcard/Videos y se muestra lo siguiente: </p>
-<div class="highlight"><pre><span></span>$adb shell ls /sdcard/Videos/ 
+<p><code>$adb shell ls /sdcard/Videos/ 
 How.I.Met.Your.Mother.S05E21.HDTV.XviD-LOL.[VTV].avi 
-The.Big.Bang.Theory.S03E20.The.Spaghetti.Catalyst.HDTV.XviD-FQM.avi 
-</pre></div>
+The.Big.Bang.Theory.S03E20.The.Spaghetti.Catalyst.HDTV.XviD-FQM.avi</code></p>
 <p>Para Borrar los archivos se ejecuta adb shell rm y luego se vuelve a ejecutar el ls para demostrar que se han borrado los archivos de la tarjeta sd del celular: </p>
-<div class="highlight"><pre><span></span>ernesto@jewel:~$ adb shell rm sdcard/Videos/*.avi 
+<p><code>ernesto@jewel:~$ adb shell rm sdcard/Videos/*.avi 
 ernesto@jewel:~$ adb shell ls sdcard/Videos 
-ernesto@jewel:~$ 
-</pre></div>
+ernesto@jewel:~$</code></p>
 <p>Tambi&eacute;n se puede instalar aplicaciones en el celular desde el computador con el comando adb install rutapaquete.apk: </p>
 <p>A continuaci&oacute;n se instala una aplicaci&oacute;n de Sudoku desde el computador al celular. </p>
-<div class="highlight"><pre><span></span>ernesto@jewel:~$ adb install /home/ernesto/Descargas/OpenSudoku-1.1.1-02.apk 
+<p><code>ernesto@jewel:~$ adb install /home/ernesto/Descargas/OpenSudoku-1.1.1-02.apk 
 603 KB/s (223640 bytes in 0.361s) 
 pkg: /data/local/tmp/OpenSudoku-1.1.1-02.apk 
-Success 
-</pre></div>
+Success</code></p>
 <p>Tambi&eacute;n se puede copiar archivos del celular al computador y del computador al celular: </p>
-<div class="highlight"><pre><span></span>ernesto@jewel:~$ adb push /home/ernesto/varios.mp3 /sdcard/mp3z/ 
-1944 KB/s (7768607 bytes in 3.901s) 
-</pre></div>
+<p><code>ernesto@jewel:~$ adb push /home/ernesto/varios.mp3 /sdcard/mp3z/ 
+1944 KB/s (7768607 bytes in 3.901s)</code></p>
 <p>En este ejemplo se coloca un archivo mp3 del computador al celular. </p>
-<div class="highlight"><pre><span></span>ernesto@jewel:~$ adb pull /sdcard/python_scripts_r0.zip ./ 
-52 KB/s (4280 bytes in 0.078s)
-</pre></div>
+<p><code>ernesto@jewel:~$ adb pull /sdcard/python_scripts_r0.zip ./ 
+52 KB/s (4280 bytes in 0.078s)</code></p>
 <p>Este comando se trae un archivo de la memoria sdcard del celular al computador. </p>
 <p>EL pr&oacute;ximo art&iacute;culo explicar&aacute; como conectarse a internet desde un celular con android. </p>
 <p>===</p>

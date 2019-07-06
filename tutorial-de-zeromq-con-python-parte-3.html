@@ -171,96 +171,92 @@
 <p>Est&aacute; vez se crean 3 scripts servidores, pueden estar en el mismo equipo o en equipos diferentes. Lo &uacute;nico que cambi&eacute; en cada script es el puerto donde escucha para el servicio.</p>
 <p>En el cliente, se crean 3 sockets con los puertos donde escucha los 3 servidores.</p>
 <p>La idea es pasar un mensaje por parte del cliente, los servidores los recibe y los env&iacute;a de vuelta al cliente.</p>
-<p>El c&oacute;digo del script del lado del cliente es la siguiente:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#importar zeromq</span>
-<span class="kn">import</span> <span class="nn">zmq</span>
-
-<span class="c1">#Se crea una instancia del contexto</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="c1">#Se crea el socket con parametro peticion (REQ)</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
-<span class="c1">#Se crean 3 sockets con la IP y los 3 puertos donde escucha </span>
-<span class="c1">#los 3 servidores.</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5000"</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:6000"</span><span class="p">)</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:7000"</span><span class="p">)</span>
-<span class="c1">#Se crea un ciclo de 100 repeticiones</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-    <span class="c1">#Se crea el string del mensaje</span>
-    <span class="n">mensaje</span> <span class="o">=</span> <span class="s2">"mensaje </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">i</span>
-    <span class="c1">#Se envia el mensaje</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
-    <span class="c1">#Se muestra en pantalla el mensaje enviado</span>
-    <span class="k">print</span> <span class="s2">"Enviando"</span><span class="p">,</span> <span class="n">mensaje</span>
-    <span class="c1">#Se recibe el mensaje de vuelta</span>
-    <span class="n">msg_in</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-</pre></div>
+<p>El c&oacute;digo del script del lado del cliente es la siguiente:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="importar zeromq">importar zeromq</h1>
+<p>import zmq</p>
+<h1 id="se crea una instancia del contexto">Se crea una instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket con parametro peticion (req)">Se crea el socket con parametro peticion (REQ)</h1>
+<p>socket = context.socket(zmq.REQ)</p>
+<h1 id="se crean 3 sockets con la ip y los 3 puertos donde escucha">Se crean 3 sockets con la IP y los 3 puertos donde escucha</h1>
+<h1 id="los 3 servidores.">los 3 servidores.</h1>
+<p>socket.connect("tcp://127.0.0.1:5000")
+socket.connect("tcp://127.0.0.1:6000")
+socket.connect("tcp://127.0.0.1:7000")</p>
+<h1 id="se crea un ciclo de 100 repeticiones">Se crea un ciclo de 100 repeticiones</h1>
+<p>for i in range(100):
+    #Se crea el string del mensaje
+    mensaje = "mensaje %s" % i
+    #Se envia el mensaje
+    socket.send(mensaje)
+    #Se muestra en pantalla el mensaje enviado
+    print "Enviando", mensaje
+    #Se recibe el mensaje de vuelta
+    msg_in = socket.recv()
+```  </p>
 <p>Los scripts de los servidores se muestra a continuaci&oacute;n:
 Servidor 1:  </p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa zeroMQ</span>
-<span class="kn">import</span> <span class="nn">zmq</span>
-<span class="c1">#Se crea la instancia del contexto</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="c1">#Se crea el socket pasandole como parametro respuesta (REP)</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REP</span><span class="p">)</span>
-<span class="c1">#Se asocia el socket a la IP y el puerto</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:5000"</span><span class="p">)</span>
-
-<span class="c1">#Se crea un ciclo</span>
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="c1">#Se recibe el mensaje</span>
-    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="c1">#Se muestra en pantalla el mensaje recibido</span>
-    <span class="k">print</span> <span class="s2">"Recibiendo"</span><span class="p">,</span> <span class="n">mensaje</span>
-    <span class="c1">#Se envia el mensaje de regreso al cliente</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>  
-</pre></div>
-<p>Servidor 2:  </p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa zeroMQ</span>
-<span class="kn">import</span> <span class="nn">zmq</span>
-<span class="c1">#Se crea la instancia del contexto</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="c1">#Se crea el socket pasandole como parametro respuesta (REP)</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REP</span><span class="p">)</span>
-<span class="c1">#Se asocia el socket a la IP y el puerto</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:6000"</span><span class="p">)</span>
-
-<span class="c1">#Se crea un ciclo</span>
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="c1">#Se recibe el mensaje</span>
-    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="c1">#Se muestra en pantalla el mensaje recibido</span>
-    <span class="k">print</span> <span class="s2">"Recibiendo"</span><span class="p">,</span> <span class="n">mensaje</span>
-    <span class="c1">#Se envia el mensaje de regreso al cliente</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>  
-</pre></div>
-<p>Servidor 3:  </p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa zeroMQ</span>
-<span class="kn">import</span> <span class="nn">zmq</span>
-<span class="c1">#Se crea la instancia del contexto</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
-<span class="c1">#Se crea el socket pasandole como parametro respuesta (REP)</span>
-<span class="n">socket</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REP</span><span class="p">)</span>
-<span class="c1">#Se asocia el socket a la IP y el puerto</span>
-<span class="n">socket</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s2">"tcp://127.0.0.1:7000"</span><span class="p">)</span>
-
-<span class="c1">#Se crea un ciclo</span>
-<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-    <span class="c1">#Se recibe el mensaje</span>
-    <span class="n">mensaje</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-    <span class="c1">#Se muestra en pantalla el mensaje recibido</span>
-    <span class="k">print</span> <span class="s2">"Recibiendo"</span><span class="p">,</span> <span class="n">mensaje</span>
-    <span class="c1">#Se envia el mensaje de regreso al cliente</span>
-    <span class="n">socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">mensaje</span><span class="p">)</span>
-</pre></div>
+<p>```python</p>
+<h1 id="!/usr/bin/env python_1">!/usr/bin/env python</h1>
+<h1 id="se importa zeromq">Se importa zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia del contexto">Se crea la instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket pasandole como parametro respuesta (rep)">Se crea el socket pasandole como parametro respuesta (REP)</h1>
+<p>socket = context.socket(zmq.REP)</p>
+<h1 id="se asocia el socket a la ip y el puerto">Se asocia el socket a la IP y el puerto</h1>
+<p>socket.bind("tcp://127.0.0.1:5000")</p>
+<h1 id="se crea un ciclo">Se crea un ciclo</h1>
+<p>while True:
+    #Se recibe el mensaje
+    mensaje = socket.recv()
+    #Se muestra en pantalla el mensaje recibido
+    print "Recibiendo", mensaje
+    #Se envia el mensaje de regreso al cliente
+    socket.send(mensaje)<br/>
+```  </p>
+<p>Servidor 2:<br/>
+```python</p>
+<h1 id="!/usr/bin/env python_2">!/usr/bin/env python</h1>
+<h1 id="se importa zeromq_1">Se importa zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia del contexto_1">Se crea la instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket pasandole como parametro respuesta (rep)_1">Se crea el socket pasandole como parametro respuesta (REP)</h1>
+<p>socket = context.socket(zmq.REP)</p>
+<h1 id="se asocia el socket a la ip y el puerto_1">Se asocia el socket a la IP y el puerto</h1>
+<p>socket.bind("tcp://127.0.0.1:6000")</p>
+<h1 id="se crea un ciclo_1">Se crea un ciclo</h1>
+<p>while True:
+    #Se recibe el mensaje
+    mensaje = socket.recv()
+    #Se muestra en pantalla el mensaje recibido
+    print "Recibiendo", mensaje
+    #Se envia el mensaje de regreso al cliente
+    socket.send(mensaje)<br/>
+```  </p>
+<p>Servidor 3:<br/>
+```python</p>
+<h1 id="!/usr/bin/env python_3">!/usr/bin/env python</h1>
+<h1 id="se importa zeromq_2">Se importa zeroMQ</h1>
+<p>import zmq</p>
+<h1 id="se crea la instancia del contexto_2">Se crea la instancia del contexto</h1>
+<p>context = zmq.Context()</p>
+<h1 id="se crea el socket pasandole como parametro respuesta (rep)_2">Se crea el socket pasandole como parametro respuesta (REP)</h1>
+<p>socket = context.socket(zmq.REP)</p>
+<h1 id="se asocia el socket a la ip y el puerto_2">Se asocia el socket a la IP y el puerto</h1>
+<p>socket.bind("tcp://127.0.0.1:7000")</p>
+<h1 id="se crea un ciclo_2">Se crea un ciclo</h1>
+<p>while True:
+    #Se recibe el mensaje
+    mensaje = socket.recv()
+    #Se muestra en pantalla el mensaje recibido
+    print "Recibiendo", mensaje
+    #Se envia el mensaje de regreso al cliente
+    socket.send(mensaje)
+```  </p>
 <p>A continuaci&oacute;n se inician los 3 servidores y luego el cliente:
 En la siguiente figura se muestra los env&iacute;os realizados por el cliente:</p>
 <p><img alt="" src="./images/tutorialdezeromqconpython3-1.png"/> </p>

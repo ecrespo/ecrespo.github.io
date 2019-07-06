@@ -168,131 +168,102 @@
     <p>El paquete <code>config-package-dev</code> facilita la creaci&oacute;n de un paquete Debian que contenga un archivo de configuraci&oacute;n de cron.</p>
 <p>Para este caso se crear&aacute; un archivo cron para el programa <code>logcheck</code>. Este programa estar&aacute; como Pre-Depends para que est&eacute; instalado y configurado antes de instalar el paquete con la configuraci&oacute;n de <code>logcheck</code> en el cron.</p>
 <p>Instalar <code>logcheck</code>:  </p>
-<div class="highlight"><pre><span></span>apt-get install logcheck
-</pre></div>
+<p><code>apt-get install logcheck</code></p>
 <p>El archivo cron para <code>logcheck</code> contendr&aacute; lo siguiente:</p>
-<div class="highlight"><pre><span></span># /etc/cron.d/logcheck: crontab entries for the logcheck package
-
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-MAILTO=root
-
-@reboot logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck -R; fi
-* * * * *   logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck; fi
-
-# EOF
-</pre></div>
+<p>```</p>
+<h1 id="/etc/cron.d/logcheck: crontab entries for the logcheck package">/etc/cron.d/logcheck: crontab entries for the logcheck package</h1>
+<p>PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root</p>
+<p>@reboot logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck -R; fi
+* <em> * </em> *   logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck; fi</p>
+<h1 id="eof">EOF</h1>
+<p>```</p>
 <h2 id="procedimiento para la creacion del paquete:">Procedimiento para la creaci&oacute;n del paquete:</h2>
 <h4 id="1. creacion del directorio de trabajo y del directorio debian">1. Creaci&oacute;n del directorio de trabajo y del directorio Debian</h4>
-<div class="highlight"><pre><span></span>mkdir -p canaima-cron-logcheck-0.1
-
-mkdir -p canaima-cron-logcheck-0.1/debian
-</pre></div>
+<p>``` 
+mkdir -p canaima-cron-logcheck-0.1</p>
+<p>mkdir -p canaima-cron-logcheck-0.1/debian
+```</p>
 <h4 id="2. se crea el archivo debian/changelog.">2. Se crea el archivo <code>debian/changelog</code>.</h4>
-<div class="highlight"><pre><span></span>canaima-cron-logcheck (0.1) unstable; urgency=low
-
-* Initial release.
-
--- Ernesto Nadir Crespo Avila &lt;ecrespo@gmail.com&gt;  Mon, 14 Nov 2011 21:48:20 -0430
-</pre></div>
+<p>```
+canaima-cron-logcheck (0.1) unstable; urgency=low</p>
+<ul>
+<li>Initial release.</li>
+</ul>
+<p>-- Ernesto Nadir Crespo Avila <a href="mailto:ecrespo@gmail.com">ecrespo@gmail.com</a>  Mon, 14 Nov 2011 21:48:20 -0430
+```</p>
 <h4 id="3. se crea el archivo compat con el valor de 7.">3. Se crea el archivo <code>compat</code> con el valor de 7.</h4>
 <h4 id="4. se crea el archivo control y control.in con lo siguiente:">4. Se crea el archivo <code>control</code> y <code>control.in</code> con lo siguiente:</h4>
 <p>Se coloca <code>logcheck</code> como predependencia, se define el <code>standar version</code> con valor <code>3.9.2</code>.  </p>
-<div class="highlight"><pre><span></span><span class="n">Source</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">cron</span><span class="o">-</span><span class="n">logcheck</span>
-<span class="n">Section</span><span class="o">:</span> <span class="n">config</span>
-<span class="n">Priority</span><span class="o">:</span> <span class="n">extra</span>
-<span class="n">Maintainer</span><span class="o">:</span> <span class="n">Ernesto</span> <span class="n">Nadir</span> <span class="n">Crespo</span> <span class="n">Avila</span> <span class="o">&lt;</span><span class="n">ecrespo</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="na">com</span><span class="o">&gt;</span>
-<span class="n">Build</span><span class="o">-</span><span class="n">Depends</span><span class="o">:</span> <span class="n">cdbs</span> <span class="o">(&gt;=</span> <span class="mf">0.4</span><span class="o">.</span><span class="mi">23</span><span class="o">-</span><span class="mf">1.1</span><span class="o">),</span> <span class="n">debhelper</span> <span class="o">(&gt;=</span> <span class="mf">4.2</span><span class="o">.</span><span class="mi">0</span><span class="o">),</span> <span class="n">config</span><span class="o">-</span><span class="kd">package</span><span class="o">-</span><span class="n">dev</span> <span class="o">(&gt;=</span> <span class="mf">4.5</span><span class="o">~)</span>
-<span class="n">Standards</span><span class="o">-</span><span class="n">Version</span><span class="o">:</span> <span class="mf">3.9</span><span class="o">.</span><span class="mi">2</span>
-
-<span class="n">Package</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">cron</span><span class="o">-</span><span class="n">logcheck</span>
-<span class="n">Architecture</span><span class="o">:</span> <span class="n">all</span>
-<span class="n">Depends</span><span class="o">:</span> <span class="n">cdbs</span><span class="o">,</span> <span class="n">$</span><span class="o">{</span><span class="n">misc</span><span class="o">:</span><span class="n">Depends</span><span class="o">}</span>
-<span class="n">Pre</span><span class="o">-</span><span class="n">Depends</span><span class="o">:</span> <span class="n">logcheck</span>
-<span class="n">Provides</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">diverted</span><span class="o">-</span><span class="n">files</span><span class="o">}</span>
-<span class="n">Conflicts</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">diverted</span><span class="o">-</span><span class="n">files</span><span class="o">}</span>
-<span class="n">Description</span><span class="o">:</span> <span class="n">Configuracion</span> <span class="n">de</span> <span class="n">cron</span> <span class="n">para</span> <span class="n">logcheck</span>
-<span class="n">Configuracion</span> <span class="n">de</span> <span class="n">cron</span> <span class="n">para</span> <span class="n">logcheck</span><span class="o">.</span>
-</pre></div>
+<p>```
+Source: canaima-cron-logcheck
+Section: config
+Priority: extra
+Maintainer: Ernesto Nadir Crespo Avila <a href="mailto:ecrespo@gmail.com">ecrespo@gmail.com</a>
+Build-Depends: cdbs (&gt;= 0.4.23-1.1), debhelper (&gt;= 4.2.0), config-package-dev (&gt;= 4.5~)
+Standards-Version: 3.9.2</p>
+<p>Package: canaima-cron-logcheck
+Architecture: all
+Depends: cdbs, ${misc:Depends}
+Pre-Depends: logcheck
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Configuracion de cron para logcheck
+Configuracion de cron para logcheck.
+```</p>
 <h4 id="5. se crea el archivo debian/copyright:">5. Se crea el archivo <code>debian/copyright</code>:</h4>
 <p>Se mantiene el autor del paquete ya que se est&aacute; usando tal cual el ejemplo de cron para logcheck de <code>config-package-dev</code>.  </p>
-<div class="highlight"><pre><span></span>canaima-cron-logcheck.
-Example config-package-dev package.
-
-Author: Tim Abbott &lt;tabbott@mit.edu&gt;
-
-Copyright &copy; 2008 Tim Abbott &lt;tabbott@mit.edu&gt;
-
-Permission is hereby granted, free of charge, to any person obtaining
+<p>```
+canaima-cron-logcheck.
+Example config-package-dev package.</p>
+<p>Author: Tim Abbott <a href="mailto:tabbott@mit.edu">tabbott@mit.edu</a></p>
+<p>Copyright &copy; 2008 Tim Abbott <a href="mailto:tabbott@mit.edu">tabbott@mit.edu</a></p>
+<p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
 without limitation the rights to use, copy, modify, merge, publish,
 distribute, sublicense, and/or sell copies of the Software, and to
 permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-</pre></div>
+```</p>
 <h4 id="6. se crea el archivo debian/canaima-cron-logcheck.cron.d con el contenido del cron para logcheck:">6. Se crea el archivo <code>debian/canaima-cron-logcheck.cron.d</code> con el contenido del cron para <code>logcheck</code>:</h4>
-<div class="highlight"><pre><span></span># /etc/cron.d/logcheck: crontab entries for the logcheck package
-
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-MAILTO=root
-
-@reboot logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck -R; fi
-* * * * *   logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck; fi
-
-# EOF
-</pre></div>
+<p>```</p>
+<h1 id="/etc/cron.d/logcheck: crontab entries for the logcheck package_3">/etc/cron.d/logcheck: crontab entries for the logcheck package</h1>
+<p>PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root</p>
+<p>@reboot logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck -R; fi
+* <em> * </em> *   logcheckif [ -x /usr/sbin/logcheck ]; then nice -n10 /usr/sbin/logcheck; fi</p>
+<h1 id="eof_1">EOF</h1>
+<p>```</p>
 <h4 id="7. se crea el archivo debian/rules con el siguiente contenido:">7. Se crea el archivo <code>debian/rules</code> con el siguiente contenido:</h4>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17</pre></div></td><td class="code"><div class="highlight"><pre><span></span>#!/usr/bin/make -f
-
-DEB_DIVERT_EXTENSION = .canaima
-
- # This will remove /etc/cron.d/logcheck
+<p>```</p>
+<h1 id="!/usr/bin/make -f_1">!/usr/bin/make -f</h1>
+<p>DEB_DIVERT_EXTENSION = .canaima</p>
+<p># This will remove /etc/cron.d/logcheck
   DEB_REMOVE_FILES_canaima-cron-logcheck += \
-/etc/cron.d/logcheck
-
- # We will install (using dh_installcron, by placing the new cron job
+/etc/cron.d/logcheck</p>
+<p># We will install (using dh_installcron, by placing the new cron job
  # at debian/canaima-cron-logcheck.cron.d) a new version that runs
  # every minute, rather than every 30 minutes.  This will generate a
  # lot of mail.  Note that we cannot install a new file to the path
  # /etc/cron.d/logcheck from which a file was removed using
- # DEB_REMOVE_FILES.
-
-include /usr/share/cdbs/1/rules/debhelper.mk
+ # DEB_REMOVE_FILES.</p>
+<p>include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
-</pre></div>
-</td></tr></table>
+```</p>
 <h4 id="8. se le agrega permiso de ejecucion al archivo debian/rules:">8. Se le agrega permiso de ejecuci&oacute;n al archivo <code>debian/rules</code>:</h4>
-<div class="highlight"><pre><span></span>chmod a+x debian/rules
-</pre></div>
+<p><code>chmod a+x debian/rules</code></p>
 <h4 id="9. al final se tienen los siguientes archivos:">9. Al final se tienen los siguientes archivos:</h4>
-<div class="highlight"><pre><span></span>ecrespo@jewel:~/canaima/canaima-cron-logcheck-0.1$ ls -l debian/
+<p><code>ecrespo@jewel:~/canaima/canaima-cron-logcheck-0.1$ ls -l debian/
 total 28
 -rw-r--r-- 1 ecrespo ecrespo  347 nov 14 22:02 canaima-cron-logcheck.cron.d
 -rw-r--r-- 1 ecrespo ecrespo  157 nov 14 21:50 changelog
@@ -300,31 +271,25 @@ total 28
 -rw-r--r-- 1 ecrespo ecrespo  481 nov 14 21:55 control
 -rw-r--r-- 1 ecrespo ecrespo  481 nov 14 21:55 control.in
 -rw-r--r-- 1 ecrespo ecrespo 1169 nov 14 22:01 copyright
--rwxr-xr-x 1 ecrespo ecrespo  612 nov 14 22:06 rules
-</pre></div>
+-rwxr-xr-x 1 ecrespo ecrespo  612 nov 14 22:06 rules</code></p>
 <h4 id="10. se crea y se firma el paquete canaima-cron-logcheck-0.1:">10. Se crea y se firma el paquete <code>canaima-cron-logcheck-0.1</code>:</h4>
-<div class="highlight"><pre><span></span>dpkg-buildpackage -rfakeroot -kC97E7015
-</pre></div>
+<p><code>dpkg-buildpackage -rfakeroot -kC97E7015</code></p>
 <h4 id="11. al final se crean los siguientes archivos:">11. Al final se cre&aacute;n los siguientes archivos:</h4>
-<div class="highlight"><pre><span></span>ls -l canaima-cron-logcheck*
+<p><code>ls -l canaima-cron-logcheck*
 -rw-r--r-- 1 ecrespo ecrespo 2902 nov 14 22:08 canaima-cron-logcheck_0.1_all.deb
 -rw-r--r-- 1 ecrespo ecrespo  876 nov 14 22:08 canaima-cron-logcheck_0.1.dsc
 -rw-r--r-- 1 ecrespo ecrespo 1551 nov 14 22:09 canaima-cron-logcheck_0.1_i386.changes
--rw-r--r-- 1 ecrespo ecrespo 1807 nov 14 22:08 canaima-cron-logcheck_0.1.tar.gz
-</pre></div>
+-rw-r--r-- 1 ecrespo ecrespo 1807 nov 14 22:08 canaima-cron-logcheck_0.1.tar.gz</code></p>
 <h4 id="12. se verifica si el paquete cumple con las politicas de debian con lintian:">12. Se verifica si el paquete cumple con las pol&iacute;ticas de Debian con <code>lintian</code>:</h4>
-<div class="highlight"><pre><span></span>lintian -i canaima-cron-logcheck_0.1.dsc
-</pre></div>
+<p><code>lintian -i canaima-cron-logcheck_0.1.dsc</code></p>
 <h4 id="13. se instala el paquete:">13. Se instala el paquete:</h4>
-<div class="highlight"><pre><span></span>dpkg -i canaima-cron-logcheck_0.1_all.deb
-</pre></div>
+<p><code>dpkg -i canaima-cron-logcheck_0.1_all.deb</code></p>
 <h4 id="14. el archivo del cron se encuentra ya instalado:">14. El archivo del cron se encuentra ya instalado:</h4>
-<div class="highlight"><pre><span></span>ls -l /etc/cron.d
+<p><code>ls -l /etc/cron.d
 total 12
 -rw-r--r-- 1 root root 244 nov  1  2009 anacron
 -rw-r--r-- 1 root root 347 nov 14 22:08 canaima-cron-logcheck
--rw-r--r-- 1 root root 544 sep 13 05:59 php5
-</pre></div>
+-rw-r--r-- 1 root root 544 sep 13 05:59 php5</code></p>
 <h2 id="_2"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)

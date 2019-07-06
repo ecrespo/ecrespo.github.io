@@ -169,136 +169,117 @@
 <p><code>Sqlalchemy</code> es una herramienta <code>ORM</code> para python que da flexibilidad en el desarrollo con SQL.</p>
 <p>Tomando el art&iacute;culo anterior de <a href="https://ecrespo.github.io/sqlite-con-python.html">sqlite con python</a>, se cambiar&aacute; el m&oacute;dulo de <code>sqlite3</code> para python por el <code>ORM Sqlalchemy</code>, de esa forma se abstrae las distintas instrucciones existentes para diferentes motores de base de datos como <code>postgresql</code>, <code>mysql</code>, <code>sqlite</code> y se puede as&iacute; utilizar cualquier motor de base de datos realizando m&iacute;nimos cambios en el programa.</p>
 <p>A continuaci&oacute;n el c&oacute;digo donde se muestra el uso de <code>sqlalchemy</code> en una base de datos <code>sqlite3</code>:  </p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="c1">#Se importa sqlalchemy</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="o">*</span>
-
-<span class="c1">#Se crea la instancia del motor de la base de datos y se asocia con un</span>
-<span class="c1">#archivo</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">'sqlite:///tutorial.db'</span><span class="p">)</span>
-<span class="c1">#se coloca la base de datos en modo no mostrar resultados </span>
-<span class="c1">#de las instrucciones en pantalla.</span>
-<span class="n">db</span><span class="o">.</span><span class="n">echo</span> <span class="o">=</span> <span class="bp">False</span>
-
-<span class="c1">#Se asocia el archivo de la base de datos a la instancia de metadatos.</span>
-<span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-
-
-<span class="c1">#Se crea la tabla contactos tal cual el mismo ejemplo de </span>
-<span class="c1">#sqlite.</span>
-<span class="n">contactos</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
-<span class="s1">'contactos'</span><span class="p">,</span><span class="n">metadata</span><span class="p">,</span>
-<span class="n">Column</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span><span class="n">Integer</span><span class="p">,</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-<span class="n">Column</span><span class="p">(</span><span class="s1">'nombre'</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">(</span><span class="mi">100</span><span class="p">)),</span>
-<span class="n">Column</span><span class="p">(</span><span class="s1">'telefono'</span><span class="p">,</span><span class="n">String</span><span class="p">(</span><span class="mi">11</span><span class="p">)),</span>
-<span class="n">Column</span><span class="p">(</span><span class="s1">'grupo_id'</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">'grupos.id'</span><span class="p">)))</span>
-
-<span class="c1">#Se crea la tabla de grupos tal cual el mismo ejemplo de </span>
-<span class="c1">#sqlite</span>
-<span class="n">grupos</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
-<span class="s1">'grupos'</span><span class="p">,</span><span class="n">metadata</span><span class="p">,</span>
-<span class="n">Column</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span><span class="n">Integer</span><span class="p">,</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
-<span class="n">Column</span><span class="p">(</span><span class="s1">'grupo'</span><span class="p">,</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">300</span><span class="p">)),</span>
-<span class="n">Column</span><span class="p">(</span><span class="s1">'descripcion'</span><span class="p">,</span><span class="n">Unicode</span><span class="p">(</span><span class="mi">500</span><span class="p">)))</span>
-
-<span class="c1">#Se crea todas las tablas.</span>
-<span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">()</span>
-
-<span class="c1">#Se inserta datos en la tabla grupos.</span>
-<span class="n">i</span> <span class="o">=</span> <span class="n">grupos</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
-<span class="n">i</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">grupo</span><span class="o">=</span><span class="s1">'Guacara'</span><span class="p">,</span><span class="n">descripcion</span><span class="o">=</span><span class="s1">'Ciudad de Carabobo'</span><span class="p">)</span>
-<span class="n">i</span><span class="o">.</span><span class="n">execute</span><span class="p">({</span><span class="s1">'grupo'</span><span class="p">:</span><span class="s1">'Valencia'</span><span class="p">,</span><span class="s1">'descripcion'</span><span class="p">:</span><span class="s1">'Capital de Carabobo'</span><span class="p">},</span>
-<span class="p">{</span><span class="s1">'grupo'</span><span class="p">:</span><span class="s1">'Maracay'</span><span class="p">,</span><span class="s1">'descripcion'</span><span class="p">:</span><span class="s1">'Capital de Aragua'</span><span class="p">},</span>
-<span class="p">{</span><span class="s1">'grupo'</span><span class="p">:</span><span class="s1">'Merida'</span><span class="p">,</span><span class="s1">'descripcion'</span><span class="p">:</span><span class="s1">'Capital de Merida'</span><span class="p">})</span>
-
-<span class="c1">#Se inserta datos en la tabla contactos</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">contactos</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span>
-<span class="n">u</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Ernesto Crespo'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04155673029'</span><span class="p">,</span><span class="n">grupo_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Pedro Perez'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'0295212223'</span><span class="p">,</span><span class="n">grupo_id</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Jhon Doe'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04184488484'</span><span class="p">,</span><span class="n">grupo_id</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Jane Doe'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04184488482'</span><span class="p">,</span><span class="n">grupo_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s1">'Pepito de los palotes'</span><span class="p">,</span><span class="n">telefono</span><span class="o">=</span><span class="s1">'04184588484'</span><span class="p">,</span><span class="n">grupo_id</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="c1">#Se hace consulta de la tabla contactos</span>
-<span class="n">s</span> <span class="o">=</span> <span class="n">contactos</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
-<span class="n">rs</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-
-<span class="c1">#Se hace consultas de la tabla grupos.</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">grupos</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-
-<span class="c1">#Se muestra la tabla grupos</span>
-<span class="k">print</span> <span class="s2">"GRUPOS"</span>
-<span class="k">print</span> <span class="s2">"-------------------------------------"</span>
-<span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">:</span>
-<span class="k">print</span> <span class="s2">"id: </span><span class="si">%s</span><span class="s2">,Grupo: </span><span class="si">%s</span><span class="s2">, Descripcion:</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="p">(</span><span class="n">fila</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="k">print</span> <span class="s2">"--------------------------------------"</span>
-
-<span class="k">del</span> <span class="n">fila</span>
-<span class="c1">#Se muestra la tabla contactos.</span>
-<span class="k">print</span> <span class="s2">"CONTACTOS"</span>
-<span class="k">print</span> <span class="s2">"-------------------------------------"</span>
-<span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">rs</span><span class="p">:</span>
-<span class="k">print</span> <span class="s2">"Nombre: </span><span class="si">%s</span><span class="s2">, telefono </span><span class="si">%s</span><span class="s2">, Grupo </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="p">(</span><span class="n">fila</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> 
-<span class="k">print</span> <span class="s2">"--------------------------------------"</span>
-
-<span class="c1">#Se borra la fila del id 1 de la tabla grupos</span>
-<span class="n">t</span> <span class="o">=</span> <span class="n">grupos</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">"id=1"</span><span class="p">))</span>
-<span class="n">t</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-
-<span class="c1">#Se realiza una consulta de la tabla grupos</span>
-<span class="n">q</span> <span class="o">=</span> <span class="n">grupos</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
-<span class="n">qs</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-
-<span class="c1">#Se muestra la tabla grupos, </span>
-<span class="c1">#ahora no tiene la fila del grupo Guacara.</span>
-<span class="k">print</span> <span class="s2">"GRUPOS"</span>
-<span class="k">print</span> <span class="s2">"-------------------------------------"</span>
-<span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">:</span>
-<span class="k">print</span> <span class="s2">"id: </span><span class="si">%s</span><span class="s2">,Grupo: </span><span class="si">%s</span><span class="s2">, Descripcion:</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="p">(</span><span class="n">fila</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="k">print</span> <span class="s2">"--------------------------------------"</span>
-
-
-<span class="c1">#Se muestra los contactos del grupo 2.</span>
-<span class="k">print</span> <span class="s2">"Mostrar contactos del grupo 2"</span>
-<span class="k">del</span> <span class="n">q</span>
-<span class="k">del</span> <span class="n">qs</span>
-<span class="n">q</span> <span class="o">=</span> <span class="n">contactos</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">"grupo_id=2"</span><span class="p">))</span>
-<span class="n">qs</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-<span class="k">print</span> <span class="s2">"-------------------------------------"</span>
-<span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">qs</span><span class="p">:</span>
-<span class="k">print</span> <span class="s2">"Nombre: </span><span class="si">%s</span><span class="s2">, telefono </span><span class="si">%s</span><span class="s2">, Grupo </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="p">(</span><span class="n">fila</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> 
-<span class="k">print</span> <span class="s2">"--------------------------------------"</span>
-</pre></div>
-<p>El resultado de ejecutar el script se muestra a continuaci&oacute;n:  </p>
-<div class="highlight"><pre><span></span>GRUPOS
--------------------------------------
-id: 1,Grupo: Guacara, Descripcion:Ciudad de Carabobo
+<p>```python </p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="se importa sqlalchemy">Se importa sqlalchemy</h1>
+<p>from sqlalchemy import *</p>
+<h1 id="se crea la instancia del motor de la base de datos y se asocia con un">Se crea la instancia del motor de la base de datos y se asocia con un</h1>
+<h1 id="archivo">archivo</h1>
+<p>db = create_engine('sqlite:///tutorial.db')</p>
+<h1 id="se coloca la base de datos en modo no mostrar resultados">se coloca la base de datos en modo no mostrar resultados</h1>
+<h1 id="de las instrucciones en pantalla.">de las instrucciones en pantalla.</h1>
+<p>db.echo = False</p>
+<h1 id="se asocia el archivo de la base de datos a la instancia de metadatos.">Se asocia el archivo de la base de datos a la instancia de metadatos.</h1>
+<p>metadata = MetaData(db)</p>
+<h1 id="se crea la tabla contactos tal cual el mismo ejemplo de">Se crea la tabla contactos tal cual el mismo ejemplo de</h1>
+<h1 id="sqlite.">sqlite.</h1>
+<p>contactos = Table(
+'contactos',metadata,
+Column('id',Integer,primary_key=True),
+Column('nombre', Unicode(100)),
+Column('telefono',String(11)),
+Column('grupo_id', ForeignKey('grupos.id')))</p>
+<h1 id="se crea la tabla de grupos tal cual el mismo ejemplo de">Se crea la tabla de grupos tal cual el mismo ejemplo de</h1>
+<h1 id="sqlite">sqlite</h1>
+<p>grupos = Table(
+'grupos',metadata,
+Column('id',Integer,primary_key=True),
+Column('grupo',Unicode(300)),
+Column('descripcion',Unicode(500)))</p>
+<h1 id="se crea todas las tablas.">Se crea todas las tablas.</h1>
+<p>metadata.create_all()</p>
+<h1 id="se inserta datos en la tabla grupos.">Se inserta datos en la tabla grupos.</h1>
+<p>i = grupos.insert()
+i.execute(grupo='Guacara',descripcion='Ciudad de Carabobo')
+i.execute({'grupo':'Valencia','descripcion':'Capital de Carabobo'},
+{'grupo':'Maracay','descripcion':'Capital de Aragua'},
+{'grupo':'Merida','descripcion':'Capital de Merida'})</p>
+<h1 id="se inserta datos en la tabla contactos">Se inserta datos en la tabla contactos</h1>
+<p>u = contactos.insert()
+u.execute(nombre='Ernesto Crespo',telefono='04155673029',grupo_id=1)
+u.execute(nombre='Pedro Perez',telefono='0295212223',grupo_id=2)
+u.execute(nombre='Jhon Doe',telefono='04184488484',grupo_id=2)
+u.execute(nombre='Jane Doe',telefono='04184488482',grupo_id=1)
+u.execute(nombre='Pepito de los palotes',telefono='04184588484',grupo_id=3)</p>
+<h1 id="se hace consulta de la tabla contactos">Se hace consulta de la tabla contactos</h1>
+<p>s = contactos.select()
+rs = s.execute()</p>
+<h1 id="se hace consultas de la tabla grupos.">Se hace consultas de la tabla grupos.</h1>
+<p>t = grupos.select()
+ts = t.execute()</p>
+<h1 id="se muestra la tabla grupos">Se muestra la tabla grupos</h1>
+<p>print "GRUPOS"
+print "-------------------------------------"
+for fila in ts:
+print "id: %s,Grupo: %s, Descripcion:%s" %(fila[0],fila[1],fila[2])
+print "--------------------------------------"</p>
+<p>del fila</p>
+<h1 id="se muestra la tabla contactos.">Se muestra la tabla contactos.</h1>
+<p>print "CONTACTOS"
+print "-------------------------------------"
+for fila in rs:
+print "Nombre: %s, telefono %s, Grupo %s" %(fila[1],fila[2],fila[3]) 
+print "--------------------------------------"</p>
+<h1 id="se borra la fila del id 1 de la tabla grupos">Se borra la fila del id 1 de la tabla grupos</h1>
+<p>t = grupos.delete(text("id=1"))
+t.execute()</p>
+<h1 id="se realiza una consulta de la tabla grupos">Se realiza una consulta de la tabla grupos</h1>
+<p>q = grupos.select()
+qs = q.execute()</p>
+<h1 id="se muestra la tabla grupos,">Se muestra la tabla grupos,</h1>
+<h1 id="ahora no tiene la fila del grupo guacara.">ahora no tiene la fila del grupo Guacara.</h1>
+<p>print "GRUPOS"
+print "-------------------------------------"
+for fila in qs:
+print "id: %s,Grupo: %s, Descripcion:%s" %(fila[0],fila[1],fila[2])
+print "--------------------------------------"</p>
+<h1 id="se muestra los contactos del grupo 2.">Se muestra los contactos del grupo 2.</h1>
+<p>print "Mostrar contactos del grupo 2"
+del q
+del qs
+q = contactos.select(text("grupo_id=2"))
+qs = q.execute()
+print "-------------------------------------"
+for fila in qs:
+print "Nombre: %s, telefono %s, Grupo %s" %(fila[1],fila[2],fila[3]) 
+print "--------------------------------------"
+```    </p>
+<p>El resultado de ejecutar el script se muestra a continuaci&oacute;n:<br/>
+```
+GRUPOS</p>
+<hr/>
+<p>id: 1,Grupo: Guacara, Descripcion:Ciudad de Carabobo
 id: 2,Grupo: Valencia, Descripcion:Capital de Carabobo
 id: 3,Grupo: Maracay, Descripcion:Capital de Aragua
-id: 4,Grupo: Merida, Descripcion:Capital de Merida
---------------------------------------
-CONTACTOS
--------------------------------------
-Nombre: Ernesto Crespo, telefono 04155673029, Grupo 1
+id: 4,Grupo: Merida, Descripcion:Capital de Merida</p>
+<hr/>
+<h2 id="contactos">CONTACTOS</h2>
+<p>Nombre: Ernesto Crespo, telefono 04155673029, Grupo 1
 Nombre: Pedro Perez, telefono 0295212223, Grupo 2
 Nombre: Jhon Doe, telefono 04184488484, Grupo 2
 Nombre: Jane Doe, telefono 04184488482, Grupo 1
-Nombre: Pepito de los palotes, telefono 04184588484, Grupo 3
---------------------------------------
-GRUPOS
--------------------------------------
-id: 2,Grupo: Valencia, Descripcion:Capital de Carabobo
+Nombre: Pepito de los palotes, telefono 04184588484, Grupo 3</p>
+<hr/>
+<h2 id="grupos">GRUPOS</h2>
+<p>id: 2,Grupo: Valencia, Descripcion:Capital de Carabobo
 id: 3,Grupo: Maracay, Descripcion:Capital de Aragua
-id: 4,Grupo: Merida, Descripcion:Capital de Merida
---------------------------------------
-Mostrar contactos del grupo 2
--------------------------------------
-Nombre: Pedro Perez, telefono 0295212223, Grupo 2
-Nombre: Jhon Doe, telefono 04184488484, Grupo 2
---------------------------------------
-</pre></div>
+id: 4,Grupo: Merida, Descripcion:Capital de Merida</p>
+<hr/>
+<h2 id="mostrar contactos del grupo 2">Mostrar contactos del grupo 2</h2>
+<p>Nombre: Pedro Perez, telefono 0295212223, Grupo 2
+Nombre: Jhon Doe, telefono 04184488484, Grupo 2</p>
+<hr/>
+<p>```</p>
 <p>De est&aacute; manera se facilita el trabajo de acceder a una base de datos sin estar usando directamente su API y facilita tambi&eacute;n poder utilizar cualquier motor de base de datos en la aplicaci&oacute;n que se est&eacute; desarrollando.</p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!

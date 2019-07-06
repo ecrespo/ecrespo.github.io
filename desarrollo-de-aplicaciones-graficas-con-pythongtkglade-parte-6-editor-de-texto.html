@@ -44,12 +44,12 @@
     <meta name="msapplication-TileColor" content="#333333">
 
 <meta name="author" content="Ernesto Crespo" />
-<meta name="description" content="En el tutorial anterior se mostró como abrir un archivo, mostrar el contenido en el widget textview, ahora se agrega la posibilidad de editar y guardar el archivo. En la figura se muestra el diseño en glade. #!/usr/bin/env python # -*- coding: utf-8 -*- #Importación de módulos import pygtk pygtk.require …" />
+<meta name="description" content="En el tutorial anterior se mostró como abrir un archivo, mostrar el contenido en el widget textview, ahora se agrega la posibilidad de editar y guardar el archivo. En la figura se muestra el diseño en glade. ```python !/usr/bin/env python -- coding: utf-8 -- Importación de módulos import pygtk pygtk …" />
 <meta name="keywords" content="Linux, Python, gtk, glade">
 
 <meta property="og:site_name" content="Página de Seraph"/>
 <meta property="og:title" content="Desarrollo de aplicaciones gráficas con python+gtk+glade. Parte 6. Editor de Texto"/>
-<meta property="og:description" content="En el tutorial anterior se mostró como abrir un archivo, mostrar el contenido en el widget textview, ahora se agrega la posibilidad de editar y guardar el archivo. En la figura se muestra el diseño en glade. #!/usr/bin/env python # -*- coding: utf-8 -*- #Importación de módulos import pygtk pygtk.require …"/>
+<meta property="og:description" content="En el tutorial anterior se mostró como abrir un archivo, mostrar el contenido en el widget textview, ahora se agrega la posibilidad de editar y guardar el archivo. En la figura se muestra el diseño en glade. ```python !/usr/bin/env python -- coding: utf-8 -- Importación de módulos import pygtk pygtk …"/>
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://ecrespo.github.io/desarrollo-de-aplicaciones-graficas-con-pythongtkglade-parte-6-editor-de-texto.html"/>
 <meta property="og:type" content="article"/>
@@ -167,91 +167,80 @@
     <p>En el tutorial anterior se mostr&oacute; como abrir un archivo, mostrar el contenido en el widget textview, ahora se agrega la posibilidad de editar y guardar el archivo.</p>
 <p>En la figura se muestra el dise&ntilde;o en glade.
 <img alt="Tutorial 6 Glade 1" src="./images/tutorialpythongtkglade6-1.png"/></p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1">#Importaci&oacute;n de m&oacute;dulos</span>
-<span class="kn">import</span> <span class="nn">pygtk</span>
-<span class="n">pygtk</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">'2.0'</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">gtk</span><span class="o">,</span> <span class="nn">gtk.glade</span><span class="o">,</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">string</span>
-<span class="c1">#Creaci&oacute;n de la clase ej1</span>
-
-<span class="k">class</span> <span class="nc">Editor</span><span class="p">:</span>
- <span class="c1">#Creaci&oacute;n del m&eacute;todo constructor de la clase.</span>
- <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-     <span class="c1">#Se captura el archivo xml de la interfaz</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">XML</span><span class="p">(</span><span class="s1">'ej1.glade'</span><span class="p">)</span>
-     <span class="c1">#Se asocia la ventana1</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">ventana1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'ventana1'</span><span class="p">)</span>
-     <span class="c1">#Se asocia el widget textview1</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">textview1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'editortexto'</span><span class="p">)</span>
-     <span class="c1">#Se asocia el widget de la selecci&oacute;n de archivo</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">seleccionararchivo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'filechooserbutton1'</span><span class="p">)</span>
-     <span class="c1">#Se asocia el widget de la selecci&oacute;n de archivo</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">seleccionararchivo2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'filechooserbutton2'</span><span class="p">)</span>
-     <span class="c1">#Se asocia el boton salir</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">botonsalir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">get_widget</span><span class="p">(</span><span class="s1">'bsalir'</span><span class="p">)</span>
-     <span class="c1">#Se asocia los eventos con las se&ntilde;ales</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">w_tree</span><span class="o">.</span><span class="n">signal_autoconnect</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
-     <span class="c1">#Se asocia el objeto buffer de texto</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">buffertexto</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">TextBuffer</span><span class="p">()</span>
-     <span class="c1">#Se crea una lista vac&iacute;a</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">lista</span> <span class="o">=</span> <span class="p">[]</span>
-     <span class="c1">#Se crea la variable que contendr&aacute; el nombre del archivo seleccionado</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">archivo_name</span> <span class="o">=</span> <span class="s2">""</span>
-     <span class="c1">#Se asigna un t&iacute;tulo a la ventana</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">ventana1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Editor de texto"</span><span class="p">)</span>
-
-
- <span class="c1">#Se crea el m&eacute;todo de selecci&oacute;n de archivo</span>
- <span class="k">def</span> <span class="nf">on_filechooserbutton1_file_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="c1">#Se captura el nombre del archivo en la variable</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">archivo_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seleccionararchivo</span><span class="o">.</span><span class="n">get_filename</span><span class="p">()</span>
-     <span class="c1">#Se abre el archivo colocando su contenido en una lista</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">lista</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">archivo_name</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-     <span class="c1">#Se recorre la lista y se coloca el contenido en el buffer de texto</span>
-     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lista</span><span class="p">)):</span>
-         <span class="bp">self</span><span class="o">.</span><span class="n">buffertexto</span><span class="o">.</span><span class="n">insert_at_cursor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lista</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-     <span class="c1">#Se coloca el contenido del buffer en el textview</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">textview1</span><span class="o">.</span><span class="n">set_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffertexto</span><span class="p">)</span>
-     <span class="c1">#Se oculta la ventana de selecci&oacute;n de archivo</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">seleccionararchivo</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
-     <span class="c1">#Se crea el m&eacute;todo para el boton salir</span>
-
-
- <span class="k">def</span> <span class="nf">on_filechooserbutton2_file_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="c1">#Se captura el nombre del archivo en la variable</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">archivo_name2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">seleccionararchivo2</span><span class="o">.</span><span class="n">get_filename</span><span class="p">()</span>
-     <span class="c1">#Se captura el inicio y fin del buffer del textview</span>
-     <span class="n">startiter</span><span class="p">,</span> <span class="n">enditer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffertexto</span><span class="o">.</span><span class="n">get_bounds</span><span class="p">()</span>
-     <span class="c1">#Se abre el archivo en modo escritura</span>
-     <span class="n">archivo</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">archivo_name2</span><span class="p">,</span><span class="s2">"w"</span><span class="p">)</span>
-     <span class="c1">#Se escribe la informaci&oacute;n en el objeto archivo , tomando el texto del buffer</span>
-     <span class="n">archivo</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffertexto</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">startiter</span><span class="p">,</span><span class="n">enditer</span><span class="p">))</span>
-     <span class="c1">#Se cierra el archivo</span>
-     <span class="n">archivo</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
- <span class="c1">#Salir</span>
- <span class="k">def</span> <span class="nf">on_bsalir_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
-
-
-
-
- <span class="c1">#Se crea el m&eacute;todo para cerrar la aplicaci&oacute;n</span>
- <span class="k">def</span> <span class="nf">on_ventana1_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
- <span class="c1">#Se crea el m&eacute;todo main que muestra la ventana</span>
- <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-     <span class="bp">self</span><span class="o">.</span><span class="n">ventana1</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-     <span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">Editor</span><span class="p">()</span>
-<span class="n">app</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-</pre></div>
-<p>La siguiente figura muestra la aplicaci&oacute;n ejecutandose:
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="importacion de modulos">Importaci&oacute;n de m&oacute;dulos</h1>
+<p>import pygtk
+pygtk.require('2.0')
+import gtk, gtk.glade, inspect, sys
+import string</p>
+<h1 id="creacion de la clase ej1">Creaci&oacute;n de la clase ej1</h1>
+<p>class Editor:
+ #Creaci&oacute;n del m&eacute;todo constructor de la clase.
+ def <strong>init</strong>(self):
+     #Se captura el archivo xml de la interfaz
+     self.w_tree = gtk.glade.XML('ej1.glade')
+     #Se asocia la ventana1
+     self.ventana1 = self.w_tree.get_widget('ventana1')
+     #Se asocia el widget textview1
+     self.textview1 = self.w_tree.get_widget('editortexto')
+     #Se asocia el widget de la selecci&oacute;n de archivo
+     self.seleccionararchivo = self.w_tree.get_widget('filechooserbutton1')
+     #Se asocia el widget de la selecci&oacute;n de archivo
+     self.seleccionararchivo2 = self.w_tree.get_widget('filechooserbutton2')
+     #Se asocia el boton salir
+     self.botonsalir = self.w_tree.get_widget('bsalir')
+     #Se asocia los eventos con las se&ntilde;ales
+     self.w_tree.signal_autoconnect(dict(inspect.getmembers(self)))
+     #Se asocia el objeto buffer de texto
+     self.buffertexto = gtk.TextBuffer()
+     #Se crea una lista vac&iacute;a
+     self.lista = []
+     #Se crea la variable que contendr&aacute; el nombre del archivo seleccionado
+     self.archivo_name = ""
+     #Se asigna un t&iacute;tulo a la ventana
+     self.ventana1.set_title("Editor de texto")</p>
+<p>#Se crea el m&eacute;todo de selecci&oacute;n de archivo
+ def on_filechooserbutton1_file_set(self,*args):
+     #Se captura el nombre del archivo en la variable
+     self.archivo_name = self.seleccionararchivo.get_filename()
+     #Se abre el archivo colocando su contenido en una lista
+     self.lista = open(self.archivo_name,"r").readlines()
+     #Se recorre la lista y se coloca el contenido en el buffer de texto
+     for i in range(len(self.lista)):
+         self.buffertexto.insert_at_cursor(self.lista[i])
+     #Se coloca el contenido del buffer en el textview
+     self.textview1.set_buffer(self.buffertexto)
+     #Se oculta la ventana de selecci&oacute;n de archivo
+     self.seleccionararchivo.hide()
+     #Se crea el m&eacute;todo para el boton salir</p>
+<p>def on_filechooserbutton2_file_set(self,*args):
+     #Se captura el nombre del archivo en la variable
+     self.archivo_name2 = self.seleccionararchivo2.get_filename()
+     #Se captura el inicio y fin del buffer del textview
+     startiter, enditer = self.buffertexto.get_bounds()
+     #Se abre el archivo en modo escritura
+     archivo = open(self.archivo_name2,"w")
+     #Se escribe la informaci&oacute;n en el objeto archivo , tomando el texto del buffer
+     archivo.writelines(self.buffertexto.get_text(startiter,enditer))
+     #Se cierra el archivo
+     archivo.close()</p>
+<p>#Salir
+ def on_bsalir_clicked(self,*args):
+     gtk.main_quit()</p>
+<p>#Se crea el m&eacute;todo para cerrar la aplicaci&oacute;n
+ def on_ventana1_destroy(self,<em>args):
+     gtk.main_quit()
+ #Se crea el m&eacute;todo main que muestra la ventana
+ def main(self,</em>args):
+     self.ventana1.show()
+     gtk.main()</p>
+<p>if <strong>name</strong> == "<strong>main</strong>":
+app = Editor()
+app.main()</p>
+<p>```
+La siguiente figura muestra la aplicaci&oacute;n ejecutandose:
 <img alt="Tutorial 6 Glade 2" src="./images/tutorialpythongtkglade6-2.png"/></p>
 <p>En la siguiente figura se muestra el contenido del archivo en el editor con posibiliad de editar:
 <img alt="Tutorial 6 Glade 3" src="./images/tutorialpythongtkglade6-3.png"/></p>

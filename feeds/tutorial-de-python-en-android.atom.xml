@@ -7,58 +7,53 @@ Me basar&amp;eacute; en lo explicado en el post &lt;a href="https://www.seraph.t
 &lt;p&gt;Luego se averigua en los mensajes de notificiaci&amp;oacute;n que puerto abre el servidor. En m&amp;iacute; caso fue el 58825.&lt;/p&gt;
 &lt;p&gt;Desde la consola de Linux se ejecutan los siguientes comandos:
 Redirecciona toda petici&amp;oacute;n al puerto 9999 al puerto 58825.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./adb forward tcp:9999 tcp:58825
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+./adb forward tcp:9999 tcp:58825&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;Se exporta una variable de ambiente.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;export AP_PORT=9999
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;export AP_PORT=9999&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;El programa es el siguiente:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python2.6&lt;/span&gt;
-&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
-&lt;span class="c1"&gt;#Script que permite enviar mensaje de texto a un celular android desde Linux.&lt;/span&gt;
-&lt;span class="c1"&gt;#Autor: Ernesto Crespo&lt;/span&gt;
-&lt;span class="c1"&gt;#Correo:ecrespo@gmail.com&lt;/span&gt;
-&lt;span class="c1"&gt;#Licencia: GPLv3&lt;/span&gt;
-&lt;span class="c1"&gt;#Versi&amp;oacute;n:0.1&lt;/span&gt;
-
-&lt;span class="c1"&gt;#Importando el m&amp;oacute;dulo android,sys y re&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;android&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="nn"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="nn"&gt;re&lt;/span&gt;
-
-
-&lt;span class="c1"&gt;#Funci&amp;oacute;n de envio de mensajes&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;Enviomensaje&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-    &lt;span class="c1"&gt;#Se averigua si se le pasa al script el n&amp;uacute;mero celular y el mensaje, y que el n&amp;uacute;mero sea v&amp;aacute;lido para venezuela.&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="n"&gt;numero&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-        &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;argv&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"error enviando mensaje, se necesita pasar el n&amp;uacute;mero y mensaje"&lt;/span&gt;
-        &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exit&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;Validar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;numero&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"N&amp;uacute;mero invalido"&lt;/span&gt;
-        &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exit&lt;/span&gt;
-    &lt;span class="c1"&gt;#Creando la instancia droid del objeto Android&lt;/span&gt;
-    &lt;span class="n"&gt;droid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Android&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-    &lt;span class="c1"&gt;#Enviando el mensaje de texto&lt;/span&gt;
-    &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;smsSend&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;numero&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="c1"&gt;#Se presenta un mensaje de notificaci&amp;oacute;n en el celular.&lt;/span&gt;
-    &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeToast&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Mensaje enviado'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-
-&lt;span class="c1"&gt;#Funci&amp;oacute;n que v&amp;aacute;lida si el n&amp;uacute;mero es de movilnet, digitel o movistar.&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;Validar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;numero&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="c1"&gt;#Valida si los numeros tienen 11 digitos y que sean de los proveedores movilnet, digitel y movistar&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;numero&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;11&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"041[2|4|6]\d\d\d\d\d\d\d"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;numero&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"042[4|6]\d\d\d\d\d\d\d"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;numero&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
-    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
-&lt;span class="c1"&gt;#Ejecuci&amp;oacute;n del programa.&lt;/span&gt;
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"__main__"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-    &lt;span class="n"&gt;Enviomensaje&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Ejecutar el script.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;enviomensajes.py 0xxxyyyzzww  "2da prueba, avisame si te llega el sms"
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```python&lt;/p&gt;
+&lt;h1 id="!/usr/bin/env python2.6"&gt;!/usr/bin/env python2.6&lt;/h1&gt;
+&lt;h1 id="-- coding: utf-8 --"&gt;-&lt;em&gt;- coding: utf-8 -&lt;/em&gt;-&lt;/h1&gt;
+&lt;h1 id="script que permite enviar mensaje de texto a un celular android desde linux."&gt;Script que permite enviar mensaje de texto a un celular android desde Linux.&lt;/h1&gt;
+&lt;h1 id="autor: ernesto crespo"&gt;Autor: Ernesto Crespo&lt;/h1&gt;
+&lt;h1 id="correo:ecrespo@gmail.com"&gt;Correo:ecrespo@gmail.com&lt;/h1&gt;
+&lt;h1 id="licencia: gplv3"&gt;Licencia: GPLv3&lt;/h1&gt;
+&lt;h1 id="version:0.1"&gt;Versi&amp;oacute;n:0.1&lt;/h1&gt;
+&lt;h1 id="importando el modulo android,sys y re"&gt;Importando el m&amp;oacute;dulo android,sys y re&lt;/h1&gt;
+&lt;p&gt;import android,sys,re&lt;/p&gt;
+&lt;h1 id="funcion de envio de mensajes"&gt;Funci&amp;oacute;n de envio de mensajes&lt;/h1&gt;
+&lt;p&gt;def Enviomensaje():
+    #Se averigua si se le pasa al script el n&amp;uacute;mero celular y el mensaje, y que el n&amp;uacute;mero sea v&amp;aacute;lido para venezuela.
+    if len(sys.argv) == 3:
+        numero = sys.argv[1]
+        mensaje = sys.argv[2]
+    else:
+        print "error enviando mensaje, se necesita pasar el n&amp;uacute;mero y mensaje"
+        sys.exit
+    if Validar(numero) == 0:
+        print "N&amp;uacute;mero invalido"
+        sys.exit
+    #Creando la instancia droid del objeto Android
+    droid = android.Android()
+    #Enviando el mensaje de texto
+    droid.smsSend(numero,mensaje)
+    #Se presenta un mensaje de notificaci&amp;oacute;n en el celular.
+    droid.makeToast('Mensaje enviado')&lt;/p&gt;
+&lt;h1 id="funcion que valida si el numero es de movilnet, digitel o movistar."&gt;Funci&amp;oacute;n que v&amp;aacute;lida si el n&amp;uacute;mero es de movilnet, digitel o movistar.&lt;/h1&gt;
+&lt;p&gt;def Validar(numero):
+    #Valida si los numeros tienen 11 digitos y que sean de los proveedores movilnet, digitel y movistar
+    if len(numero) == 11 and ((re.search("041[2|4|6]\d\d\d\d\d\d\d",numero)) or (re.search("042[4|6]\d\d\d\d\d\d\d",numero))) :
+        return 1
+    else:
+        return 0&lt;/p&gt;
+&lt;h1 id="ejecucion del programa."&gt;Ejecuci&amp;oacute;n del programa.&lt;/h1&gt;
+&lt;p&gt;if &lt;strong&gt;name&lt;/strong&gt; == "&lt;strong&gt;main&lt;/strong&gt;":
+    Enviomensaje()
+```&lt;/p&gt;
+&lt;p&gt;Ejecutar el script.
+&lt;code&gt;enviomensajes.py 0xxxyyyzzww  "2da prueba, avisame si te llega el sms"&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;===&lt;/p&gt;
 &lt;p&gt;&amp;iexcl;Haz tu donativo!
 Si te gust&amp;oacute; el art&amp;iacute;culo puedes realizar un donativo con Bitcoin (BTC)
@@ -75,36 +70,37 @@ direcci&amp;oacute;n: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;El celular coloca un mensaje en el &amp;aacute;rea de notificaci&amp;oacute;n de Android mencionando que el servidor se ha iniciado, se despliega la informaci&amp;oacute;n y este dice se arranco un servidor SL4A en la IP 192.168.10.19 con puerto 52834.&lt;/p&gt;
 &lt;p&gt;A continuaci&amp;oacute;n se utilizar&amp;aacute; el sdk de android en Linux ejecutando adb.
 Se inicia el servidor adb.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./adb start-server
+&lt;p&gt;&lt;code&gt;./adb start-server
 * daemon not running. starting it now on port 5037 *
-* daemon started successfully *
-&lt;/pre&gt;&lt;/div&gt;
+* daemon started successfully *&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Note que el servidor levanta en el puerto 5037.&lt;/p&gt;
 &lt;p&gt;Ahora se redirecciona los puertos del servicio adb.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./adb forward tcp:9999 tcp:52834
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+./adb forward tcp:9999 tcp:52834&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;Donde el puerto 9999 se redirecciona al puerto donde escucha el celular que es el 52834 en este caso.&lt;/p&gt;
 &lt;p&gt;A continuaci&amp;oacute;n se configura la variable de ambiente de la IP y puerto del celular con Android que tiene funcionan el servidor SL4A.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;export AP_PORT=52834
-export AP_HOST=192.168.10.19
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;export AP_PORT=52834
+export AP_HOST=192.168.10.19&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Asegurarse que tiene en el path de python2.6 la ruta del m&amp;oacute;dulo de python para android. Este lo puede bajar en este &lt;a href="http://android-scripting.googlecode.com/hg/python/ase/android.py"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;A continuaci&amp;oacute;n se muestra un script en python que pide escriba el nombre de usuario en el celular y lo muestra en Linux y en el celular:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Importar m&amp;oacute;dulo android&lt;/span&gt;
-&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;android&lt;/span&gt;
-&lt;span class="c1"&gt;#Se crea el objeto droid de la clase Android con la IP y puerto del servicio iniciado en el celular.&lt;/span&gt;
-&lt;span class="n"&gt;droid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Android&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="s1"&gt;'192.168.10.19'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;52834&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-&lt;span class="c1"&gt;#Se solicita al usuario que escriba su nombre&lt;/span&gt;
-&lt;span class="n"&gt;texto&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getInput&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Escriba su nombre"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;"Nombre:"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="c1"&gt;#Se imprime el nombre del usuario en la consola de Linux&lt;/span&gt;
-&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"El nombre escrito en el celular es: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;texto&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="c1"&gt;#Se presenta un saludo al usuario en el celular&lt;/span&gt;
-&lt;span class="n"&gt;droid&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeToast&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'Hola &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;'&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;texto&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```python&lt;/p&gt;
+&lt;h1 id="importar modulo android"&gt;Importar m&amp;oacute;dulo android&lt;/h1&gt;
+&lt;p&gt;import android&lt;/p&gt;
+&lt;h1 id="se crea el objeto droid de la clase android con la ip y puerto del servicio iniciado en el celular."&gt;Se crea el objeto droid de la clase Android con la IP y puerto del servicio iniciado en el celular.&lt;/h1&gt;
+&lt;p&gt;droid = android.Android(('192.168.10.19', 52834))&lt;/p&gt;
+&lt;h1 id="se solicita al usuario que escriba su nombre"&gt;Se solicita al usuario que escriba su nombre&lt;/h1&gt;
+&lt;p&gt;texto = droid.getInput("Escriba su nombre","Nombre:")&lt;/p&gt;
+&lt;h1 id="se imprime el nombre del usuario en la consola de linux"&gt;Se imprime el nombre del usuario en la consola de Linux&lt;/h1&gt;
+&lt;p&gt;print "El nombre escrito en el celular es: %s" %texto[1]&lt;/p&gt;
+&lt;h1 id="se presenta un saludo al usuario en el celular"&gt;Se presenta un saludo al usuario en el celular&lt;/h1&gt;
+&lt;p&gt;droid.makeToast('Hola %s' %texto[1])
+```&lt;/p&gt;
 &lt;p&gt;Para ejecutar el programa se coloca el script prueba-remota.py donde se encuentra el m&amp;oacute;dulo de SL4A android.py en el mismo directorio o se coloca en el path de python2.6.
 Se ejecuta con python2.6:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python2.6 prueba-remota.py 
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;```
+$ python2.6 prueba-remota.py &lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;El nombre escrito en el celular es: ernesto&lt;/p&gt;
 &lt;p&gt;===&lt;/p&gt;
 &lt;p&gt;&amp;iexcl;Haz tu donativo!

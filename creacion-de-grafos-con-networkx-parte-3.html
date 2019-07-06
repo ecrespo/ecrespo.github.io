@@ -169,141 +169,72 @@
   <div>
     <p>En el <a href="https://www.seraph.to/creacion-de-grafos-con-networkx-parte-2.html#creacion-de-grafos-con-networkx-parte-2">art&iacute;culo anterior se muestra como crear grafos a partir del contenido de un archivo</a>, <a href="https://www.seraph.to/creacion-de-grafos-con-networkx-parte-1.html#creacion-de-grafos-con-networkx-parte-1">en el primero se explica lo b&aacute;sico en la creaci&oacute;n de grafos</a>, en este se tocar&aacute; el tema de analizar los grafos, de extraer informaci&oacute;n de los mismos.</p>
 <p>El ejemplo a continuaci&oacute;n se crea un grafo con varios nodos (de la "a" a la "z"), se enlazan todos los nodos, luego se muestra la cantidad de nodos, la cantidad de relaciones entre nodos, se le asigna un atributo a un nodo, un atributo entre 2 nodos, se averigua los vecinos de un nodo, el valor del atributo de un nodo, entre 2 nodos, se muestra tambi&eacute;n la ruta m&aacute;s corta para llegar del nodo m al b; cual es el promedio de la ruta m&aacute;s corta, se muestra la relaci&oacute;n de los nodos con respecto a m, cual es la ruta m&aacute;s corta utilizando el <a href="https://es.wikipedia.org/wiki/Algoritmo_de_Dijkstra">Algoritmo de Dijkstra</a>  entre m y b. Para terminar se genera el grafo con varios m&eacute;todos (espectral, aleatoria, circular y normal).</p>
-<p>A continuaci&oacute;n el c&oacute;digo:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">net</span>
-
-<span class="c1">#Se importa la libreria pyplot de matplotlib como plt</span>
-
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-
-<span class="c1">#Se crea la instancia vacia del grafo</span>
-
-<span class="n">g</span><span class="o">=</span><span class="n">net</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-
-<span class="c1">#Se crean los nodos con sus relaciones</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span><span class="s1">'b'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span><span class="s1">'c'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span><span class="s1">'a'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span><span class="s1">'d'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span><span class="s1">'d'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'g'</span><span class="p">,</span><span class="s1">'f'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'h'</span><span class="p">,</span><span class="s1">'b'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'i'</span><span class="p">,</span><span class="s1">'h'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'i'</span><span class="p">,</span><span class="s1">'g'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'j'</span><span class="p">,</span><span class="s1">'c'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'k'</span><span class="p">,</span><span class="s1">'j'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'l'</span><span class="p">,</span><span class="s1">'k'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'m'</span><span class="p">,</span><span class="s1">'l'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'k'</span><span class="p">,</span><span class="s1">'h'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'i'</span><span class="p">,</span><span class="s1">'d'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span><span class="s1">'k'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'m'</span><span class="p">,</span><span class="s1">'g'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'n'</span><span class="p">,</span><span class="s1">'m'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'o'</span><span class="p">,</span><span class="s1">'m'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'p'</span><span class="p">,</span><span class="s1">'o'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'q'</span><span class="p">,</span><span class="s1">'h'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'r'</span><span class="p">,</span><span class="s1">'q'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'s'</span><span class="p">,</span><span class="s1">'r'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'t'</span><span class="p">,</span><span class="s1">'a'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'u'</span><span class="p">,</span><span class="s1">'t'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'v'</span><span class="p">,</span><span class="s1">'u'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'j'</span><span class="p">,</span><span class="s1">'b'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'w'</span><span class="p">,</span><span class="s1">'f'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span><span class="s1">'w'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'y'</span><span class="p">,</span><span class="s1">'i'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'z'</span><span class="p">,</span><span class="s1">'y'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'n'</span><span class="p">,</span><span class="s1">'p'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'z'</span><span class="p">,</span><span class="s1">'x'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'z'</span><span class="p">,</span><span class="s1">'v'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'s'</span><span class="p">,</span><span class="s1">'x'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'p'</span><span class="p">,</span><span class="s1">'v'</span><span class="p">)</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s1">'r'</span><span class="p">,</span><span class="s1">'u'</span><span class="p">)</span>
-
-
-
-<span class="k">print</span> <span class="s2">"Nodos: "</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-
-<span class="k">print</span> <span class="s2">"Relaciones: "</span><span class="p">,</span><span class="n">g</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
-
-
-
-<span class="c1">#Se define un tamagno al nodo a y un peso a la relacion entre el nodo a y b</span>
-
-<span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">[</span><span class="s1">'a'</span><span class="p">][</span><span class="s1">'size'</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
-
-<span class="n">g</span><span class="p">[</span><span class="s1">'a'</span><span class="p">][</span><span class="s1">'b'</span><span class="p">][</span><span class="s1">'weight'</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
-
-
-
-<span class="k">print</span> <span class="s2">"Vecinos de m: "</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="s1">'m'</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s2">"Valor del nodo a: "</span><span class="p">,</span><span class="n">g</span><span class="p">[</span><span class="s1">'a'</span><span class="p">]</span>
-
-<span class="k">print</span> <span class="s2">"Peso de la relacion entre a y b: "</span><span class="p">,</span> <span class="n">g</span><span class="p">[</span><span class="s1">'a'</span><span class="p">][</span><span class="s1">'b'</span><span class="p">]</span>
-
-
-
-<span class="k">print</span> <span class="s2">"Ruta mas corta entre m y b: "</span><span class="p">,</span><span class="n">net</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="s1">'m'</span><span class="p">,</span><span class="s1">'b'</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s2">"Promedio de la ruta mas corta "</span><span class="p">,</span><span class="n">net</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">average_shortest_path_length</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s2">"Muestra la relacion de ruta mas corta entre pares de nodos relacionado con m: "</span><span class="p">,</span> <span class="n">net</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">all_pairs_shortest_path</span><span class="p">(</span><span class="n">g</span><span class="p">)[</span><span class="s1">'m'</span><span class="p">]</span>
-
-<span class="k">print</span> <span class="s2">"Ruta mas corta usando el algoritmo de Dijkstra entre m y b:"</span><span class="p">,</span><span class="n">net</span><span class="o">.</span><span class="n">algorithms</span><span class="o">.</span><span class="n">dijkstra_path</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s1">'m'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">)</span>
-
-<span class="c1">#Se dibuja el grafo</span>
-
-<span class="n">net</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
-
-<span class="c1">#net.draw_spectral(g)</span>
-
-<span class="c1">#net.draw_circular(g)</span>
-
-<span class="c1">#net.draw_random(g)</span>
-
-<span class="c1">#Se muestra el grafico</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
+<p>A continuaci&oacute;n el c&oacute;digo:
+```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<p>import networkx as net</p>
+<h1 id="se importa la libreria pyplot de matplotlib como plt">Se importa la libreria pyplot de matplotlib como plt</h1>
+<p>import matplotlib.pyplot as plt</p>
+<h1 id="se crea la instancia vacia del grafo">Se crea la instancia vacia del grafo</h1>
+<p>g=net.Graph()</p>
+<h1 id="se crean los nodos con sus relaciones">Se crean los nodos con sus relaciones</h1>
+<p>g.add_edge('a','b')</p>
+<p>g.add_edge('b','c')</p>
+<p>g.add_edge('c','a')</p>
+<p>g.add_edge('a','d')</p>
+<p>g.add_edge('f','d')</p>
+<p>g.add_edge('g','f')</p>
+<p>g.add_edge('h','b')</p>
+<p>g.add_edge('i','h')</p>
+<p>g.add_edge('i','g')</p>
+<p>g.add_edge('j','c')</p>
+<p>g.add_edge('k','j')</p>
+<p>g.add_edge('l','k')</p>
+<p>g.add_edge('m','l')</p>
+<p>g.add_edge('k','h')</p>
+<p>g.add_edge('i','d')</p>
+<p>g.add_edge('f','k')</p>
+<p>g.add_edge('m','g')</p>
+<p>g.add_edge('n','m')</p>
+<p>g.add_edge('o','m')</p>
+<p>g.add_edge('p','o')</p>
+<p>g.add_edge('q','h')</p>
+<p>g.add_edge('r','q')</p>
+<p>g.add_edge('s','r')</p>
+<p>g.add_edge('t','a')</p>
+<p>g.add_edge('u','t')</p>
+<p>g.add_edge('v','u')</p>
+<p>g.add_edge('j','b')</p>
+<p>g.add_edge('w','f')</p>
+<p>g.add_edge('x','w')</p>
+<p>g.add_edge('y','i')</p>
+<p>g.add_edge('z','y')</p>
+<p>g.add_edge('n','p')</p>
+<p>g.add_edge('z','x')</p>
+<p>g.add_edge('z','v')</p>
+<p>g.add_edge('s','x')</p>
+<p>g.add_edge('p','v')</p>
+<p>g.add_edge('r','u')</p>
+<p>print "Nodos: ",g.nodes()</p>
+<p>print "Relaciones: ",g.edges()</p>
+<h1 id="se define un tamagno al nodo a y un peso a la relacion entre el nodo a y b">Se define un tamagno al nodo a y un peso a la relacion entre el nodo a y b</h1>
+<p>g.node['a']['size']=1</p>
+<p>g['a']['b']['weight']=1</p>
+<p>print "Vecinos de m: ", g.neighbors('m')</p>
+<p>print "Valor del nodo a: ",g['a']</p>
+<p>print "Peso de la relacion entre a y b: ", g['a']['b']</p>
+<p>print "Ruta mas corta entre m y b: ",net.algorithms.shortest_path(g,'m','b')</p>
+<p>print "Promedio de la ruta mas corta ",net.algorithms.average_shortest_path_length(g)</p>
+<p>print "Muestra la relacion de ruta mas corta entre pares de nodos relacionado con m: ", net.algorithms.all_pairs_shortest_path(g)['m']</p>
+<p>print "Ruta mas corta usando el algoritmo de Dijkstra entre m y b:",net.algorithms.dijkstra_path(g, 'm', 'b')</p>
+<h1 id="se dibuja el grafo">Se dibuja el grafo</h1>
+<p>net.draw(g)</p>
+<h1 id="net.draw_spectral(g)">net.draw_spectral(g)</h1>
+<h1 id="net.draw_circular(g)">net.draw_circular(g)</h1>
+<h1 id="net.draw_random(g)">net.draw_random(g)</h1>
+<h1 id="se muestra el grafico">Se muestra el grafico</h1>
+<p>plt.show()
+```</p>
 <p>Para generar el grafo de forma espectral, circular o aleatoria se comenta el anterior y se descomenta el que se desea generar.</p>
 <p>El grafo normal se muestra en la siguiente figura:</p>
 <p><img alt="" src="./images/creaciondegrafosconnetworkx3-1.png"/> </p>
@@ -314,24 +245,17 @@
 <p>A continuaci&oacute;n se muestra el grafo aleatorio:</p>
 <p><img alt="" src="./images/creaciondegrafosconnetworkx3-4.png"/> </p>
 <p>A parte de las gr&aacute;ficas se imprime lo siguiente en pantalla:</p>
-<div class="highlight"><pre><span></span>Nodos:  ['a', 'c', 'b', 'd', 'g', 'f', 'i', 'h', 'k', 'j', 'm', 'l', 'o', 'n', 'q', 'p', 's', 'r', 'u', 't', 'w', 'v', 'y', 'x', 'z']
-
-Relaciones:  [('a', 'c'), ('a', 'b'), ('a', 'd'), ('a', 't'), ('c', 'b'), ('c', 'j'), ('b', 'h'), ('b', 'j'), ('d', 'i'), ('d', 'f'), ('g', 'i'), ('g', 'm'), ('g', 'f'), ('f', 'w'), ('f', 'k'), ('i', 'y'), ('i', 'h'), ('h', 'q'), ('h', 'k'), ('k', 'j'), ('k', 'l'), ('m', 'o'), ('m', 'l'), ('m', 'n'), ('o', 'p'), ('n', 'p'), ('q', 'r'), ('p', 'v'), ('s', 'x'), ('s', 'r'), ('r', 'u'), ('u', 't'), ('u', 'v'), ('w', 'x'), ('v', 'z'), ('y', 'z'), ('x', 'z')]
-
-Vecinos de m:  ['o', 'l', 'g', 'n']
-
-Valor del nodo a:  {'c': {}, 'b': {'weight': 1}, 'd': {}, 't': {}}
-
-Peso de la relacion entre a y b:  {'weight': 1}
-
-Ruta mas corta entre m y b:  ['m', 'l', 'k', 'h', 'b']
-
-Promedio de la ruta mas corta  2.99
-
-Muestra la relacion de ruta mas corta entre pares de nodos relacionado con m:  {'a': ['m', 'g', 'i', 'd', 'a'], 'c': ['m', 'l', 'k', 'j', 'c'], 'b': ['m', 'g', 'i', 'h', 'b'], 'd': ['m', 'g', 'i', 'd'], 'g': ['m', 'g'], 'f': ['m', 'g', 'f'], 'i': ['m', 'g', 'i'], 'h': ['m', 'g', 'i', 'h'], 'k': ['m', 'l', 'k'], 'j': ['m', 'l', 'k', 'j'], 'm': ['m'], 'l': ['m', 'l'], 'o': ['m', 'o'], 'n': ['m', 'n'], 'q': ['m', 'g', 'i', 'h', 'q'], 'p': ['m', 'o', 'p'], 's': ['m', 'g', 'f', 'w', 'x', 's'], 'r': ['m', 'g', 'i', 'h', 'q', 'r'], 'u': ['m', 'o', 'p', 'v', 'u'], 't': ['m', 'g', 'i', 'd', 'a', 't'], 'w': ['m', 'g', 'f', 'w'], 'v': ['m', 'o', 'p', 'v'], 'y': ['m', 'g', 'i', 'y'], 'x': ['m', 'g', 'f', 'w', 'x'], 'z': ['m', 'o', 'p', 'v', 'z']}
-
-Ruta mas corta usando el algoritmo de Dijkstra entre m y b: ['m', 'g', 'i', 'h', 'b']
-</pre></div>
+<p>```
+Nodos:  ['a', 'c', 'b', 'd', 'g', 'f', 'i', 'h', 'k', 'j', 'm', 'l', 'o', 'n', 'q', 'p', 's', 'r', 'u', 't', 'w', 'v', 'y', 'x', 'z']</p>
+<p>Relaciones:  [('a', 'c'), ('a', 'b'), ('a', 'd'), ('a', 't'), ('c', 'b'), ('c', 'j'), ('b', 'h'), ('b', 'j'), ('d', 'i'), ('d', 'f'), ('g', 'i'), ('g', 'm'), ('g', 'f'), ('f', 'w'), ('f', 'k'), ('i', 'y'), ('i', 'h'), ('h', 'q'), ('h', 'k'), ('k', 'j'), ('k', 'l'), ('m', 'o'), ('m', 'l'), ('m', 'n'), ('o', 'p'), ('n', 'p'), ('q', 'r'), ('p', 'v'), ('s', 'x'), ('s', 'r'), ('r', 'u'), ('u', 't'), ('u', 'v'), ('w', 'x'), ('v', 'z'), ('y', 'z'), ('x', 'z')]</p>
+<p>Vecinos de m:  ['o', 'l', 'g', 'n']</p>
+<p>Valor del nodo a:  {'c': {}, 'b': {'weight': 1}, 'd': {}, 't': {}}</p>
+<p>Peso de la relacion entre a y b:  {'weight': 1}</p>
+<p>Ruta mas corta entre m y b:  ['m', 'l', 'k', 'h', 'b']</p>
+<p>Promedio de la ruta mas corta  2.99</p>
+<p>Muestra la relacion de ruta mas corta entre pares de nodos relacionado con m:  {'a': ['m', 'g', 'i', 'd', 'a'], 'c': ['m', 'l', 'k', 'j', 'c'], 'b': ['m', 'g', 'i', 'h', 'b'], 'd': ['m', 'g', 'i', 'd'], 'g': ['m', 'g'], 'f': ['m', 'g', 'f'], 'i': ['m', 'g', 'i'], 'h': ['m', 'g', 'i', 'h'], 'k': ['m', 'l', 'k'], 'j': ['m', 'l', 'k', 'j'], 'm': ['m'], 'l': ['m', 'l'], 'o': ['m', 'o'], 'n': ['m', 'n'], 'q': ['m', 'g', 'i', 'h', 'q'], 'p': ['m', 'o', 'p'], 's': ['m', 'g', 'f', 'w', 'x', 's'], 'r': ['m', 'g', 'i', 'h', 'q', 'r'], 'u': ['m', 'o', 'p', 'v', 'u'], 't': ['m', 'g', 'i', 'd', 'a', 't'], 'w': ['m', 'g', 'f', 'w'], 'v': ['m', 'o', 'p', 'v'], 'y': ['m', 'g', 'i', 'y'], 'x': ['m', 'g', 'f', 'w', 'x'], 'z': ['m', 'o', 'p', 'v', 'z']}</p>
+<p>Ruta mas corta usando el algoritmo de Dijkstra entre m y b: ['m', 'g', 'i', 'h', 'b']</p>
+<p>```</p>
 <p>De esta forma se puede extraer informaci&oacute;n del grafo como la ruta m&aacute;s corta entre m y b (m,g,i,h y b) que se tiene el mismo resultado usando el Algoritmo de Dijkstra.</p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!

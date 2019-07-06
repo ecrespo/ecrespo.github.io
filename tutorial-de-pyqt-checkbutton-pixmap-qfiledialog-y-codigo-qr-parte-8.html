@@ -172,211 +172,205 @@
 <li>QFileDialog: Abre una ventana de dialogo para abrir o salvar  un archivo.</li>
 </ul>
 <p>El c&oacute;digo del programa es el siguiente:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<p>```python </p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="modulo qrencode">modulo qrencode</h1>
+<p>from qrencode import encode</p>
+<h1 id="se importa el modulo sys">Se importa el modulo sys</h1>
+<p>import sys </p>
+<h1 id="de pyqt4 importar qtgui y qtcore">De PyQt4 importar QtGui y QtCore</h1>
+<p>from PyQt4 import QtGui, QtCore</p>
+<h1 id="import os">Import os</h1>
+<p>import os </p>
+<p>class App(QtGui.QWidget):
+    def <strong>init</strong>(self, parent=None):
+        QtGui.QWidget.<strong>init</strong>(self, parent)
+        #Se define el tamagno y posicion de la ventana
+        self.setGeometry(0, 50, 600, 400)</p>
+<pre><code>    #Se le coloca un titulo a la ventana y se asocia un icono.
+    self.setWindowTitle('Generacion de codigo QR')
+    self.setWindowIcon(QtGui.QIcon('./openlogo-50.png'))
 
-<span class="c1">#modulo qrencode</span>
-<span class="kn">from</span> <span class="nn">qrencode</span> <span class="kn">import</span> <span class="n">encode</span>
+    #Se crea la etiqueta para la foto
+    foto = QtGui.QLabel("Foto: ")
+    self.imagen = QtGui.QLabel("")
 
-<span class="c1">#Se importa el modulo sys</span>
-<span class="kn">import</span> <span class="nn">sys</span> 
-<span class="c1">#De PyQt4 importar QtGui y QtCore</span>
-<span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtCore</span>
+    #Se crea el boton para cargar la foton
+    cargar = QtGui.QPushButton("Cargar Foto",self)
 
-<span class="c1">#Import os</span>
-<span class="kn">import</span> <span class="nn">os</span> 
+    #Etiqueta nombre
+    self.nombre = QtGui.QLabel('Nombre: ')
+    #Entrada de datos del nombre
+    self.nombreEdit = QtGui.QLineEdit()
 
+    #Se crea la etiqueta y etrada de datos de la cedula        
+    self.etiquetaCedula = QtGui.QLabel("Cedula")
+    self.cedula = QtGui.QLineEdit()
 
+    #Se crea la etiqueta y el widget para la fecha
+    #de nacimiento        
+    fechaEtiqueta = QtGui.QLabel("Fecha de Nacimiento")
+    self.fecha = QtGui.QDateEdit(self)
+    #Se define el formato dia/mes/agno
+    self.fecha.setDisplayFormat("dd/MM/yyyy")
+    #Se fija la fecha inicial a la fecha actual
+    self.fecha.setDate(QtCore.QDate.currentDate())
 
-<span class="k">class</span> <span class="nc">App</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
-        <span class="c1">#Se define el tamagno y posicion de la ventana</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+    #Se define la etiqueta que pregunta por el sexo
+    etiquetaSexo = QtGui.QLabel("Sexo:")
+    #Se definen los botones de radio para masculino y femenino
+    self.botonradio1 = QtGui.QRadioButton("&amp;Masculino",self)
+    self.botonradio2 = QtGui.QRadioButton("&amp;Femenino",self)
 
-        <span class="c1">#Se le coloca un titulo a la ventana y se asocia un icono.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">'Generacion de codigo QR'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="s1">'./openlogo-50.png'</span><span class="p">))</span>
+    #Etiqueta ciudad.
+    self.ciudadEtiqueta = QtGui.QLabel("Ciudad de Nacimiento:")
+    #Se define el comboBox con las ciudades
+    self.combo = QtGui.QComboBox(self)
+    ciudades = ["Maracaibo",
+    "Valencia","Maracay","Barquisimeto","Merida","Caracas",
+    "San Cristobal","Barinas","El vigia","Ciudad Bolivar",
+    "Puerto Ordaz","Coro","Puerto Cabello","Margarita"]
+    for ciudad in ciudades:
+        self.combo.addItem(ciudad)
 
-        <span class="c1">#Se crea la etiqueta para la foto</span>
-        <span class="n">foto</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Foto: "</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">imagen</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+    #Se crea la etiqueta de dia de la semana
+    diasemana = QtGui.QLabel("Dia semana")
+    #Se define los botones de check para los dias de la semana
+    self.lunes = QtGui.QCheckBox("Lunes",self)
+    self.martes = QtGui.QCheckBox("Martes",self)
+    self.miercoles = QtGui.QCheckBox("Miercoles",self)
+    self.jueves = QtGui.QCheckBox("Jueves",self)
+    self.viernes = QtGui.QCheckBox("Viernes",self)
 
-        <span class="c1">#Se crea el boton para cargar la foton</span>
-        <span class="n">cargar</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">"Cargar Foto"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
+    #Se define el boton salir
+    quit = QtGui.QPushButton('Salir', self)
 
-        <span class="c1">#Etiqueta nombre</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nombre</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">'Nombre: '</span><span class="p">)</span>
-        <span class="c1">#Entrada de datos del nombre</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nombreEdit</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">()</span>
+    #Se define el boton procesar la informacion
+    okButton = QtGui.QPushButton("Procesar",self)
 
-        <span class="c1">#Se crea la etiqueta y etrada de datos de la cedula        </span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">etiquetaCedula</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Cedula"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cedula</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">()</span>
+    #Se crea la etiqueta que mostrara el codigo QR
+    self.label = QtGui.QLabel(self)
 
-        <span class="c1">#Se crea la etiqueta y el widget para la fecha</span>
-        <span class="c1">#de nacimiento        </span>
-        <span class="n">fechaEtiqueta</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Fecha de Nacimiento"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QDateEdit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="c1">#Se define el formato dia/mes/agno</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="o">.</span><span class="n">setDisplayFormat</span><span class="p">(</span><span class="s2">"dd/MM/yyyy"</span><span class="p">)</span>
-        <span class="c1">#Se fija la fecha inicial a la fecha actual</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="o">.</span><span class="n">setDate</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDate</span><span class="o">.</span><span class="n">currentDate</span><span class="p">())</span>
+    #Se define un timer
+    self.timer = QtCore.QBasicTimer()
+    self.step = 0
 
-        <span class="c1">#Se define la etiqueta que pregunta por el sexo</span>
-        <span class="n">etiquetaSexo</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Sexo:"</span><span class="p">)</span>
-        <span class="c1">#Se definen los botones de radio para masculino y femenino</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">botonradio1</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">(</span><span class="s2">"&amp;Masculino"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">botonradio2</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">(</span><span class="s2">"&amp;Femenino"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
+    #Se empaquetan los widgets en la ventana.
+    grid = QtGui.QGridLayout()
+    grid.setSpacing(10)
+    grid.addWidget(foto,1,0)
+    grid.addWidget(self.imagen,1,1)
+    grid.addWidget(cargar,1,2)
+    grid.addWidget(self.nombre, 2, 0)
+    grid.addWidget(self.nombreEdit, 2, 1)
+    grid.addWidget(etiquetaSexo,3,0)
+    grid.addWidget(self.botonradio1,3,1)
+    grid.addWidget(self.botonradio2,3,2)
+    grid.addWidget(self.etiquetaCedula,4,0)
+    grid.addWidget(self.cedula,4,1)
+    grid.addWidget(fechaEtiqueta,5,0)
+    grid.addWidget(self.fecha,5,1)
+    grid.addWidget(self.ciudadEtiqueta,6,0)
+    grid.addWidget(self.combo,6,1)
+    grid.addWidget(diasemana,7,0)
+    grid.addWidget(self.lunes,7,1)
+    grid.addWidget(self.martes,7,2)
+    grid.addWidget(self.miercoles,7,3)
+    grid.addWidget(self.jueves,7,4)
+    grid.addWidget(self.viernes,7,5)
+    grid.addWidget(okButton, 8, 0)
+    grid.addWidget(self.label,9,1)
+    grid.addWidget(quit, 10, 1)
+    self.setLayout(grid)
 
-        <span class="c1">#Etiqueta ciudad.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ciudadEtiqueta</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Ciudad de Nacimiento:"</span><span class="p">)</span>
-        <span class="c1">#Se define el comboBox con las ciudades</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">combo</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ciudades</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Maracaibo"</span><span class="p">,</span>
-        <span class="s2">"Valencia"</span><span class="p">,</span><span class="s2">"Maracay"</span><span class="p">,</span><span class="s2">"Barquisimeto"</span><span class="p">,</span><span class="s2">"Merida"</span><span class="p">,</span><span class="s2">"Caracas"</span><span class="p">,</span>
-        <span class="s2">"San Cristobal"</span><span class="p">,</span><span class="s2">"Barinas"</span><span class="p">,</span><span class="s2">"El vigia"</span><span class="p">,</span><span class="s2">"Ciudad Bolivar"</span><span class="p">,</span>
-        <span class="s2">"Puerto Ordaz"</span><span class="p">,</span><span class="s2">"Coro"</span><span class="p">,</span><span class="s2">"Puerto Cabello"</span><span class="p">,</span><span class="s2">"Margarita"</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">ciudad</span> <span class="ow">in</span> <span class="n">ciudades</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">combo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">ciudad</span><span class="p">)</span>
-
-        <span class="c1">#Se crea la etiqueta de dia de la semana</span>
-        <span class="n">diasemana</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">"Dia semana"</span><span class="p">)</span>
-        <span class="c1">#Se define los botones de check para los dias de la semana</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lunes</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">"Lunes"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">martes</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">"Martes"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">miercoles</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">"Miercoles"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">jueves</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">"Jueves"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">viernes</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">"Viernes"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-
-        <span class="c1">#Se define el boton salir</span>
-        <span class="n">quit</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s1">'Salir'</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-
-        <span class="c1">#Se define el boton procesar la informacion</span>
-        <span class="n">okButton</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">"Procesar"</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
-
-        <span class="c1">#Se crea la etiqueta que mostrara el codigo QR</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> 
-
-        <span class="c1">#Se define un timer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timer</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QBasicTimer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1">#Se empaquetan los widgets en la ventana.</span>
-        <span class="n">grid</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">()</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">foto</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imagen</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">cargar</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nombreEdit</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">etiquetaSexo</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">botonradio1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">botonradio2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">etiquetaCedula</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cedula</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">fechaEtiqueta</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ciudadEtiqueta</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">combo</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">diasemana</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lunes</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">martes</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">miercoles</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jueves</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viernes</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">okButton</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">quit</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-
-        <span class="c1">#Se definen las segnales de los widgets.</span>
-        <span class="c1">#boton salir, procesar y cargar foto</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">quit</span><span class="p">,</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s1">'clicked()'</span><span class="p">),</span><span class="n">QtGui</span><span class="o">.</span><span class="n">qApp</span><span class="p">,</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">SLOT</span><span class="p">(</span><span class="s1">'quit()'</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">okButton</span><span class="p">,</span><span class="n">QtCore</span><span class="o">.</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s1">'clicked()'</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">Procesar</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">cargar</span><span class="p">,</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s1">'clicked()'</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">showDialog</span><span class="p">)</span>
+    #Se definen las segnales de los widgets.
+    #boton salir, procesar y cargar foto
+    self.connect(quit, QtCore.SIGNAL('clicked()'),QtGui.qApp, QtCore.SLOT('quit()'))
+    self.connect(okButton,QtCore.SIGNAL('clicked()'),self.Procesar)
+    self.connect(cargar, QtCore.SIGNAL('clicked()'), self.showDialog)
 
 
-    <span class="k">def</span> <span class="nf">showDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Muestra una ventana de dialogo para abrir un archivo</span>
-        <span class="c1">#guarda la ruta del archivo.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">'Open file'</span><span class="p">,</span>
-                    <span class="s1">'/home'</span><span class="p">)</span>
+def showDialog(self):
+    #Muestra una ventana de dialogo para abrir un archivo
+    #guarda la ruta del archivo.
+    self.filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file',
+                '/home')
 
-        <span class="c1">#Se define la imagen en la etiqueta</span>
-        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">imagen</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
+    #Se define la imagen en la etiqueta
+    pixmap = QtGui.QPixmap("%s" %self.filename)
+    self.imagen.setPixmap(pixmap)
 
 
 
-    <span class="k">def</span> <span class="nf">Procesar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Captura la informacion y genera el codigo QR</span>
+def Procesar(self):
+    #Captura la informacion y genera el codigo QR
 
-        <span class="c1">#Define el resultado de los botones de radio</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">botonradio1</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">sexo</span> <span class="o">=</span> <span class="s2">"Masculino"</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">botonradio2</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">sexo</span> <span class="o">=</span> <span class="s2">"Femenino"</span>
+    #Define el resultado de los botones de radio
+    if self.botonradio1.isChecked() == True:
+        sexo = "Masculino"
+    elif self.botonradio2.isChecked() == True:
+        sexo = "Femenino"
 
-        <span class="c1">#Se procesa la informacion de los botones de check</span>
-        <span class="n">lista</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">dias</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Lunes"</span><span class="p">,</span><span class="s2">"Martes"</span><span class="p">,</span><span class="s2">"Miercoles"</span><span class="p">,</span><span class="s2">"Jueves"</span><span class="p">,</span><span class="s2">"Viernes"</span><span class="p">)</span>
-        <span class="n">lista</span><span class="p">[</span><span class="s2">"Lunes"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lunes</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
-        <span class="n">lista</span><span class="p">[</span><span class="s2">"Martes"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">martes</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
-        <span class="n">lista</span><span class="p">[</span><span class="s2">"Miercoles"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">miercoles</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
-        <span class="n">lista</span><span class="p">[</span><span class="s2">"Jueves"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jueves</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
-        <span class="n">lista</span><span class="p">[</span><span class="s2">"Viernes"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viernes</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
-        <span class="n">resultado</span> <span class="o">=</span> <span class="s2">""</span>
-        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">dia</span> <span class="ow">in</span> <span class="n">lista</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dias</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">dia</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">lista</span><span class="p">[</span><span class="n">dia</span><span class="p">]</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">resultado</span> <span class="o">=</span> <span class="n">dia</span>
-                            <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
-                        <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">resultado</span> <span class="o">=</span> <span class="n">resultado</span> <span class="o">+</span> <span class="s2">",</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span><span class="n">dia</span>
+    #Se procesa la informacion de los botones de check
+    lista = {}
+    dias = ("Lunes","Martes","Miercoles","Jueves","Viernes")
+    lista["Lunes"] = self.lunes.isChecked()
+    lista["Martes"] = self.martes.isChecked()
+    lista["Miercoles"] = self.miercoles.isChecked()
+    lista["Jueves"] = self.jueves.isChecked()
+    lista["Viernes"] = self.viernes.isChecked()
+    resultado = ""
+    flag = 0
+    for dia in lista.keys():
+        for i in dias:
+            if dia == i:
+                if lista[dia] == True:
+                    if flag == 0:
+                        resultado = dia
+                        flag = 1
+                    elif flag == 1:
+                        resultado = resultado + ",%s" %dia
 
-        <span class="c1">#Se le da formato a la informacion recabada para generar el codigo QR</span>
-        <span class="n">texto</span> <span class="o">=</span> <span class="s2">"""</span>
-<span class="s2">        Nombre:</span><span class="si">%s</span><span class="se">\n</span><span class="s2"></span>
-<span class="s2">        Cedula: </span><span class="si">%s</span><span class="se">\n</span><span class="s2"></span>
-<span class="s2">        Fecha Nacimiento: </span><span class="si">%s</span><span class="se">\n</span><span class="s2"></span>
-<span class="s2">        Sexo: </span><span class="si">%s</span><span class="se">\n</span><span class="s2"></span>
-<span class="s2">        Foto: </span><span class="si">%s</span><span class="se">\n</span><span class="s2"></span>
-<span class="s2">        Dia de participacion: </span><span class="si">%s</span><span class="se">\n</span><span class="s2"></span>
+    #Se le da formato a la informacion recabada para generar el codigo QR
+    texto = """
+    Nombre:%s\n
+    Cedula: %s\n
+    Fecha Nacimiento: %s\n
+    Sexo: %s\n
+    Foto: %s\n
+    Dia de participacion: %s\n
 
-<span class="s2">        """</span> <span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nombreEdit</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cedula</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="o">.</span><span class="n">textFromDateTime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fecha</span><span class="o">.</span><span class="n">dateTime</span><span class="p">()),</span>
-            <span class="n">sexo</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-            <span class="n">resultado</span><span class="p">)</span>
+    """ %(self.nombreEdit.text(),
+        self.cedula.text(),
+        self.fecha.textFromDateTime(self.fecha.dateTime()),
+        sexo,
+        self.filename,
+        resultado)
 
-        <span class="c1">#Se verifica si el archivo del codigo qr no existe, si no se borra</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s2">"./archivosalida.png"</span><span class="p">):</span>
-            <span class="n">remove</span><span class="p">(</span><span class="s2">"./archivosalida.png"</span><span class="p">)</span>
+    #Se verifica si el archivo del codigo qr no existe, si no se borra
+    if os.path.isfile("./archivosalida.png"):
+        remove("./archivosalida.png")
 
-        <span class="c1">#Se crea la imagen del codigo qr</span>
-        <span class="n">imagen</span> <span class="o">=</span> <span class="n">encode</span><span class="p">(</span><span class="n">texto</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="c1">#Se salva la imagen en un archivo.</span>
-        <span class="n">imagen</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"./archivosalida.png"</span><span class="p">)</span>
+    #Se crea la imagen del codigo qr
+    imagen = encode(texto)[2]
+    #Se salva la imagen en un archivo.
+    imagen.save("./archivosalida.png")
 
-        <span class="c1">#Se muestra la imagen en la etiqueta</span>
-        <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="p">(</span><span class="s2">"./archivosalida.png"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">setPixmap</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>    
-   <span class="c1">#Se instancia la clase QApplication    </span>
-   <span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>    
-   <span class="c1">#Se instancia el objeto QuitButton    </span>
-   <span class="n">qb</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>    
-   <span class="c1">#Se muestra la aplicacion    </span>
-   <span class="n">qb</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    
-   <span class="c1">#Se sale de la aplicacion    </span>
-   <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
-</pre></div>
+    #Se muestra la imagen en la etiqueta
+    pixmap = QtGui.QPixmap("./archivosalida.png")
+    self.label.setPixmap(pixmap)
+</code></pre>
+<p>if <strong>name</strong> == "<strong>main</strong>":  <br/>
+   #Se instancia la clase QApplication  <br/>
+   app = QtGui.QApplication(sys.argv)  <br/>
+   #Se instancia el objeto QuitButton  <br/>
+   qb = App()  <br/>
+   #Se muestra la aplicacion  <br/>
+   qb.show()  <br/>
+   #Se sale de la aplicacion  <br/>
+   sys.exit(app.exec_())
+```</p>
 <p>La siguiente figura muestra la aplicaci&oacute;n al iniciarse:</p>
 <p><img alt="PyQt 8" src="./images/pyqt8-1.png"/></p>
 <p>La siguiente imagen muestra la ventana de dialogo para subir la foto:</p>

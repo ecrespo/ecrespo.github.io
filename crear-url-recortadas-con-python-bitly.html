@@ -184,159 +184,116 @@
 <li><code>simplejson</code> </li>
 </ul>
 <p>El script es sencillo, se pasa la serie de m&oacute;dulos a utilizar, se pasa el usuario y el apikey que se obtuvo de ' <code>bit.ly</code> y se llama a la funci&oacute;n que recorta la url.</p>
-<p>A continuaci&oacute;n se muestra el c&oacute;digo:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python</span>
+<p>A continuaci&oacute;n se muestra el c&oacute;digo:
+```python</p>
+<h1 id="!/usr/bin/python">!/usr/bin/python</h1>
+<h1 id="script que convierte un url a un url recortado por medio de bit.ly">Script que convierte un url a un url recortado por medio de bit.ly</h1>
+<h1 id="requiere urllib, urllib2, re, simplejson">requiere urllib, urllib2, re, simplejson</h1>
+<h1 id="se intenta importar los modulos que se necesito si no devuelve mensaje de error">Se intenta importar los modulos que se necesito si no devuelve mensaje de error</h1>
+<h1 id="donde se menciona que se requiere los los modulos.">donde se menciona que se requiere los los modulos.</h1>
+<p>try:</p>
+<p>from re import match</p>
+<p>from urllib2 import urlopen, Request, HTTPError</p>
+<p>from urllib import urlencode</p>
+<p>from simplejson import loads</p>
+<p>except ImportError, e:</p>
+<p>raise Exception('Required module missing: %s' % e.args[0])</p>
+<h1 id="definicion de usuario y clave bit.ly">Definicion de usuario y clave bit.ly</h1>
+<p>user = "o_5j8ri77vv6aa"</p>
+<p>apikey  = "R_172fe1dcf183470c85ce345aaa784cf9395"</p>
+<h1 id="funcion que recorta el url, se le pasa un url y devuelve el mismo recortado">Funcion que recorta el url, se le pasa un url y devuelve el mismo recortado</h1>
+<p>def shorten(url):</p>
+<pre><code>#Se maneja la excepcion de error http
 
 
-<span class="c1"># Script que convierte un url a un url recortado por medio de bit.ly</span>
 
 
-<span class="c1"># requiere urllib, urllib2, re, simplejson</span>
 
+try:
 
 
+    #Se le pasa los parametros url, user, apikey y formato de serializacion en
 
 
-<span class="c1">#Se intenta importar los modulos que se necesito si no devuelve mensaje de error</span>
+    #este caso json
 
 
-<span class="c1">#donde se menciona que se requiere los los modulos.</span>
+    params = urlencode({'longUrl': url, 'login': user, 'apiKey': apikey, 'format': 'json'})
 
 
-<span class="k">try</span><span class="p">:</span>
+    #Se hace la solicitud al api de bit.ly pasandole los parametros
 
 
-  <span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">match</span>
+    req = Request("http://api.bit.ly/v3/shorten?%s" % params)
 
 
-  <span class="kn">from</span> <span class="nn">urllib2</span> <span class="kn">import</span> <span class="n">urlopen</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">HTTPError</span>
+    #Se abre la respuesta.
 
 
-  <span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">urlencode</span>
+    response = urlopen(req)
 
 
-  <span class="kn">from</span> <span class="nn">simplejson</span> <span class="kn">import</span> <span class="n">loads</span>
+    #Se lee y se carga
 
 
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+    j = loads(response.read())
 
 
-  <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">'Required module missing: </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    #Si el codigo de estatus de la peticion http es 200
 
 
+    #se retona el url recortada
 
 
+    if j['status_code'] == 200:
 
-<span class="c1">#Definicion de usuario y clave bit.ly</span>
 
+        return j['data']['url']
 
-<span class="n">user</span> <span class="o">=</span> <span class="s2">"o_5j8ri77vv6aa"</span>
 
+    #Si no es 200 se genera una excepcion pasando el mensaje de estatus
 
-<span class="n">apikey</span>  <span class="o">=</span> <span class="s2">"R_172fe1dcf183470c85ce345aaa784cf9395"</span>
 
+    raise Exception('%s'%j['status_txt'])
 
 
+#Si no se logra la conexion http se devuelve un mensaje de error.
 
 
-<span class="c1">#Funcion que recorta el url, se le pasa un url y devuelve el mismo recortado</span>
+except HTTPError, e:
 
 
-<span class="k">def</span> <span class="nf">shorten</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    raise('HTTP error%s'%e.read())
+</code></pre>
+<p>if <strong>name</strong> == '<strong>main</strong>':</p>
+<pre><code>#Se importa argv del modulo sys
 
 
-    <span class="c1">#Se maneja la excepcion de error http</span>
+from sys import argv
 
 
+#Si no inicia el argumento con http se devuelve un mensaje de error
 
 
+#solicitando que se coloque el http al url.
 
-    <span class="k">try</span><span class="p">:</span>
 
+if not match('http://',argv[1]):
 
-        <span class="c1">#Se le pasa los parametros url, user, apikey y formato de serializacion en</span>
 
+    raise Exception('Debe iniciar con "http://"')
 
-        <span class="c1">#este caso json</span>
 
-
-        <span class="n">params</span> <span class="o">=</span> <span class="n">urlencode</span><span class="p">({</span><span class="s1">'longUrl'</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span> <span class="s1">'login'</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span> <span class="s1">'apiKey'</span><span class="p">:</span> <span class="n">apikey</span><span class="p">,</span> <span class="s1">'format'</span><span class="p">:</span> <span class="s1">'json'</span><span class="p">})</span>
-
-
-        <span class="c1">#Se hace la solicitud al api de bit.ly pasandole los parametros</span>
-
-
-        <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="s2">"http://api.bit.ly/v3/shorten?</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">params</span><span class="p">)</span>
-
-
-        <span class="c1">#Se abre la respuesta.</span>
-
-
-        <span class="n">response</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
-
-
-        <span class="c1">#Se lee y se carga</span>
-
-
-        <span class="n">j</span> <span class="o">=</span> <span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-
-
-        <span class="c1">#Si el codigo de estatus de la peticion http es 200</span>
-
-
-        <span class="c1">#se retona el url recortada</span>
-
-
-        <span class="k">if</span> <span class="n">j</span><span class="p">[</span><span class="s1">'status_code'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-
-
-            <span class="k">return</span> <span class="n">j</span><span class="p">[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'url'</span><span class="p">]</span>
-
-
-        <span class="c1">#Si no es 200 se genera una excepcion pasando el mensaje de estatus</span>
-
-
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1">'</span><span class="o">%</span><span class="n">j</span><span class="p">[</span><span class="s1">'status_txt'</span><span class="p">])</span>
-
-
-    <span class="c1">#Si no se logra la conexion http se devuelve un mensaje de error.</span>
-
-
-    <span class="k">except</span> <span class="n">HTTPError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-
-
-        <span class="k">raise</span><span class="p">(</span><span class="s1">'HTTP error</span><span class="si">%s</span><span class="s1">'</span><span class="o">%</span><span class="n">e</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-
-
-    <span class="c1">#Se importa argv del modulo sys</span>
-
-
-    <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
-
-
-    <span class="c1">#Si no inicia el argumento con http se devuelve un mensaje de error </span>
-
-
-    <span class="c1">#solicitando que se coloque el http al url.</span>
-
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">(</span><span class="s1">'http://'</span><span class="p">,</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-
-
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">'Debe iniciar con "http://"'</span><span class="p">)</span>
-
-
-    <span class="c1">#Se muestra en la consola el url recortado</span>
-
-    <span class="k">print</span> <span class="n">shorten</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</pre></div>
-<p>Al ejecutar el script se tiene lo siguiente:  </p>
-<div class="highlight"><pre><span></span>ernesto@grievous:~/bin/python$ ./acortarurl.py http://blog.crespo.org.ve
-
-http://bit.ly/LXP0QB
-</pre></div>
+#Se muestra en la consola el url recortado
+
+print shorten(argv[1])
+</code></pre>
+<p>```</p>
+<p>Al ejecutar el script se tiene lo siguiente:<br/>
+```
+ernesto@grievous:~/bin/python$ ./acortarurl.py http://blog.crespo.org.ve</p>
+<p>http://bit.ly/LXP0QB</p>
+<p>```</p>
 <p>Con el script ya se puede ir recortando url de por ejemplo el art&iacute;culo anterior donde se <a href="http://blog.crespo.org.ve/2014/01/jugando-con-rss-del-blog-desde-python.html">obtiene la lista de art&iacute;culos de un blog por medio de rss</a>.</p>
 <h2 id="_1"></h2>
 <p>&iexcl;Haz tu donativo!

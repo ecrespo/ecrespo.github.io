@@ -170,95 +170,92 @@ Se dise&ntilde;o una ventana de dialogo con una gr&aacute;fica en el centro, 2 b
 La figura muestra el dise&ntilde;o de la interfaz con glade.</p>
 <p><img alt="Tutorial 9 Glade 1" src="./images/tutorialpythongtkglade9-1.png"/></p>
 <p>El c&oacute;digo de la creaci&oacute;n de la aplicaci&oacute;n es el siguiente:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1">#Importar m&oacute;dulo gtk y matplotlib</span>
-<span class="kn">import</span> <span class="nn">gtk</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span>
+<p>```python</p>
+<h1 id="!/usr/bin/env python">!/usr/bin/env python</h1>
+<h1 id="-- coding: utf-8 --">-<em>- coding: utf-8 -</em>-</h1>
+<h1 id="importar modulo gtk y matplotlib">Importar m&oacute;dulo gtk y matplotlib</h1>
+<p>import gtk
+import matplotlib</p>
+<p>matplotlib.use('GTK')</p>
+<h1 id="importar la clase figure, subplot, figurecanvasgtk, figurecanvas">Importar la clase figure, subplot, figurecanvasgtk, figurecanvas</h1>
+<p>from matplotlib.figure import Figure
+from matplotlib.axes import Subplot
+from matplotlib.backends.backend_gtk import FigureCanvasGTK, NavigationToolbar
+from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvas</p>
+<h1 id="importar numpy">Importar numpy</h1>
+<p>import numpy as np</p>
+<h1 id="definicion de la clase">Definici&oacute;n de la clase</h1>
+<p>class App:
+    def <strong>init</strong>(self):
+        #Manejo del archivo glade por medio de gtkbuilder
+        self.glade_file = "ej10.ui"
+        self.glade = gtk.Builder()
+        self.glade.add_from_file(self.glade_file)
+        # cargar los widgets de la interfaz
+        self.window = self.glade.get_object('dialog1')
+        self.button1 = self.glade.get_object('button1')
+        self.button2 = self.glade.get_object('button2')
+        #T&iacute;tulo de la ventana de dialogos
+        self.window.set_title("Ventana de dialogo para demostrar uso de matplotlib")
+        #Tama&ntilde;o de la ventana de dialogos
+        self.window.set_default_size(600, 400)
+        #Asociaci&oacute;n de los eventos con los widgets
+        self.window.connect("destroy",self.on_dialog1_destroy)
+        self.window.connect("close",self.on_dialog1_close)
+        self.button1.connect ("clicked",self.on_button1_clicked)
+        self.button2.connect ("clicked",self.on_button2_clicked)
+        #Definici&oacute;n del widget que manejar&aacute; la gr&aacute;fica
+        self.figura = Figure(figsize=(10, 8), dpi=100)
+        self.ax = self.figura.add_subplot(111)
+        self.ax.set_xlabel("Eje X")
+        self.ax.set_ylabel("Eje Y")
+        self.ax.set_title('Grafica')
+        self.ax.grid(True)
+        self.canvas = FigureCanvasGTK(self.figura)
+        self.canvas.show()
+        #Agregar la gr&aacute;fica a la caja vertical
+        self.vbox1 = self.glade.get_object("vbox1")
+        self.vbox1.pack_start(self.canvas, True, True)
+        #Mostrar la ventana
+        self.window.show_all()</p>
+<pre><code>def on_dialog1_destroy(self,*args):
+    #Cerrar la ventana de dialogo
+    gtk.main_quit()
 
-<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">'GTK'</span><span class="p">)</span>
-<span class="c1">#Importar la clase figure, subplot, figurecanvasgtk, figurecanvas</span>
-<span class="kn">from</span> <span class="nn">matplotlib.figure</span> <span class="kn">import</span> <span class="n">Figure</span>
-<span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="kn">import</span> <span class="n">Subplot</span>
-<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_gtk</span> <span class="kn">import</span> <span class="n">FigureCanvasGTK</span><span class="p">,</span> <span class="n">NavigationToolbar</span>
-<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_gtkagg</span> <span class="kn">import</span> <span class="n">FigureCanvasGTKAgg</span> <span class="k">as</span> <span class="n">FigureCanvas</span>
-<span class="c1">#Importar numpy</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="c1">#Definici&oacute;n de la clase</span>
-<span class="k">class</span> <span class="nc">App</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Manejo del archivo glade por medio de gtkbuilder</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade_file</span> <span class="o">=</span> <span class="s2">"ej10.ui"</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade</span> <span class="o">=</span> <span class="n">gtk</span><span class="o">.</span><span class="n">Builder</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">add_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">glade_file</span><span class="p">)</span>
-        <span class="c1"># cargar los widgets de la interfaz</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'dialog1'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">button1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'button1'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">button2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s1">'button2'</span><span class="p">)</span>
-        <span class="c1">#T&iacute;tulo de la ventana de dialogos</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Ventana de dialogo para demostrar uso de matplotlib"</span><span class="p">)</span>
-        <span class="c1">#Tama&ntilde;o de la ventana de dialogos</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">set_default_size</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
-        <span class="c1">#Asociaci&oacute;n de los eventos con los widgets</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"destroy"</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">on_dialog1_destroy</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"close"</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">on_dialog1_close</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">button1</span><span class="o">.</span><span class="n">connect</span> <span class="p">(</span><span class="s2">"clicked"</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">on_button1_clicked</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">button2</span><span class="o">.</span><span class="n">connect</span> <span class="p">(</span><span class="s2">"clicked"</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">on_button2_clicked</span><span class="p">)</span>
-        <span class="c1">#Definici&oacute;n del widget que manejar&aacute; la gr&aacute;fica</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">figura</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figura</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Eje X"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Eje Y"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Grafica'</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvasGTK</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figura</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="c1">#Agregar la gr&aacute;fica a la caja vertical</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vbox1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">glade</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s2">"vbox1"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vbox1</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
-        <span class="c1">#Mostrar la ventana</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">on_dialog1_destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="c1">#Cerrar la ventana de dialogo</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">on_button1_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="c1">#Carga la curva en la gr&aacute;fica</span>
-        <span class="c1">#Se oculta el canvas creado al inicio</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
-        <span class="c1">#Generaci&oacute;n de los valores X y Y</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="o">.</span><span class="mo">01</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-        <span class="c1">#Dibuja la curva</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="c1">#Se agrega la curva al canvas</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figura</span><span class="p">)</span>
-        <span class="c1">#Se muestra el canvas</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="c1">#Se agrega el canvas a la caja vertical</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vbox1</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
-
-
-    <span class="k">def</span> <span class="nf">on_button2_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="c1">#Cerrar la ventana de dialogo</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">on_dialog1_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="c1">#Cerrar la ventana de dialogo</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main_quit</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#Ejecutar la aplicaci&oacute;n gr&aacute;fica</span>
-        <span class="n">gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+def on_button1_clicked(self,*args):
+    #Carga la curva en la gr&aacute;fica
+    #Se oculta el canvas creado al inicio
+    self.canvas.hide()
+    #Generaci&oacute;n de los valores X y Y
+    self.x = np.arange(0,2*np.pi, .01)
+    self.y = np.sin(self.x**2)*np.exp(-self.x)
+    #Dibuja la curva
+    self.ax.plot(self.x, self.y)
+    #Se agrega la curva al canvas
+    self.canvas = FigureCanvas(self.figura)
+    #Se muestra el canvas
+    self.canvas.show()
+    #Se agrega el canvas a la caja vertical
+    self.vbox1.pack_start(self.canvas, True, True)
 
 
+def on_button2_clicked(self,*args):
+    #Cerrar la ventana de dialogo
+    gtk.main_quit()
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="c1">#Creaci&oacute;n de la instancia y ejecuci&oacute;n del m&eacute;todo main</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">App</span><span class="p">()</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-</pre></div>
+def on_dialog1_close(self,*args):
+    #Cerrar la ventana de dialogo
+    gtk.main_quit()
+
+def main(self):
+    #Ejecutar la aplicaci&oacute;n gr&aacute;fica
+    gtk.main()
+</code></pre>
+<p>if <strong>name</strong> == "<strong>main</strong>":
+    #Creaci&oacute;n de la instancia y ejecuci&oacute;n del m&eacute;todo main
+    app = App()
+    app.main()</p>
+<p>```</p>
 <p>La siguiente gr&aacute;fica muestra la ejecuci&oacute;n de la aplicaci&oacute;n:</p>
 <p><img alt="Tutorial 9 Glade 2" src="./images/tutorialpythongtkglade9-2.png"/></p>
 <p>La siguiente gr&aacute;fica muestra la aplicaci&oacute;n luego de presionar el bot&oacute;n aplicar y cargar la curva:</p>

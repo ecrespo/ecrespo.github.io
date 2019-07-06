@@ -170,10 +170,9 @@
 <p>Este art&iacute;culo se basa en el <a href="https://debathena.mit.edu/config-package-dev/">tutorial del MIT sobre creaci&oacute;n de paquetes de configuraci&oacute;n para Debian y una gu&iacute;a en el wiki de Debian</a> y una gu&iacute;a en el <a href="https://wiki.debian.org/ConfigPackages">wiki de Debian</a>. El proceso de como adoptar un paquete y empaquetar se explica en una gu&iacute;a que se encuentra en el <a href="https://wiki.debian.org/AdoptarUnPaquete">wiki de Debian</a>.</p>
 <p>Como ejemplo se usar&aacute; el paquete <code>openssh-server</code> que crea un archivo con el nombre  <code>/etc/ssh/sshd_config</code> . Este archivo contiene la configuraci&oacute;n necesaria para arrancar un servidor <code>ssh</code>.</p>
 <p>Instalando <code>openssh-server</code>:  </p>
-<div class="highlight"><pre><span></span>apt-get install openssh-server config-package-dev
-</pre></div>
+<p><code>apt-get install openssh-server config-package-dev</code></p>
 <p>El contenido del archivo es el siguiente:  </p>
-<div class="highlight"><pre><span></span>Port 22
+<p><code>Port 22
 Protocol 2
 HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_dsa_key
@@ -199,73 +198,64 @@ PrintMotd no
 PrintLastLog yes
 TCPKeepAlive yes
 AcceptEnv LANG LC_*
-Subsystem sftp /usr/lib/openssh/sftp-server
-</pre></div>
+Subsystem sftp /usr/lib/openssh/sftp-server</code></p>
 <p>Este archivo tiene el siguiente hash md5.  </p>
-<div class="highlight"><pre><span></span>8caefdd9e251b7cc1baa37874149a870  /etc/ssh/sshd_config
-</pre></div>
+<p><code>8caefdd9e251b7cc1baa37874149a870  /etc/ssh/sshd_config</code></p>
 <p>La idea es modificar este archivo para que no permita que el usuario <code>root</code> se conecte por <code>ssh</code> y no permitir reenv&iacute;o de aplicaciones gr&aacute;ficas.</p>
 <h4 id="procedimiento para crear paquete de configuracion sshd-config:">Procedimiento para crear paquete de configuraci&oacute;n <code>sshd-config</code>:</h4>
 <h5 id="1.crear el directorio de trabajo">1.Crear el directorio de trabajo</h5>
-<div class="highlight"><pre><span></span>mkdir canaima-sshd-config-0.1
-</pre></div>
+<p><code>mkdir canaima-sshd-config-0.1</code></p>
 <h5 id="2. cambiarse a dicho directorio">2. Cambiarse a dicho directorio</h5>
-<div class="highlight"><pre><span></span>cd canaima-sshd-config-0.1
-</pre></div>
+<p><code>cd canaima-sshd-config-0.1</code></p>
 <h5 id="3. crear los directorios debian y files">3. Crear los directorios debian y files</h5>
-<div class="highlight"><pre><span></span>mkdir -p debian files
-</pre></div>
+<p><code>mkdir -p debian files</code></p>
 <h5 id="4. en files crear el directorio etc, luego dentro de el, el directorio ssh y copiar el archivo sshd_config de /etc/ssh/ al directorio creado.">4. En <code>files</code> crear el directorio <code>etc</code>, luego dentro de &eacute;l, el directorio <code>ssh</code> y copiar el archivo <code>sshd_config</code> de <code>/etc/ssh/</code> al directorio creado.</h5>
-<div class="highlight"><pre><span></span>mkdir -p files/etc
+<p><code>mkdir -p files/etc
 mkdir -p files/etc/ssh
-cp /etc/ssh/sshd_config ./files/etc/ssh/sshd_config.canaima
-</pre></div>
+cp /etc/ssh/sshd_config ./files/etc/ssh/sshd_config.canaima</code></p>
 <h5 id="5. modificar el archivo para que el usuario root no pueda acceder al servidor ssh y que no se pueda reenviar paquetes de x11. las lineas son:">5. Modificar el archivo para que el usuario root no pueda acceder al servidor <code>ssh</code> y que no se pueda reenviar paquetes de <code>X11</code>. Las l&iacute;neas son:</h5>
-<div class="highlight"><pre><span></span>PermitRootLogin no
-X11Forwarding no
-</pre></div>
+<p><code>PermitRootLogin no
+X11Forwarding no</code> </p>
 <h5 id="6. dentro del directorio debian se creo el archivo changelog con el siguiente contenido:">6. Dentro del directorio debian se cre&oacute; el archivo <code>changelog</code> con el siguiente contenido:</h5>
-<div class="highlight"><pre><span></span>canaima-sshd-config (0.1) unstable; urgency=low
-
-* Initial release.
-
--- Ernesto Nadir Crespo Avila &lt;ecrespo@gmail.com&gt;  Sun, 13 Nov 2011 10:22:48 -0430
-</pre></div>
+<p>```
+canaima-sshd-config (0.1) unstable; urgency=low</p>
+<ul>
+<li>Initial release.</li>
+</ul>
+<p>-- Ernesto Nadir Crespo Avila <a href="mailto:ecrespo@gmail.com">ecrespo@gmail.com</a>  Sun, 13 Nov 2011 10:22:48 -0430
+```</p>
 <h5 id="7. se crea el archivo debian/compat con el valor 7.">7. Se crea el archivo <code>debian/compat</code>  con el valor 7.</h5>
 <h5 id="8. se crea el archivo debian/control y debian/control.in con la siguiente informacion:">8. Se crea el archivo <code>debian/control</code> y <code>debian/control.in</code> con la siguiente informaci&oacute;n:</h5>
-<div class="highlight"><pre><span></span><span class="n">Source</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span>
-<span class="n">Section</span><span class="o">:</span> <span class="n">config</span>
-<span class="n">Priority</span><span class="o">:</span> <span class="n">extra</span>
-<span class="n">Maintainer</span><span class="o">:</span> <span class="n">Ernesto</span> <span class="n">Nadir</span> <span class="n">Crespo</span> <span class="n">Avila</span> <span class="o">&lt;</span><span class="n">ecrespo</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="na">com</span><span class="o">&gt;</span>
-<span class="n">Build</span><span class="o">-</span><span class="n">Depends</span><span class="o">:</span> <span class="n">cdbs</span> <span class="o">(&gt;=</span> <span class="mf">0.4</span><span class="o">.</span><span class="mi">23</span><span class="o">-</span><span class="mf">1.1</span><span class="o">),</span> <span class="n">debhelper</span> <span class="o">(&gt;=</span> <span class="mf">4.2</span><span class="o">.</span><span class="mi">0</span><span class="o">),</span> <span class="n">config</span><span class="o">-</span><span class="kd">package</span><span class="o">-</span><span class="n">dev</span> <span class="o">(&gt;=</span> <span class="mf">4.5</span><span class="o">~)</span>
-<span class="n">Standards</span><span class="o">-</span><span class="n">Version</span><span class="o">:</span> <span class="mf">3.9</span><span class="o">.</span><span class="mi">2</span>
-
-<span class="n">Package</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span>
-<span class="n">Architecture</span><span class="o">:</span> <span class="n">all</span>
-<span class="n">Pre</span><span class="o">-</span><span class="n">Depends</span><span class="o">:</span> <span class="n">openssh</span><span class="o">-</span><span class="n">server</span>
-<span class="n">Depends</span><span class="o">:</span> <span class="n">cdbs</span><span class="o">,</span> <span class="n">$</span><span class="o">{</span><span class="n">misc</span><span class="o">:</span><span class="n">Depends</span><span class="o">}</span>
-<span class="n">Provides</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">diverted</span><span class="o">-</span><span class="n">files</span><span class="o">}</span>
-<span class="n">Conflicts</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">diverted</span><span class="o">-</span><span class="n">files</span><span class="o">}</span>
-<span class="n">Description</span><span class="o">:</span> <span class="n">Archivo</span> <span class="n">de</span> <span class="n">configuracion</span> <span class="n">de</span> <span class="n">ssh</span>
-<span class="n">Archivo</span> <span class="n">de</span> <span class="n">configuracion</span> <span class="n">del</span> <span class="n">servidor</span> <span class="n">ssh</span><span class="o">.</span>
-</pre></div>
+<p>```
+Source: canaima-sshd-config
+Section: config
+Priority: extra
+Maintainer: Ernesto Nadir Crespo Avila <a href="mailto:ecrespo@gmail.com">ecrespo@gmail.com</a>
+Build-Depends: cdbs (&gt;= 0.4.23-1.1), debhelper (&gt;= 4.2.0), config-package-dev (&gt;= 4.5~)
+Standards-Version: 3.9.2</p>
+<p>Package: canaima-sshd-config
+Architecture: all
+Pre-Depends: openssh-server
+Depends: cdbs, ${misc:Depends}
+Provides: ${diverted-files}
+Conflicts: ${diverted-files}
+Description: Archivo de configuracion de ssh
+Archivo de configuracion del servidor ssh.
+```</p>
 <p>En este caso se coloca el par&aacute;metro <code>Pre-Depends</code> ya que se necesita tener el servidor <code>openssh</code> instalado y bien configurado para poder agregarle cambios al archivo <code>/etc/ssh/sshd_config</code> .</p>
 <h5 id="9. se crea el archivo debian/copyright, en este caso se esta usando el mismo copyright de los archivos de ejemplo de config-package-dev:">9. Se crea el archivo <code>debian/copyright</code>, en este caso se est&aacute; usando el mismo copyright de los archivos de ejemplo de <code>config-package-dev</code>:</h5>
-<div class="highlight"><pre><span></span>canaima-ssh-config package.
-
-Author: Ernesto Nadir Crespo Avila &lt;ecrespo@gmail.com&gt;
-
-Copyright &copy; 2011 Ernesto Nadir Crespo Avila &lt;ecrespo@gmail.com&gt;
-
-Permission is hereby granted, free of charge, to any person obtaining
+<p>```
+canaima-ssh-config package.</p>
+<p>Author: Ernesto Nadir Crespo Avila <a href="mailto:ecrespo@gmail.com">ecrespo@gmail.com</a></p>
+<p>Copyright &copy; 2011 Ernesto Nadir Crespo Avila <a href="mailto:ecrespo@gmail.com">ecrespo@gmail.com</a></p>
+<p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
 without limitation the rights to use, copy, modify, merge, publish,
 distribute, sublicense, and/or sell copies of the Software, and to
 permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
+the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
@@ -274,73 +264,54 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-</pre></div>
+```</p>
 <h5 id="10. se crea el archivo debian/canaima-sshd-config.install . este archivo define donde se va a tomar los archivos de configuracion y a donde se van a copiar.">10. Se crea el archivo <code>debian/canaima-sshd-config.install</code> . Este archivo define donde se va a tomar los archivos de configuraci&oacute;n y a donde se van a copiar.</h5>
-<div class="highlight"><pre><span></span>files/* /
-</pre></div>
+<p><code>files/* /</code></p>
 <h5 id="11. se crea el archivo debian/rules. en este archivo se define la extension .canaima, la cual permite diferenciar de los paquetes base de debian de la meta distribucion canaima, ademas se define el archivo a modificar y luego los include de los cdbs:">11. Se crea el archivo <code>debian/rules</code>. En este archivo se define la extensi&oacute;n <code>.canaima</code>, la cual permite diferenciar de los paquetes base de Debian de la meta distribuci&oacute;n canaima, adem&aacute;s se define el archivo a modificar y luego los include de los <code>cdbs</code>:</h5>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span>#!/usr/bin/make -f
-
-DEB_DIVERT_EXTENSION = .canaima
-# Replace some base files with simple replacements.
-DEB_DIVERT_FILES_canaima-sshd-config += \
-/etc/ssh/sshd_config.canaima 
-# These files are installed via dh_install from the files/ directory
-# (see debian/canaima-sshd-config.install)
-
-include /usr/share/cdbs/1/rules/debhelper.mk
+<p>```</p>
+<h1 id="!/usr/bin/make -f_2">!/usr/bin/make -f</h1>
+<p>DEB_DIVERT_EXTENSION = .canaima</p>
+<h1 id="replace some base files with simple replacements.">Replace some base files with simple replacements.</h1>
+<p>DEB_DIVERT_FILES_canaima-sshd-config += \
+/etc/ssh/sshd_config.canaima </p>
+<h1 id="these files are installed via dh_install from the files/ directory">These files are installed via dh_install from the files/ directory</h1>
+<h1 id="(see debian/canaima-sshd-config.install)">(see debian/canaima-sshd-config.install)</h1>
+<p>include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/config-package.mk
-</pre></div>
-</td></tr></table>
+```</p>
 <h5 id="12. crear el paquete debian y firmarlo con la llave gpg:">12. Crear el paquete debian y firmarlo con la llave <code>gpg</code>:</h5>
-<div class="highlight"><pre><span></span>dpkg-buildpackage -rfakeroot -kC97E7015
-</pre></div>
+<p><code>dpkg-buildpackage -rfakeroot -kC97E7015</code></p>
 <p>Al ejectuar un <code>ls</code>  se pueden ver los archivos creados:</p>
-<div class="highlight"><pre><span></span>ls -l canaima-sshd*
+<p><code>ls -l canaima-sshd*
 -rw-r--r-- 1 ecrespo ecrespo 3948 nov 13 16:09 canaima-sshd-config_0.1_all.deb
 -rw-r--r-- 1 ecrespo ecrespo  864 nov 13 16:09 canaima-sshd-config_0.1.dsc
 -rw-r--r-- 1 ecrespo ecrespo 1521 nov 13 16:09 canaima-sshd-config_0.1_i386.changes
--rw-r--r-- 1 ecrespo ecrespo 2745 nov 13 16:09 canaima-sshd-config_0.1.tar.gz
-</pre></div>
+-rw-r--r-- 1 ecrespo ecrespo 2745 nov 13 16:09 canaima-sshd-config_0.1.tar.gz</code></p>
 <h5 id="13. se verifica que el paquete debian cumple con el policy de debian:">13. Se verifica que el paquete Debian cumple con el policy de Debian:</h5>
-<div class="highlight"><pre><span></span>lintian -i canaima-sshd-config_0.1.dsc
-</pre></div>
+<p><code>lintian -i canaima-sshd-config_0.1.dsc</code></p>
 <h5 id="14. verificar la instalacion del paquete debian.">14. Verificar la instalaci&oacute;n del paquete Debian.</h5>
-<div class="highlight"><pre><span></span>sudo dpkg -i canaima-sshd-config_0.1_all.deb 
+<p><code>sudo dpkg -i canaima-sshd-config_0.1_all.deb 
 [sudo] password for ecrespo: 
 Selecting previously unselected package canaima-sshd-config.
 (Leyendo la base de datos ... 418546 ficheros o directorios instalados actualmente.)
 Desempaquetando canaima-sshd-config (de canaima-sshd-config_0.1_all.deb) ...
 Configurando canaima-sshd-config (0.1) ...
-A&ntilde;adiendo `desviaci&oacute;n de /etc/ssh/sshd_config a /etc/ssh/sshd_config.canaima-orig por canaima-sshd-config'
-</pre></div>
+A&ntilde;adiendo `desviaci&oacute;n de /etc/ssh/sshd_config a /etc/ssh/sshd_config.canaima-orig por canaima-sshd-config'</code></p>
 <h5 id="15. al ejecutar un ls -l en el directorio /etc/ssh/sshd_config* se vera que se crea un enlace al archivo original y se muestra los archivos agregados de la extension canaima:">15. Al ejecutar un <code>ls -l</code> en el directorio <code>/etc/ssh/sshd_config*</code> se ver&aacute; que se crea un enlace al archivo original y se muestra los archivos agregados de la extensi&oacute;n canaima:</h5>
-<div class="highlight"><pre><span></span>root@jewel:/etc/ssh# ls -l sshd_config*
+<p><code>root@jewel:/etc/ssh# ls -l sshd_config*
 lrwxrwxrwx 1 root root   19 nov 13 16:16 sshd_config -&gt; sshd_config.canaima
 -rw-r--r-- 1 root root 2487 nov 13 10:15 sshd_config.canaima
--rw-r--r-- 1 root root 2489 nov 13 13:20 sshd_config.canaima-orig
-</pre></div>
+-rw-r--r-- 1 root root 2489 nov 13 13:20 sshd_config.canaima-orig</code></p>
 <h5 id="16. al revisar el archivo se nota que el campo para permitir a root conectarse al servidor ssh se encuentra en no, igual caso para el parametro de reenvio de x11. se revisa el hash md5 del archivo y se nota que del archivo original al actual son diferentes:">16. Al revisar el archivo se nota que el campo para permitir a root conectarse al servidor ssh se encuentra en no, igual caso para el par&aacute;metro de reenv&iacute;o de <code>X11</code>. Se revisa el hash <code>md5</code> del archivo y se nota que del archivo original al actual son diferentes:</h5>
-<div class="highlight"><pre><span></span>a358d423fa6b8bf640a7fd1e06731ea3  sshd_config
-</pre></div>
+<p><code>a358d423fa6b8bf640a7fd1e06731ea3  sshd_config</code></p>
 <p>Al crear paquetes de configuraci&oacute;n de esta forma (una forma limpia de modificar archivos de configuraci&oacute;n) y al eliminar el paquete de configuraci&oacute;n los archivos originales se vuelven a usar:</p>
-<div class="highlight"><pre><span></span>apt-get remove -f canaima-sshd-config
-
-root@jewel:/etc/ssh# md5sum sshd_config
+<p>```
+apt-get remove -f canaima-sshd-config</p>
+<p>root@jewel:/etc/ssh# md5sum sshd_config
 8caefdd9e251b7cc1baa37874149a870  sshd_config
-</pre></div>
+``` </p>
 <p>Se tienen varios ejemplos para usar <code>config-package-dev</code> como por ejemplo paquetes binarios, configuraci&oacute;n de cron, etc.</p>
-<h2 id="_3"></h2>
+<h2 id="_2"></h2>
 <p>&iexcl;Haz tu donativo!
 Si te gust&oacute; el art&iacute;culo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente

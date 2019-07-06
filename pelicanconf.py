@@ -38,11 +38,11 @@ AUTHOR_FEED_RSS = None
 MARKUP = ('md', 'ipynb')
 
 
-MARKDOWN = {
-  'extension_configs': {
-    'pyembed.markdown': {}
-  }
-}
+#MARKDOWN = {
+#  'extension_configs': {
+#    'pyembed.markdown': {}
+#  }
+#}
 
 
 
@@ -114,12 +114,12 @@ PLUGINS = ['i18n_subsites',
            'related_posts',
            'tag_cloud',
            'pelican_youtube',
-           'pelican-ert',
+           #'pelican-ert',
            #'github_activity',
            #'pelican-gist',
            #'pelican-githubprojects',
            #'ipynb.markup',
-           'pelican-toc',
+           #'pelican-toc',
            #'ipynb.liquid',
            'post_stats'] # You may have more plugins
 IGNORE_FILES = [".ipynb_checkpoints"]

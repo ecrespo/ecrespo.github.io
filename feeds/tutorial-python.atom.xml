@@ -1,5 +1,326 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2014-06-08T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Configurando un sitio estático con flask</title><link href="https://ecrespo.github.io/configurando-un-sitio-estatico-con-flask.html" rel="alternate"></link><published>2014-06-08T09:00:00-05:30</published><updated>2014-06-08T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-06-08:/configurando-un-sitio-estatico-con-flask.html</id><summary type="html">&lt;p&gt;Continuando con la serie de &lt;a href="https://www.seraph.to/tag/flask.html"&gt;artículos&lt;/a&gt; sobre el microframework de desarrollo web flask, ahora se mostrará como crear un sitio estático.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2014-07-19T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Restful API con Django-tastypie y Django-Celery</title><link href="https://ecrespo.github.io/restful-api-con-django-tastypie-y-django-celery.html" rel="alternate"></link><published>2014-07-19T09:00:00-05:30</published><updated>2014-07-19T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-07-19:/restful-api-con-django-tastypie-y-django-celery.html</id><summary type="html">&lt;p&gt;Continuando con los artículos sobre django, en este caso se usará &lt;code&gt;django-celery&lt;/code&gt; para envío de mensajes a un servidor kannel (servidor sms) y django-tastypie para mostrar el resultado por medio de API rest full con json.
+En los dos artículos anteriores &lt;a href="https://www.seraph.to/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html#manejo-de-colas-de-rabbitmq-en-django-con-django-celery"&gt;Manejo de colas de RabbitMQ en django con django-celery …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los artículos sobre django, en este caso se usará &lt;code&gt;django-celery&lt;/code&gt; para envío de mensajes a un servidor kannel (servidor sms) y django-tastypie para mostrar el resultado por medio de API rest full con json.
+En los dos artículos anteriores &lt;a href="https://www.seraph.to/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html#manejo-de-colas-de-rabbitmq-en-django-con-django-celery"&gt;Manejo de colas de RabbitMQ en django con django-celery&lt;/a&gt; y 
+&lt;a href="https://www.seraph.to/restful-api-con-django-tastypie.html#restful-api-con-django-tastypie"&gt;Restfult API con django tastypie&lt;/a&gt; se tiene la base de este artículo. Este artículo se basa en el ejemplo de la mensajería sms del artículo de &lt;a href="http://blog.crespo.org.ve/2014/05/restful-api-con-django-tastypie.html"&gt;Restfult API con django tastypie&lt;/a&gt; (todo el proceso de creación del proyecto y de la aplicación sms fue explicada en ese artículo).&lt;/p&gt;
+&lt;p&gt;La idea ahora es poder mostrar los sms listados por evento, no es necesario estar creando una tabla que herede de las otras dos, esto será posible gracias a tastypie en una consulta del json.&lt;/p&gt;
+&lt;p&gt;Se usará como base de datos sqlite3. A continuación se muestra el archivo &lt;code&gt;settings.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Archivo settings.py:&lt;/span&gt;
+&lt;span class="c1"&gt;#Configuración de la base de datos sqlite3&lt;/span&gt;
+&lt;span class="n"&gt;DATABASES&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;default&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;ENGINE&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;django.db.backends.sqlite3&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Add &amp;#39;postgresql_psycopg2&amp;#39;, &amp;#39;mysql&amp;#39;, &amp;#39;sqlite3&amp;#39; or &amp;#39;oracle&amp;#39;.&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;NAME&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sms.db&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;                      &lt;span class="c1"&gt;# Or path to database file if using sqlite3.&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;USER&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;                      &lt;span class="c1"&gt;# Not used with sqlite3.&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;PASSWORD&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;                  &lt;span class="c1"&gt;# Not used with sqlite3.&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;HOST&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;                      &lt;span class="c1"&gt;# Set to empty string for localhost. Not used with sqlite3.&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;PORT&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;                      &lt;span class="c1"&gt;# Set to empty string for default. Not used with sqlite3.&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Zona horaria y localización&lt;/span&gt;
+
+
+&lt;span class="n"&gt;TIME_ZONE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;America/Caracas&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;LANGUAGE_CODE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;es-ve&amp;#39;&lt;/span&gt; 
+
+&lt;span class="c1"&gt;#Aplicaciones instaladas (djcelery,pasarela.apps.sms,tastypie y south)&lt;/span&gt;
+&lt;span class="n"&gt;INSTALLED_APPS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.auth&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.contenttypes&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.sessions&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.sites&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.messages&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.staticfiles&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="c1"&gt;# Uncomment the next line to enable the admin:&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.admin&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;djcelery&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;pasarela.apps.sms&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;tastypie&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;south&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="c1"&gt;# Uncomment the next line to enable admin documentation:&lt;/span&gt;
+    &lt;span class="c1"&gt;# &amp;#39;django.contrib.admindocs&amp;#39;,&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Conexión al servidor kannel &lt;/span&gt;
+&lt;span class="n"&gt;direccion&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;127.0.0.1&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;portsms&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;13013&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;portadmin&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;13000&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;usuario&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;kannel&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;clave&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;kannel&amp;quot;&lt;/span&gt;
+&lt;span class="o"&gt;----------------------&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El archivo &lt;code&gt;pasarela/apps/sms/models.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Archivo pasarela/apps/sms/models.py&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.db&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la tabla Evento que contiene los campos evento (número del evento), el estatus del mismo (si se #termino el evento o no y si no termino fue por falla o no.&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Evento&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IntegerField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;primary_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;BooleanField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__unicode__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+       &lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Evento: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;, Estatus: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; , Falla: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;falla&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;evento&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la tabla HistoricoSMS donde se tiene un campo&lt;/span&gt;
+&lt;span class="c1"&gt;#foreignkey de la tablla evento, el mensaje, el número de celular, el estatus si se envío o no o si fallo.&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ForeignKey&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Evento&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;150&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;numcel&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;BooleanField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__unicode__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;, &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;, &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;, &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;, &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;  &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;falla&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+&lt;span class="o"&gt;--------------------&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Archivo &lt;code&gt;pasarela/apps/sms/admin.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Archivo pasarela/apps/sms/admin.py&lt;/span&gt;
+&lt;span class="c1"&gt;#En este archivo se define que las tablas Evento e HistoricoSMS se puedan visualizar desde la #administración de django.&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.contrib&lt;/span&gt;  &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pasarela.apps.sms.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;Evento&lt;/span&gt;
+
+
+&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;site&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;site&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Evento&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Archivo &lt;code&gt;pasarela/apps/sms/api.py&lt;/code&gt; (archivo para crear el api restful de django-tastypie), en este caso tiene varias modificaciones con respecto al artículo anterior sobre tastypie, ahora se agrega la variable filtering(más información sobre filtering en el siguiente &lt;a href="https://django-tastypie.readthedocs.io/en/latest/resources.html"&gt;enlace&lt;/a&gt;) que es un diccionario en cada recurso:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se importa de tastypie.resources ModelResource, ALL y ALL_WITH_RELATIONS&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tastypie.resources&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ModelResource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ALL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ALL_WITH_RELATIONS&lt;/span&gt;
+&lt;span class="c1"&gt;#Se importa del modelo HistoricoSMS y Evento&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;Evento&lt;/span&gt;
+&lt;span class="c1"&gt;#Se importa fields de tastypie&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tastypie&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;fields&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;EventoResource&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ModelResource&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;queryset&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;Evento&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;resource_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;evento&amp;#39;&lt;/span&gt;
+&lt;span class="c1"&gt;#Se muestra todos los eventos&lt;/span&gt;
+        &lt;span class="n"&gt;filtering&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="s1"&gt;&amp;#39;evento&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;ALL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SMSResource&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ModelResource&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fields&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ForeignKey&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;EventoResource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;evento&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;queryset&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;resource_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sms&amp;#39;&lt;/span&gt;
+&lt;span class="c1"&gt;#De evento se muestra todo con relación a el. de estatus se muestra exactamente lo que se necesita,&lt;/span&gt;
+&lt;span class="c1"&gt;#acá también se puede usar para las consultas: [&amp;#39;exact&amp;#39;, &amp;#39;range&amp;#39;, &amp;#39;gt&amp;#39;, &amp;#39;gte&amp;#39;, &amp;#39;lt&amp;#39;, &amp;#39;lte&amp;#39;].&lt;/span&gt;
+        &lt;span class="n"&gt;filtering&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="s1"&gt;&amp;#39;evento&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;ALL_WITH_RELATIONS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="s1"&gt;&amp;#39;estatus&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;exact&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;------------------------&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El archivo que permite manejar las tareas de celery &lt;code&gt;pasarela/apps/sms/tasks.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Archivo pasarela/apps/sms/tasks.py&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Celery&lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Celery&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;tasks&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;broker&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;amqp://&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;amqp&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;urllib2&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;urlopen&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;urllib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;urlencode&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;urllib2&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;json&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;sleep&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pasarela.apps.sms.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;Evento&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Conexión al servidor kannel (está configuración se puede pasar al archivo settings.py y usarla desde allí&lt;/span&gt;
+&lt;span class="n"&gt;direccion&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;direccion&lt;/span&gt;
+&lt;span class="n"&gt;portsms&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;portsms&lt;/span&gt;
+&lt;span class="n"&gt;portadmin&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;portadmin&lt;/span&gt;
+&lt;span class="n"&gt;usuario&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;usuario&lt;/span&gt;
+&lt;span class="n"&gt;clave&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define una tarea para celery por medio del decorador @task, se recibe un json para luego sea&lt;/span&gt;
+&lt;span class="c1"&gt;# procesado.&lt;/span&gt;
+&lt;span class="nd"&gt;@app.task&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;RecNums&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;datos&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se toma el json y se convierte en un diccionario&lt;/span&gt;
+    &lt;span class="n"&gt;diccionario&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loads&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;datos&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se instancia la clave Evento(tabla Evento).&lt;/span&gt;
+    &lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Evento&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se asigna cada variable del diccionario para trabajarlos directamente&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;clave&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;diccionario&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;clave&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;mensaje&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;diccionario&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;clave&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;numeros&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;numeros&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;diccionario&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;clave&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;cantnumeros&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;cantnum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;diccionario&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;clave&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;evento&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;eventoid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;diccionario&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea una lista para agregar todos los números de celular a dicha lista&lt;/span&gt;
+    &lt;span class="n"&gt;lista&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;num&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;numeros&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;num&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="c1"&gt;#A evento.evento se le asigna el id del evento.&lt;/span&gt;
+    &lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;eventoid&lt;/span&gt;
+    &lt;span class="c1"&gt;#Si la lista es distinta a la variable cantnum se envía un mensaje de error, si no se procesa la lista&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;cantnum&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se envía al proceso Enviar (de celery) cada mensaje con su número celular, esperando un segundo &lt;/span&gt;
+        &lt;span class="c1"&gt;#para procesar el siguiente.&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+            &lt;span class="c1"&gt;#Se Envía el mensaje pasando el evento, el número celular de la lista y el mensaje&lt;/span&gt;
+            &lt;span class="n"&gt;resultado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Enviar&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;delay&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se asigna True al estatus del evento al terminar de procesar los mensajes.&lt;/span&gt;
+        &lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se salva los valores en la tabla Evento.&lt;/span&gt;
+        &lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Se enviaron: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;cantnum&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+        &lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Error en la recepcion de los datos&amp;quot;&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se crea la tarea de celery Enviar donde recibe el número del evento, el número de celular y la cantidad de &lt;/span&gt;
+&lt;span class="c1"&gt;#intentos para enviar el sms el valor por defecto es 5.&lt;/span&gt;
+&lt;span class="nd"&gt;@app.task&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;Enviar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;intentos&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se instancia la clase HistoricoSMS que maneja dicha table de models.py&lt;/span&gt;
+    &lt;span class="n"&gt;historico&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se le da forma de códificación url al mensaje para eliminar los espacios en blanco del mismo.&lt;/span&gt;
+    &lt;span class="n"&gt;form&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;urlencode&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;text&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+    &lt;span class="c1"&gt;#se define la variable Url donde se tiene el url del servidor kannel donde se le pasa al texto&lt;/span&gt;
+    &lt;span class="c1"&gt;#el usuario, la clave, el número celular y el mensaje a enviar.&lt;/span&gt;
+    &lt;span class="n"&gt;Url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;:&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;/cgi-bin/sendsms?username=&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;password=&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;to=&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;text=&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;direccion&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;portsms&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;usuario&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;clave&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;form&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se maneja una excepción si hay un error de comunicación http.&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; 
+        &lt;span class="c1"&gt;#Se abre el Url&lt;/span&gt;
+        &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;urlopen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;timeout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se asigna los valores numcel, mensaje y evento al objeto historico.&lt;/span&gt;
+        &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numcel&lt;/span&gt;
+        &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+        &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;evento&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se lee el resultado de abrir el url, si se tiene el mensaje  de encolado para enviar más tarde&lt;/span&gt;
+        &lt;span class="c1"&gt;#se asigna el estatus False y se salva devolviendo el mensaje de no enviado &lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;3: Queued for later delivery&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Mensaje no enviado a: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="c1"&gt;#Se envío el mensaje se coloca el estatus en True y se salva en la tabla&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+            &lt;span class="c1"&gt;#Se devuelve el mensaje de mensaje enviado.&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Mensaje enviado a: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;urllib2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;URLError&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;urllib2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HTTPError&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="n"&gt;exc&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Si hay una excepción de error http se reintenta el envío llamando de forma &lt;/span&gt;
+    &lt;span class="c1"&gt;#concurrente a esta misma función reduciendo el valor de los intentos, &lt;/span&gt;
+    &lt;span class="c1"&gt;#cuando llegue a cero el número de intentos se devuelve un mensaje de no enviado &lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;intentos&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;Enviar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;intentos&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="c1"&gt;#Se salva los valores en la tabla y devuelve el mensaje de sms no enviado&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;numcel&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;evento&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+            &lt;span class="n"&gt;historico&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;No hay conexion al kannel por puerto o IP, el numero que no se procesaron es: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt;
+&lt;span class="o"&gt;----------------------------&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestra el contenido del archivo pasarela/urls.py el cual contiene el acceso al API como se explico en el artículo anterior y ahora tiene el acceso a la función que permite recibir los datos para enviar (estos datos se pasan por un json):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Archivo pasarela/urls.py&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf.urls&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patterns&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;djcelery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;views&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;celery_views&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pasarela.apps.sms&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;tasks&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Uncomment the next two lines to enable the admin:&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.contrib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;
+&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;autodiscover&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa Api de tastypie.api&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tastypie.api&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Api&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;apps.sms.api&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SMSResource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;EventoResource&lt;/span&gt;
+
+&lt;span class="n"&gt;v1_api&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Api&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;v1&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se registra los recursos en la instancia del api.&lt;/span&gt;
+&lt;span class="n"&gt;v1_api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SMSResource&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="n"&gt;v1_api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;EventoResource&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="n"&gt;urlpatterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;patterns&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="c1"&gt;# Uncomment the next line to enable the admin:&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^admin/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;site&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt;
+    &lt;span class="c1"&gt;#Acceso al API&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^api/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;v1_api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt;
+    &lt;span class="c1"&gt;#se define enviar que usa la vista de tareas de celery para ejecutar tasks.RecNums&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^enviar/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;celery_views&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;task_view&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RecNums&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt;
+    &lt;span class="c1"&gt;#Consulta a celery si la tarea se ejecuto sin problemas&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^(?P&amp;lt;task_id&amp;gt;[\w\d\-]+)/done/?$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;celery_views&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;is_task_successful&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;celery-is_task_successful&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="c1"&gt;#Consulta de celery para ver el estatus de la tarea&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^(?P&amp;lt;task_id&amp;gt;[\w\d\-]+)/status/?$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;celery_views&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;task_status&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;celery-task_status&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;-----------------------&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La base de datos se sincroniza como se explicó en los artículos anteriores, ahora toca ejecutar en modo pruba django-celery, django como tal y abrir un interprete de comandos para django.&lt;/p&gt;
+&lt;p&gt;Ejecución de django-celery con dos colas de rabbitMQ y en modo info:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python manage.py celeryd -E -l info -c 2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación captura de pantalla de la ejecución:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/restfulapicondjangotastypieydjangocelery-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Note que se tienen 2 tareas en el &lt;code&gt;celery&lt;/code&gt;:
+- pasarela.apps.sms.tasks.Enviar
+- pasarela.apps.sms.tasks.RecNums
+Ahora se ejecuta django en el 127.0.0.1 y puerto 8080:
+python manage.py runserver 127.0.0.1:8080
+A continuación una captura de pantalla de la ejecución del comando:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/restfulapicondjangotastypieydjangocelery-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Y por último se ejecuta el comando para tener un shell interfactivo de django:
+python manage.py shell
+A continuación la captura de pantalla: &lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/restfulapicondjangotastypieydjangocelery-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Ahora se ejecutará en el shell una prueba que simula la recepción por parte de la tarea del json que recibe de una aplicación externa para enviar los sms:
+Hay que acotar que los números de celular de la prueba no corresponden a números  reales o de proveedores de teléfonía celular.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/restfulapicondjangotastypieydjangocelery-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Ahora para complementar la idea de consulta API restful por json del artículo anterior la idea es listar los números celulares que se enviaron del evento 6, en este caso se usará el programa curl:
+curl http://127.0.0.1:8080/api/v1/sms/?evento=6
+El resultado es:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{&amp;quot;meta&amp;quot;: {&amp;quot;limit&amp;quot;: 20, &amp;quot;next&amp;quot;: null, &amp;quot;offset&amp;quot;: 0, &amp;quot;previous&amp;quot;: null, &amp;quot;total_count&amp;quot;: 5}, &amp;quot;objects&amp;quot;: [{&amp;quot;estatus&amp;quot;:true, &amp;quot;evento&amp;quot;: &amp;quot;/api/v1/evento/6/&amp;quot;, &amp;quot;id&amp;quot;: &amp;quot;21&amp;quot;, &amp;quot;mensaje&amp;quot;: &amp;quot;Esta es una prueba de sms&amp;quot;, &amp;quot;numcel&amp;quot;: &amp;quot;14225673531&amp;quot;, &amp;quot;resource_uri&amp;quot;: &amp;quot;/api/v1/sms/21/&amp;quot;}, {&amp;quot;estatus&amp;quot;:true, &amp;quot;evento&amp;quot;: &amp;quot;/api/v1/evento/6/&amp;quot;,&amp;quot;id&amp;quot;: &amp;quot;22&amp;quot;, &amp;quot;mensaje&amp;quot;: &amp;quot;Esta es una prueba de sms&amp;quot;, &amp;quot;numcel&amp;quot;: &amp;quot;142165673531&amp;quot;, &amp;quot;resource_uri&amp;quot;: &amp;quot;/api/v1/sms/22/&amp;quot;}, {&amp;quot;estatus&amp;quot;: true, &amp;quot;evento&amp;quot;: &amp;quot;/api/v1/evento/6/&amp;quot;,&amp;quot;id&amp;quot;: &amp;quot;23&amp;quot;, &amp;quot;mensaje&amp;quot;: &amp;quot;Esta es una prueba de sms&amp;quot;, &amp;quot;numcel&amp;quot;: &amp;quot;14265673531&amp;quot;, &amp;quot;resource_uri&amp;quot;: &amp;quot;/api/v1/sms/23/&amp;quot;}, {&amp;quot;estatus&amp;quot;: true, &amp;quot;evento&amp;quot;: &amp;quot;/api/v1/evento/6/&amp;quot;, &amp;quot;id&amp;quot;: &amp;quot;24&amp;quot;, &amp;quot;mensaje&amp;quot;: &amp;quot;Esta es una prueba de sms&amp;quot;, &amp;quot;numcel&amp;quot;: &amp;quot;14145673531&amp;quot;, &amp;quot;resource_uri&amp;quot;: &amp;quot;/api/v1/sms/24/&amp;quot;}, {&amp;quot;estatus&amp;quot;: true, &amp;quot;evento&amp;quot;: &amp;quot;/api/v1/evento/6/&amp;quot;,&amp;quot;id&amp;quot;: &amp;quot;25&amp;quot;, &amp;quot;mensaje&amp;quot;: &amp;quot;Esta es una prueba de sms&amp;quot;, &amp;quot;numcel&amp;quot;: &amp;quot;14245673531&amp;quot;, &amp;quot;resource_uri&amp;quot;: &amp;quot;/api/v1/sms/25/&amp;quot;}]}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Por último se muestra la captura de pantalla de lo que se genera en el &lt;code&gt;djcelery&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/restfulapicondjangotastypieydjangocelery-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;En el próximo artículo se mostrará el acceso a las tareas de &lt;code&gt;celery&lt;/code&gt; desde el URL definido en &lt;code&gt;urls.py&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="Django"></category></entry><entry><title>Configurando un sitio estático con flask</title><link href="https://ecrespo.github.io/configurando-un-sitio-estatico-con-flask.html" rel="alternate"></link><published>2014-06-08T09:00:00-05:30</published><updated>2014-06-08T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-06-08:/configurando-un-sitio-estatico-con-flask.html</id><summary type="html">&lt;p&gt;Continuando con la serie de &lt;a href="https://www.seraph.to/tag/flask.html"&gt;artículos&lt;/a&gt; sobre el microframework de desarrollo web flask, ahora se mostrará como crear un sitio estático.&lt;/p&gt;
 &lt;p&gt;Este artículo se basa en un artículo en inglés llamado &lt;a href="https://realpython.com/introduction-to-flask-part-1-setting-up-a-static-site/"&gt;Introduction to Flask, Part 1 - Setting up a static site&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Se usará el mismo archivo utilizado en los artículos …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con la serie de &lt;a href="https://www.seraph.to/tag/flask.html"&gt;artículos&lt;/a&gt; sobre el microframework de desarrollo web flask, ahora se mostrará como crear un sitio estático.&lt;/p&gt;
 &lt;p&gt;Este artículo se basa en un artículo en inglés llamado &lt;a href="https://realpython.com/introduction-to-flask-part-1-setting-up-a-static-site/"&gt;Introduction to Flask, Part 1 - Setting up a static site&lt;/a&gt;.&lt;/p&gt;

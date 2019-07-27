@@ -1,7 +1,7 @@
 Title: Restful API con Django-tastypie  
 Date: 2014-05-03 9:00  
 Category: Tutorial Python  
-Tags: Canaima,Debian,General,Python,Ubuntu  
+Tags: Canaima,Debian,General,Python,Ubuntu,Django  
 lang: es  
 translation: true  
 
@@ -358,4 +358,5 @@ dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV
 
 O Escaneando el código QR desde la billetera:
 
-![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)file:///home/ernesto/Documentos/day/parte%204/2014-restfulapicondjangotastypie.md
+![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)file:///home/ernesto/Documentos/day/parte%204/2014-restfulapicondjangotastypie.md
+

@@ -825,7 +825,382 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category></entry><entry><title>Manejo de colas de RabbitMQ en Django con Django-Celery</title><link href="https://ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" rel="alternate"></link><published>2014-04-29T09:00:00-05:30</published><updated>2014-04-29T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-04-29:/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html</id><summary type="html">&lt;p&gt;&lt;a href="https://www.seraph.to/tag/django.html"&gt;Hace un tiempo escribí unos 3 artículos sobre Django&lt;/a&gt;, ahora se tocará un tema algo más complejo pero útil cuando se requiere rendimiento en procesos.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category></entry><entry><title>Restful API con Django-tastypie</title><link href="https://ecrespo.github.io/restful-api-con-django-tastypie.html" rel="alternate"></link><published>2014-05-03T09:00:00-05:30</published><updated>2014-05-03T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-05-03:/restful-api-con-django-tastypie.html</id><summary type="html">&lt;p&gt;&lt;a href="https://www.seraph.to/tag/django.html"&gt;Siguiendo con la serie de artículos sobre django&lt;/a&gt;, ahora se  mostrará como crear un API restful con django tastypie, su documentación la pueden encontrar &lt;a href="https://django-tastypie.readthedocs.io/en/latest/tutorial.html"&gt;acá&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En el caso de Debian/Ubuntu y otras distribuciones basadas se instalarán los siguientes programas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Django south&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lxml&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mimeparse&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tastypie&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Este artículo se basa en …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://www.seraph.to/tag/django.html"&gt;Siguiendo con la serie de artículos sobre django&lt;/a&gt;, ahora se  mostrará como crear un API restful con django tastypie, su documentación la pueden encontrar &lt;a href="https://django-tastypie.readthedocs.io/en/latest/tutorial.html"&gt;acá&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En el caso de Debian/Ubuntu y otras distribuciones basadas se instalarán los siguientes programas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Django south&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lxml&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mimeparse&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tastypie&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Este artículo se basa en el &lt;a href="http://bogdan-ivanov.com/entry/django-tastypie-tutorial-part-1/"&gt;siguiente artículo en inglés&lt;/a&gt;.
+Para instalar los programas se ejecuta apt-get:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#apt-get install python-django-south python-tastypie python-mimeparse python-lxml python3-lxml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La instalación por medio de &lt;code&gt;pip&lt;/code&gt; es la siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#pip install Django South python-mimeparse dateutil django-tastypie lxml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora a crear el proyecto pasarela con django-admin:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p pruebas
+cd pruebas
+ernesto@pruebas:~/pruebas$ django-admin startproject pasarela
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se lista el contenido del directorio pasarela:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:~/pruebas$ ls -l pasarela/
+total 8
+-rwxr-xr-x 1 ernesto ernesto  251 may  3 18:17 manage.py
+drwxr-xr-x 2 ernesto ernesto 4096 may  3 18:17 pasarela
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se edita el &lt;code&gt;settings.py&lt;/code&gt; dentro de pasarela:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:~/pruebas$ vim pasarela/pasarela/settings.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestra la parte que se modificó del archivo &lt;code&gt;settings.py&lt;/code&gt;:
+El admin del proyecto:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ADMINS = (
+    (&amp;#39;Ernesto Crespo&amp;#39;, &amp;#39;ecrespo@xxxx&amp;#39;),
+)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La base de datos que se usará por pruebas será sqlite3 y el nombre de la base de datos será pasarela.db:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DATABASES = {
+    &amp;#39;default&amp;#39;: {
+        &amp;#39;ENGINE&amp;#39;: &amp;#39;django.db.backends.sqlite3&amp;#39;, # Add &amp;#39;postgresql_psycopg2&amp;#39;, &amp;#39;mysql&amp;#39;, &amp;#39;sqlite3&amp;#39; or &amp;#39;oracle&amp;#39;.
+        &amp;#39;NAME&amp;#39;: &amp;#39;pasarela.db&amp;#39;,                      # Or path to database file if using sqlite3.
+        &amp;#39;USER&amp;#39;: &amp;#39;&amp;#39;,                      # Not used with sqlite3.
+        &amp;#39;PASSWORD&amp;#39;: &amp;#39;&amp;#39;,                  # Not used with sqlite3.
+        &amp;#39;HOST&amp;#39;: &amp;#39;&amp;#39;,                      # Set to empty string for localhost. Not used with sqlite3.
+        &amp;#39;PORT&amp;#39;: &amp;#39;&amp;#39;,                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Hosts permitidos son el servidor donde se encuentra django y el equipo donde se hará las pruebas: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ALLOWED_HOSTS = [&amp;quot;127.0.0.1&amp;quot;,&amp;quot;192.168.0.106&amp;quot;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El huso horario será el de Caracas Venezuela:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;TIME_ZONE = &amp;#39;America/Caracas&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El idioma de la aplicación será Español Venezuela:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;LANGUAGE_CODE = &amp;#39;es-ve
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Las aplicaciones a instalar son: &lt;code&gt;django.contribution.admin&lt;/code&gt;, &lt;code&gt;south&lt;/code&gt;, &lt;code&gt;tastypie&lt;/code&gt;, &lt;code&gt;pasarela.apps.sms&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;INSTALLED_APPS = (
+    &amp;#39;django.contrib.auth&amp;#39;,
+    &amp;#39;django.contrib.contenttypes&amp;#39;,
+    &amp;#39;django.contrib.sessions&amp;#39;,
+    &amp;#39;django.contrib.sites&amp;#39;,
+    &amp;#39;django.contrib.messages&amp;#39;,
+    &amp;#39;django.contrib.staticfiles&amp;#39;,
+    # Uncomment the next line to enable the admin:
+    &amp;#39;django.contrib.admin&amp;#39;,
+    &amp;#39;south&amp;#39;,
+    &amp;#39;tastypie&amp;#39;,
+    &amp;#39;pasarela.apps.sms&amp;#39;,
+    # Uncomment the next line to enable admin documentation:
+    # &amp;#39;django.contrib.admindocs&amp;#39;,
+)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea el directorio &lt;code&gt;apps&lt;/code&gt; y dentro de el se crea el archivo &lt;code&gt;__init__.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:~/pruebas/pasarela/pasarela$ mkdir -p apps
+
+ernesto@pruebas:~/pruebas/pasarela/pasarela$ touch apps/__init__.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se listan los archivos dentro de &lt;code&gt;apps&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:~/pruebas/pasarela/pasarela$ ls -l apps 
+total 0
+-rw-r--r-- 1 ernesto ernesto 0 may  3 18:41 __init__.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se crea la aplicación django sms dentro de apps:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:~/pruebas/pasarela/pasarela/apps$ django-admin startapp sms
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se lista el contenido de &lt;code&gt;sms&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:~/pruebas/pasarela/pasarela/apps$ ls -l sms/
+total 12
+-rw-r--r-- 1 ernesto ernesto   0 may  3 18:42 __init__.py
+-rw-r--r-- 1 ernesto ernesto  57 may  3 18:42 models.py
+-rw-r--r-- 1 ernesto ernesto 383 may  3 18:42 tests.py
+-rw-r--r-- 1 ernesto ernesto  26 may  3 18:42 views.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se creará el modelo de datos que se usará, se edita el archivo &lt;code&gt;models.py&lt;/code&gt; de &lt;code&gt;sms&lt;/code&gt;:
+Se manejarán dos tablas, en una se maneja el historico de mensajes enviados y en la segunda tabla la culminación del envío de todos los mensajes.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#se importa models de django.db&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.db&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Create your models here.&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la clase Evento que hereda de model.Model&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Evento&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea la columna evento que será entero y clave primaria de la base de datos&lt;/span&gt;
+    &lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IntegerField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;primary_key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea el campo estatus que será booleano y por defecto será falso.&lt;/span&gt;
+    &lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se define la información que se requiere en el panel de administración web de django.&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__unicode__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+       &lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%E&lt;/span&gt;&lt;span class="s2"&gt;vento: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;, Estatus: &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;evento&lt;/span&gt;
+
+
+
+
+&lt;span class="c1"&gt;#Se crea la clase historicoSMS que hereda de models.Model&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea la columna evento que es clave foranea de la tabla evento.&lt;/span&gt;
+    &lt;span class="n"&gt;evento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ForeignKey&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Evento&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#se crea mensaje con un tamaño de 150 caracteres&lt;/span&gt;
+    &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;150&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea numcel con un tamaño de 11 caracteres que será el numero celular.&lt;/span&gt;
+    &lt;span class="n"&gt;numcel&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea estatus que tiene el valor booleano si se envío o no el mensaje al número celular.&lt;/span&gt;
+    &lt;span class="n"&gt;estatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;default&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se define la información que se requiere en el panel de administración web de django.&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__unicode__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;mensaje&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;  &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt; &amp;quot;&lt;/span&gt;  &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;evento&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mensaje&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;numcel&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estatus&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;mensaje&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se crea el archivo &lt;code&gt;api.py&lt;/code&gt; en la aplicación &lt;code&gt;sms&lt;/code&gt; (este archivo es el que define que información se va a mostrar por medio de API restful):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se importa ModelResource de tastypie.resources&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tastypie.resources&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ModelResource&lt;/span&gt;
+&lt;span class="c1"&gt;#Se importa de models.py en la apps sms HistoricoSMS y Evento&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;Evento&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la clase SMSResource que hereda de ModelResource&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SMSResource&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ModelResource&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea una clase Meta&lt;/span&gt;
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c1"&gt;#queryset se trae todo el contenido de la tabla HistoricoSMS&lt;/span&gt;
+        &lt;span class="n"&gt;queryset&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HistoricoSMS&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="c1"&gt;#El nombre del recurso es mensajes, de está forma se consulta en el restful api&lt;/span&gt;
+        &lt;span class="n"&gt;resource_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;msg&amp;#39;&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la clase EventoResource que hereda de ModelResource&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;EventoResource&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ModelResource&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se crea la clase Meta&lt;/span&gt;
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Meta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="c1"&gt;#Se define queryset que se trae todos los datos de la tabla Evento&lt;/span&gt;
+        &lt;span class="n"&gt;queryset&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Evento&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+       &lt;span class="c1"&gt;#El nombre del recurso es evento.&lt;/span&gt;
+        &lt;span class="n"&gt;resource_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;event&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se busca que se puedan ver las consultas de Restful API, para ello se edita el archivo &lt;code&gt;urls.py&lt;/code&gt; de pasarela (se comentarán sólo los cambios que se le hagan al archivo):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf.urls&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patterns&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Uncomment the next two lines to enable the admin:&lt;/span&gt;
+&lt;span class="c1"&gt;#Se descomento la importación de admin y admin.autodiscover() .&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.contrib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;
+&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;autodiscover&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa Api de tastypie.api&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;tastypie.api&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Api&lt;/span&gt;
+&lt;span class="c1"&gt;#Se importa SMSResource y EventoResource del api de la aplicación sms.&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;apps.sms.api&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SMSResource&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;EventoResource&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se instancia Api con la versión v1.&lt;/span&gt;
+&lt;span class="n"&gt;v1_api&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Api&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;v1&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se registra los recursos en la instancia del api.&lt;/span&gt;
+&lt;span class="n"&gt;v1_api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SMSResource&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="n"&gt;v1_api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;EventoResource&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+
+&lt;span class="n"&gt;urlpatterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;patterns&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="c1"&gt;# Examples:&lt;/span&gt;
+    &lt;span class="c1"&gt;# url(r&amp;#39;^$&amp;#39;, &amp;#39;pasarela.views.home&amp;#39;, name=&amp;#39;home&amp;#39;),&lt;/span&gt;
+    &lt;span class="c1"&gt;# url(r&amp;#39;^pasarela/&amp;#39;, include(&amp;#39;pasarela.foo.urls&amp;#39;)),&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Uncomment the admin/doc line below to enable admin documentation:&lt;/span&gt;
+    &lt;span class="c1"&gt;# url(r&amp;#39;^admin/doc/&amp;#39;, include(&amp;#39;django.contrib.admindocs.urls&amp;#39;)),&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Uncomment the next line to enable the admin:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se descomenta admin&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^admin/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;site&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se define el url del api.&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^api/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;v1_api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se sincroniza o crea la base de datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:~/pruebas/pasarela$ python manage.py syncdb 
+Syncing...
+Creating tables ...
+Creating table auth_permission
+Creating table auth_group_permissions
+Creating table auth_group
+Creating table auth_user_user_permissions
+Creating table auth_user_groups
+Creating table auth_user
+Creating table django_content_type
+Creating table django_session
+Creating table django_site
+Creating table django_admin_log
+Creating table south_migrationhistory
+Creating table tastypie_apiaccess
+Creating table tastypie_apikey
+Creating table sms_evento
+Creating table sms_historicosms
+
+You just installed Django&amp;#39;s auth system, which means you don&amp;#39;t have any superusers defined.
+Would you like to create one now? (yes/no): yes
+Username (leave blank to use &amp;#39;ernesto&amp;#39;): ernesto
+E-mail address: ecrespo@xyzw.com
+Password: 
+Password (again): 
+/usr/lib/python2.7/dist-packages/django/db/models/fields/__init__.py:808: RuntimeWarning: DateTimeField received a naive datetime (2014-05-03 20:30:49.555592) while time zone support is active.
+  RuntimeWarning)
+Superuser created successfully.
+Installing custom SQL ...
+Installing indexes ...
+Installed 0 object(s) from 0 fixture(s)
+
+Synced:
+ &amp;gt; django.contrib.auth
+ &amp;gt; django.contrib.contenttypes
+ &amp;gt; django.contrib.sessions
+ &amp;gt; django.contrib.sites
+ &amp;gt; django.contrib.messages
+ &amp;gt; django.contrib.staticfiles
+ &amp;gt; django.contrib.admin
+ &amp;gt; south
+ &amp;gt; tastypie
+ &amp;gt; pasarela.apps.sms
+
+Not synced (use migrations):
+ - 
+(use ./manage.py migrate to migrate these)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora pide migrar los esquemas con &lt;code&gt;south&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;migrate&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se necesitan algunos datos en la base de datos, se usará la parte interactiva de sqlite3. 
+Se insertarán varios datos como lo indica el siguiente comando sql
+Para el caso de la tabla eventos: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;insert into sms_evento (evento,estatus)  values (3,0);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para el caso de la tabla historicosms:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;insert into sms_historicosms (evento_id,mensaje,numcel,estatus)  values (2,&amp;quot;otra prueba&amp;quot;,&amp;quot;04158339101&amp;quot;,&amp;quot;False&amp;quot;);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El resultado se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sqlite&amp;gt; select * from sms_evento;
+1|1
+2|1
+3|0
+
+sqlite&amp;gt; select * from sms_historicosms;
+1|1|prueba|04158339191|True
+2|1|prueba|04158339192|True
+3|1|prueba|04158339193|False
+4|1|prueba|04158339194|False
+5|1|prueba|04158339195|True
+6|2|otra prueba|04158339197|True
+7|2|otra prueba|04158339198|True
+8|2|otra prueba|04158339199|True
+9|2|otra prueba|04158339100|True
+10|2|otra prueba|04158339100|False
+11|2|otra prueba|04158339101|False
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ya con estos datos se puede iniciar el servicio para mostrar la información del api restful:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@pruebas:~/pruebas/pasarela$ python manage.py runserver 192.168.0.100:8080
+Validating models...
+
+0 errors found
+Django version 1.4.5, using settings &amp;#39;pasarela.settings&amp;#39;
+Development server is running at http://192.168.0.100:8080/
+Quit the server with CONTROL-C.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestra la captura de pantalla del resultado de la consulta de los mensajes:
+http://192.168.0.100:8080/api/v1/msg/?format=json&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/restfulapicondjangotastypie-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;La siguiente figura muestra la consulta de los eventos
+http://192.168.0.100:8080/api/v1/event/?format=json:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/restfulapicondjangotastypie-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Si se quiere consultar el evento 1 de eventos:
+http://192.168.0.100:8080/api/v1/event/1/?format=json&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{&amp;quot;estatus&amp;quot;: true, &amp;quot;evento&amp;quot;: 1, &amp;quot;resource_uri&amp;quot;: &amp;quot;/api/v1/event/1/&amp;quot;}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Si se quiere consultar el mensaje 1 de msg:
+http://192.168.0.100:8080/api/v1/msg/1/?format=json&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{&amp;quot;estatus&amp;quot;: false, &amp;quot;id&amp;quot;: &amp;quot;1&amp;quot;, &amp;quot;mensaje&amp;quot;: &amp;quot;prueba&amp;quot;, &amp;quot;numcel&amp;quot;: &amp;quot;04158339191&amp;quot;, &amp;quot;resource_uri&amp;quot;: &amp;quot;/api/v1/msg/1/&amp;quot;}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Luego se explicará como realizar aparte de un get, un POST/PUT/DELETE, pero para ello se requiere autenticación.&lt;/p&gt;
+&lt;p&gt;Otros artículos sobre tastypie:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://blog.brabadu.com/2011/06/easy-rest-api-with-django-tastypie.html"&gt;http://blog.brabadu.com/2011/06/easy-rest-api-with-django-tastypie.html&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://jlafon.io/django-tastypie.html"&gt;http://jlafon.io/django-tastypie.html&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://www.realpython.com/blog/python/create-a-super-basic-rest-api-with-django-tastypie/"&gt;http://www.realpython.com/blog/python/create-a-super-basic-rest-api-with-django-tastypie/&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://bixly.com/blog/django-tastypie/"&gt;http://bixly.com/blog/django-tastypie/&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;file:///home/ernesto/Documentos/day/parte%204/2014-restfulapicondjangotastypie.md&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Python"></category><category term="Ubuntu"></category></entry><entry><title>Manejo de colas de RabbitMQ en Django con Django-Celery</title><link href="https://ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" rel="alternate"></link><published>2014-04-29T09:00:00-05:30</published><updated>2014-04-29T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-04-29:/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html</id><summary type="html">&lt;p&gt;&lt;a href="https://www.seraph.to/tag/django.html"&gt;Hace un tiempo escribí unos 3 artículos sobre Django&lt;/a&gt;, ahora se tocará un tema algo más complejo pero útil cuando se requiere rendimiento en procesos.&lt;/p&gt;
 &lt;p&gt;A continuación paso a explicar un proceso sencillo de manejo de colas de &lt;code&gt;RabbitMQ&lt;/code&gt; por medio de &lt;code&gt;Django-Celery&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;La idea es realizar una instalación y …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://www.seraph.to/tag/django.html"&gt;Hace un tiempo escribí unos 3 artículos sobre Django&lt;/a&gt;, ahora se tocará un tema algo más complejo pero útil cuando se requiere rendimiento en procesos.&lt;/p&gt;
 &lt;p&gt;A continuación paso a explicar un proceso sencillo de manejo de colas de &lt;code&gt;RabbitMQ&lt;/code&gt; por medio de &lt;code&gt;Django-Celery&lt;/code&gt;.&lt;/p&gt;

@@ -1,7 +1,7 @@
 Title: Micro framework flask (parte 2)  
 Date: 2014-06-07 9:00  
 Category: Tutorial Python  
-Tags: Python  
+Tags: Python,Flask  
 lang: es  
 translation: true  
 

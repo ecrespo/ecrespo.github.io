@@ -1,7 +1,7 @@
 Title: Micro Framework de desarrollo web Flask  
 Date: 2014-05-31 9:00  
 Category: Tutorial Python  
-Tags: Python  
+Tags: Python,Flask
 lang: es  
 translation: true  
 

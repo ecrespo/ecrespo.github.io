@@ -109,15 +109,18 @@ PYGMENTS_STYLE = 'monokai'
 GOOGLE_ANALYTICS = 'UA-131517246-1'
 #DISQUS_SITENAME = 'seraphto'
 DISQUS_SITENAME = "https://seraphto.disqus.com"
+#DISQUS_SECRET_KEY= u"XoJR8Iy6JjOCBK1aBdjyPZ49pRVByB1laHszIDtb3gVU7dajxDAhevzkSZQQxrUj"
+#DISQUS_PUBLIC_KEY= u""
 PLUGIN_PATHS = ['./plugins','/home/ernesto/proyectos/pelican-plugins']
 PLUGINS = ['i18n_subsites',
            'related_posts',
            'tag_cloud',
-           'pelican_youtube',
+           #'pelican_youtube',
            'share_post',
            'neighbors',
            #'pelican-ert',
            'github_activity',
+           #'disqus_static',
            #'pelican-gist',
            #'pelican-githubprojects',
            #'ipynb.markup',
@@ -138,6 +141,9 @@ SIDEBAR_LINKS = [
     '<a href="/about/">About</a>',
     '<a href="/contact/">Contact</a>',
 ]
+
+OUTPUT_PATH = 'docs/'
+
 
 GOOGLE_FONTS = [
     'Nunito Sans:300,700',

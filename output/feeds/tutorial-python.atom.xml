@@ -1,5 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2014-07-22T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Tarea de Django-Celery desde un URL</title><link href="https://ecrespo.github.io/tarea-de-django-celery-desde-un-url.html" rel="alternate"></link><published>2014-07-22T09:00:00-05:30</published><updated>2014-07-22T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-07-22:/tarea-de-django-celery-desde-un-url.html</id><summary type="html">&lt;p&gt;En el artículo anterior (&lt;a href="https://www.seraph.to/restful-api-con-django-tastypie-y-django-celery.html#restful-api-con-django-tastypie-y-django-celery"&gt;Restful API con Django-tastypie y Django-Celery&lt;/a&gt;) se mostró como pasarle datos a django desde su interprete de comandos, en este arículo se explicará como pasarlo desde el navegador o un script en python que lo haga por nosotros.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2014-09-21T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Utilizando mongodb por medio de python.</title><link href="https://ecrespo.github.io/utilizando-mongodb-por-medio-de-python.html" rel="alternate"></link><published>2014-09-21T09:00:00-05:30</published><updated>2014-09-21T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-09-21:/utilizando-mongodb-por-medio-de-python.html</id><summary type="html">&lt;p&gt;En artículo &lt;a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian"&gt;anterior&lt;/a&gt; explique como iniciar un servidor &lt;code&gt;mongodb&lt;/code&gt; y unos ejemplos de uso.&lt;/p&gt;
+&lt;p&gt;Ahora explicaré el uso de &lt;code&gt;mongodb&lt;/code&gt; por medio de python con &lt;code&gt;pymongo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Para instalar &lt;code&gt;pymongo&lt;/code&gt; se tienen dos vías, una a lo distribuciones basadas en Debian:
+Para Python 2:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install python-pymongo python-pymongo-doc python-pymongo-ext
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para Python …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En artículo &lt;a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian"&gt;anterior&lt;/a&gt; explique como iniciar un servidor &lt;code&gt;mongodb&lt;/code&gt; y unos ejemplos de uso.&lt;/p&gt;
+&lt;p&gt;Ahora explicaré el uso de &lt;code&gt;mongodb&lt;/code&gt; por medio de python con &lt;code&gt;pymongo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Para instalar &lt;code&gt;pymongo&lt;/code&gt; se tienen dos vías, una a lo distribuciones basadas en Debian:
+Para Python 2:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install python-pymongo python-pymongo-doc python-pymongo-ext
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para Python 3:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install python3-pymongo python3-pymongo-ext
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;O con &lt;code&gt;pip&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install pymongo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La idea es mostrar como se conecta python a &lt;code&gt;mongodb&lt;/code&gt;, como se crea la base de datos, como se insertan documentos, se listan y se borran.&lt;/p&gt;
+&lt;p&gt;A continuación el código del script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pymongo&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Connection&lt;/span&gt;
+
+&lt;span class="c1"&gt;#conexion a mongodb&lt;/span&gt;
+
+&lt;span class="n"&gt;con&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Connection&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;localhost&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Listas las base de datos&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;con&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;database_names&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Conectarse a la base de datos pruebas.&lt;/span&gt;
+
+&lt;span class="n"&gt;db&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;con&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pruebasdb&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea una coleccion que se llama estados&lt;/span&gt;
+
+&lt;span class="n"&gt;estados&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;estados&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Lista de estados.&lt;/span&gt;
+
+&lt;span class="n"&gt;listaestados&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Carabobo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;centro&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ciudades&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+
+
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Lara&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;centro occidente&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ciudades&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+
+
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Merida&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;andes&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ciudades&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+
+
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Aragua&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;region&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;centro&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ciudades&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;13&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Insertar los datos en el documento&lt;/span&gt;
+
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;lista&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;listaestados&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;estados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;insert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lista&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se lista un simple documento&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Se lista un simple documento&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;---------------------------&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;estados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find_one&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Carabobo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}))&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se remueve el documento del estado Carabobo&lt;/span&gt;
+
+
+&lt;span class="n"&gt;estados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;nombre&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Carabobo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Se lista todos los documentos&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-----------------------------&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Listar los datos&lt;/span&gt;
+
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;estados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Se cuenta la cantidad de documentos&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-----------------------------------&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;estados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Borrar todos los datos&lt;/span&gt;
+
+
+&lt;span class="n"&gt;estados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;drop&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="n"&gt;con&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El resultado de la ejecución se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[&amp;#39;otradb&amp;#39;, &amp;#39;pruebas&amp;#39;, &amp;#39;pruebasdb&amp;#39;, &amp;#39;nuevadb&amp;#39;, &amp;#39;local&amp;#39;]&lt;/span&gt;
+
+&lt;span class="na"&gt;Se lista un simple documento&lt;/span&gt;
+
+&lt;span class="na"&gt;---------------------------&lt;/span&gt;
+
+&lt;span class="na"&gt;{&amp;#39;_id&amp;#39;: ObjectId(&amp;#39;541f0ce123d1e1604504e0e6&amp;#39;), &amp;#39;region&amp;#39;: &amp;#39;centro&amp;#39;, &amp;#39;nombre&amp;#39;: &amp;#39;Carabobo&amp;#39;, &amp;#39;ciudades&amp;#39;: 10}&lt;/span&gt;
+
+&lt;span class="na"&gt;Se lista todos los documentos&lt;/span&gt;
+
+&lt;span class="na"&gt;-----------------------------&lt;/span&gt;
+
+&lt;span class="na"&gt;{&amp;#39;_id&amp;#39;: ObjectId(&amp;#39;541f0ce123d1e1604504e0e7&amp;#39;), &amp;#39;region&amp;#39;: &amp;#39;centro occidente&amp;#39;, &amp;#39;nombre&amp;#39;: &amp;#39;Lara&amp;#39;, &amp;#39;ciudades&amp;#39;: 8}&lt;/span&gt;
+
+&lt;span class="na"&gt;{&amp;#39;_id&amp;#39;: ObjectId(&amp;#39;541f0ce123d1e1604504e0e8&amp;#39;), &amp;#39;region&amp;#39;: &amp;#39;andes&amp;#39;, &amp;#39;nombre&amp;#39;: &amp;#39;Merida&amp;#39;, &amp;#39;ciudades&amp;#39;: 6}&lt;/span&gt;
+
+&lt;span class="na"&gt;{&amp;#39;_id&amp;#39;: ObjectId(&amp;#39;541f0ce123d1e1604504e0e9&amp;#39;), &amp;#39;region&amp;#39;: &amp;#39;centro&amp;#39;, &amp;#39;nombre&amp;#39;: &amp;#39;Aragua&amp;#39;, &amp;#39;ciudades&amp;#39;: 13}&lt;/span&gt;
+
+&lt;span class="na"&gt;Se cuenta la cantidad de documentos&lt;/span&gt;
+
+&lt;span class="na"&gt;-----------------------------------&lt;/span&gt;
+
+&lt;span class="na"&gt;3&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="mongodb"></category></entry><entry><title>Tarea de Django-Celery desde un URL</title><link href="https://ecrespo.github.io/tarea-de-django-celery-desde-un-url.html" rel="alternate"></link><published>2014-07-22T09:00:00-05:30</published><updated>2014-07-22T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2014-07-22:/tarea-de-django-celery-desde-un-url.html</id><summary type="html">&lt;p&gt;En el artículo anterior (&lt;a href="https://www.seraph.to/restful-api-con-django-tastypie-y-django-celery.html#restful-api-con-django-tastypie-y-django-celery"&gt;Restful API con Django-tastypie y Django-Celery&lt;/a&gt;) se mostró como pasarle datos a django desde su interprete de comandos, en este arículo se explicará como pasarlo desde el navegador o un script en python que lo haga por nosotros.&lt;/p&gt;
 &lt;p&gt;Recapitulando la parte del código que captura el …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el artículo anterior (&lt;a href="https://www.seraph.to/restful-api-con-django-tastypie-y-django-celery.html#restful-api-con-django-tastypie-y-django-celery"&gt;Restful API con Django-tastypie y Django-Celery&lt;/a&gt;) se mostró como pasarle datos a django desde su interprete de comandos, en este arículo se explicará como pasarlo desde el navegador o un script en python que lo haga por nosotros.&lt;/p&gt;
 &lt;p&gt;Recapitulando la parte del código que captura el url se maneja en el archivo urls.py que tiene lo siguiente:
 url(r'^enviar/', celery_views.task_view(tasks.RecNums)),&lt;/p&gt;

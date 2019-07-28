@@ -24,6 +24,7 @@ Repositorio datadev creado:
 ![Repositorio creado datadev](./images/20190728-repositorio_datadev.png)
 
 Se clona el repositorio (este paso se descarta al usar cookiecutter):
+
 ```bash
 git clone git@github.com:ecrespo/datadev.git
 ```
@@ -39,7 +40,6 @@ puede descargar del siguiente enlace [Python 3.7](https://repo.anaconda.com/arch
 Para instalar se ejecuta el siguiente comando:
 
 ```bash
-
 bash Anaconda3-2019.07-Linux-x86_64.sh
 ```
 
@@ -47,6 +47,7 @@ bash Anaconda3-2019.07-Linux-x86_64.sh
 
 
 Se crea un entorno llamado datadev:
+
 ```bash
 conda create -n datadev
 ```
@@ -56,6 +57,7 @@ Para activar el entorno se ejecuta:
 ```bash
 conda activate datadev
 ```
+
 Para desactivarlo:
 
 ```bash
@@ -63,6 +65,7 @@ conda deactivate
 ```
 
 Al activarlo se tiene el siguiente prompt:
+
 ```bash
 (datadev) ernesto@jewel:~/proyectos/datadev$
 ```
@@ -88,6 +91,7 @@ Instalar paquetes básicos:
 ```bash
 conda install pandas scikit-learn matplotlib notebook jupyter numpy
 ```
+
 ![Instalador de paquetes de anaconda](./images/20190728_paquetes.png)
 
 
@@ -111,17 +115,18 @@ Esto abre el navegador en el jupyter notebook:
 ### Se instala cookiecutter
 
 Se ejecuta el instalador de anaconda para instalar cookiecutter.
-```bash
+
+```
  conda install cookiecutter
- ```
+```
 
  Se crea el proyecto de ciencia de datos:
 
 Se ejecuta fuera del repositorio datadev, con nombre datadev.
 
- ```bash  
+```  
  cookiecutter https://github.com/drivendata/cookiecutter-data-science
- ```
+```
 
 Esto genera unas preguntas para crear los directorios:
 
@@ -170,10 +175,10 @@ Esto crea la siguiente estructura de directorios y archivos:
 │       └── visualize.py
 ├── test_environment.py
 └── tox.ini                               <- Archivo tox con configuraciones para correr tox
-
 ```
 
 Instalar requerimientos adicionales:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -181,6 +186,7 @@ pip install -r requirements.txt
 ### Crear archivo yml del entorno Anaconda
 
 Para crear el archivo yml se ejecuta el siguiente comando:
+
 ```bash
 conda env export > environment.yml
 ```
@@ -352,14 +358,15 @@ dependencies:
     - sphinxcontrib-qthelp==1.0.2
     - sphinxcontrib-serializinghtml==1.1.3
 prefix: /home/ernesto/anaconda3/envs/datadev
-
 ```
 Lo bueno es que este archivo maneja los paquetes instalados por anaconda como por pip.
 
 Para usar el archivo yml se ejecuta:
-```
+
+```bash
 conda env create -f environment.yml -p /home/user/anaconda3/envs/env_name
 ```
+
 Donde la opción -p es para definir la ruta donde se instala el entorno.
 
 
@@ -368,16 +375,19 @@ Donde la opción -p es para definir la ruta donde se instala el entorno.
 Para terminar el artículo se asocia el directorio datadev al repositorio que se creó en github o gitlab.
 
 Se ejecuta git init dentro del directorio de datadev:
+
 ```bash
 git init
 ```
 
 Se agrega el repositorio al repo local:
+
 ```bash
  git remote add origin  https://github.com/ecrespo/datadev.git
  ```
 
 Se define la rama master y repositorio origin a subir:
+
 ```bash
  git push --set-upstream origin master
  ```

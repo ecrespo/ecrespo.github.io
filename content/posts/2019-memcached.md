@@ -12,7 +12,7 @@ En este artículo se explicará la razón de uso de memcached, como se instala y
 
 En la siguiente figura se muestra una aplicación que obtiene los datos de una base de datos (lenta), acá se tiene el problema cuando se consulta la base de datos y dependiendo de la cantidad de consultas puede ser que en algún momento la consulta llegue vacía. Lo otro es que si tienes que traer los mismos datos varias veces, para ello en ambos casos se hace necesario usar memcached.
 
-![sin memcached](./images/20190922-memcached_sin.png)
+![sin memcached](./images/20190922-memcache_sin.png)
 
 En la siguiente figura se muestra la incorporación de memcached y usarlo junto a la base de datos, para "cachear" los datos de la base de datos.
 

@@ -1,7 +1,7 @@
 Title: Usar memcached para tener datos a la mano
 Date:  2019-09-22 10:33
 Category: Tutorial de Python
-Tags: Debian,Python,Ubuntu,memcached
+Tags: Debian,Python,Ubuntu,memcached,Fedora
 lang: es
 translation: true
 Slug: memcached_2019
@@ -11,10 +11,12 @@ Summary: Hay casos donde se toma datos de una base de datos que puede ser algo l
 En este artículo se explicará la razón de uso de memcached, como se instala y como se usa desde Python.
 
 En la siguiente figura se muestra una aplicación que obtiene los datos de una base de datos (lenta), acá se tiene el problema cuando se consulta la base de datos y dependiendo de la cantidad de consultas puede ser que en algún momento la consulta llegue vacía. Lo otro es que si tienes que traer los mismos datos varias veces, para ello en ambos casos se hace necesario usar memcached.
-![memcached](./images/20190922-memcache_sin.png)
 
-En la siguiente figura se muestra la incorporación de memcached y usarlo junto a la base de datos, para cachear los datos de la base de datos.
-![memcached](./images/20190922-memcache.png)
+![sin memcached](./images/20190922-memcached_sin.png)
+
+En la siguiente figura se muestra la incorporación de memcached y usarlo junto a la base de datos, para "cachear" los datos de la base de datos.
+
+![con memcached](./images/20190922-memcached.png)
 
 
 Este artículo se basa en un artículo de [memcached de realpython](https://realpython.com/python-memcache-efficient-caching/).

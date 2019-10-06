@@ -1181,7 +1181,458 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Darle estilo material design a Django (parte 1, el admin)</title><link href="https://ecrespo.github.io/darle-estilo-material-design-a-django-parte-1-el-admin.html" rel="alternate"></link><published>2015-04-26T09:00:00-05:30</published><updated>2015-04-26T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-04-26:/darle-estilo-material-design-a-django-parte-1-el-admin.html</id><summary type="html">&lt;p&gt;Continuando con los artículos sobre &lt;a href="https://www.seraph.to/tag/django.html"&gt;Django&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Usar mongodb en Django</title><link href="https://ecrespo.github.io/usar-mongodb-en-django.html" rel="alternate"></link><published>2015-05-14T09:00:00-05:30</published><updated>2015-05-14T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-05-14:/usar-mongodb-en-django.html</id><summary type="html">&lt;p&gt;En artículos anteriores se ha tocado el tema de &lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;mongodb&lt;/a&gt; y el tema de &lt;a href="https://www.seraph.to/tag/django.html"&gt;Django&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En este caso se tocará el tema de crear un blog con Django usando mongodb, este artículo se basa en un artículo en Inglés del sitio &lt;a href="https://developer.ibm.com/tutorials/os-django-mongo/"&gt;Developers Work de IBM&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;En este caso se tendrá …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En artículos anteriores se ha tocado el tema de &lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;mongodb&lt;/a&gt; y el tema de &lt;a href="https://www.seraph.to/tag/django.html"&gt;Django&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En este caso se tocará el tema de crear un blog con Django usando mongodb, este artículo se basa en un artículo en Inglés del sitio &lt;a href="https://developer.ibm.com/tutorials/os-django-mongo/"&gt;Developers Work de IBM&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;En este caso se tendrá un formulario para crear post, actualizarlos y borrarlos. Se usará la plantilla de material design para Django explicado en el artículo &lt;a href="https://www.seraph.to/darle-estilo-material-design-a-django-parte-1-el-admin.html#darle-estilo-material-design-a-django-parte-1-el-admin"&gt;anterior&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Para poder desarrollar la aplicación en Django y con mongodb se tiene que instalar &lt;code&gt;Django&lt;/code&gt;, &lt;code&gt;mongodb&lt;/code&gt; y &lt;code&gt;mongoengine&lt;/code&gt; a continuación se muestra la instalación a lo Debian:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install python-mongoengine mongodb-server mongodb-clients mongodb python3-pymongo python3-pymongo-ext python-django python3-django
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Lo primero que se tiene que hacer es crear el proyecto blog.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;django&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;admin&lt;/span&gt; &lt;span class="n"&gt;startproject&lt;/span&gt; &lt;span class="n"&gt;blog&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Esto crea directorios y archivos como se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog
+├── blog
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── manage.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se crea la aplicación posts:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;django-admin startapp posts
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se tiene la siguiente estructura de directorios y archivos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;blog
+├── blog
+│   ├── __init__.py
+│   ├── __init__.pyc
+│   ├── settings.py
+│   ├── settings.pyc
+│   ├── urls.py
+│   └── wsgi.py
+├── manage.py
+└── posts
+    ├── admin.py
+    ├── __init__.py
+    ├── migrations
+    │   └── __init__.py
+    ├── models.py
+    ├── tests.py
+    └── views.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Modificar el archivo &lt;code&gt;blog/blog/settings.py&lt;/code&gt; para que refleje el uso de &lt;code&gt;mongodb&lt;/code&gt; y la aplicación.&lt;/p&gt;
+&lt;p&gt;Es necesario agregar en las primeras líneas del &lt;code&gt;settings.py&lt;/code&gt; el nombre de la base de datos para &lt;code&gt;mongodb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DBNAME = &amp;#39;blongo&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Agregar en las aplicaciones posts y el soporte a material-design que se explico en artículo &lt;a href="http://blog.crespo.org.ve/2015/04/darle-estilo-material-desing-django.html"&gt;anterior&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;INSTALLED_APPS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;material&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;material.admin&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.admin&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.auth&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.contenttypes&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.sessions&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.messages&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;django.contrib.staticfiles&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;posts&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se modifica también el &lt;code&gt;settings.py&lt;/code&gt; para que procese el directorio donde estarán las plantillas:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;TEMPLATES&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;BACKEND&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;django.template.backends.django.DjangoTemplates&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;DIRS&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BASE_DIR&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;templates&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;)],&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;APP_DIRS&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;OPTIONS&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="s1"&gt;&amp;#39;context_processors&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+                &lt;span class="s1"&gt;&amp;#39;django.template.context_processors.debug&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="s1"&gt;&amp;#39;django.template.context_processors.request&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="s1"&gt;&amp;#39;django.contrib.auth.context_processors.auth&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                &lt;span class="s1"&gt;&amp;#39;django.contrib.messages.context_processors.messages&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="p"&gt;],&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="p"&gt;},&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crean los directorios &lt;code&gt;templates&lt;/code&gt; y &lt;code&gt;media&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p {templates,static}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Y en media se crean los directorios &lt;code&gt;css&lt;/code&gt;, &lt;code&gt;images&lt;/code&gt; y &lt;code&gt;js&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir -p static/{css,images,js}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora la estructura de directorios queda de la siguiente manera:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;blog&lt;/span&gt;
+&lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;blog&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pyc&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pyc&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;wsgi&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;posts&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;migrations&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;tests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;views&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;static&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;css&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;images&lt;/span&gt;
+&lt;span class="err"&gt;│&lt;/span&gt;   &lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;js&lt;/span&gt;
+&lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;templates&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En el directorio &lt;code&gt;posts&lt;/code&gt; se modifica el archivo &lt;code&gt;models.py&lt;/code&gt; con el siguiente contenido:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se importa models&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.db&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa mongoengine quien es el que facilita la conexión a mongodb&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;mongoengine&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se trae el nombre de la base de datos de mongodb de settings.py&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;blog.settings&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;DBNAME&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se conecta a la base de datos&lt;/span&gt;
+&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DBNAME&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se crea la tabla Posts (documento), con title, content y la fecha de publicación y/o actualización&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Document&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;StringField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;120&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;required&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;StringField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;required&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;last_update&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;DateTimeField&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;required&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se modifica el archivo &lt;code&gt;blog/posts/views.py&lt;/code&gt; con el siguiente contenido (ahí se publica el formulario, la lista de posts, se actualiza cada post y se puede borrar cada post):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.shortcuts&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;render&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;render_to_response&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.template&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RequestContext&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Post&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;datetime&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define index donde recibe como argumento request&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#SI el metodo es un post, se toma los datos del formulario y se guarda en&lt;/span&gt;
+    &lt;span class="c1"&gt;#mongodb&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;POST&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+       &lt;span class="c1"&gt;# nuevo post&lt;/span&gt;
+       &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POST&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+       &lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POST&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;content&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+       &lt;span class="n"&gt;post&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Post&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+       &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;last_update&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+       &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;content&lt;/span&gt;
+       &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+   &lt;span class="c1"&gt;#Si el metodo es get entonces se está cargando la página inicialmente, así que se publican&lt;/span&gt;
+   &lt;span class="c1"&gt;#los posts&lt;/span&gt;
+    &lt;span class="c1"&gt;# se obtiene todos los posts de la base de datos&lt;/span&gt;
+    &lt;span class="n"&gt;posts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_to_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;index.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Posts&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;posts&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="n"&gt;context_instance&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;RequestContext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Actualizar un post&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Captura el id del post&lt;/span&gt;
+    &lt;span class="nb"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;eval&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;request.&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;[&amp;#39;id&amp;#39;]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;post&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="c1"&gt;#Si el metodo es post, se está actualizando la información del formulario&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;POST&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+        &lt;span class="c1"&gt;# se actualiza los valores y se salva en mongodb&lt;/span&gt;
+        &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POST&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;last_update&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;now&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;POST&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;content&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;index.html&amp;#39;&lt;/span&gt;
+        &lt;span class="n"&gt;params&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Posts&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="c1"&gt;#Si el metodo es GET se muestra la página incial update.html&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;update.html&amp;#39;&lt;/span&gt;
+        &lt;span class="n"&gt;params&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;post&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_to_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;context_instance&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;RequestContext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Para borrar un posts&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;delete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se toma el id del post&lt;/span&gt;
+    &lt;span class="nb"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;eval&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;request.&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;[&amp;#39;id&amp;#39;]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se pregunta si es POST, se le pasa el id del posts y se borra, se va a la página index.html&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;POST&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;post&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;delete&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;index.html&amp;#39;&lt;/span&gt;
+        &lt;span class="n"&gt;params&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Posts&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Post&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="c1"&gt;#Si es un metodo get entonces se muestra la página delete.html&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;delete.html&amp;#39;&lt;/span&gt;
+        &lt;span class="n"&gt;params&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render_to_response&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;context_instance&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;RequestContext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se mostrarán las imágenes de los archivos &lt;code&gt;base.html&lt;/code&gt;, &lt;code&gt;index.html&lt;/code&gt;, &lt;code&gt;update.html&lt;/code&gt; y &lt;code&gt;delete.html&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;En el archivo &lt;code&gt;base.html&lt;/code&gt; se agregarán las siguientes dos líneas las cuales permiten que se use el estilo y javascript a lo material design:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{% include &amp;#39;material/includes/material_css.html&amp;#39; %}
+{% include &amp;#39;material/includes/material_js.html&amp;#39; %}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="" src="./images/usarmongodbendjango-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Los archivos &lt;code&gt;index.html&lt;/code&gt;, &lt;code&gt;update.html&lt;/code&gt; y &lt;code&gt;delete.html&lt;/code&gt; tendrán 2 líneas, en una heredan el contenido  del archivo &lt;code&gt;base.html&lt;/code&gt; y en la otra línea se carga material_form (material design):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;extends&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;base.html&amp;#39;&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;&lt;span class="x"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;{%&lt;/span&gt; &lt;span class="k"&gt;load&lt;/span&gt; &lt;span class="nv"&gt;material_form&lt;/span&gt; &lt;span class="cp"&gt;%}&lt;/span&gt;&lt;span class="x"&gt;  &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En el caso que se tenga un formulario se debe colocar después del token &lt;code&gt;csrf&lt;/code&gt; la siguiente línea:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{% form form=form %}{% endform %}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ya con eso se manejan los formularios con el estilo material design.&lt;/p&gt;
+&lt;p&gt;A continuación se muestra la imagen del archivo &lt;code&gt;index.html&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usarmongodbendjango-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;A continuación se muestra la imagen del archivo &lt;code&gt;update.html&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usarmongodbendjango-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;A continuación se muestra la imagen del archivo &lt;code&gt;delete.html&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usarmongodbendjango-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Para que esto funcione falta modificar el archivo &lt;code&gt;blog/blog/urls.py&lt;/code&gt; con los urls del index, update y delete:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf.urls&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.contrib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;
+
+&lt;span class="n"&gt;urlpatterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^admin/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;include&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;site&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;urls&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;posts.views.index&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^update/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;posts.views.update&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;r&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;^delete/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;posts.views.delete&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea la base de datos administrativa con el comando &lt;code&gt;migrate&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;migrate&lt;/span&gt;
+&lt;span class="n"&gt;Operations&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;perform&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;Synchronize&lt;/span&gt; &lt;span class="n"&gt;unmigrated&lt;/span&gt; &lt;span class="n"&gt;apps&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;staticfiles&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;posts&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;material&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;messages&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;material_admin&lt;/span&gt;
+  &lt;span class="n"&gt;Apply&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt; &lt;span class="n"&gt;migrations&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;contenttypes&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sessions&lt;/span&gt;
+&lt;span class="n"&gt;Synchronizing&lt;/span&gt; &lt;span class="n"&gt;apps&lt;/span&gt; &lt;span class="n"&gt;without&lt;/span&gt; &lt;span class="n"&gt;migrations&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;Creating&lt;/span&gt; &lt;span class="n"&gt;tables&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+    &lt;span class="n"&gt;Running&lt;/span&gt; &lt;span class="n"&gt;deferred&lt;/span&gt; &lt;span class="n"&gt;SQL&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+  &lt;span class="n"&gt;Installing&lt;/span&gt; &lt;span class="n"&gt;custom&lt;/span&gt; &lt;span class="n"&gt;SQL&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="n"&gt;Running&lt;/span&gt; &lt;span class="n"&gt;migrations&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;Rendering&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt; &lt;span class="n"&gt;states&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;DONE&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;contenttypes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0001&lt;/span&gt;&lt;span class="n"&gt;_initial&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0001&lt;/span&gt;&lt;span class="n"&gt;_initial&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0001&lt;/span&gt;&lt;span class="n"&gt;_initial&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;contenttypes&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0002&lt;/span&gt;&lt;span class="n"&gt;_remove_content_type_name&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0002&lt;/span&gt;&lt;span class="n"&gt;_alter_permission_name_max_length&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0003&lt;/span&gt;&lt;span class="n"&gt;_alter_user_email_max_length&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0004&lt;/span&gt;&lt;span class="n"&gt;_alter_user_username_opts&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0005&lt;/span&gt;&lt;span class="n"&gt;_alter_user_last_login_null&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0006&lt;/span&gt;&lt;span class="n"&gt;_require_contenttypes_0002&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+  &lt;span class="n"&gt;Applying&lt;/span&gt; &lt;span class="n"&gt;sessions&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;0001&lt;/span&gt;&lt;span class="n"&gt;_initial&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="n"&gt;OK&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea la cuenta administrativa:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;createsuperuser&lt;/span&gt;
+&lt;span class="n"&gt;Username&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;leave&lt;/span&gt; &lt;span class="n"&gt;blank&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;use&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ecrespo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt; &lt;span class="n"&gt;ernesto&lt;/span&gt;
+&lt;span class="n"&gt;Email&lt;/span&gt; &lt;span class="n"&gt;address&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;ecrespo&lt;/span&gt;&lt;span class="nd"&gt;@xxxx.xxx&lt;/span&gt;
+&lt;span class="n"&gt;Password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="n"&gt;Password&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;again&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="n"&gt;Superuser&lt;/span&gt; &lt;span class="n"&gt;created&lt;/span&gt; &lt;span class="n"&gt;successfully&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se ejecuta el servidor de django:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;runserver&lt;/span&gt;
+&lt;span class="n"&gt;Performing&lt;/span&gt; &lt;span class="n"&gt;system&lt;/span&gt; &lt;span class="n"&gt;checks&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+
+&lt;span class="n"&gt;System&lt;/span&gt; &lt;span class="n"&gt;check&lt;/span&gt; &lt;span class="n"&gt;identified&lt;/span&gt; &lt;span class="n"&gt;no&lt;/span&gt; &lt;span class="n"&gt;issues&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="n"&gt;silenced&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;May&lt;/span&gt; &lt;span class="mi"&gt;14&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2015&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;52&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;27&lt;/span&gt;
+&lt;span class="n"&gt;Django&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="mf"&gt;1.8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;using&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;blog.settings&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;Starting&lt;/span&gt; &lt;span class="n"&gt;development&lt;/span&gt; &lt;span class="n"&gt;server&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="mf"&gt;127.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;8000&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;span class="n"&gt;Quit&lt;/span&gt; &lt;span class="n"&gt;the&lt;/span&gt; &lt;span class="n"&gt;server&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;CONTROL&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestra una imagen de la aplicación mientras se llena el formulario:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usarmongodbendjango-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Por último se muestra el post que se acaba de publicar:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usarmongodbendjango-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;Para más información pueden revisar los siguientes enlaces:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://api.mongodb.org/python/1.6/tools.html"&gt;http://api.mongodb.org/python/1.6/tools.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.peterbe.com/plog/using-mongodb-in-your-django-app/django-mongodb-html5-slides/html5.html#slide1"&gt;http://www.peterbe.com/plog/using-mongodb-in-your-django-app/django-mongodb-html5-slides/html5.html#slide1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://staltz.com/djangoconfi-mongoengine/#/"&gt;http://staltz.com/djangoconfi-mongoengine/#/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://django-mongodb-engine.readthedocs.org/en/latest/tutorial.html"&gt;https://django-mongodb-engine.readthedocs.org/en/latest/tutorial.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/vpulim/mango"&gt;https://github.com/vpulim/mango&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.safaribooksonline.com/library/view/mongodb-and-python/9781449312817/ch04s03.html"&gt;https://www.safaribooksonline.com/library/view/mongodb-and-python/9781449312817/ch04s03.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Python"></category><category term="Ubuntu"></category><category term="Mongodb"></category><category term="Django"></category></entry><entry><title>Habilitar autenticación en un servidor mongodb</title><link href="https://ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html" rel="alternate"></link><published>2015-05-08T09:00:00-05:30</published><updated>2015-05-08T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-05-08:/habilitar-autenticacion-en-un-servidor-mongodb.html</id><summary type="html">&lt;p&gt;En el artículo sobre la instalación de un &lt;a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian"&gt;servidor mongodb&lt;/a&gt; faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor.&lt;/p&gt;
+&lt;p&gt;En este caso se habilitará dicha autenticación para el acceso al servidor.&lt;/p&gt;
+&lt;p&gt;Lo primero es deshabilitar la autenticación en el archivo &lt;code&gt;/etc/mongodb.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Turn on/off security …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;En el artículo sobre la instalación de un &lt;a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian"&gt;servidor mongodb&lt;/a&gt; faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor.&lt;/p&gt;
+&lt;p&gt;En este caso se habilitará dicha autenticación para el acceso al servidor.&lt;/p&gt;
+&lt;p&gt;Lo primero es deshabilitar la autenticación en el archivo &lt;code&gt;/etc/mongodb.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Turn on/off security.  Off is currently the default
+#noauth = true
+#auth = true
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se inicia el servicio de &lt;code&gt;mongodb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; systemctl start  mongodb.service
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se revisa si levanto:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;systemctl&lt;/span&gt; &lt;span class="nt"&gt;status&lt;/span&gt;  &lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt;
+&lt;span class="err"&gt;●&lt;/span&gt; &lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt; &lt;span class="nt"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;An&lt;/span&gt; &lt;span class="nt"&gt;object&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;document-oriented&lt;/span&gt; &lt;span class="nt"&gt;database&lt;/span&gt;
+   &lt;span class="nt"&gt;Loaded&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt; &lt;span class="o"&gt;(/&lt;/span&gt;&lt;span class="nt"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;systemd&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;system&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;enabled&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+   &lt;span class="nt"&gt;Active&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;active&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;running&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;since&lt;/span&gt; &lt;span class="nt"&gt;vie&lt;/span&gt; &lt;span class="nt"&gt;2015-05-08&lt;/span&gt; &lt;span class="nt"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;44&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;26&lt;/span&gt; &lt;span class="nt"&gt;VET&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;5s&lt;/span&gt; &lt;span class="nt"&gt;ago&lt;/span&gt;
+     &lt;span class="nt"&gt;Docs&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;man&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;mongod&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+ &lt;span class="nt"&gt;Main&lt;/span&gt; &lt;span class="nt"&gt;PID&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;3405&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;mongod&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+   &lt;span class="nt"&gt;CGroup&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;system&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;slice&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt;
+           &lt;span class="err"&gt;└─&lt;/span&gt;&lt;span class="nt"&gt;3405&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongod&lt;/span&gt; &lt;span class="nt"&gt;--config&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;conf&lt;/span&gt;
+
+&lt;span class="nt"&gt;may&lt;/span&gt; &lt;span class="nt"&gt;08&lt;/span&gt; &lt;span class="nt"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;44&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;26&lt;/span&gt; &lt;span class="nt"&gt;grievous&lt;/span&gt; &lt;span class="nt"&gt;mongod&lt;/span&gt;&lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3405&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;all&lt;/span&gt; &lt;span class="nt"&gt;output&lt;/span&gt; &lt;span class="nt"&gt;going&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;log&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;log&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se accede al shell de &lt;code&gt;mongodb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mongo
+MongoDB shell version: 2.4.10
+connecting to: test
+&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se cambia a la base de datos &lt;code&gt;admin&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; use admin
+switched to db admin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea el usuario admin con clave 123456 (sólo de manera didactica) y rol lectura y escritura dbAdmin.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; db.addUser(&amp;quot;admin&amp;quot;,&amp;quot;123&amp;quot;)
+{
+ &amp;quot;user&amp;quot; : &amp;quot;admin&amp;quot;,
+ &amp;quot;readOnly&amp;quot; : false,
+ &amp;quot;pwd&amp;quot; : &amp;quot;9f3121efccbe3fef09a799d5e63077c2&amp;quot;,
+ &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;554cf1405cf1b965e6f5c10f&amp;quot;)
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se sale de la base de datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; exit
+bye
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se edita el archivo &lt;code&gt;/etc/mongodb.conf&lt;/code&gt;  para habilitar la autenticación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Turn on/off security.  Off is currently the default
+#noauth = true
+auth = true
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se reinicia &lt;code&gt;mongodb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;systemctl&lt;/span&gt; &lt;span class="nt"&gt;stop&lt;/span&gt;  &lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt;
+&lt;span class="nt"&gt;systemctl&lt;/span&gt; &lt;span class="nt"&gt;stop&lt;/span&gt;  &lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt;
+&lt;span class="nt"&gt;systemctl&lt;/span&gt; &lt;span class="nt"&gt;status&lt;/span&gt;   &lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt;
+&lt;span class="err"&gt;●&lt;/span&gt; &lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt; &lt;span class="nt"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;An&lt;/span&gt; &lt;span class="nt"&gt;object&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;document-oriented&lt;/span&gt; &lt;span class="nt"&gt;database&lt;/span&gt;
+   &lt;span class="nt"&gt;Loaded&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;loaded&lt;/span&gt; &lt;span class="o"&gt;(/&lt;/span&gt;&lt;span class="nt"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;systemd&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;system&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;enabled&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+   &lt;span class="nt"&gt;Active&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;active&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;running&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nt"&gt;since&lt;/span&gt; &lt;span class="nt"&gt;vie&lt;/span&gt; &lt;span class="nt"&gt;2015-05-08&lt;/span&gt; &lt;span class="nt"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;58&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;44&lt;/span&gt; &lt;span class="nt"&gt;VET&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;4s&lt;/span&gt; &lt;span class="nt"&gt;ago&lt;/span&gt;
+     &lt;span class="nt"&gt;Docs&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;man&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;mongod&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+ &lt;span class="nt"&gt;Main&lt;/span&gt; &lt;span class="nt"&gt;PID&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;4188&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;mongod&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+   &lt;span class="nt"&gt;CGroup&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;system&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;slice&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;service&lt;/span&gt;
+           &lt;span class="err"&gt;└─&lt;/span&gt;&lt;span class="nt"&gt;4188&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongod&lt;/span&gt; &lt;span class="nt"&gt;--config&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;conf&lt;/span&gt;
+
+&lt;span class="nt"&gt;may&lt;/span&gt; &lt;span class="nt"&gt;08&lt;/span&gt; &lt;span class="nt"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;58&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;44&lt;/span&gt; &lt;span class="nt"&gt;grievous&lt;/span&gt; &lt;span class="nt"&gt;mongod&lt;/span&gt;&lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;4188&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;all&lt;/span&gt; &lt;span class="nt"&gt;output&lt;/span&gt; &lt;span class="nt"&gt;going&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;log&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;mongodb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;log&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se ejecuta el shell de &lt;code&gt;mongodb&lt;/code&gt; y se intentan visualizar las bases de datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; show dbs
+Fri May  8 12:06:19.122 listDatabases failed:{ &amp;quot;ok&amp;quot; : 0, &amp;quot;errmsg&amp;quot; : &amp;quot;unauthorized&amp;quot; } at src/mongo/shell/mongo.js:46
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se nota que no se tiene autorización para ver la lista de bases de datos.&lt;/p&gt;
+&lt;p&gt;Para ingresar y autenticar al usuario se hace lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; use admin
+switched to db admin
+&amp;gt; db.auth(&amp;quot;admin&amp;quot;, &amp;quot;123&amp;quot;)
+1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Listar bases de datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; show dbs
+admin 0.203125GB
+local 0.078125GB
+personasdb 0.203125GB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Listar usuarios:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; db.system.users.find()
+{ &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;554ce337c597c2dbd0089d74&amp;quot;), &amp;quot;user&amp;quot; : &amp;quot;admin&amp;quot;, &amp;quot;pwd&amp;quot; : &amp;quot;95ec4261124ba5951720b199908d892b&amp;quot;, &amp;quot;roles&amp;quot; : [  &amp;quot;readWrite&amp;quot;,  &amp;quot;dbAdmin&amp;quot; ] }  
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para más información se tienen los siguientes enlaces:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.crespo.org.ve/2014/09/instalar-un-servidor-mongodb-en-debian.html"&gt;https://dezkareid.wordpress.com/2013/07/29/control-de-usuarios-en-mongodb/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://carlosazaustre.es/blog/como-conectarte-remotamente-a-tu-base-de-datos-mongodb/"&gt;https://carlosazaustre.es/blog/como-conectarte-remotamente-a-tu-base-de-datos-mongodb/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://docs.mongodb.org/v2.4/tutorial/add-user-to-database/"&gt;http://docs.mongodb.org/v2.4/tutorial/add-user-to-database/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://juanvicenteherrera.es/2011/12/20/mongodb-conceptos-de-seguridad/"&gt;http://juanvicenteherrera.es/2011/12/20/mongodb-conceptos-de-seguridad/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://alexanderae.com/mongodb-autenticacion-autorizacion.html"&gt;https://alexanderae.com/mongodb-autenticacion-autorizacion.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="Mongodb"></category></entry><entry><title>Darle estilo material design a Django (parte 1, el admin)</title><link href="https://ecrespo.github.io/darle-estilo-material-design-a-django-parte-1-el-admin.html" rel="alternate"></link><published>2015-04-26T09:00:00-05:30</published><updated>2015-04-26T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-04-26:/darle-estilo-material-design-a-django-parte-1-el-admin.html</id><summary type="html">&lt;p&gt;Continuando con los artículos sobre &lt;a href="https://www.seraph.to/tag/django.html"&gt;Django&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;En este caso se tocará el tema de usar en el admin y formularios un estilo llamado &lt;a href="https://en.wikipedia.org/wiki/Material_design"&gt;Material Design&lt;/a&gt; (&lt;a href="https://material.io/design/introduction/"&gt;desarrollado por Google para Android&lt;/a&gt;), la idea es que nuestro backend tenga ese estilo. Para ello se tiene una aplicación de Django llamada &lt;a href="http://demo.viewflow.io/"&gt;Django-material&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;La …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los artículos sobre &lt;a href="https://www.seraph.to/tag/django.html"&gt;Django&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;En este caso se tocará el tema de usar en el admin y formularios un estilo llamado &lt;a href="https://en.wikipedia.org/wiki/Material_design"&gt;Material Design&lt;/a&gt; (&lt;a href="https://material.io/design/introduction/"&gt;desarrollado por Google para Android&lt;/a&gt;), la idea es que nuestro backend tenga ese estilo. Para ello se tiene una aplicación de Django llamada &lt;a href="http://demo.viewflow.io/"&gt;Django-material&lt;/a&gt;.&lt;/p&gt;

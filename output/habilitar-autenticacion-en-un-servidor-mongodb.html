@@ -1,0 +1,983 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En el artículo sobre la instalación de un servidor mongodb faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor. En este caso se habilitará dicha autenticación para el acceso al servidor. Lo primero es deshabilitar la autenticación en el archivo /etc/mongodb.conf: # Turn on/off security …" />
+<meta name="keywords" content="Canaima, Debian, General, Linux, Ubuntu, Mongodb">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Habilitar autenticación en un servidor mongodb"/>
+<meta property="og:description" content="En el artículo sobre la instalación de un servidor mongodb faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor. En este caso se habilitará dicha autenticación para el acceso al servidor. Lo primero es deshabilitar la autenticación en el archivo /etc/mongodb.conf: # Turn on/off security …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2015-05-08 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Linux"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Mongodb"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Habilitar autenticación en un servidor mongodb</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            numpy
+                    <span class="badge">21</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pantalla-tactil.html">
+            Pantalla táctil
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">88</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            ssh
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/python-daemon.html">
+            Python-daemon
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/qemu.html">
+            qemu
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/etckeeper.html">
+            etckeeper
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            matplotlib
+                    <span class="badge">23</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            Mongodb
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">140</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ipython.html">
+            ipython
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/line_profiler.html">
+            line_profiler
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/kvm.html">
+            KVM
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            pylab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/entorno-desarrollo.html">
+            Entorno Desarrollo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/aiohttp.html">
+            aiohttp
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ecryptfs.html">
+            eCryptfs
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pyqwt.html">
+            pyQwt
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">105</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/scrapermark.html">
+            Scrapermark
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/exif.html">
+            exif
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/material-design.html">
+            Material design
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/rasbian.html">
+            Rasbian
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            PyLint
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/python-lockfile.html">
+            Python-lockfile
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ncurses.html">
+            ncurses
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/scipy.html">
+            scipy
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            csv
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/rasberry-pi.html">
+            Rasberry Pi
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/grafos.html">
+            grafos
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/django-celery.html">
+            Django-Celery
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/scapy.html">
+            scapy
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ipcalc.html">
+            ipcalc
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            doctest
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/tareas-periodicas.html">
+            Tareas periodicas
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/csvkit.html">
+            csvkit
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">98</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/urwid.html">
+            urwid
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-rest.html">
+            API rest
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/memcached.html">
+            memcached
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cerberus.html">
+            Cerberus
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de Datos
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/tdd.html">
+            TDD
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/timeit.html">
+            timeit
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/bitly.html">
+            bit.ly
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pudb.html">
+            pudb
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pyowm.html">
+            PyOWM
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pyprocessing.html">
+            Pyprocessing
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/asincrono.html">
+            asincrono
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-stream.html">
+            API Stream
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pyflakes.html">
+            Pyflakes
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            dnsmasq
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/tareas.html">
+            Tareas
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">142</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/dia-debian.html">
+            Dia Debian
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/libpam.html">
+            libpam
+                    <span class="badge">1</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="habilitar-autenticacion-en-un-servidor-mongodb">Habilitar autenticación en un servidor mongodb</h1>
+    <p>
+          Posted on vie 08 mayo 2015 in <a href="https://ecrespo.github.io/category/tutorial-linux.html">Tutorial Linux</a>
+
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>En el artículo sobre la instalación de un <a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian">servidor mongodb</a> faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor.</p>
+<p>En este caso se habilitará dicha autenticación para el acceso al servidor.</p>
+<p>Lo primero es deshabilitar la autenticación en el archivo <code>/etc/mongodb.conf</code>:</p>
+<div class="highlight"><pre><span></span># Turn on/off security.  Off is currently the default
+#noauth = true
+#auth = true
+</pre></div>
+
+
+<p>Se inicia el servicio de <code>mongodb</code>:</p>
+<div class="highlight"><pre><span></span> systemctl start  mongodb.service
+</pre></div>
+
+
+<p>Se revisa si levanto:</p>
+<div class="highlight"><pre><span></span><span class="nt">systemctl</span> <span class="nt">status</span>  <span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span>
+<span class="err">●</span> <span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span> <span class="nt">-</span> <span class="nt">An</span> <span class="nt">object</span><span class="o">/</span><span class="nt">document-oriented</span> <span class="nt">database</span>
+   <span class="nt">Loaded</span><span class="o">:</span> <span class="nt">loaded</span> <span class="o">(/</span><span class="nt">lib</span><span class="o">/</span><span class="nt">systemd</span><span class="o">/</span><span class="nt">system</span><span class="o">/</span><span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span><span class="o">;</span> <span class="nt">enabled</span><span class="o">)</span>
+   <span class="nt">Active</span><span class="o">:</span> <span class="nt">active</span> <span class="o">(</span><span class="nt">running</span><span class="o">)</span> <span class="nt">since</span> <span class="nt">vie</span> <span class="nt">2015-05-08</span> <span class="nt">11</span><span class="p">:</span><span class="nd">44</span><span class="p">:</span><span class="nd">26</span> <span class="nt">VET</span><span class="o">;</span> <span class="nt">5s</span> <span class="nt">ago</span>
+     <span class="nt">Docs</span><span class="o">:</span> <span class="nt">man</span><span class="p">:</span><span class="nd">mongod</span><span class="o">(</span><span class="nt">1</span><span class="o">)</span>
+ <span class="nt">Main</span> <span class="nt">PID</span><span class="o">:</span> <span class="nt">3405</span> <span class="o">(</span><span class="nt">mongod</span><span class="o">)</span>
+   <span class="nt">CGroup</span><span class="o">:</span> <span class="o">/</span><span class="nt">system</span><span class="p">.</span><span class="nc">slice</span><span class="o">/</span><span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span>
+           <span class="err">└─</span><span class="nt">3405</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">bin</span><span class="o">/</span><span class="nt">mongod</span> <span class="nt">--config</span> <span class="o">/</span><span class="nt">etc</span><span class="o">/</span><span class="nt">mongodb</span><span class="p">.</span><span class="nc">conf</span>
+
+<span class="nt">may</span> <span class="nt">08</span> <span class="nt">11</span><span class="p">:</span><span class="nd">44</span><span class="p">:</span><span class="nd">26</span> <span class="nt">grievous</span> <span class="nt">mongod</span><span class="cp">[</span><span class="mi">3405</span><span class="cp">]</span><span class="o">:</span> <span class="nt">all</span> <span class="nt">output</span> <span class="nt">going</span> <span class="nt">to</span><span class="o">:</span> <span class="o">/</span><span class="nt">var</span><span class="o">/</span><span class="nt">log</span><span class="o">/</span><span class="nt">mongodb</span><span class="o">/</span><span class="nt">mongodb</span><span class="p">.</span><span class="nc">log</span>
+</pre></div>
+
+
+<p>Se accede al shell de <code>mongodb</code>:</p>
+<div class="highlight"><pre><span></span>mongo
+MongoDB shell version: 2.4.10
+connecting to: test
+&gt;
+</pre></div>
+
+
+<p>Se cambia a la base de datos <code>admin</code>:</p>
+<div class="highlight"><pre><span></span>&gt; use admin
+switched to db admin
+</pre></div>
+
+
+<p>Se crea el usuario admin con clave 123456 (sólo de manera didactica) y rol lectura y escritura dbAdmin.</p>
+<div class="highlight"><pre><span></span>&gt; db.addUser(&quot;admin&quot;,&quot;123&quot;)
+{
+ &quot;user&quot; : &quot;admin&quot;,
+ &quot;readOnly&quot; : false,
+ &quot;pwd&quot; : &quot;9f3121efccbe3fef09a799d5e63077c2&quot;,
+ &quot;_id&quot; : ObjectId(&quot;554cf1405cf1b965e6f5c10f&quot;)
+}
+</pre></div>
+
+
+<p>Se sale de la base de datos:</p>
+<div class="highlight"><pre><span></span>&gt; exit
+bye
+</pre></div>
+
+
+<p>Ahora se edita el archivo <code>/etc/mongodb.conf</code>  para habilitar la autenticación:</p>
+<div class="highlight"><pre><span></span># Turn on/off security.  Off is currently the default
+#noauth = true
+auth = true
+</pre></div>
+
+
+<p>Se reinicia <code>mongodb</code>:</p>
+<div class="highlight"><pre><span></span><span class="nt">systemctl</span> <span class="nt">stop</span>  <span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span>
+<span class="nt">systemctl</span> <span class="nt">stop</span>  <span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span>
+<span class="nt">systemctl</span> <span class="nt">status</span>   <span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span>
+<span class="err">●</span> <span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span> <span class="nt">-</span> <span class="nt">An</span> <span class="nt">object</span><span class="o">/</span><span class="nt">document-oriented</span> <span class="nt">database</span>
+   <span class="nt">Loaded</span><span class="o">:</span> <span class="nt">loaded</span> <span class="o">(/</span><span class="nt">lib</span><span class="o">/</span><span class="nt">systemd</span><span class="o">/</span><span class="nt">system</span><span class="o">/</span><span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span><span class="o">;</span> <span class="nt">enabled</span><span class="o">)</span>
+   <span class="nt">Active</span><span class="o">:</span> <span class="nt">active</span> <span class="o">(</span><span class="nt">running</span><span class="o">)</span> <span class="nt">since</span> <span class="nt">vie</span> <span class="nt">2015-05-08</span> <span class="nt">11</span><span class="p">:</span><span class="nd">58</span><span class="p">:</span><span class="nd">44</span> <span class="nt">VET</span><span class="o">;</span> <span class="nt">4s</span> <span class="nt">ago</span>
+     <span class="nt">Docs</span><span class="o">:</span> <span class="nt">man</span><span class="p">:</span><span class="nd">mongod</span><span class="o">(</span><span class="nt">1</span><span class="o">)</span>
+ <span class="nt">Main</span> <span class="nt">PID</span><span class="o">:</span> <span class="nt">4188</span> <span class="o">(</span><span class="nt">mongod</span><span class="o">)</span>
+   <span class="nt">CGroup</span><span class="o">:</span> <span class="o">/</span><span class="nt">system</span><span class="p">.</span><span class="nc">slice</span><span class="o">/</span><span class="nt">mongodb</span><span class="p">.</span><span class="nc">service</span>
+           <span class="err">└─</span><span class="nt">4188</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">bin</span><span class="o">/</span><span class="nt">mongod</span> <span class="nt">--config</span> <span class="o">/</span><span class="nt">etc</span><span class="o">/</span><span class="nt">mongodb</span><span class="p">.</span><span class="nc">conf</span>
+
+<span class="nt">may</span> <span class="nt">08</span> <span class="nt">11</span><span class="p">:</span><span class="nd">58</span><span class="p">:</span><span class="nd">44</span> <span class="nt">grievous</span> <span class="nt">mongod</span><span class="cp">[</span><span class="mi">4188</span><span class="cp">]</span><span class="o">:</span> <span class="nt">all</span> <span class="nt">output</span> <span class="nt">going</span> <span class="nt">to</span><span class="o">:</span> <span class="o">/</span><span class="nt">var</span><span class="o">/</span><span class="nt">log</span><span class="o">/</span><span class="nt">mongodb</span><span class="o">/</span><span class="nt">mongodb</span><span class="p">.</span><span class="nc">log</span>
+</pre></div>
+
+
+<p>Se ejecuta el shell de <code>mongodb</code> y se intentan visualizar las bases de datos:</p>
+<div class="highlight"><pre><span></span>&gt; show dbs
+Fri May  8 12:06:19.122 listDatabases failed:{ &quot;ok&quot; : 0, &quot;errmsg&quot; : &quot;unauthorized&quot; } at src/mongo/shell/mongo.js:46
+</pre></div>
+
+
+<p>Se nota que no se tiene autorización para ver la lista de bases de datos.</p>
+<p>Para ingresar y autenticar al usuario se hace lo siguiente:</p>
+<div class="highlight"><pre><span></span>&gt; use admin
+switched to db admin
+&gt; db.auth(&quot;admin&quot;, &quot;123&quot;)
+1
+</pre></div>
+
+
+<p>Listar bases de datos:</p>
+<div class="highlight"><pre><span></span>&gt; show dbs
+admin 0.203125GB
+local 0.078125GB
+personasdb 0.203125GB
+</pre></div>
+
+
+<p>Listar usuarios:  </p>
+<div class="highlight"><pre><span></span>&gt; db.system.users.find()
+{ &quot;_id&quot; : ObjectId(&quot;554ce337c597c2dbd0089d74&quot;), &quot;user&quot; : &quot;admin&quot;, &quot;pwd&quot; : &quot;95ec4261124ba5951720b199908d892b&quot;, &quot;roles&quot; : [  &quot;readWrite&quot;,  &quot;dbAdmin&quot; ] }  
+</pre></div>
+
+
+<p>Para más información se tienen los siguientes enlaces:</p>
+<ol>
+<li><a href="http://blog.crespo.org.ve/2014/09/instalar-un-servidor-mongodb-en-debian.html">https://dezkareid.wordpress.com/2013/07/29/control-de-usuarios-en-mongodb/</a></li>
+<li><a href="https://carlosazaustre.es/blog/como-conectarte-remotamente-a-tu-base-de-datos-mongodb/">https://carlosazaustre.es/blog/como-conectarte-remotamente-a-tu-base-de-datos-mongodb/</a></li>
+<li><a href="http://docs.mongodb.org/v2.4/tutorial/add-user-to-database/">http://docs.mongodb.org/v2.4/tutorial/add-user-to-database/</a></li>
+<li><a href="http://juanvicenteherrera.es/2011/12/20/mongodb-conceptos-de-seguridad/">http://juanvicenteherrera.es/2011/12/20/mongodb-conceptos-de-seguridad/</a></li>
+<li><a href="https://alexanderae.com/mongodb-autenticacion-autorizacion.html">https://alexanderae.com/mongodb-autenticacion-autorizacion.html</a></li>
+</ol>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/tag/mongodb.html">Mongodb</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Habilitar%20autenticaci%C3%B3n%20en%20un%20servidor%20mongodb&url=https%3A//ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html&hashtags=canaima,debian,general,linux,ubuntu,mongodb" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html&title=Habilitar%20autenticaci%C3%B3n%20en%20un%20servidor%20mongodb&summary=En%20el%20art%C3%ADculo%20sobre%20la%20instalaci%C3%B3n%20de%20un%20servidor%20mongodb%20falt%C3%B3%20definir%20la%20autentcaci%C3%B3n%20de%20usuarios%20que%20puedan%20conectarse%20a%20dicho%20servidor.%0AEn%20este%20caso%20se%20habilitar%C3%A1%20dicha%20autenticaci%C3%B3n%20para%20el%20acceso%20al%20servidor.%0ALo%20primero%20es%20deshabilitar%20la%20autenticaci%C3%B3n%20en%20el%20archivo%20/etc/mongodb.conf%3A%0A%23%20Turn%20on/off%20security%20%E2%80%A6&source=https%3A//ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Habilitar%20autenticaci%C3%B3n%20en%20un%20servidor%20mongodb&amp;body=https%3A//ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/darle-estilo-material-design-a-django-parte-1-el-admin.html" title="Darle estilo material design a Django (parte 1, el admin)">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/usar-mongodb-en-django.html" title="Usar mongodb en Django">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/instalar-un-servidor-mongodb-en-debian.html">Instalar un servidor mongodb en Debian</a></li>
+      <li><a href="https://ecrespo.github.io/utilizando-mongodb-por-medio-de-python.html">Utilizando mongodb por medio de python.</a></li>
+      <li><a href="https://ecrespo.github.io/urwid-libreria-ncurses-para-hacer-aplicaciones-de-texto-para-la-consola-parte-1.html">Urwid librería ncurses para hacer aplicaciones de texto para la consola (parte 1).</a></li>
+      <li><a href="https://ecrespo.github.io/restful-api-con-django-tastypie-y-django-celery.html">Restful API con Django-tastypie y Django-Celery</a></li>
+      <li><a href="https://ecrespo.github.io/crear-un-demonio-de-linux-con-python.html">Crear un demonio de Linux con Python</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

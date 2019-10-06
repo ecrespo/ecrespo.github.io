@@ -1,7 +1,7 @@
 Title: Instalar Docker en Debian Jessie
 Date: 2015-12-25 8:00
 Category: Tutorial Linux
-Tags: canaima,Debian,General,Linux,Ubuntu
+Tags: canaima,Debian,Linux,Ubuntu,Docker
 lang: es
 translation: true
 
@@ -19,12 +19,12 @@ La guía de instalación para Debian Jessie en inglés lo pueden encontrar en el
 ```
 1. Borrar paquetes viejos o de lxc:
 ```
-#apt-get purge lxc-docker* 
+#apt-get purge lxc-docker*
 #apt-get purge docker.io*
 ```
 2. Agregar la llave gpg de docker.io:
 ```
-#apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys  58118E89F3A912897C070ADBF76221572C52609D 
+#apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys  58118E89F3A912897C070ADBF76221572C52609D
 ```
 3. Agregar el repositorio al `sources.list.d`:
 ```
@@ -33,11 +33,11 @@ vim /etc/apt/sources.list.d/docker.list
 deb https://apt.dockerproject.org/repo debian-jessie main
 
 ```
-4. Actualizar la lista de repositorios: 
+4. Actualizar la lista de repositorios:
 ```
 #apt-get update
 ```
-5. Verificar que se baja el paquete del repositorio correcto: 
+5. Verificar que se baja el paquete del repositorio correcto:
 ```
 #apt-cache policy docker-engine
 ```
@@ -54,14 +54,14 @@ deb https://apt.dockerproject.org/repo debian-jessie main
 # docker run hello-world
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
-b901d36b6f2f: Pull complete 
-0a6ba66e537a: Pull complete 
+b901d36b6f2f: Pull complete
+0a6ba66e537a: Pull complete
 Digest: sha256:8be990ef2aeb16dbcb9271ddfe2610fa6658d13f6dfb8bc72074cc1ca36966a7
 Status: Downloaded newer image for hello-world:latest
 
 Hello from Docker.
 This message shows that your installation appears to be working correctly.
-``` 
+```
 9. Dar acceso de docker a usuarios no root:
 
 9.1 Agregar el grupo docker si no existe:
@@ -78,7 +78,8 @@ $sudo service docker restart
 ```
 En siguientes artículos se mostrará el uso de docker, como crear imágenes y por último se creará un entorno para empaquetar para Debian.
 Dejaré por acá las referencias para usarlas en un futuro:
-Referencias:
+
+
 1. [Instalación de docker en Debian.](https://docs.docker.com/install/linux/docker-ce/debian/)    
 2. [Empaquetar con docker.](https://wiki.debian.org/PackagingWithDocker?highlight=%28%28Docker%29%29)  
 3. [Docker intro and installation.](https://wiki.debian.org/PackagingWithDocker?highlight=%28%28Docker%29%29)  

@@ -6,9 +6,13 @@ lang: es
 translation: true  
 
 Hasta ahora se tienen los siguientes artículos sobre el uso de la librería `Sympy`:
-- [Cálculo de límites con la librería Sympy](https://www.seraph.to/calculo-de-limites-con-la-libreria-sympy.html#calculo-de-limites-con-la-libreria-sympy)
-- [Cálculo de derivadas con la librería Sympy](https://www.seraph.to/calculo-de-derivadas-con-sympy.html#calculo-de-derivadas-con-sympy)
-- [Cálculo de integrales con la librería Sympy](https://www.seraph.to/calculo-de-integrales-con-sympy.html#calculo-de-integrales-con-sympy)
+
+* [Cálculo de límites con la librería Sympy](https://www.seraph.to/calculo-de-limites-con-la-libreria-sympy.html#calculo-de-limites-con-la-libreria-sympy)
+
+* [Cálculo de derivadas con la librería Sympy](https://www.seraph.to/calculo-de-derivadas-con-sympy.html#calculo-de-derivadas-con-sympy)
+
+* [Cálculo de integrales con la librería Sympy](https://www.seraph.to/calculo-de-integrales-con-sympy.html#calculo-de-integrales-con-sympy)
+
 
 En este caso se explicará el uso de la librería `Sympy` en la resolución de sistemas de ecuaciones, se utilizará el ejemplo de un artículo anterior ([Resolución de sistemas de ecuaciones lineales por descomposición QR usando Numpy](https://www.seraph.to/resolucion-de-sistemas-de-ecuaciones-lineales-por-descomposion-qr-usando-numpy.html)).
 

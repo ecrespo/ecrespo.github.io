@@ -1,5 +1,5 @@
 Title: Cálculo de límites con la librería sympy  
-Date: 2015-02-21 14:00  
+Date: 2015-02-21 08:00  
 Category: Tutorial Python  
 Tags: Canaima,Debian,General,Python,Ubuntu,Sympy
 lang: es  

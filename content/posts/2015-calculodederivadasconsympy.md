@@ -1,5 +1,5 @@
 Title:Cálculo de derivadas con sympy
-Date: 2015-02-21 11:00  
+Date: 2015-02-21 09:00  
 Category: Tutorial Python  
 Tags: Canaima,Debian,General,Python,Ubuntu  
 lang: es  

@@ -1,5 +1,344 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2015-08-29T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Extracción de información de PDFs con python (parte 1).</title><link href="https://ecrespo.github.io/extraccion-de-informacion-de-pdfs-con-python-parte-1.html" rel="alternate"></link><published>2015-08-29T09:00:00-05:30</published><updated>2015-08-29T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-08-29:/extraccion-de-informacion-de-pdfs-con-python-parte-1.html</id><summary type="html">&lt;p&gt;Existen varias herramientas en python para obtener información de PDF.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2015-08-30T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Extracción de información de PDFs con python (parte 2).</title><link href="https://ecrespo.github.io/extraccion-de-informacion-de-pdfs-con-python-parte-2.html" rel="alternate"></link><published>2015-08-30T09:00:00-05:30</published><updated>2015-08-30T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-08-30:/extraccion-de-informacion-de-pdfs-con-python-parte-2.html</id><summary type="html">&lt;p&gt;En el primer artículo de la serie se explicó el uso de &lt;a href="https://www.seraph.to/extraccion-de-informacion-de-pdfs-con-python-parte-1.html#extraccion-de-informacion-de-pdfs-con-python-parte-1"&gt;peepdf&lt;/a&gt;, en este caso se utilizará &lt;a href="http://www.unixuser.org/~euske/python/pdfminer/index.html"&gt;pdfminer&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En el siguiente enlace consiguen un tutorial de como &lt;a href="http://www.unixuser.org/~euske/python/pdfminer/programming.html"&gt;usarlo&lt;/a&gt;, u &lt;a href="https://www.binpress.com/manipulate-pdf-python/"&gt;otro&lt;/a&gt;, y &lt;a href="https://quantcorner.wordpress.com/2014/03/16/parsing-pdf-files-with-python-and-pdfminer/"&gt;otro más&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El archivo a analizar será el mismo del artículo anterior el cual es un archivo de …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el primer artículo de la serie se explicó el uso de &lt;a href="https://www.seraph.to/extraccion-de-informacion-de-pdfs-con-python-parte-1.html#extraccion-de-informacion-de-pdfs-con-python-parte-1"&gt;peepdf&lt;/a&gt;, en este caso se utilizará &lt;a href="http://www.unixuser.org/~euske/python/pdfminer/index.html"&gt;pdfminer&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En el siguiente enlace consiguen un tutorial de como &lt;a href="http://www.unixuser.org/~euske/python/pdfminer/programming.html"&gt;usarlo&lt;/a&gt;, u &lt;a href="https://www.binpress.com/manipulate-pdf-python/"&gt;otro&lt;/a&gt;, y &lt;a href="https://quantcorner.wordpress.com/2014/03/16/parsing-pdf-files-with-python-and-pdfminer/"&gt;otro más&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El archivo a analizar será el mismo del artículo anterior el cual es un archivo de la página de &lt;a href="http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf"&gt;CENCOEX del área de salud&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra el archivo &lt;code&gt;salud.pdf&lt;/code&gt; donde el archivo tiene 4 páginas de una tabla con 4 columnas, No., Empresa, RIF y total asignado en Bsf.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/extracciondeinformaciondepdfsconpython2-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Para instalar &lt;code&gt;pypdf2&lt;/code&gt; para Debian se usará &lt;code&gt;apt-get&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install pdfminer-data python-pdfminer
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para &lt;code&gt;pip&lt;/code&gt; de la siguiente forma:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install pdfminer
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestra el código del script que se utilizará para extraer los datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se importa los modulos necesarios de pdfminer&lt;/span&gt;
+
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pdfminer.pdfparser&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;PDFParser&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pdfminer.pdfdocument&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;PDFDocument&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;cStringIO&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pdfminer.pdfinterp&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;PDFResourceManager&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;PDFPageInterpreter&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pdfminer.converter&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;TextConverter&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pdfminer.layout&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;LAParams&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pdfminer.pdfpage&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;PDFPage&lt;/span&gt;
+
+
+
+
+
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;convertir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;archivo&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;paginas&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Si no se le pasa el numero de paginas se inicializa pagenums si no se le pasa&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#a pagenums el numero de paginas.&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;paginas&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+        &lt;span class="n"&gt;pagenums&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+        &lt;span class="n"&gt;pagenums&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;paginas&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+    &lt;span class="c1"&gt;#Se define la salida&lt;/span&gt;
+
+    &lt;span class="n"&gt;output&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;StringIO&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se crea la instancia del manejador&lt;/span&gt;
+
+    &lt;span class="n"&gt;manager&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PDFResourceManager&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#se instancia el conversor de texto donde se le pasa el manejador y la salida&lt;/span&gt;
+
+    &lt;span class="n"&gt;converter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TextConverter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;manager&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;laparams&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;LAParams&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se instancia el interprete pasando el manejador y el conversor&lt;/span&gt;
+
+    &lt;span class="n"&gt;interpreter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PDFPageInterpreter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;manager&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;converter&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+    &lt;span class="c1"&gt;#Se abre el archivo de entrada&lt;/span&gt;
+
+    &lt;span class="n"&gt;infile&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;archivo&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;rb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se crea un ciclo pasando el archivo de entrada y el numero de paginas.&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;PDFPage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_pages&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;infile&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pagenums&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+        &lt;span class="c1"&gt;#Se procesa cada pagina&lt;/span&gt;
+
+        &lt;span class="n"&gt;interpreter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;process_page&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se cierra el archivo de entrada&lt;/span&gt;
+
+    &lt;span class="n"&gt;infile&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se cierra el conversor&lt;/span&gt;
+
+    &lt;span class="n"&gt;converter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se obtiene los valores de la salida en texto&lt;/span&gt;
+
+    &lt;span class="n"&gt;texto&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getvalue&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se cierra la salida&lt;/span&gt;
+
+    &lt;span class="n"&gt;output&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se devuelve el texto&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;texto&lt;/span&gt;
+
+
+
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+
+    &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;convertir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;salud.pdf&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al ejecutar el script se obtiene lo siguiente ( a continuación se muestra la salida final):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;314931326&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;306044434&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;306652809&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;000273170&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;294885756&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;315368676&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0002760&lt;/span&gt;&lt;span class="mi"&gt;99&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;309260006&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;00006&lt;/span&gt;&lt;span class="mi"&gt;8607&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;307695226&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;000&lt;/span&gt;&lt;span class="mi"&gt;886440&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;07555&lt;/span&gt;&lt;span class="mi"&gt;8855&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0002&lt;/span&gt;&lt;span class="mi"&gt;98327&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0004405&lt;/span&gt;&lt;span class="mi"&gt;81&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0752650&lt;/span&gt;&lt;span class="mi"&gt;92&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;308718840&lt;/span&gt;
+
+&lt;span class="n"&gt;TOTAL&lt;/span&gt;
+
+&lt;span class="mf"&gt;924.611&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;13&lt;/span&gt;
+&lt;span class="mf"&gt;4.551&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;099&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;39&lt;/span&gt;
+&lt;span class="mf"&gt;6.210&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;501&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;67&lt;/span&gt;
+&lt;span class="mf"&gt;2.727&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;618&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;90&lt;/span&gt;
+&lt;span class="mf"&gt;15.237&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;285&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;96&lt;/span&gt;
+&lt;span class="mf"&gt;24.726&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;553&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;87&lt;/span&gt;
+&lt;span class="mf"&gt;8.012&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;224&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;
+&lt;span class="mf"&gt;12.415&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;583&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;66&lt;/span&gt;
+&lt;span class="mf"&gt;1.242&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;072&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;56&lt;/span&gt;
+&lt;span class="mf"&gt;843.053&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;422.464&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;13&lt;/span&gt;
+&lt;span class="mf"&gt;827.852&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;61&lt;/span&gt;
+&lt;span class="mf"&gt;2.120&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;640&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;06&lt;/span&gt;
+&lt;span class="mf"&gt;39.935&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;357&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;41&lt;/span&gt;
+&lt;span class="mf"&gt;64.414&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;559&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;56&lt;/span&gt;
+&lt;span class="mf"&gt;1.585&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;616&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;34&lt;/span&gt;
+&lt;span class="mf"&gt;1.926&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;786&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;95&lt;/span&gt;
+&lt;span class="mf"&gt;1.171&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;948&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;02&lt;/span&gt;
+&lt;span class="mf"&gt;15.803&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;447&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;35&lt;/span&gt;
+&lt;span class="mf"&gt;3.876&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;885&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;14&lt;/span&gt;
+&lt;span class="mf"&gt;3.876&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;885&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;14&lt;/span&gt;
+&lt;span class="mf"&gt;14.222&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;393&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;78&lt;/span&gt;
+&lt;span class="mf"&gt;13.859&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;953&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;87&lt;/span&gt;
+&lt;span class="mf"&gt;1.856&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;410&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;99&lt;/span&gt;
+&lt;span class="mf"&gt;5.572&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;194&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;
+&lt;span class="mf"&gt;2.858&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;560&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;62&lt;/span&gt;
+&lt;span class="mf"&gt;1.226&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;368&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;54&lt;/span&gt;
+&lt;span class="mf"&gt;426.087&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;02&lt;/span&gt;
+&lt;span class="mf"&gt;8.577&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;657&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;04&lt;/span&gt;
+&lt;span class="mf"&gt;3.244&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;765&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;25&lt;/span&gt;
+&lt;span class="mf"&gt;7.291&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;129&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;73&lt;/span&gt;
+&lt;span class="mf"&gt;7.514&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;239&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;65&lt;/span&gt;
+&lt;span class="mf"&gt;7.146&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;119&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;95&lt;/span&gt;
+&lt;span class="mf"&gt;105.741&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;558&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;37&lt;/span&gt;
+&lt;span class="mf"&gt;1.607&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;871&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;72&lt;/span&gt;
+&lt;span class="mf"&gt;160.091&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;223&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;81&lt;/span&gt;
+&lt;span class="mf"&gt;78.578&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;774&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;
+&lt;span class="mf"&gt;796.193&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;
+&lt;span class="mf"&gt;1.450&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;824&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;1.643&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;440&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;45&lt;/span&gt;
+&lt;span class="mf"&gt;765.726&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;900.903&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;26.500&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;880.332&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;50&lt;/span&gt;
+&lt;span class="mf"&gt;2.140&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;900&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;
+&lt;span class="mf"&gt;6.768&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;878&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;02&lt;/span&gt;
+&lt;span class="mf"&gt;105.909&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;664&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;86&lt;/span&gt;
+&lt;span class="mf"&gt;3.227&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;153&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;04&lt;/span&gt;
+&lt;span class="mf"&gt;22.673&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;390&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;14&lt;/span&gt;
+&lt;span class="mf"&gt;112.625&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;66&lt;/span&gt;
+&lt;span class="mf"&gt;1.288&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;555&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;83&lt;/span&gt;
+&lt;span class="mf"&gt;115.943&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;301&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;02&lt;/span&gt;
+&lt;span class="mf"&gt;17.886&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;755&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;85&lt;/span&gt;
+&lt;span class="mf"&gt;1.508&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;591&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;35&lt;/span&gt;
+
+
+&lt;span class="n"&gt;IMPORTACIONES&lt;/span&gt; &lt;span class="n"&gt;TOTALES&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ORDINARIAS&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;ALADI&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;SUCRE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;DISTRIBUCIÓN&lt;/span&gt; &lt;span class="n"&gt;POR&lt;/span&gt; &lt;span class="n"&gt;EMPRESAS&lt;/span&gt; &lt;span class="n"&gt;AGREMIADAS&lt;/span&gt; &lt;span class="n"&gt;DEL&lt;/span&gt; &lt;span class="n"&gt;SECTOR&lt;/span&gt; &lt;span class="n"&gt;SALUD&lt;/span&gt;
+
+&lt;span class="n"&gt;PERÍODO&lt;/span&gt; &lt;span class="n"&gt;DE&lt;/span&gt; &lt;span class="n"&gt;REFERENCIA&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mo"&gt;01&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mo"&gt;01&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2014&lt;/span&gt; &lt;span class="n"&gt;AL&lt;/span&gt; &lt;span class="mo"&gt;05&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2014&lt;/span&gt;
+
+&lt;span class="n"&gt;EMPRESA&lt;/span&gt;
+
+&lt;span class="n"&gt;Nº&lt;/span&gt;
+&lt;span class="mi"&gt;163&lt;/span&gt; &lt;span class="n"&gt;RENTA&lt;/span&gt; &lt;span class="n"&gt;MEDICA&lt;/span&gt; &lt;span class="n"&gt;PC&lt;/span&gt; &lt;span class="n"&gt;CA&lt;/span&gt;
+&lt;span class="mi"&gt;164&lt;/span&gt; &lt;span class="n"&gt;REPRECLIN&lt;/span&gt;  &lt;span class="n"&gt;LAB&lt;/span&gt;  &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;165&lt;/span&gt; &lt;span class="n"&gt;REPRESENTACIONES&lt;/span&gt; &lt;span class="n"&gt;AITOR&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;166&lt;/span&gt; &lt;span class="n"&gt;REPRESENTACIONES&lt;/span&gt; &lt;span class="n"&gt;DE&lt;/span&gt; &lt;span class="n"&gt;LABORATORIO&lt;/span&gt; &lt;span class="n"&gt;WEISS&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;167&lt;/span&gt; &lt;span class="n"&gt;REPRESENTACIONES&lt;/span&gt; &lt;span class="n"&gt;LABIN&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;VE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;S&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;168&lt;/span&gt; &lt;span class="n"&gt;REPRESENTACIONES&lt;/span&gt; &lt;span class="n"&gt;LUFRAN&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;169&lt;/span&gt; &lt;span class="n"&gt;REPRESENTACIONES&lt;/span&gt; &lt;span class="n"&gt;MEDICAS&lt;/span&gt; &lt;span class="n"&gt;YOMA&lt;/span&gt; &lt;span class="n"&gt;CA&lt;/span&gt;
+&lt;span class="mi"&gt;170&lt;/span&gt; &lt;span class="n"&gt;REPRESENTACIONES&lt;/span&gt; &lt;span class="n"&gt;NOLVER&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;171&lt;/span&gt; &lt;span class="n"&gt;REPRESENTACIONES&lt;/span&gt; &lt;span class="n"&gt;VARGAS&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;172&lt;/span&gt; &lt;span class="n"&gt;RESPITEC&lt;/span&gt; &lt;span class="n"&gt;EQUIPOS&lt;/span&gt; &lt;span class="n"&gt;MEDICOS&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;173&lt;/span&gt; &lt;span class="n"&gt;SANIFARMA&lt;/span&gt; &lt;span class="n"&gt;PAÑALEX&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;
+&lt;span class="mi"&gt;174&lt;/span&gt; &lt;span class="n"&gt;SANOFI&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;AVENTIS&lt;/span&gt; &lt;span class="n"&gt;DE&lt;/span&gt; &lt;span class="n"&gt;VENEZUELA&lt;/span&gt; &lt;span class="n"&gt;S&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;175&lt;/span&gt; &lt;span class="n"&gt;SEIJIRO&lt;/span&gt; &lt;span class="n"&gt;YAZAWA&lt;/span&gt; &lt;span class="n"&gt;IWAI&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;176&lt;/span&gt; &lt;span class="n"&gt;SERVIMEDIC&lt;/span&gt; &lt;span class="n"&gt;SOLUCIONES&lt;/span&gt; &lt;span class="n"&gt;CARDIOVASCULARES&lt;/span&gt; &lt;span class="n"&gt;S&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;177&lt;/span&gt; &lt;span class="n"&gt;SICA&lt;/span&gt; &lt;span class="n"&gt;FARM&lt;/span&gt; &lt;span class="n"&gt;DE&lt;/span&gt; &lt;span class="n"&gt;VENEZUELA&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;
+&lt;span class="mi"&gt;178&lt;/span&gt; &lt;span class="n"&gt;SINO&lt;/span&gt; &lt;span class="n"&gt;PRODUCTS&lt;/span&gt; &lt;span class="n"&gt;PAN&lt;/span&gt; &lt;span class="n"&gt;AMERICAN&lt;/span&gt; &lt;span class="n"&gt;SUPPLYC&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;
+&lt;span class="mi"&gt;179&lt;/span&gt; &lt;span class="n"&gt;SM&lt;/span&gt; &lt;span class="n"&gt;PHARMA&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;180&lt;/span&gt; &lt;span class="n"&gt;SOLUCIONES&lt;/span&gt; &lt;span class="n"&gt;ELECTRONICAS&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt; &lt;span class="n"&gt;MEDICAS&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;181&lt;/span&gt; &lt;span class="n"&gt;SUMINISTROS&lt;/span&gt; &lt;span class="n"&gt;BAIKOR&lt;/span&gt; &lt;span class="n"&gt;CA&lt;/span&gt;
+&lt;span class="mi"&gt;182&lt;/span&gt; &lt;span class="n"&gt;SUMINISTROS&lt;/span&gt; &lt;span class="n"&gt;FOTOGRAFICOS&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt; &lt;span class="n"&gt;MEDICOS&lt;/span&gt; &lt;span class="n"&gt;SUFOMECA&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;SUFOMECA&lt;/span&gt;
+&lt;span class="mi"&gt;182&lt;/span&gt; &lt;span class="n"&gt;SUMINISTROS&lt;/span&gt; &lt;span class="n"&gt;FOTOGRAFICOS&lt;/span&gt; &lt;span class="n"&gt;Y&lt;/span&gt; &lt;span class="n"&gt;MEDICOS&lt;/span&gt; &lt;span class="n"&gt;SUFOMECA&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="n"&gt;SUFOMECA&lt;/span&gt;
+&lt;span class="mi"&gt;183&lt;/span&gt; &lt;span class="n"&gt;SUMINISTROS&lt;/span&gt; &lt;span class="n"&gt;MEDICOS&lt;/span&gt; &lt;span class="n"&gt;JAYOR&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;
+&lt;span class="mi"&gt;184&lt;/span&gt; &lt;span class="n"&gt;SUMINISTROS&lt;/span&gt; &lt;span class="n"&gt;MÉDICOS&lt;/span&gt; &lt;span class="n"&gt;MULTIMÉDICA&lt;/span&gt; &lt;span class="n"&gt;DMR&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;
+&lt;span class="mi"&gt;185&lt;/span&gt; &lt;span class="n"&gt;SUMINISTROS&lt;/span&gt; &lt;span class="n"&gt;RADI&lt;/span&gt; &lt;span class="n"&gt;SURADI&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;186&lt;/span&gt; &lt;span class="n"&gt;SUPLIDORA&lt;/span&gt; &lt;span class="n"&gt;HOSPIMED&lt;/span&gt; &lt;span class="mi"&gt;2004&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;
+&lt;span class="mi"&gt;187&lt;/span&gt; &lt;span class="n"&gt;SURGILAP&lt;/span&gt; &lt;span class="n"&gt;EQUIPOS&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;188&lt;/span&gt; &lt;span class="n"&gt;SYSMED&lt;/span&gt; &lt;span class="n"&gt;EQUIPOS&lt;/span&gt; &lt;span class="n"&gt;MEDICOS&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;189&lt;/span&gt; &lt;span class="n"&gt;TECNOLOGIA&lt;/span&gt; &lt;span class="n"&gt;CLINICA&lt;/span&gt; &lt;span class="n"&gt;CARDIOPULSO&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;190&lt;/span&gt; &lt;span class="n"&gt;TECNOLOGIA&lt;/span&gt; &lt;span class="n"&gt;DOS&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;191&lt;/span&gt; &lt;span class="n"&gt;TECNOLOGIA&lt;/span&gt; &lt;span class="n"&gt;MEDICA&lt;/span&gt; &lt;span class="n"&gt;DEL&lt;/span&gt; &lt;span class="n"&gt;CARIBE&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;192&lt;/span&gt; &lt;span class="n"&gt;TECNOMED&lt;/span&gt; &lt;span class="n"&gt;J&lt;/span&gt; &lt;span class="n"&gt;TRAPP&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;193&lt;/span&gt; &lt;span class="n"&gt;ULTRA&lt;/span&gt; &lt;span class="n"&gt;CARE&lt;/span&gt; &lt;span class="n"&gt;MEDICAL&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;194&lt;/span&gt; &lt;span class="n"&gt;WEST&lt;/span&gt; &lt;span class="n"&gt;PHARMACEUTICAL&lt;/span&gt; &lt;span class="n"&gt;SERVICES&lt;/span&gt; &lt;span class="n"&gt;VENEZUELA&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="mi"&gt;195&lt;/span&gt; &lt;span class="n"&gt;ZUOZ&lt;/span&gt; &lt;span class="n"&gt;PHARMA&lt;/span&gt; &lt;span class="n"&gt;S&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+
+&lt;span class="n"&gt;TOTAL&lt;/span&gt; &lt;span class="n"&gt;GENERAL&lt;/span&gt;
+
+&lt;span class="n"&gt;RIF&lt;/span&gt;
+
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;306068848&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;00267&lt;/span&gt;&lt;span class="mi"&gt;8143&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;308916064&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0007&lt;/span&gt;&lt;span class="mi"&gt;90078&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0032&lt;/span&gt;&lt;span class="mi"&gt;85536&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0015&lt;/span&gt;&lt;span class="mi"&gt;82738&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;001&lt;/span&gt;&lt;span class="mi"&gt;905545&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;003243&lt;/span&gt;&lt;span class="mi"&gt;906&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0022&lt;/span&gt;&lt;span class="mi"&gt;85540&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;300855775&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0021&lt;/span&gt;&lt;span class="mi"&gt;85449&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;303088481&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0007171&lt;/span&gt;&lt;span class="mi"&gt;84&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;306080740&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;306338438&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;303391923&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0701313&lt;/span&gt;&lt;span class="mi"&gt;90&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;303539661&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;312802316&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;001457&lt;/span&gt;&lt;span class="mi"&gt;810&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;001457&lt;/span&gt;&lt;span class="mi"&gt;810&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;003530255&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;303120784&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;003143324&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;300511529&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;302742463&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;308785539&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;306449191&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;304998074&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;001&lt;/span&gt;&lt;span class="mi"&gt;832726&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;000036071&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;310620440&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0025&lt;/span&gt;&lt;span class="mi"&gt;94160&lt;/span&gt;
+&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mo"&gt;0020150&lt;/span&gt;&lt;span class="mi"&gt;80&lt;/span&gt;
+
+&lt;span class="n"&gt;TOTAL&lt;/span&gt;
+
+&lt;span class="mf"&gt;4.310&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;96&lt;/span&gt;
+&lt;span class="mf"&gt;5.676&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;457&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;
+&lt;span class="mf"&gt;205.152&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;6.221&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;734&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;67&lt;/span&gt;
+&lt;span class="mf"&gt;4.270&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;788&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;35&lt;/span&gt;
+&lt;span class="mf"&gt;1.954&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;333&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;
+&lt;span class="mf"&gt;1.996&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;335&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;62&lt;/span&gt;
+&lt;span class="mf"&gt;51.816&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;733&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;75&lt;/span&gt;
+&lt;span class="mf"&gt;5.653&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;885&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;98&lt;/span&gt;
+&lt;span class="mf"&gt;58.431&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;62&lt;/span&gt;
+&lt;span class="mf"&gt;410.002&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;
+&lt;span class="mf"&gt;103.980&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;350&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;21&lt;/span&gt;
+&lt;span class="mf"&gt;3.252&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;208&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;70&lt;/span&gt;
+&lt;span class="mf"&gt;2.382&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;957&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;73&lt;/span&gt;
+&lt;span class="mf"&gt;212.924&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;97&lt;/span&gt;
+&lt;span class="mf"&gt;171.935&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;94&lt;/span&gt;
+&lt;span class="mf"&gt;27.281&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;496&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;572.896&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;492.918&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;00&lt;/span&gt;
+&lt;span class="mf"&gt;3.033&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;050&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;09&lt;/span&gt;
+&lt;span class="mf"&gt;3.033&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;050&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;09&lt;/span&gt;
+&lt;span class="mf"&gt;12.005&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;888&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mo"&gt;05&lt;/span&gt;
+&lt;span class="mf"&gt;1.313&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;993&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;48&lt;/span&gt;
+&lt;span class="mf"&gt;9.298&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;817&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;31&lt;/span&gt;
+&lt;span class="mf"&gt;4.714&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;939&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;88&lt;/span&gt;
+&lt;span class="mf"&gt;1.085&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;603&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;86&lt;/span&gt;
+&lt;span class="mf"&gt;1.190&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;975&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;38&lt;/span&gt;
+&lt;span class="mf"&gt;831.945&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;94&lt;/span&gt;
+&lt;span class="mf"&gt;271.105&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;08&lt;/span&gt;
+&lt;span class="mf"&gt;2.048&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;621&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;93&lt;/span&gt;
+&lt;span class="mf"&gt;1.900&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;646&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;66&lt;/span&gt;
+&lt;span class="mf"&gt;1.151&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;336&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;80&lt;/span&gt;
+&lt;span class="mf"&gt;2.011&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;181&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;88&lt;/span&gt;
+&lt;span class="mf"&gt;22.706&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;399&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;72&lt;/span&gt;
+&lt;span class="mf"&gt;2.237&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;473.782&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;31&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;NOTA: Las cifras de las modalidades de importacion ALADI y SUCRE se encuentran hasta el 31-08-2014&lt;/p&gt;
+&lt;p&gt;Como se nota, la información viene de manera inconsistente, tocaría trabajar el texto para ordenarlo (para próximo artículo).&lt;/p&gt;
+&lt;p&gt;Tomemos la empresa con el número 163. Es la empresa: Renta Médica PC, C.A., RIF: J-306068848 y le asignaron 4.310,96 (como lo muestra los campos del resultado subrayados y en italica y la figura a continuación).&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/extracciondeinformaciondepdfsconpython2-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Ya se va obteniendo información útil. Sólo queda ordenarla un poco (siguiente artículo), aparte revisar otras herramientas. Los datos en un futuro se almacenarán en una base de datos &lt;code&gt;sqlite&lt;/code&gt; o &lt;code&gt;mongodb&lt;/code&gt; para crear un API Rest ful con Python (próximos artículos) de manera de mostrar la forma como debería visualizarse información de las instituciones para Datos Abiertos (OpenData).&lt;/p&gt;
+&lt;p&gt;Como ven extraer los datos no es difícil, lo complicado es que el archivo no tiene consistencia para manejarlo de manera fácil.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="General"></category><category term="Python"></category><category term="pdf scraping"></category></entry><entry><title>Extracción de información de PDFs con python (parte 1).</title><link href="https://ecrespo.github.io/extraccion-de-informacion-de-pdfs-con-python-parte-1.html" rel="alternate"></link><published>2015-08-29T09:00:00-05:30</published><updated>2015-08-29T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-08-29:/extraccion-de-informacion-de-pdfs-con-python-parte-1.html</id><summary type="html">&lt;p&gt;Existen varias herramientas en python para obtener información de PDF.
 En este caso visite la página de &lt;a href="www.cencoex.gob.ve"&gt;Cencoex&lt;/a&gt;, en la sección de Cencoex en cifras hay un enlace a un pdf a &lt;a href="http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf"&gt;Liquidaciones a Empresas Agremiadas del Sector Salud (Ordinarias + ALADI + SUCRE)&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Para este primer artículo se usará &lt;a href="http://pycurl.io/"&gt;pycurl&lt;/a&gt; para …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Existen varias herramientas en python para obtener información de PDF.
 En este caso visite la página de &lt;a href="www.cencoex.gob.ve"&gt;Cencoex&lt;/a&gt;, en la sección de Cencoex en cifras hay un enlace a un pdf a &lt;a href="http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf"&gt;Liquidaciones a Empresas Agremiadas del Sector Salud (Ordinarias + ALADI + SUCRE)&lt;/a&gt;.&lt;/p&gt;

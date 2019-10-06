@@ -1181,7 +1181,438 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Usar mongodb en Django</title><link href="https://ecrespo.github.io/usar-mongodb-en-django.html" rel="alternate"></link><published>2015-05-14T09:00:00-05:30</published><updated>2015-05-14T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-05-14:/usar-mongodb-en-django.html</id><summary type="html">&lt;p&gt;En artículos anteriores se ha tocado el tema de &lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;mongodb&lt;/a&gt; y el tema de &lt;a href="https://www.seraph.to/tag/django.html"&gt;Django&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Extracción de información de PDFs con python (parte 1).</title><link href="https://ecrespo.github.io/extraccion-de-informacion-de-pdfs-con-python-parte-1.html" rel="alternate"></link><published>2015-08-29T09:00:00-05:30</published><updated>2015-08-29T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-08-29:/extraccion-de-informacion-de-pdfs-con-python-parte-1.html</id><summary type="html">&lt;p&gt;Existen varias herramientas en python para obtener información de PDF.
+En este caso visite la página de &lt;a href="www.cencoex.gob.ve"&gt;Cencoex&lt;/a&gt;, en la sección de Cencoex en cifras hay un enlace a un pdf a &lt;a href="http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf"&gt;Liquidaciones a Empresas Agremiadas del Sector Salud (Ordinarias + ALADI + SUCRE)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Para este primer artículo se usará &lt;a href="http://pycurl.io/"&gt;pycurl&lt;/a&gt; para …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Existen varias herramientas en python para obtener información de PDF.
+En este caso visite la página de &lt;a href="www.cencoex.gob.ve"&gt;Cencoex&lt;/a&gt;, en la sección de Cencoex en cifras hay un enlace a un pdf a &lt;a href="http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf"&gt;Liquidaciones a Empresas Agremiadas del Sector Salud (Ordinarias + ALADI + SUCRE)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Para este primer artículo se usará &lt;a href="http://pycurl.io/"&gt;pycurl&lt;/a&gt; para bajar el pdf y &lt;a href="http://eternal-todo.com/tools/peepdf-pdf-analysis-tool"&gt;peepdf&lt;/a&gt; para analizarlo. Para descargar peepdf se puede hacer desde el repositorio del proyecto en &lt;a href="https://github.com/jesparza/peepdf"&gt;github&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En el caso de &lt;code&gt;pycurl&lt;/code&gt; se instala por &lt;code&gt;pip&lt;/code&gt; o por &lt;code&gt;apt-get&lt;/code&gt; en Debian.&lt;/p&gt;
+&lt;p&gt;Se baja &lt;code&gt;peepdf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/jesparza/peepdf.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para bajar el archivo se ejecuta el código a continuación, el cual baja el archivo pdf y lo salva como &lt;code&gt;salud.pdf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pycurl&lt;/span&gt;
+
+&lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;salud.pdf&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pycurl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Curl&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;URL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;WRITEDATA&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;perform&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En el directorio de la aplicación se ejecuta (opción &lt;code&gt;-f&lt;/code&gt; para el archivo y &lt;code&gt;-i&lt;/code&gt; en modo interactivo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;peepdf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;  &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;../&lt;/span&gt;&lt;span class="n"&gt;salud&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pdf&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Y devuelve:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;File&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;salud&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pdf&lt;/span&gt;
+&lt;span class="n"&gt;MD5&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;e639fca504182dc5cb383cc455d30c21&lt;/span&gt;
+&lt;span class="n"&gt;SHA1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="n"&gt;c29f4a20e4e0b6a3c10decbfacced991e59ad79&lt;/span&gt;
+&lt;span class="n"&gt;SHA256&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="n"&gt;a4d3d48f060d1fa29fe9cb5e7a435643586e9871e62254839daf3fd87e45506&lt;/span&gt;
+&lt;span class="n"&gt;Size&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;57611&lt;/span&gt; &lt;span class="nb"&gt;bytes&lt;/span&gt;
+&lt;span class="n"&gt;Version&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.3&lt;/span&gt;
+&lt;span class="n"&gt;Binary&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;span class="n"&gt;Linearized&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+&lt;span class="n"&gt;Encrypted&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+&lt;span class="n"&gt;Updates&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;span class="n"&gt;Objects&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;34&lt;/span&gt;
+&lt;span class="n"&gt;Streams&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;
+&lt;span class="n"&gt;Comments&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;span class="n"&gt;Errors&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+&lt;span class="n"&gt;Version&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+ &lt;span class="n"&gt;Catalog&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+ &lt;span class="n"&gt;Info&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+ &lt;span class="n"&gt;Objects&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;34&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;13&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;14&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;17&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;19&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;21&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;22&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;31&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;34&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+ &lt;span class="n"&gt;Streams&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;21&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+  &lt;span class="n"&gt;Encoded&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;21&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El comando tree devuelve la estructura lógica del archivo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;PPDF&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;tree&lt;/span&gt;
+
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Catalog&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Pages&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Page&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Pages&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;integer&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;Unknown&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Catalog&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R10&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R7&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ExtGState&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R8&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;13&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Font&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+     &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Encoding&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;34&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+     &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;FontDescriptor&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+     &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Page&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;14&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Pages&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;integer&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;Unknown&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Catalog&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R10&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R7&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;17&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ExtGState&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R8&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;19&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Font&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Page&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Pages&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;21&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;integer&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;22&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;Unknown&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Catalog&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R10&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R7&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ExtGState&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R8&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Font&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Page&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Pages&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;integer&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;Unknown&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Catalog&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R10&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R7&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ExtGState&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;R8&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;31&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Font&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Info&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ver la estructura física se usa el comando &lt;code&gt;offsets&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;PPDF&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;offsets&lt;/span&gt;
+
+       &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="n"&gt;Header&lt;/span&gt;
+      &lt;span class="mi"&gt;15&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8865&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="mi"&gt;8879&lt;/span&gt;
+    &lt;span class="mi"&gt;8881&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;19&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="mi"&gt;8899&lt;/span&gt;
+    &lt;span class="mi"&gt;8901&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;15&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;9005&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;17905&lt;/span&gt;
+   &lt;span class="mi"&gt;17907&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;16&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;17926&lt;/span&gt;
+   &lt;span class="mi"&gt;17928&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;21&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8618&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;26545&lt;/span&gt;
+   &lt;span class="mi"&gt;26547&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;22&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;26566&lt;/span&gt;
+   &lt;span class="mi"&gt;26568&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;27&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6554&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;33121&lt;/span&gt;
+   &lt;span class="mi"&gt;33123&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;33142&lt;/span&gt;
+   &lt;span class="mi"&gt;33144&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;4&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;189&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;33332&lt;/span&gt;
+   &lt;span class="mi"&gt;33334&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;14&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;191&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;33524&lt;/span&gt;
+   &lt;span class="mi"&gt;33526&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;20&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;191&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;33716&lt;/span&gt;
+   &lt;span class="mi"&gt;33718&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;26&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;191&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;33908&lt;/span&gt;
+   &lt;span class="mi"&gt;33910&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;88&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;33997&lt;/span&gt;
+   &lt;span class="mi"&gt;33999&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;47&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;34045&lt;/span&gt;
+   &lt;span class="mi"&gt;34047&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;7&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;40&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;34086&lt;/span&gt;
+   &lt;span class="mi"&gt;34088&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;11&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;34116&lt;/span&gt;
+   &lt;span class="mi"&gt;34118&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;31&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;34148&lt;/span&gt;
+   &lt;span class="mi"&gt;34150&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4140&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38289&lt;/span&gt;
+   &lt;span class="mi"&gt;38291&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;13&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38319&lt;/span&gt;
+   &lt;span class="mi"&gt;38321&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;17&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38349&lt;/span&gt;
+   &lt;span class="mi"&gt;38351&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;18&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;31&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38381&lt;/span&gt;
+   &lt;span class="mi"&gt;38383&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;19&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38411&lt;/span&gt;
+   &lt;span class="mi"&gt;38413&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;23&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38441&lt;/span&gt;
+   &lt;span class="mi"&gt;38443&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;24&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;31&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38473&lt;/span&gt;
+   &lt;span class="mi"&gt;38475&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;25&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38503&lt;/span&gt;
+   &lt;span class="mi"&gt;38505&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;29&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38533&lt;/span&gt;
+   &lt;span class="mi"&gt;38535&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;30&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;31&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38565&lt;/span&gt;
+   &lt;span class="mi"&gt;38567&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;31&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;38595&lt;/span&gt;
+   &lt;span class="mi"&gt;38597&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;33&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;614&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;39210&lt;/span&gt;
+   &lt;span class="mi"&gt;39212&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;436&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;39647&lt;/span&gt;
+   &lt;span class="mi"&gt;39649&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;34&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;408&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;40056&lt;/span&gt;
+   &lt;span class="mi"&gt;40058&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;9&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;204&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;40261&lt;/span&gt;
+   &lt;span class="mi"&gt;40263&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;32&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;16249&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;56511&lt;/span&gt;
+   &lt;span class="mi"&gt;56513&lt;/span&gt;
+        &lt;span class="n"&gt;Object&lt;/span&gt;  &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;243&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;56755&lt;/span&gt;
+   &lt;span class="mi"&gt;56757&lt;/span&gt;
+        &lt;span class="n"&gt;Xref&lt;/span&gt; &lt;span class="n"&gt;Section&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;709&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;57465&lt;/span&gt;
+   &lt;span class="mi"&gt;57467&lt;/span&gt;
+        &lt;span class="n"&gt;Trailer&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;138&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="mi"&gt;57604&lt;/span&gt;
+   &lt;span class="mi"&gt;57605&lt;/span&gt; &lt;span class="n"&gt;EOF&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ver el metadato del pdf se ejecuta metadata:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;PPDF&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;metadata&lt;/span&gt;
+
+&lt;span class="n"&gt;Info&lt;/span&gt; &lt;span class="n"&gt;Object&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ModDate&lt;/span&gt; &lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;20140908210848&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mo"&gt;04&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;-30&amp;#39;&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CreationDate&lt;/span&gt; &lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;20140908210848&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mo"&gt;04&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;-30&amp;#39;&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Producer&lt;/span&gt; &lt;span class="n"&gt;Nitro&lt;/span&gt; &lt;span class="n"&gt;PDF&lt;/span&gt; &lt;span class="n"&gt;PrimoPDF&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Title&lt;/span&gt; &lt;span class="n"&gt;LIQUIDACIONES&lt;/span&gt; &lt;span class="n"&gt;DEL&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;ENERO&lt;/span&gt; &lt;span class="n"&gt;AL&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="n"&gt;DE&lt;/span&gt; &lt;span class="n"&gt;SEPTIEMBRE&lt;/span&gt; &lt;span class="mf"&gt;2014.&lt;/span&gt;&lt;span class="n"&gt;xls&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Creator&lt;/span&gt; &lt;span class="n"&gt;PrimoPDF&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;www&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;primopdf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Author&lt;/span&gt; &lt;span class="n"&gt;lrojas&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La fecha de creación del archivo es 09-08-2014 y la hora es 21:08:48  hora de Venezuela. El título del archivo Liquidaciones del 1 enero al 5 de septiembre de 2014, ah, es un archivo xls de excel. Y usaron primopdf para generar el pdf, por último el autor del pdf es lrojas.&lt;/p&gt;
+&lt;p&gt;Si se quiere revisar el objeto 2:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;PPDF&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;object&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ModDate&lt;/span&gt; &lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;20140908210848&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mo"&gt;04&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;-30&amp;#39;&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;CreationDate&lt;/span&gt; &lt;span class="n"&gt;D&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;20140908210848&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mo"&gt;04&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;-30&amp;#39;&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Producer&lt;/span&gt; &lt;span class="n"&gt;Nitro&lt;/span&gt; &lt;span class="n"&gt;PDF&lt;/span&gt; &lt;span class="n"&gt;PrimoPDF&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Title&lt;/span&gt; &lt;span class="n"&gt;LIQUIDACIONES&lt;/span&gt; &lt;span class="n"&gt;DEL&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;ENERO&lt;/span&gt; &lt;span class="n"&gt;AL&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="n"&gt;DE&lt;/span&gt; &lt;span class="n"&gt;SEPTIEMBRE&lt;/span&gt; &lt;span class="mf"&gt;2014.&lt;/span&gt;&lt;span class="n"&gt;xls&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Creator&lt;/span&gt; &lt;span class="n"&gt;PrimoPDF&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;www&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;primopdf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Author&lt;/span&gt; &lt;span class="n"&gt;lrojas&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Es el que contiene la información de los metadatos.&lt;/p&gt;
+&lt;p&gt;Revisando el objeto 15 se obtiene:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;432 1739.33 3991 6 re
+f
+432 1642.33 3991 6 re
+f
+432 1545.33 3991 6 re
+f
+432 1448.33 3991 6 re
+f
+432 1351.33 3991 6 re
+f
+432 1254.33 3991 6 re
+f
+432 1157.33 3991 6 re
+f
+432 1060.33 3991 6 re
+f
+432 963.332 3991 6 re
+f
+432 866.332 3991 6 re
+f
+432 769.332 3991 6 re
+f
+432 672.332 3991 6 re
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;O usando &lt;code&gt;rawstream&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;rawstream 15
+50 9f fa 71 0f 29 76 8a bc 44 3e dd c6 15 84 9e   öP..q.)v..D&amp;gt;.....ö
+4c 89 76 f6 75 8c 3d 23 65 11 fb 65 48 d1 0e a1   öL.v.u.=#e..eH...ö
+37 f6 08 d3 b6 f8 d2 17 15 4a 76 29 b0 04 86 e1   ö7........Jv)....ö
+b4 9e 9b 3a 34 e7 d1 ce 91 9a c9 c0 91 9e cc 6c   ö...:4..........lö
+4a 5d 24 67 c7 aa 21 fe 2c ea e6 ea 9e 8d 95 33   öJÅ$g..!.,......3ö
+61 e5 55 2c 13 3c cd 61 21 d1 26 03 47 ba 32 b3   öa.U,.&amp;lt;.a!.&amp;amp;.G.2.ö
+09 da cc ce 8e da e4 61 a1 85 34 d6 ba 00 63 5c   ö.......a..4...cÖö
+08 f1 63 34 7a 90 44 cb 79 4d 95 50 58 6c e7 55   ö..c4z.D.yM.PXl.Uö
+74 d4 da fb 44 4c 8a 48 a8 ae 41 42 b1 e5 44 a8   öt...DL.H..AB..D.ö
+e9 bb 42 bb 47 28 3b cd 5e 22 0f 5d 3b 42 e8 d9   ö..B.G(;.Ü&amp;quot;.Å;B..ö
+e4 68 93 af 5f ec 99 50 8b d8 7f 03 08 05 8b 04   ö.h.._..P......ö
+f5 a3 48 d5 bc 7b 7d 97 33 80 d8 c6 f6 85 57 90   ö..H..äå.3.....W.ö
+4b 6a 8c 50 15 17 e4 e2 3a ca ce 7e 55 46 e4 5a   öKj.P....:..üUF.Zö
+d4 d9 d5 eb 7d 70 a0 fb d6 a0 98 7d 3e 8f d9 72   ö....åp.....å&amp;gt;..rö
+12 6d 08 55 71 41 2e 79 12 93 b3 9f 36 d4 72 5a   ö.m.UqA.y....6.rZö
+68 a3 40 78 6b 9a 72 79 8c e9 6e 67 6c b9 cb ce   öh.@xk.ry..ngl...ö
+9a 4b 4d ec f8 02 e7 f3 3e fa f8 f8 cd 2f 6e 7e   ö.KM.....&amp;gt;..../nüö
+79 d3 c5 a0 96 4f 37 9d f1 46 3b 8e ea 1b 4d 13   öy....O7..F;...M.ö
+7a fd 8d c9 ae fb 3e 4d 16 4c 7d e1 e9 63 a1 bc   öz.....&amp;gt;M.Lå..c..ö
+eb 47 b5 bc 1d a2 5a de 0c ad 5a 5e 0f 83 5a 1e   ö.G....Z...ZÜ..Z.ö
+c7 a0 96 d3 21 d8 ab 72 3a 16 77 5d 9e 4f a7 3c   ö....!..r:.wÅ.O.&amp;lt;ö
+2f 2f 07 c1 ad ca e9 64 a7 55 39 9d eb b2 2a a7   ö//.....d.U9...*.ö
+d3 1c 56 e5 b4 01 fb aa 9c 36 37 5e 95 d3 fe 9c   ö..V......67Ü....ö
+ab 72 da b9 6e 55 4e fb 48 ad ca 69 57 96 f3 f2   ö.r..nUN.H..iW...ö
+b2 af c0 aa 9c d6 e9 ae ca 69 85 dd aa 9c 96 b5   ö.........i......ö
+ac ca 29 b9 7c 55 4e f9 9b ab 72 ca c2 5a 95 53   ö..).öUN...r..Z.Sö
+8e c2 aa 9c a6 b4 56 e5 34 5a 7b 5e 5e 06 75 ce   ö......V.4ZäÜÜ.u.ö
+cb 4b 1f ec bc bc b4 8d ce cb 0b 79 b0 fc 47 37   ö.K.........y..G7ö
+ff 07 29 f1 43 c1                                 ö..).C.ö
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Uno de los problemas de analizar pdf generados en la APN en Venezuela es que no lo generan a partir de la información que manejan directamente de las bases de datos, si no que usan una hoja de cálculo en este caso en windows y la de Microsoft Office, y generan el pdf con herramientas para windows.&lt;/p&gt;
+&lt;p&gt;¿Será autentica la información que tiene el pdf luego de manipulación con varias herramientas?&lt;/p&gt;
+&lt;p&gt;En siguientes post seguiré probando distintas herramientas en Python para ver si logro hacer un pdfscraping decente del pdf de Cencoex.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="General"></category><category term="Python"></category><category term="pdf scraping"></category></entry><entry><title>Obtener la resolución de la pantalla desde Python</title><link href="https://ecrespo.github.io/obtener-la-resolucion-de-la-pantalla-desde-python.html" rel="alternate"></link><published>2015-08-27T09:00:00-05:30</published><updated>2015-08-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-08-27:/obtener-la-resolucion-de-la-pantalla-desde-python.html</id><summary type="html">&lt;p&gt;Este artículo se basa en un &lt;a href="http://www.blog.pythonlibrary.org/2015/08/18/getting-your-screen-resolution-with-python/"&gt;artículo&lt;/a&gt; en inglés sobre el tema.&lt;/p&gt;
+&lt;p&gt;Desde la línea de comandos en Linux se puede ejecutar el comando &lt;code&gt;xrandr&lt;/code&gt; como se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@grievous:~$ xrandr | grep &amp;#39;*&amp;#39;
+   1366x768      60.00*+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La resolución es de 1366x768.&lt;/p&gt;
+&lt;p&gt;El script se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Este artículo se basa en un &lt;a href="http://www.blog.pythonlibrary.org/2015/08/18/getting-your-screen-resolution-with-python/"&gt;artículo&lt;/a&gt; en inglés sobre el tema.&lt;/p&gt;
+&lt;p&gt;Desde la línea de comandos en Linux se puede ejecutar el comando &lt;code&gt;xrandr&lt;/code&gt; como se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ernesto@grievous:~$ xrandr | grep &amp;#39;*&amp;#39;
+   1366x768      60.00*+
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La resolución es de 1366x768.&lt;/p&gt;
+&lt;p&gt;El script se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa el modulo subprocess&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;subprocess&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define un par de variables con los comandos a pasar:&lt;/span&gt;
+&lt;span class="n"&gt;cmd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;xrandr&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;cmd2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;grep&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;*&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se ejecuta el comando xrandr y luego se abre una tuberia.&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Popen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cmd&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PIPE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se ejecuta el segundo comando&lt;/span&gt;
+&lt;span class="n"&gt;p2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Popen&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cmd2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stdin&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;subprocess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;PIPE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se cierra la salida estandar.&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stdout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Obteccion de la resolucion&lt;/span&gt;
+&lt;span class="n"&gt;resolution_string&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;junk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;communicate&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;resolution&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;resolution_string&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;resolution&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;x&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al ejecutar el script se obtiene:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;screencatch&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="mi"&gt;1366&lt;/span&gt; &lt;span class="mi"&gt;768&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Obtener resolución con gtk con el siguiente script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa gtk&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;gtk&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se captura el ancho y alto&lt;/span&gt;
+&lt;span class="n"&gt;width&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gdk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;screen_width&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gtk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gdk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;screen_height&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se muestra en la consola el resultado&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al ejecutar el script se obtiene:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; &lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;screencatch2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="mi"&gt;1366&lt;/span&gt; &lt;span class="mi"&gt;768&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Obtener la resolución con &lt;code&gt;PySide/PyQT&lt;/code&gt; con el siguiente script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+&lt;span class="c1"&gt;#Importar QtGui de PySide&lt;/span&gt;
+&lt;span class="c1"&gt;#para solo PyQt se cambia a&lt;/span&gt;
+&lt;span class="c1"&gt;#from PyQt4 import QtGui&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;PySide&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;QtGui&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia de la aplicacion&lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;QtGui&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;QApplication&lt;/span&gt;&lt;span class="p"&gt;([])&lt;/span&gt;
+&lt;span class="c1"&gt;#Se captura la resolucion y se muestra  en la consola&lt;/span&gt;
+&lt;span class="n"&gt;screen_resolution&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;desktop&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;screenGeometry&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;screen_resolution&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;screen_resolution&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;height&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El resultado de ejecutar el script  es:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;screencatch3&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;span class="mi"&gt;1366&lt;/span&gt; &lt;span class="mi"&gt;768&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En el artículo mencionado se muestra como obtener la información con &lt;code&gt;wxPython&lt;/code&gt; y en un enlace en el artículo como obtener la información desde windows y desde MacOS.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Python"></category><category term="Ubuntu"></category></entry><entry><title>Usar mongodb en Django</title><link href="https://ecrespo.github.io/usar-mongodb-en-django.html" rel="alternate"></link><published>2015-05-14T09:00:00-05:30</published><updated>2015-05-14T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-05-14:/usar-mongodb-en-django.html</id><summary type="html">&lt;p&gt;En artículos anteriores se ha tocado el tema de &lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;mongodb&lt;/a&gt; y el tema de &lt;a href="https://www.seraph.to/tag/django.html"&gt;Django&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;En este caso se tocará el tema de crear un blog con Django usando mongodb, este artículo se basa en un artículo en Inglés del sitio &lt;a href="https://developer.ibm.com/tutorials/os-django-mongo/"&gt;Developers Work de IBM&lt;/a&gt; .&lt;/p&gt;
 &lt;p&gt;En este caso se tendrá …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En artículos anteriores se ha tocado el tema de &lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;mongodb&lt;/a&gt; y el tema de &lt;a href="https://www.seraph.to/tag/django.html"&gt;Django&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;En este caso se tocará el tema de crear un blog con Django usando mongodb, este artículo se basa en un artículo en Inglés del sitio &lt;a href="https://developer.ibm.com/tutorials/os-django-mongo/"&gt;Developers Work de IBM&lt;/a&gt; .&lt;/p&gt;

@@ -1,7 +1,7 @@
 Title: Volviendo a lo básico, POO en Python (parte 2)
 Date: 2015-12-25 9:00
 Category: Tutorial Python  
-Tags: Python
+Tags: Python,POO
 lang: es
 translation: true
 

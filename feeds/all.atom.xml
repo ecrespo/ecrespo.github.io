@@ -1365,7 +1365,132 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="POO"></category></entry><entry><title>Uso de docker en Debian Jessie (parte 1)</title><link href="https://ecrespo.github.io/uso-de-docker-en-debian-jessie-parte-1.html" rel="alternate"></link><published>2015-12-27T09:00:00-05:30</published><updated>2015-12-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-12-27:/uso-de-docker-en-debian-jessie-parte-1.html</id><summary type="html">&lt;p&gt;En el artículo &lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;anterior&lt;/a&gt; se explicó la instalación de &lt;code&gt;docker&lt;/code&gt;, al final del mismo se realizó una prueba de funcionamiento ejecutando una imagen llamada hello-word.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="POO"></category></entry><entry><title>Uso de docker en Debian Jessie (parte 2)</title><link href="https://ecrespo.github.io/uso-de-docker-en-debian-jessie-parte-2.html" rel="alternate"></link><published>2015-12-28T09:00:00-05:30</published><updated>2015-12-28T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-12-28:/uso-de-docker-en-debian-jessie-parte-2.html</id><summary type="html">&lt;p&gt;Los artículos anteriores sobre docker son:
+1. &lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;
+2. &lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1).&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;En este artículo se explicará como mantener ejecutando una instancia, como iniciar las instancias automáticamente, acceder a los servicios que se ejecutan en el contenedor y ejecutar la imagen …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Los artículos anteriores sobre docker son:
+1. &lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;
+2. &lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1).&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;En este artículo se explicará como mantener ejecutando una instancia, como iniciar las instancias automáticamente, acceder a los servicios que se ejecutan en el contenedor y ejecutar la imagen desde diferentes máquinas al registrar el contenedor.&lt;/p&gt;
+&lt;p&gt;Del artículo anterior se tiene 2 imagenes en el equipo, una de Debian y la otra creada por mi persona que viene del repositorio de docker hub:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+ecrespo/empaquetadodebian   latest              ee5883957d64        &lt;span class="m"&gt;18&lt;/span&gt; hours ago        &lt;span class="m"&gt;656&lt;/span&gt;.9 MB
+debian                      latest              8b9a99209d5c        &lt;span class="m"&gt;3&lt;/span&gt; weeks ago         &lt;span class="m"&gt;125&lt;/span&gt;.1 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar &lt;code&gt;apache&lt;/code&gt; y que quede funcionando en primer plano de la imagen que se construyo, se usa la opción &lt;code&gt;-D&lt;/code&gt; y la &lt;code&gt;-d&lt;/code&gt; para que se ejecute sin adjuntar.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$docker run -d   ecrespo/empaquetadodebian /usr/sbin/apache2ctl -D FOREGROUND
+eeb8041b4331e572b3e452fc00da5d364115ba8a08ad015aa05eb1d243a1bf4b
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Como se nota devuelve un hash. Ahora se revisan los procesos del docker y se tiene el contenedor con &lt;code&gt;apachectl&lt;/code&gt; ejecutandose:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+eeb8041b4331        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;4&lt;/span&gt; minutes ago       Up &lt;span class="m"&gt;4&lt;/span&gt; minutes                            tender_goodall
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para detener un proceso se toma el id del contenedor ejecutando &lt;code&gt;docker stop&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker stop eeb8041b4331
+eeb8041b4331
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al volver a listar los procesos se tiene que ya no hay contenedores corriendo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+$ docker run -d -p &lt;span class="m"&gt;80&lt;/span&gt;:80 ecrespo/empaquetadodebian /usr/sbin/apache2ctl -D FOREGROUND
+8c7d49ac2e671e0f7dd1bbfb038f5a23ff06e3120d07d059c0cde99dc76f1a79
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al volver a listar los procesos  se tiene el contenedor corriendo &lt;code&gt;apache2ctl&lt;/code&gt; en el puerto 80:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                NAMES
+8c7d49ac2e67        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;51&lt;/span&gt; seconds ago      Up &lt;span class="m"&gt;45&lt;/span&gt; seconds       &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:80-&amp;gt;80/tcp   stupefied_darwin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se abre el navegador a localhost (ojo el servicio apache debe estar apagado en el equipo) y se tiene apache corriendo como se muestra a continuación:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usodedockerendebianjessie2-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se sube la imagen a los repositorios con el comando &lt;code&gt;docker push&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker push ecrespo/empaquetadodebian
+The push refers to a repository &lt;span class="o"&gt;[&lt;/span&gt;docker.io/ecrespo/empaquetadodebian&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;len: &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+ee5883957d64: Pushed
+8b9a99209d5c: Pushed
+6d1ae97ee388: Pushed
+latest: digest: sha256:893cb08536430d5555434bb4b120fb54e9f21da7cd87325120c1698aa57e2882 size: &lt;span class="m"&gt;4009&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;También se puede probar una aplicación como por ejemplo &lt;code&gt;sonarqube&lt;/code&gt; el cual es una aplicación web hace métricas de calidad de software. &lt;a href="https://hub.docker.com/_/sonarqube/"&gt;La imagen la encuentran en el docker hub de sonarqube.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Se puede ejecutar &lt;code&gt;sonarqube&lt;/code&gt; con los puertos 9000 y 9092 de la siguiente forma:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run -d --name sonarqube -p &lt;span class="m"&gt;9000&lt;/span&gt;:9000 -p &lt;span class="m"&gt;9092&lt;/span&gt;:9092 sonarqube
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al terminar de descargar se ejecuta docker images y se nota que se tiene la imagen de sonarqube:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+ecrespo/empaquetadodebian   latest              ee5883957d64        &lt;span class="m"&gt;23&lt;/span&gt; hours ago        &lt;span class="m"&gt;656&lt;/span&gt;.9 MB
+debian                      latest              8b9a99209d5c        &lt;span class="m"&gt;3&lt;/span&gt; weeks ago         &lt;span class="m"&gt;125&lt;/span&gt;.1 MB
+sonarqube                   latest              dd47274097f7        &lt;span class="m"&gt;7&lt;/span&gt; weeks ago         &lt;span class="m"&gt;942&lt;/span&gt;.5 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se revisan los contenedores:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+f44317723253        sonarqube                   &lt;span class="s2"&gt;&amp;quot;./bin/run.sh&amp;quot;&lt;/span&gt;           &lt;span class="m"&gt;8&lt;/span&gt; minutes ago       Up &lt;span class="m"&gt;7&lt;/span&gt; minutes        &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:9000-&amp;gt;9000/tcp, &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:9092-&amp;gt;9092/tcp   sonarqube
+8c7d49ac2e67        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;3&lt;/span&gt; hours ago         Up &lt;span class="m"&gt;3&lt;/span&gt; hours          &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:80-&amp;gt;80/tcp                               stupefied_darwin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se tiene sonarqube corriendo en el puerto 9000, al abrir el navegador en localhost:9000 se tiene lo siguiente:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usodedockerendebianjessie2-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se detiene el contenedor de sonarqube:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker stop f44317723253
+f44317723253
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se revisan los procesos y ya no aparece &lt;code&gt;sonarqube&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                NAMES
+8c7d49ac2e67        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;3&lt;/span&gt; hours ago         Up &lt;span class="m"&gt;3&lt;/span&gt; hours          &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:80-&amp;gt;80/tcp   stupefied_darwin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Si se quiere iniciar &lt;code&gt;sonarqube&lt;/code&gt; se ejecuta &lt;code&gt;docker start&lt;/code&gt; con el id del contenedor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker start f44317723253
+f44317723253
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se lista de nuevo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+f44317723253        sonarqube                   &lt;span class="s2"&gt;&amp;quot;./bin/run.sh&amp;quot;&lt;/span&gt;           &lt;span class="m"&gt;22&lt;/span&gt; minutes ago      Up About a minute   &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:9000-&amp;gt;9000/tcp, &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:9092-&amp;gt;9092/tcp   sonarqube
+8c7d49ac2e67        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;3&lt;/span&gt; hours ago         Up &lt;span class="m"&gt;3&lt;/span&gt; hours          &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:80-&amp;gt;80/tcp                               stupefied_darwin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se nota que sonarqube vuelve a levantar ya con los puertos definidos.&lt;/p&gt;
+&lt;p&gt;En el próximo artículo se explicará como construir una imagen por medio del archivo dockerfile.&lt;/p&gt;
+&lt;p&gt;Referencias:&lt;br&gt;
+1. &lt;a href="https://coreos.com/os/docs/latest/getting-started-with-docker.html"&gt;Getting Started with Docker&lt;/a&gt;&lt;br&gt;
+2. &lt;a href="https://hub.docker.com/_/sonarqube/"&gt;Docker y sonarqube.&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="Docker"></category></entry><entry><title>Uso de docker en Debian Jessie (parte 1)</title><link href="https://ecrespo.github.io/uso-de-docker-en-debian-jessie-parte-1.html" rel="alternate"></link><published>2015-12-27T09:00:00-05:30</published><updated>2015-12-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-12-27:/uso-de-docker-en-debian-jessie-parte-1.html</id><summary type="html">&lt;p&gt;En el artículo &lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;anterior&lt;/a&gt; se explicó la instalación de &lt;code&gt;docker&lt;/code&gt;, al final del mismo se realizó una prueba de funcionamiento ejecutando una imagen llamada hello-word.&lt;/p&gt;
 &lt;p&gt;Al ejecutar el comando:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# docker run hello-world
 &lt;/pre&gt;&lt;/div&gt;

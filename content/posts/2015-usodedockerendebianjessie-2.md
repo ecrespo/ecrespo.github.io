@@ -6,6 +6,7 @@ lang: es
 translation: true
 
 Los artículos anteriores sobre docker son:
+
 1. [Instalar Docker en Debian Jessie](https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1)
 2. [Uso de Docker en Debian Jessie (parte 1).](https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1)
 

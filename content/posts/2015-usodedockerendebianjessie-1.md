@@ -8,10 +8,13 @@ translation: true
 En el artículo [anterior](https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie) se explicó la instalación de `docker`, al final del mismo se realizó una prueba de funcionamiento ejecutando una imagen llamada hello-word.
 
 Al ejecutar el comando:
+
 ```
 # docker run hello-world
 ```
+
 El comando retorna:
+
 ```
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world

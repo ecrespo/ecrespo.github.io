@@ -831,7 +831,140 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Automatizar prueba funcional del Inicio y fin de sesión del Admin de Django</title><link href="https://ecrespo.github.io/automatizar-prueba-funcional-del-inicio-y-fin-de-sesion-del-admin-de-django.html" rel="alternate"></link><published>2016-01-12T09:00:00-05:30</published><updated>2016-01-12T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-01-12:/automatizar-prueba-funcional-del-inicio-y-fin-de-sesion-del-admin-de-django.html</id><summary type="html">&lt;p&gt;Los artículos anteriores sobre PyAutoGUI trataron sobre:
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Iniciando Django usando Docker</title><link href="https://ecrespo.github.io/iniciando-django-usando-docker.html" rel="alternate"></link><published>2016-01-18T09:00:00-05:30</published><updated>2016-01-18T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-01-18:/iniciando-django-usando-docker.html</id><summary type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;artículo anterior&lt;/a&gt; 
+se tocó el tema de uso de un archivo Dockerfile para crear una imagen de docker que muestra una página estática por medio de apache.&lt;/p&gt;
+&lt;p&gt;En este artículo se usará el framework django para mostrar el funcionamiento del admin de Django desde Docker (&lt;a href="http://blog.crespo.org.ve/search/label/Django"&gt;artículos anteriores de …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;artículo anterior&lt;/a&gt; 
+se tocó el tema de uso de un archivo Dockerfile para crear una imagen de docker que muestra una página estática por medio de apache.&lt;/p&gt;
+&lt;p&gt;En este artículo se usará el framework django para mostrar el funcionamiento del admin de Django desde Docker (&lt;a href="http://blog.crespo.org.ve/search/label/Django"&gt;artículos anteriores de Django&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;A continuación los artículos anteriores:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html#uso-de-docker-en-debian-jessie-parte-2"&gt;Uso de Docker en Debian Jessie (parte 2)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;Crear una imagen Docker con un archivo Dockerfile&lt;/a&gt; &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;En este caso se tiene creado un proyecto y una aplicación de Django con la siguientes directorios y archivos, se ha creado una cuenta de administrador (&lt;a href="http://blog.crespo.org.ve/2012/07/framework-de-desarrollo-web-django.html"&gt;artículo de creación de proyecto y aplicación&lt;/a&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;djangoapp
+├── db.sqlite3
+├── djangoapp
+│   ├── __init__.py
+│   ├── __init__.pyc
+│   ├── settings.py
+│   ├── settings.pyc
+│   ├── urls.py
+│   ├── urls.pyc
+│   ├── wsgi.py
+│   └── wsgi.pyc
+└── manage.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El archivo Dockerfile contiene lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM debian
+MAINTAINER Ernesto Crespo &amp;lt;ecrespo@gmail.com&amp;gt;
+RUN apt-get update
+RUN apt-get install -y python-pip
+RUN apt-get clean
+RUN pip install virtualenv
+RUN pip install django
+RUN echo &amp;quot;America/Venezuela/Caracas&amp;quot; &amp;gt; /etc/timezone &amp;amp;&amp;amp; dpkg-reconfigure -f noninteractive tzdata
+
+# El puerto 8000 se publica en el contenedor
+EXPOSE 8000
+
+# Copiar aplicacion del subdirectorio djangoapp/ al directorio
+# /djangoapp en el contenedor
+ADD djangoapp /srv/djangoapp
+COPY djangoapp /srv/djangoapp
+RUN chown -R www-data:www-data /srv/djangoapp
+RUN chmod a+x /srv/djangoapp/manage.py
+# Establecer el directorio de trabajo
+WORKDIR /srv/djangoapp
+
+# Se lanza el servidor web del proyecto django
+CMD python manage.py runserver 0.0.0.0:8000
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;FROM debian: Se usa de base la última versión de Debian.  &lt;/li&gt;
+&lt;li&gt;MAINTAINER: Se define el nombre del mantenedor del contenedor.  &lt;/li&gt;
+&lt;li&gt;RUN: Se ejecuta la serie de comandos para instalar los paquetes necesarios, cambiar el huso horario del contenedor, cambiar de premisos y propietario de la carpeta donde estará el proyecto de django.  &lt;/li&gt;
+&lt;li&gt;EXPOSE 8000: Se publica el puerto 8000.  &lt;/li&gt;
+&lt;li&gt;ADD djangoapp /srv/djangoapp : Se copia el proyecto Django.  &lt;/li&gt;
+&lt;li&gt;COPY djangoapp /srv/djangoapp: Se copia el proyecto Django.  &lt;/li&gt;
+&lt;li&gt;WORKDIR /srv/djangoapp: Se define el directorio de trabajo.  &lt;/li&gt;
+&lt;li&gt;CMD python manage.py runserver 0.0.0.0:8000: Se ejecuta el servidor web del proyecto Django en el puerto 8000.  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Al salvar el archivo se ejecuta la construcción de la imagen:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker build -t myapp .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al terminar de crear la imagen se tiene:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+myapp                       latest              948e276ee3d9        &lt;span class="m"&gt;31&lt;/span&gt; minutes ago      &lt;span class="m"&gt;388&lt;/span&gt;.5 MB
+ecrespo/empaquetadodebian   latest              ee5883957d64        &lt;span class="m"&gt;3&lt;/span&gt; weeks ago         &lt;span class="m"&gt;656&lt;/span&gt;.9 MB
+sameersbn/gitlab            latest              5a4b34c1445c        &lt;span class="m"&gt;5&lt;/span&gt; weeks ago         &lt;span class="m"&gt;675&lt;/span&gt;.8 MB
+busybox                     latest              fc0db02f3072        &lt;span class="m"&gt;5&lt;/span&gt; weeks ago         &lt;span class="m"&gt;1&lt;/span&gt;.113 MB
+debian                      latest              8b9a99209d5c        &lt;span class="m"&gt;6&lt;/span&gt; weeks ago         &lt;span class="m"&gt;125&lt;/span&gt;.1 MB
+sonarqube                   latest              dd47274097f7        &lt;span class="m"&gt;10&lt;/span&gt; weeks ago        &lt;span class="m"&gt;942&lt;/span&gt;.5 MB
+hello-world                 latest              975b84d108f1        &lt;span class="m"&gt;3&lt;/span&gt; months ago        &lt;span class="m"&gt;960&lt;/span&gt; B
+docker/whalesay             latest              fb434121fc77        &lt;span class="m"&gt;7&lt;/span&gt; months ago        &lt;span class="m"&gt;247&lt;/span&gt; MB
+sonarqube                   &lt;span class="m"&gt;5&lt;/span&gt;.1                 37c5c2e971dc        &lt;span class="m"&gt;8&lt;/span&gt; months ago        &lt;span class="m"&gt;589&lt;/span&gt; MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar la instancia del docker myapp&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -p 8000:8000 myapp
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se asocia el puerto 8000 del equipo al puerto 8000 del docker myapp.&lt;/p&gt;
+&lt;p&gt;En la siguiente figura se tiene el inicio de sesión del admin de Django:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/iniciandodjangousandodocker-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra la administración de Django:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/iniciandodjangousandodocker-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se agrega un usuario al admin de Django:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/iniciandodjangousandodocker-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Los procesos de docker son:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/iniciandodjangousandodocker-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se puede detener la instancia de docker el cual contenedor tiene el id 5fedc4d0615b.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker stop 5fedc4d0615b
+5fedc4d0615b
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;O iniciar la instancia&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker start 5fedc4d0615b
+5fedc4d0615b
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Crear otro usuario admin:
+Para ello en docker se puede ejecutar una consola interactiva con el siguiente comando:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="n"&gt;docker&lt;/span&gt; &lt;span class="n"&gt;exec&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="n"&gt;determined_brattain&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bash&lt;/span&gt; 
+&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="mf"&gt;@5f&lt;/span&gt;&lt;span class="nl"&gt;edc4d0615b&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;srv&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;djangoapp&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt; 
+
+
+&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="mf"&gt;@5f&lt;/span&gt;&lt;span class="nl"&gt;edc4d0615b&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;srv&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;djangoapp&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;createsuperuser&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;username&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;admin&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;admin&lt;/span&gt;&lt;span class="p"&gt;@&lt;/span&gt;&lt;span class="n"&gt;myapp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;com&lt;/span&gt;
+&lt;span class="nl"&gt;Password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;Password&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;again&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+&lt;span class="n"&gt;Superuser&lt;/span&gt; &lt;span class="n"&gt;created&lt;/span&gt; &lt;span class="n"&gt;successfully&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se sale de la consola y se prueba ingresar con el usuario admin. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/iniciandodjangousandodocker-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;Ya se puede ir personalizando una aplicación en la instancia de la imagen de docker que se ha creado.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="Django"></category></entry><entry><title>Automatizar prueba funcional del Inicio y fin de sesión del Admin de Django</title><link href="https://ecrespo.github.io/automatizar-prueba-funcional-del-inicio-y-fin-de-sesion-del-admin-de-django.html" rel="alternate"></link><published>2016-01-12T09:00:00-05:30</published><updated>2016-01-12T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-01-12:/automatizar-prueba-funcional-del-inicio-y-fin-de-sesion-del-admin-de-django.html</id><summary type="html">&lt;p&gt;Los artículos anteriores sobre PyAutoGUI trataron sobre:
 1. &lt;a href="https://www.seraph.to/controlando-el-movimiento-del-raton-desde-python-con-pyautogui.html#controlando-el-movimiento-del-raton-desde-python-con-pyautogui"&gt;Capturas de pantalla, mover el ratón.&lt;/a&gt;&lt;br&gt;
 2. &lt;a href="https://www.seraph.to/utilizar-drag-del-raton-con-python-usando-pyautogui.html#utilizar-drag-del-raton-con-python-usando-pyautogui"&gt;Hacer drag con el ratón para hacer un dibujo en Gimp.&lt;/a&gt;  &lt;/p&gt;
 &lt;p&gt;Este artículo realiza un inicio de sesión en el Admin de Django, coloca el usuario, la clave, le da click al botón aceptar, le …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Los artículos anteriores sobre PyAutoGUI trataron sobre:

@@ -13,7 +13,7 @@ Lo artículos anteriores de docker son los siguientes:
 4. [Crear una imagen Docker con un archivo Dockerfile](https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile)  
 5. [Iniciando Django usando Docker](https://www.seraph.to/iniciando-django-usando-docker.html#iniciando-django-usando-docker)  
 
-En el [primer artículo de uso de Docker en Debian Jessie](http://blog.crespo.org.ve/2015/12/uso-de-docker-en-debian-jessie-parte-1.html) se muestra al final como usar SonarQube por medio de Docker con dos instancias de la misma imagen.
+En el [primer artículo de uso de Docker en Debian Jessie](https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1) se muestra al final como usar SonarQube por medio de Docker con dos instancias de la misma imagen.
 
 
 En esté artículo se bajará la imagen Docker de Gitlab edición comunitaria. El sitio donde se aloja está en el siguiente [enlace](https://hub.docker.com/r/gitlab/gitlab-ce/) y la documentación  en inglés a la cual se basa esté artículo está en el siguiente enlace.

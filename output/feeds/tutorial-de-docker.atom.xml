@@ -1,5 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial de Docker</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-de-docker.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-01-20T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Instalar Gitlab por medio de Docker</title><link href="https://ecrespo.github.io/instalar-gitlab-por-medio-de-docker.html" rel="alternate"></link><published>2016-01-20T09:00:00-05:30</published><updated>2016-01-20T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-01-20:/instalar-gitlab-por-medio-de-docker.html</id><summary type="html">&lt;p&gt;Lo artículos anteriores de docker son los siguientes:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial de Docker</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-de-docker.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-01-26T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Ejecutando micros servicios con docker usando docker-compose</title><link href="https://ecrespo.github.io/ejecutando-micros-servicios-con-docker-usando-docker-compose.html" rel="alternate"></link><published>2016-01-26T09:00:00-05:30</published><updated>2016-01-26T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-01-26:/ejecutando-micros-servicios-con-docker-usando-docker-compose.html</id><summary type="html">&lt;p&gt;Continuando con los artículos de docker, en este caso se hablará de iniciar dos contenedores donde uno le da servicio al otro, un contenedor tendrá el servicio de redis y el otro será una aplicación web sencilla hecha en flask.&lt;/p&gt;
+&lt;p&gt;Para poder lograr el manejo de varios contenedores existe docker-compose …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los artículos de docker, en este caso se hablará de iniciar dos contenedores donde uno le da servicio al otro, un contenedor tendrá el servicio de redis y el otro será una aplicación web sencilla hecha en flask.&lt;/p&gt;
+&lt;p&gt;Para poder lograr el manejo de varios contenedores existe docker-compose, para el caso de este artículo el &lt;a href="https://docs.docker.com/compose/gettingstarted/"&gt;enlace&lt;/a&gt; sobre docker-compose en flask lo pueden revisar en el siguiente enlace.&lt;/p&gt;
+&lt;p&gt;Los artículos anteriores que tratan el tema de docker son:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html#uso-de-docker-en-debian-jessie-parte-2"&gt;Uso de Docker en Debian Jessie (parte 2)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;Crear una imagen Docker con un archivo Dockerfile&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/iniciando-django-usando-docker.html#iniciando-django-usando-docker"&gt;Iniciando Django usando Docker&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html#instalar-gitlab-por-medio-de-docker"&gt;Iniciando Gitlab por medio de Docker&lt;/a&gt;  &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Primero se crea el directorio de trabajo.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir flask
+cd flask 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea el archivo &lt;code&gt;app.py&lt;/code&gt; con el siguiente contenido:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se importa flask y redis&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;redis&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Redis&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se crea la instancia de flask &lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;#Se crea la instancia de redis&lt;/span&gt;
+&lt;span class="n"&gt;redis&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Redis&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;redis&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;6379&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se crea la función hello definiendo la ruta del decorador.&lt;/span&gt;
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;hello&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se incrementa el valor de la variable hits de redis&lt;/span&gt;
+    &lt;span class="n"&gt;redis&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;incr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;hits&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se retorna un mensaje con el valor actual de la variable en redis&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Hello is me &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s2"&gt;...&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;redis&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;hits&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="c1"&gt;#Se ejecuta la aplicación en modo debug&lt;/span&gt;
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea el archivo &lt;code&gt;requerimientos.txt&lt;/code&gt;, donde se define que se requiere instalar flask y redis:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;flask
+redis
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea el archivo &lt;code&gt;Dockerfile&lt;/code&gt; con el siguiente contenido:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM python:2.7
+WORKDIR /code
+ADD requerimientos.txt /code/
+RUN pip install -r requerimientos.txt
+ADD . /code
+CMD python app.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se construye la imagen web:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker build -t web .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se definen los servicios por medio del archivo &lt;code&gt;docker-compose.yml&lt;/code&gt; que contiene lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;build&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;
+  &lt;span class="n"&gt;ports&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+   &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;5000:5000&amp;quot;&lt;/span&gt;
+  &lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+   &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="o"&gt;.:/&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;
+  &lt;span class="n"&gt;links&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+   &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;redis&lt;/span&gt;
+&lt;span class="n"&gt;redis&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;redis&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Descripción del archivo &lt;code&gt;docker-compose.yml&lt;/code&gt;:
+web: Define la imagen llamada web para ser construída, maneja los puertos 5000 local y externo será 5000 también, además se define el directorio volume llamado code, al final para web se define links que hace llamado a la imagen redis.
+redis: Se define la imagen redis.
+Construir y correr la aplicación con compose:&lt;/p&gt;
+&lt;p&gt;Desde el directorio donde se encuentran los archivos ejecutar :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En la siguiente figura se muestra que está corriendo la aplicación:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/ejecutandomicrosservicioscondockerusandodockercompose-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al abrir el navegador en en localhost:5000 se tiene lo que muestra la siguiente figura:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/ejecutandomicrosservicioscondockerusandodockercompose-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al ejecutar &lt;code&gt;docker ps&lt;/code&gt; se tienen los contenedores que se están ejecutando:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/ejecutandomicrosservicioscondockerusandodockercompose-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;También se tiene para &lt;code&gt;docker-compose&lt;/code&gt; el comando &lt;code&gt;ps&lt;/code&gt; y se obtiene lo siguiente:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/ejecutandomicrosservicioscondockerusandodockercompose-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;El resultado es simplificado con respecto a &lt;code&gt;docker ps&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Para detener los procesos o la ejecución del servicio se usa el comando stop de docker-compose:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-componse stop
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Con docker compose se puede ejecutar multiples imagenes y usarlas en una aplicación principal, esto logra el concepto de microservicios.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="Docker"></category></entry><entry><title>Instalar Gitlab por medio de Docker</title><link href="https://ecrespo.github.io/instalar-gitlab-por-medio-de-docker.html" rel="alternate"></link><published>2016-01-20T09:00:00-05:30</published><updated>2016-01-20T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-01-20:/instalar-gitlab-por-medio-de-docker.html</id><summary type="html">&lt;p&gt;Lo artículos anteriores de docker son los siguientes:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1)&lt;/a&gt;  &lt;/li&gt;
@@ -7,7 +116,7 @@
 &lt;li&gt;&lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;Crear una imagen Docker con un archivo Dockerfile&lt;/a&gt;  &lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.seraph.to/iniciando-django-usando-docker.html#iniciando-django-usando-docker"&gt;Iniciando Django usando Docker&lt;/a&gt;  &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;En el &lt;a href="http://blog.crespo.org.ve/2015/12/uso-de-docker-en-debian-jessie-parte-1.html"&gt;primer artículo de uso de Docker en …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lo artículos anteriores de docker son los siguientes:&lt;/p&gt;
+&lt;p&gt;En el &lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;primer artículo de uso de Docker en …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lo artículos anteriores de docker son los siguientes:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1)&lt;/a&gt;  &lt;/li&gt;
@@ -15,7 +124,7 @@
 &lt;li&gt;&lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;Crear una imagen Docker con un archivo Dockerfile&lt;/a&gt;  &lt;/li&gt;
 &lt;li&gt;&lt;a href="https://www.seraph.to/iniciando-django-usando-docker.html#iniciando-django-usando-docker"&gt;Iniciando Django usando Docker&lt;/a&gt;  &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;En el &lt;a href="http://blog.crespo.org.ve/2015/12/uso-de-docker-en-debian-jessie-parte-1.html"&gt;primer artículo de uso de Docker en Debian Jessie&lt;/a&gt; se muestra al final como usar SonarQube por medio de Docker con dos instancias de la misma imagen.&lt;/p&gt;
+&lt;p&gt;En el &lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;primer artículo de uso de Docker en Debian Jessie&lt;/a&gt; se muestra al final como usar SonarQube por medio de Docker con dos instancias de la misma imagen.&lt;/p&gt;
 &lt;p&gt;En esté artículo se bajará la imagen Docker de Gitlab edición comunitaria. El sitio donde se aloja está en el siguiente &lt;a href="https://hub.docker.com/r/gitlab/gitlab-ce/"&gt;enlace&lt;/a&gt; y la documentación  en inglés a la cual se basa esté artículo está en el siguiente enlace.&lt;/p&gt;
 &lt;p&gt;Se ejecutará el &lt;code&gt;gitlab-ce&lt;/code&gt; que se bajará del sitio de dockerhub. El comando es el siguiente:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run --detach  --hostname pruebasgitlab --publish 443:443 --publish 80:80 --publish 22:22  --name gitlab   --restart always --volume /srv/gitlab/config:/etc/gitlab --volume /srv/gitlab/logs:/var/log/gitlab --volume /srv/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce:latest

@@ -1,5 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial de Linux</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-de-linux.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2013-02-05T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Instalación de Raspbian en un Raspberry Pi.</title><link href="https://ecrespo.github.io/instalacion-de-raspbian-en-un-raspberry-pi.html" rel="alternate"></link><published>2013-02-05T09:00:00-05:30</published><updated>2013-02-05T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-02-05:/instalacion-de-raspbian-en-un-raspberry-pi.html</id><summary type="html">&lt;p&gt;Raspberry Pi es una placa de computadora de bajo costo (Más información en &lt;a href="https://es.wikipedia.org/wiki/Raspberry_Pi"&gt;wikipedia&lt;/a&gt;) desarrollada por el Reino Unido.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial de Linux</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-de-linux.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-01-17T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Crear una imagen Docker a partir de un archivo dockerfile.</title><link href="https://ecrespo.github.io/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html" rel="alternate"></link><published>2016-01-17T09:00:00-05:30</published><updated>2016-01-17T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-01-17:/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html</id><summary type="html">&lt;p&gt;En los artículos anteriores sobre docker se tiene:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html#uso-de-docker-en-debian-jessie-parte-2"&gt;Uso de Docker en Debian Jessie (parte 2)&lt;/a&gt;  &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;En este artículo se muestra como construir una imagen Docker a partir de un archivo llamado Dockerfile.&lt;/p&gt;
+&lt;p&gt;Se usará una imagen …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En los artículos anteriores sobre docker se tiene:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html#uso-de-docker-en-debian-jessie-parte-2"&gt;Uso de Docker en Debian Jessie (parte 2)&lt;/a&gt;  &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;En este artículo se muestra como construir una imagen Docker a partir de un archivo llamado Dockerfile.&lt;/p&gt;
+&lt;p&gt;Se usará una imagen de Debian como base que a partir de allí se tendrá una con apache corriendo, en el directorio &lt;code&gt;/var/www/html&lt;/code&gt; se tendrá un archivo index.html con dos encabezados html que mostrarán que se tiene corriendo apache por medio de docker.&lt;/p&gt;
+&lt;p&gt;Lo primero que se tiene que hacer es crear el archivo Dockerfile en un directorio por ejemplo dockerbuilds, el archivo contendrá lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM debian
+MAINTAINER Ernesto Crespo
+RUN apt-get update
+RUN apt-get install apache2 -y --force-yes
+RUN echo &amp;quot;&lt;span class="nt"&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Apache con docker&lt;span class="nt"&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt; &lt;span class="nt"&gt;&amp;lt;h2&amp;gt;&lt;/span&gt;Prueba hecha por Seraph1&lt;span class="nt"&gt;&amp;lt;/h2&amp;gt;&lt;/span&gt;&amp;quot; &amp;gt; /var/www/html/index.html
+EXPOSE 80
+ENTRYPOINT apache2ctl -D FOREGROUND
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Descripción del archivo:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;FROM:Lo primero que se define es la imagen que se va a usar, en este caso Debian.  &lt;/li&gt;
+&lt;li&gt;MAINTAINER: El nombre del mantenedor de la imagen.  &lt;/li&gt;
+&lt;li&gt;RUN: Instrucción que permite ejecutar comandos dentro del contenedor. En este caso se  actualiza la lista de paquetes de Debian, se instala apache y se copia el contenido de index.html en la ruta que le corresponde.&lt;/li&gt;
+&lt;li&gt;Se expone el puerto 80 del servidor  apache.    &lt;/li&gt;
+&lt;li&gt;Se indica que se ejecute apache en primer plano cada vez que se inicie el contenedor.  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Luego de tener el archivo listo, se ejecuta el comando para la creación de la imagen usando dicho archivo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker build -t ecrespo/apache .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se define que el nombre de la imagen será &lt;code&gt;ecrespo/apache&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Al terminar de realizar el proceso de construcción se tendrá la imagen en el equipo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$docker images
+REPOSITORY                                      TAG                 IMAGE ID            CREATED              VIRTUAL SIZE
+ecrespo/apache                                  latest              ae0d4610be9d        About a minute ago   197.8 MB
+debian-django                                   latest              36896e115e32        2 weeks ago          601.1 MB
+ecrespo/empaquetadodebian                       latest              ee5883957d64        2 weeks ago          656.9 MB
+debian                                          latest              8b9a99209d5c        6 weeks ago          125.1 MB
+sonarqube                                       latest              dd47274097f7        10 weeks ago         942.5 MB
+debian                                          8.1                 f05335696a9b        4 months ago         125.2 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se tiene la imagen de 197.8MB. &lt;/p&gt;
+&lt;p&gt;Para terminar se ejecuta la imagen que se llama &lt;code&gt;ecrespo/apache&lt;/code&gt;, la instancia se llamará apache1, se captura el puerto local 80 y lo muestra en el equipo como puerto 90.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run --name apache1 -d -p 90:80 ecrespo/apache
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se lista los procesos de docker y se tiene el contenedor de apache corriendo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+0195ebf31328        ecrespo/apache      &amp;quot;/bin/sh -c &amp;#39;apache2c&amp;quot;   44 minutes ago      Up 44 minutes       0.0.0.0:90-&amp;gt;80/tcp   apache1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El nombre es &lt;code&gt;ecrespo/apache&lt;/code&gt;, el comando que se ejecuta es el de &lt;code&gt;apachectl&lt;/code&gt;, tiempo de creado 44 minutos y arriba desde hace 44 minutos, el nombre de la instancia es &lt;code&gt;apache1&lt;/code&gt; y redirecciona el puerto 90 al puerto 80.&lt;/p&gt;
+&lt;p&gt;Con &lt;code&gt;docker stats&lt;/code&gt; pasando el id del contenedor se puede tener información de consumo de recursos de dicho contenedor.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/crearunaimagendockerapartirdeunarchivodockerfile-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Ahora se abre el navegador con localhost:90 y se tiene lo que muestra el mensaje que veremos en la siguiente figura:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/crearunaimagendockerapartirdeunarchivodockerfile-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Para detener el contenedor se ejecuta &lt;code&gt;docker stop&lt;/code&gt; con el id del contenedor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker stop 0195ebf31328
+0195ebf31328
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al listar los procesos se nota que ya no se tiene el contenedor &lt;code&gt;apache1&lt;/code&gt; corriendo.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En este artículo se muestra una pequeña personalización del apache, poco a poco se irá aumentando el nivel de personalización de los contenedores para tener servicios reales en funcionamiento. &lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Canaima"></category><category term="Debian"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="Docker"></category></entry><entry><title>Instalación de Raspbian en un Raspberry Pi.</title><link href="https://ecrespo.github.io/instalacion-de-raspbian-en-un-raspberry-pi.html" rel="alternate"></link><published>2013-02-05T09:00:00-05:30</published><updated>2013-02-05T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-02-05:/instalacion-de-raspbian-en-un-raspberry-pi.html</id><summary type="html">&lt;p&gt;Raspberry Pi es una placa de computadora de bajo costo (Más información en &lt;a href="https://es.wikipedia.org/wiki/Raspberry_Pi"&gt;wikipedia&lt;/a&gt;) desarrollada por el Reino Unido.&lt;/p&gt;
 &lt;p&gt;En la siguiente figura se muestra un esquema de la placa:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="./images/instalacionderaspbianenunraspberrypi-1.png"&gt; &lt;/p&gt;
 &lt;p&gt;A continuación 2 fotos del unboxing  del Raspberry Pi que me llegó hace una semana:&lt;/p&gt;

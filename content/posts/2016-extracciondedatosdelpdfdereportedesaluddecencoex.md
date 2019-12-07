@@ -23,7 +23,7 @@ La siguiente figura muestra los documentos de la colección:
 
 ![](./images/extracciondedatosdelpdfdereportedesaluddecencoex-2.png)
 
-Con está información almacenada en mongodb se creará un API Restful con Eve como se explico en los [artículos anteriores](http://blog.crespo.org.ve/search/label/Eve).
+Con está información almacenada en mongodb se creará un API Restful con Eve como se explico en los [artículos anteriores](https://www.seraph.to/tag/eve.html).
 
 La imagen anterior muestra que los documentos tienen los siguientes campos:  
 

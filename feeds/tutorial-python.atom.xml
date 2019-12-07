@@ -1,5 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-02-07T08:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Crear un paquete python del módulo pywrapper_config</title><link href="https://ecrespo.github.io/crear-un-paquete-python-del-modulo-pywrapper_config.html" rel="alternate"></link><published>2016-02-07T08:00:00-05:30</published><updated>2016-02-07T08:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-02-07:/crear-un-paquete-python-del-modulo-pywrapper_config.html</id><summary type="html">&lt;p&gt;Hace unos años escribí un artículo que explicaba como crear un paquete python (&lt;a href="https://www.seraph.to/crear-un-paquete-python-de-un-programa.html#crear-un-paquete-python-de-un-programa"&gt;Crear un paquete python de un programa&lt;/a&gt;). &lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-02-07T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>API rest ful con Eve (parte 2)</title><link href="https://ecrespo.github.io/api-rest-ful-con-eve-parte-2.html" rel="alternate"></link><published>2016-02-07T09:00:00-05:30</published><updated>2016-02-07T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-02-07:/api-rest-ful-con-eve-parte-2.html</id><summary type="html">&lt;p&gt;En el primer &lt;a href="https://www.seraph.to/api-rest-full-para-python-con-eve-parte-1.html#api-rest-full-para-python-con-eve-parte-1"&gt;artículo&lt;/a&gt; se tocó el tema del api rest ful con eve de manera sencilla.&lt;/p&gt;
+&lt;p&gt;En este artículo se toca el uso de mongodb para majejo del api rest con mongodb, el artículo se basa en la guía rápida de eve que se encuentra en su &lt;a href="https://docs.python-eve.org/en/stable/quickstart.html"&gt;sitio&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Los …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el primer &lt;a href="https://www.seraph.to/api-rest-full-para-python-con-eve-parte-1.html#api-rest-full-para-python-con-eve-parte-1"&gt;artículo&lt;/a&gt; se tocó el tema del api rest ful con eve de manera sencilla.&lt;/p&gt;
+&lt;p&gt;En este artículo se toca el uso de mongodb para majejo del api rest con mongodb, el artículo se basa en la guía rápida de eve que se encuentra en su &lt;a href="https://docs.python-eve.org/en/stable/quickstart.html"&gt;sitio&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Los artículos relacionados con mongodb del blog son:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/habilitar-autenticacion-en-un-servidor-mongodb.html#habilitar-autenticacion-en-un-servidor-mongodb"&gt;Instalar un servidor mongodb en Debian.&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian"&gt;Habilitar la autenticación en un servidor mongodb.&lt;/a&gt;  &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Para ver la base de datos en mongodb se usará el cliente &lt;a href="https://app.robomongo.org/"&gt;robomongo&lt;/a&gt; que lo pueden descargar en el siguiente &lt;a href="https://app.robomongo.org/download.html"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El archivo &lt;code&gt;run.py&lt;/code&gt; contiene lo mismo que en el artículo anterior:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;eve&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Eve&lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Eve&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El archivo &lt;code&gt;settings.py&lt;/code&gt; contendrá algunas directivas.&lt;/p&gt;
+&lt;p&gt;Configuración de la base de datos mongodb:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;MONGO_HOST = &amp;#39;localhost&amp;#39;
+MONGO_PORT = 27017
+#MONGO_USERNAME = &amp;#39;user&amp;#39;
+#MONGO_PASSWORD = &amp;#39;user&amp;#39;
+MONGO_DBNAME = &amp;#39;eve&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Como a mongodb no se le ha configurado un usuario y clave se comentan esas líneas, la base de datos a usar se llama eve.&lt;/p&gt;
+&lt;p&gt;Configurar todas las opciones del CRUD (leer, editar, update y borrar):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Enable reads (GET), inserts (POST) and DELETE for resources/collections
+# (if you omit this line, the API will default to [&amp;#39;GET&amp;#39;] and provide
+# read-only access to the endpoint).
+RESOURCE_METHODS = [&amp;#39;GET&amp;#39;, &amp;#39;POST&amp;#39;, &amp;#39;DELETE&amp;#39;]
+
+# Enable reads (GET), edits (PATCH), replacements (PUT) and deletes of
+# individual items  (defaults to read-only item access).
+ITEM_METHODS = [&amp;#39;GET&amp;#39;, &amp;#39;PATCH&amp;#39;, &amp;#39;PUT&amp;#39;, &amp;#39;DELETE&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se define un esquema el cual permite validar los datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;schema = {
+    # Schema definition, based on Cerberus grammar. Check the Cerberus project
+    # (https://github.com/nicolaiarocci/cerberus) for details.
+    &amp;#39;nombre&amp;#39;: {
+        &amp;#39;type&amp;#39;: &amp;#39;string&amp;#39;,
+        &amp;#39;minlength&amp;#39;: 1,
+        &amp;#39;maxlength&amp;#39;: 10,
+    },
+    &amp;#39;apellido&amp;#39;: {
+        &amp;#39;type&amp;#39;: &amp;#39;string&amp;#39;,
+        &amp;#39;minlength&amp;#39;: 1,
+        &amp;#39;maxlength&amp;#39;: 15,
+        &amp;#39;required&amp;#39;: True,
+        # talk about hard constraints! For the purpose of the demo
+        # &amp;#39;lastname&amp;#39; is an API entry-point, so we need it to be unique.
+        &amp;#39;unique&amp;#39;: True,
+    },
+    # &amp;#39;role&amp;#39; is a list, and can only contain values from &amp;#39;allowed&amp;#39;.
+    &amp;#39;role&amp;#39;: {
+        &amp;#39;type&amp;#39;: &amp;#39;list&amp;#39;,
+        &amp;#39;allowed&amp;#39;: [&amp;quot;author&amp;quot;, &amp;quot;contributor&amp;quot;, &amp;quot;copy&amp;quot;],
+    },
+    # An embedded &amp;#39;strongly-typed&amp;#39; dictionary.
+    &amp;#39;localizacion&amp;#39;: {
+        &amp;#39;type&amp;#39;: &amp;#39;dict&amp;#39;,
+        &amp;#39;schema&amp;#39;: {
+            &amp;#39;direccion&amp;#39;: {&amp;#39;type&amp;#39;: &amp;#39;string&amp;#39;},
+            &amp;#39;ciudad&amp;#39;: {&amp;#39;type&amp;#39;: &amp;#39;string&amp;#39;}
+        },
+    },
+    &amp;#39;nacimiento: {
+        &amp;#39;type&amp;#39;: &amp;#39;datetime&amp;#39;,
+    },
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Definición de persona:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;persona = {
+    # &amp;#39;title&amp;#39; tag used in item links. Defaults to the resource title minus
+    # the final, plural &amp;#39;s&amp;#39; (works fine in most cases but not for &amp;#39;people&amp;#39;)
+    &amp;#39;titulo&amp;#39;: &amp;#39;persona&amp;#39;,
+
+    # by default the standard item entry point is defined as
+    # &amp;#39;/people/&amp;lt;ObjectId&amp;gt;&amp;#39;. We leave it untouched, and we also enable an
+    # additional read-only entry point. This way consumers can also perform
+    # GET requests at &amp;#39;/people/&amp;lt;lastname&amp;gt;&amp;#39;.
+    &amp;#39;additional_lookup&amp;#39;: {
+        &amp;#39;url&amp;#39;: &amp;#39;regex(&amp;quot;[\w]+&amp;quot;)&amp;#39;,
+        &amp;#39;field&amp;#39;: &amp;#39;apellido&amp;#39;
+    },
+
+    # We choose to override global cache-control directives for this resource.
+    &amp;#39;cache_control&amp;#39;: &amp;#39;max-age=10,must-revalidate&amp;#39;,
+    &amp;#39;cache_expires&amp;#39;: 10,
+
+    # most global settings can be overridden at resource level
+    &amp;#39;resource_methods&amp;#39;: [&amp;#39;GET&amp;#39;, &amp;#39;POST&amp;#39;],
+
+    &amp;#39;schema&amp;#39;: schema
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Por último se define el recurso como un dominio, el recurso persona toma la definición dada anteriormente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DOMAIN = {
+    &amp;#39;persona&amp;#39;: persona,
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Con robomongo se puede observar que ya se tiene dos documentos agregados a la colección persona de la base de datos eve:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconeve2-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se consulta vía GET a http://127.0.0.1:500 por medio de la extensión de google chrome restclient:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconeve2-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al hacer una consulta GET a http://127.0.0.1:5000/persona se tiene lo siguiente:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconeve2-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconeve2-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Desde la línea de comandos se agregará dos documentos, se usará curl para ello:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl -d &amp;#39;[{&amp;quot;nombre&amp;quot;: &amp;quot;Ernesto&amp;quot;, &amp;quot;apellido&amp;quot;: &amp;quot;Crespo&amp;quot;}, {&amp;quot;nombre&amp;quot;: &amp;quot;Argimiro&amp;quot;, &amp;quot;apellido&amp;quot;: &amp;quot;Crespo&amp;quot;}]&amp;#39; -H &amp;#39;Content-Type: application/json&amp;#39;  http://127.0.0.1:5000/persona
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al ejecutar devuelve lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{
+   &amp;quot;_status&amp;quot;: &amp;quot;OK&amp;quot;,
+   &amp;quot;_items&amp;quot;: [
+      {
+         &amp;quot;_updated&amp;quot;: &amp;quot;Mon, 08 Feb 2016 03:34:41 GMT&amp;quot;,
+         &amp;quot;_links&amp;quot;: {
+            &amp;quot;self&amp;quot;: {
+               &amp;quot;href&amp;quot;: &amp;quot;persona/56b80cd146b4402633320fd5&amp;quot;,
+               &amp;quot;title&amp;quot;: &amp;quot;Persona&amp;quot;
+            }
+         },
+         &amp;quot;_created&amp;quot;: &amp;quot;Mon, 08 Feb 2016 03:34:41 GMT&amp;quot;,
+         &amp;quot;_status&amp;quot;: &amp;quot;OK&amp;quot;,
+         &amp;quot;_id&amp;quot;: &amp;quot;56b80cd146b4402633320fd5&amp;quot;,
+         &amp;quot;_etag&amp;quot;: &amp;quot;cb32857db339920319adeb23b29359936c92680f&amp;quot;
+      },
+      {
+         &amp;quot;_updated&amp;quot;: &amp;quot;Mon, 08 Feb 2016 03:34:41 GMT&amp;quot;,
+         &amp;quot;_links&amp;quot;: {
+            &amp;quot;self&amp;quot;: {
+               &amp;quot;href&amp;quot;: &amp;quot;persona/56b80cd146b4402633320fd6&amp;quot;,
+               &amp;quot;title&amp;quot;: &amp;quot;Persona&amp;quot;
+            }
+         },
+         &amp;quot;_created&amp;quot;: &amp;quot;Mon, 08 Feb 2016 03:34:41 GMT&amp;quot;,
+         &amp;quot;_status&amp;quot;: &amp;quot;OK&amp;quot;,
+         &amp;quot;_id&amp;quot;: &amp;quot;56b80cd146b4402633320fd6&amp;quot;,
+         &amp;quot;_etag&amp;quot;: &amp;quot;c14c62e94c88dd227ccffaf5c248f18492040ee2&amp;quot;
+      }
+   ]
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al revisar la base de datos mongodb se tiene que se insertaron dos documentos:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconeve2-5.png"&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Linux"></category><category term="Python"></category><category term="Ubuntu"></category><category term="API Restfull"></category></entry><entry><title>Crear un paquete python del módulo pywrapper_config</title><link href="https://ecrespo.github.io/crear-un-paquete-python-del-modulo-pywrapper_config.html" rel="alternate"></link><published>2016-02-07T08:00:00-05:30</published><updated>2016-02-07T08:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-02-07:/crear-un-paquete-python-del-modulo-pywrapper_config.html</id><summary type="html">&lt;p&gt;Hace unos años escribí un artículo que explicaba como crear un paquete python (&lt;a href="https://www.seraph.to/crear-un-paquete-python-de-un-programa.html#crear-un-paquete-python-de-un-programa"&gt;Crear un paquete python de un programa&lt;/a&gt;). &lt;/p&gt;
 &lt;p&gt;En este artículo se empaquetará el módulo &lt;code&gt;python pywrapper_config&lt;/code&gt; el cual fue tema del siguiente artículo (&lt;a href="https://www.seraph.to/modulo-que-permite-acceder-a-archivos-de-configuracion-ini-usando-configparser-en-python.html#modulo-que-permite-acceder-a-archivos-de-configuracion-ini-usando-configparser-en-python"&gt;Módulo que permite acceder a archivos de configuración&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;La diferencia con el primer artículo …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hace unos años escribí un artículo que explicaba como crear un paquete python (&lt;a href="https://www.seraph.to/crear-un-paquete-python-de-un-programa.html#crear-un-paquete-python-de-un-programa"&gt;Crear un paquete python de un programa&lt;/a&gt;). &lt;/p&gt;
 &lt;p&gt;En este artículo se empaquetará el módulo &lt;code&gt;python pywrapper_config&lt;/code&gt; el cual fue tema del siguiente artículo (&lt;a href="https://www.seraph.to/modulo-que-permite-acceder-a-archivos-de-configuracion-ini-usando-configparser-en-python.html#modulo-que-permite-acceder-a-archivos-de-configuracion-ini-usando-configparser-en-python"&gt;Módulo que permite acceder a archivos de configuración&lt;/a&gt;).&lt;/p&gt;

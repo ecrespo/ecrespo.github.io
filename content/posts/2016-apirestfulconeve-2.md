@@ -1,7 +1,7 @@
 Title: API rest ful con Eve (parte 2)  
 Date: 2016-02-07 09:00  
 Category: Tutorial Python  
-Tags:  Debian,Linux,Python,Ubuntu,API Restfull  
+Tags:  Debian,Linux,Python,Ubuntu,API Restfull,Eve
 lang: es  
 translation: true  
 

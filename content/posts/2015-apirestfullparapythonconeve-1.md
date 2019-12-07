@@ -1,7 +1,7 @@
 Title: API rest Full para Python con Eve (parte 1).  
 Date: 2015-04-07 9:00  
 Category: Tutorial Python  
-Tags: Canaima,Debian,Python,Ubuntu  
+Tags: Canaima,Debian,Python,Ubuntu,Eve, API restfull 
 lang: es  
 translation: true  
 

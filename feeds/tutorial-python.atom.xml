@@ -1,5 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-02-08T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Extracción de Datos del PDF de reporte de salud de Cencoex</title><link href="https://ecrespo.github.io/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html" rel="alternate"></link><published>2016-02-08T09:00:00-05:30</published><updated>2016-02-08T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-02-08:/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html</id><summary type="html">&lt;p&gt;Este artículo es la continuación de los artículos de extracción de datos de un PDF, enfocado al reporte de Cencoex del área de &lt;a href="http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf"&gt;salud&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-02-11T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Iniciando Django con docker usando docker-compose con postgresql como microservicio.</title><link href="https://ecrespo.github.io/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html" rel="alternate"></link><published>2016-02-11T09:00:00-05:30</published><updated>2016-02-11T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-02-11:/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html</id><summary type="html">&lt;p&gt;En este artículo se tomará lo visto en el artículo de microservicios con docker donde se uso flask y redis, en este caso será con postgresql y Django.&lt;/p&gt;
+&lt;p&gt;Dejo a continuación la lista de artículos sobre docker que se ha tocado en el blog:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso …&lt;/a&gt;&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;p&gt;En este artículo se tomará lo visto en el artículo de microservicios con docker donde se uso flask y redis, en este caso será con postgresql y Django.&lt;/p&gt;
+&lt;p&gt;Dejo a continuación la lista de artículos sobre docker que se ha tocado en el blog:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html#uso-de-docker-en-debian-jessie-parte-2"&gt;Uso de Docker en Debian Jessie (parte 2)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;Crear una imagen Docker a partir de un archivo Dockerfile&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/iniciando-django-usando-docker.html"&gt;Iniciando Django usando Docker&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html"&gt;Instalar Gitlab por medio de Docker&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html"&gt;Ejecutando microservicios con docker usando docker-compose&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/docker-en-docker-dind.html"&gt;Docker en Docker (DinD)&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;El artículo se basa en un artículo en inglés sobre &lt;a href="https://docs.docker.com/compose/django/"&gt;docker-compose y django&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;La idea es tener dos contenedores uno ejecutando &lt;code&gt;postgresql&lt;/code&gt; y en otro &lt;code&gt;Django&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;En un directorio se crea el archivo &lt;code&gt;Dockerfile&lt;/code&gt; con el siguiente contenido:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM python:2.7
+ENV PYTHONUNBUFFERED 1
+RUN mkdir /codigo
+WORKDIR /codigo
+ADD requerimientos.txt /codigo/
+RUN pip install --upgrade pip
+RUN pip install -r requermientos.txt
+ADD . /codigo/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El archivo requerimientos.txt contendrá la instalación de Django y de la librería &lt;code&gt;psycopg2&lt;/code&gt; para conectarse a &lt;code&gt;postgresql&lt;/code&gt; desde &lt;code&gt;django&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Django
+psycopg2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El último archivo a crear es el que usará &lt;code&gt;docker-compose&lt;/code&gt; con el nombre de &lt;code&gt;docker-compose.yml&lt;/code&gt; y su contenido iniciará la base de datos &lt;code&gt;postgresql&lt;/code&gt; y luego a &lt;code&gt;Django&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;bd&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;postgres&lt;/span&gt;
+&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;build&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;
+  &lt;span class="n"&gt;command&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;py&lt;/span&gt; &lt;span class="n"&gt;runserver&lt;/span&gt; &lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;8000&lt;/span&gt;
+  &lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="o"&gt;.:/&lt;/span&gt;&lt;span class="n"&gt;codigo&lt;/span&gt;
+  &lt;span class="n"&gt;ports&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;8000:8000&amp;quot;&lt;/span&gt;
+  &lt;span class="n"&gt;links&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;bd&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se tendrán dos contenedores uno llamado bd y otro web. El comando a iniciar DJango es el que se conoce y usa el puerto 8000 que será visto de manera pública.&lt;/p&gt;
+&lt;p&gt;A continuación se crea el proyecto Django con el siguiente comando:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose run web django-admin.py startproject djangoapp .
+Building web
+Step 1 : FROM python:2.7
+ ---&amp;gt; 19ab33b86bc6
+Step 2 : ENV PYTHONUNBUFFERED 1
+ ---&amp;gt; Running in eb54e8bab43f
+ ---&amp;gt; a4206823aac3
+Removing intermediate container eb54e8bab43f
+Step 3 : RUN mkdir /app
+ ---&amp;gt; Running in bf221dbca163
+ ---&amp;gt; 44eb31969545
+Removing intermediate container bf221dbca163
+Step 4 : WORKDIR /app
+ ---&amp;gt; Running in 6209e18e7e87
+ ---&amp;gt; 6f7d50fc9b12
+Removing intermediate container 6209e18e7e87
+Step 5 : ADD requerimientos.txt /app/
+ ---&amp;gt; 293c5424f664
+Removing intermediate container c072ad8ca2ae
+Step 6 : RUN pip install --upgrade pip
+ ---&amp;gt; Running in 48f862804290
+Collecting pip
+  Downloading pip-8.0.2-py2.py3-none-any.whl (1.2MB)
+Installing collected packages: pip
+  Found existing installation: pip 7.1.2
+    Uninstalling pip-7.1.2:
+      Successfully uninstalled pip-7.1.2
+Successfully installed pip-8.0.2
+ ---&amp;gt; 6126a41cd55b
+Removing intermediate container 48f862804290
+Step 7 : RUN pip install -r requerimientos.txt
+ ---&amp;gt; Running in 7e6c9ff9fefa
+Collecting Django (from -r requerimientos.txt (line 1))
+  Downloading Django-1.9.2-py2.py3-none-any.whl (6.6MB)
+Collecting psycopg2 (from -r requerimientos.txt (line 2))
+  Downloading psycopg2-2.6.1.tar.gz (371kB)
+Building wheels for collected packages: psycopg2
+  Running setup.py bdist_wheel for psycopg2: started
+  Running setup.py bdist_wheel for psycopg2: finished with status &amp;#39;done&amp;#39;
+  Stored in directory: /root/.cache/pip/wheels/e2/9a/5e/7b620848bbc7cfb9084aafea077be11618c2b5067bd532f329
+Successfully built psycopg2
+Installing collected packages: Django, psycopg2
+Successfully installed Django-1.9.2 psycopg2-2.6.1
+ ---&amp;gt; 971bcfbe34ec
+Removing intermediate container 7e6c9ff9fefa
+Step 8 : ADD . /app/
+ ---&amp;gt; 7a7faf87cf21
+Removing intermediate container 6c246df080b3
+Successfully built 7a7faf87cf21
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Esto generará un directorio y unos archivos como se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ls -l
+total 20
+drwxr-xr-x 2 root    root    4096 feb 10 21:35 djangoapp
+-rw-r--r-- 1 ernesto ernesto  174 feb 10 21:14 docker-compose.yml
+-rw-r--r-- 1 ernesto ernesto  177 feb 10 21:14 Dockerfile
+-rwxr-xr-x 1 root    root     252 feb 10 21:35 manage.py
+-rw-r--r-- 1 ernesto ernesto   17 feb 10 20:10 requerimientos.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Es necesario cambiar de usuario al directorio djangoapp y a manage.py.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo chown -R $USER:$USER .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se revisan las imagenes creadas:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+docker5_web              latest              7a7faf87cf21        4 minutes ago       715.2 MB
+postgres                    latest              54fa18d9f3b6        2 weeks ago         263.8 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Modificar el archivo &lt;code&gt;djangoapp/settings.py&lt;/code&gt; para dar soporte a la conexión al contenedor de &lt;code&gt;postgresql&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;Modificar la sección database con el siguiente contenido:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DATABASES = {
+    &amp;#39;default&amp;#39;: {
+        &amp;#39;ENGINE&amp;#39;: &amp;#39;django.db.backends.postgresql_psycopg2&amp;#39;,
+        &amp;#39;NAME&amp;#39;: &amp;#39;postgres&amp;#39;,
+        &amp;#39;USER&amp;#39;: &amp;#39;postgres&amp;#39;,
+        &amp;#39;HOST&amp;#39;: &amp;#39;db&amp;#39;,
+        &amp;#39;PORT&amp;#39;: 5432,
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El usuario y clave son los que tiene predefinido la imagen de docker para postgresql.&lt;/p&gt;
+&lt;p&gt;Se ejecuta &lt;code&gt;migrate&lt;/code&gt; del &lt;code&gt;manage.py&lt;/code&gt; para crear las tablas:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose run web python manage.py migrate
+
+Operations to perform:
+  Apply all migrations: admin, contenttypes, auth, sessions
+Running migrations:
+  Rendering model states... DONE
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying sessions.0001_initial... OK
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea la cuenta de administrador de django:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose run web python manage.py createsuperuser
+Username (leave blank to use &amp;#39;root&amp;#39;): admin
+Email address: 
+Password: 
+Password (again): 
+Superuser created successfully.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para levantar el servidor web de django se inicia &lt;code&gt;docker-compose&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="nt"&gt;docker-compose&lt;/span&gt; &lt;span class="nt"&gt;up&lt;/span&gt;
+&lt;span class="nt"&gt;docker5_db_1&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;up-to-date&lt;/span&gt;
+&lt;span class="nt"&gt;Creating&lt;/span&gt; &lt;span class="nt"&gt;docker5_web_1&lt;/span&gt;
+&lt;span class="nt"&gt;Attaching&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;docker5_db_1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;docker5_web_1&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;The&lt;/span&gt; &lt;span class="nt"&gt;files&lt;/span&gt; &lt;span class="nt"&gt;belonging&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;this&lt;/span&gt; &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;will&lt;/span&gt; &lt;span class="nt"&gt;be&lt;/span&gt; &lt;span class="nt"&gt;owned&lt;/span&gt; &lt;span class="nt"&gt;by&lt;/span&gt; &lt;span class="nt"&gt;user&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;postgres&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;This&lt;/span&gt; &lt;span class="nt"&gt;user&lt;/span&gt; &lt;span class="nt"&gt;must&lt;/span&gt; &lt;span class="nt"&gt;also&lt;/span&gt; &lt;span class="nt"&gt;own&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;server&lt;/span&gt; &lt;span class="nt"&gt;process&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;The&lt;/span&gt; &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;cluster&lt;/span&gt; &lt;span class="nt"&gt;will&lt;/span&gt; &lt;span class="nt"&gt;be&lt;/span&gt; &lt;span class="nt"&gt;initialized&lt;/span&gt; &lt;span class="nt"&gt;with&lt;/span&gt; &lt;span class="nt"&gt;locale&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;en_US.utf8&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;The&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;encoding&lt;/span&gt; &lt;span class="nt"&gt;has&lt;/span&gt; &lt;span class="nt"&gt;accordingly&lt;/span&gt; &lt;span class="nt"&gt;been&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;UTF8&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;The&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;text&lt;/span&gt; &lt;span class="nt"&gt;search&lt;/span&gt; &lt;span class="nt"&gt;configuration&lt;/span&gt; &lt;span class="nt"&gt;will&lt;/span&gt; &lt;span class="nt"&gt;be&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;english&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;Data&lt;/span&gt; &lt;span class="nt"&gt;page&lt;/span&gt; &lt;span class="nt"&gt;checksums&lt;/span&gt; &lt;span class="nt"&gt;are&lt;/span&gt; &lt;span class="nt"&gt;disabled&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;fixing&lt;/span&gt; &lt;span class="nt"&gt;permissions&lt;/span&gt; &lt;span class="nt"&gt;on&lt;/span&gt; &lt;span class="nt"&gt;existing&lt;/span&gt; &lt;span class="nt"&gt;directory&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;data&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;ok&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;creating&lt;/span&gt; &lt;span class="nt"&gt;subdirectories&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;ok&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;selecting&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;max_connections&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;100&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;selecting&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;shared_buffers&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;128MB&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;selecting&lt;/span&gt; &lt;span class="nt"&gt;dynamic&lt;/span&gt; &lt;span class="nt"&gt;shared&lt;/span&gt; &lt;span class="nt"&gt;memory&lt;/span&gt; &lt;span class="nt"&gt;implementation&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;posix&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;creating&lt;/span&gt; &lt;span class="nt"&gt;configuration&lt;/span&gt; &lt;span class="nt"&gt;files&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;ok&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;creating&lt;/span&gt; &lt;span class="nt"&gt;template1&lt;/span&gt; &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;in&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;postgresql&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;data&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;base&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;ok&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;initializing&lt;/span&gt; &lt;span class="nt"&gt;pg_authid&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;ok&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;initializing&lt;/span&gt; &lt;span class="nt"&gt;dependencies&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;ok&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;creating&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;views&lt;/span&gt; &lt;span class="o"&gt;...&lt;/span&gt; &lt;span class="nt"&gt;ok&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;loading&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;objects&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39; descriptions ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | creating collations ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | creating conversions ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | creating dictionaries ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | setting privileges on built-in objects ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | creating information schema ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | loading PL/pgSQL server-side language ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | vacuuming database template1 ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | copying template1 to template0 ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | copying template1 to postgres ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | syncing data to disk ... ok&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | &lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | WARNING: enabling &amp;quot;trust&amp;quot; authentication for local connections&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | You can change this by editing pg_hba.conf or using the option -A, or&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | --auth-local and --auth-host, the next time you run initdb.&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | &lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | Success. You can now start the database server using:&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | &lt;/span&gt;
+&lt;span class="s1"&gt;db_1  |     pg_ctl -D /var/lib/postgresql/data -l logfile start&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | &lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | ****************************************************&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  | WARNING: No password has been set for the database.&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  |          This will allow anyone with access to the&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  |          Postgres port to access your database. In&lt;/span&gt;
+&lt;span class="s1"&gt;db_1  |          Docker&amp;#39;&lt;/span&gt;&lt;span class="nt"&gt;s&lt;/span&gt; &lt;span class="nt"&gt;default&lt;/span&gt; &lt;span class="nt"&gt;configuration&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;this&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt;          &lt;span class="nt"&gt;effectively&lt;/span&gt; &lt;span class="nt"&gt;any&lt;/span&gt; &lt;span class="nt"&gt;other&lt;/span&gt; &lt;span class="nt"&gt;container&lt;/span&gt; &lt;span class="nt"&gt;on&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;same&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt;          &lt;span class="nt"&gt;system&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt;          &lt;span class="nt"&gt;Use&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-e POSTGRES_PASSWORD=password&amp;quot;&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;set&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt;          &lt;span class="nt"&gt;it&lt;/span&gt; &lt;span class="nt"&gt;in&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;docker run&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="o"&gt;****************************************************&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;waiting&lt;/span&gt; &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;server&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;start&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;was&lt;/span&gt; &lt;span class="nt"&gt;shut&lt;/span&gt; &lt;span class="nt"&gt;down&lt;/span&gt; &lt;span class="nt"&gt;at&lt;/span&gt; &lt;span class="nt"&gt;2016-02-11&lt;/span&gt; &lt;span class="nt"&gt;04&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;34&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;33&lt;/span&gt; &lt;span class="nt"&gt;UTC&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;MultiXact&lt;/span&gt; &lt;span class="nt"&gt;member&lt;/span&gt; &lt;span class="nt"&gt;wraparound&lt;/span&gt; &lt;span class="nt"&gt;protections&lt;/span&gt; &lt;span class="nt"&gt;are&lt;/span&gt; &lt;span class="nt"&gt;now&lt;/span&gt; &lt;span class="nt"&gt;enabled&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;ready&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;accept&lt;/span&gt; &lt;span class="nt"&gt;connections&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;autovacuum&lt;/span&gt; &lt;span class="nt"&gt;launcher&lt;/span&gt; &lt;span class="nt"&gt;started&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="nt"&gt;done&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;server&lt;/span&gt; &lt;span class="nt"&gt;started&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;ALTER&lt;/span&gt; &lt;span class="nt"&gt;ROLE&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;docker-entrypoint&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;sh&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;ignoring&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;docker-entrypoint-initdb&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;d&lt;/span&gt;&lt;span class="o"&gt;/*&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;received&lt;/span&gt; &lt;span class="nt"&gt;fast&lt;/span&gt; &lt;span class="nt"&gt;shutdown&lt;/span&gt; &lt;span class="nt"&gt;request&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;aborting&lt;/span&gt; &lt;span class="nt"&gt;any&lt;/span&gt; &lt;span class="nt"&gt;active&lt;/span&gt; &lt;span class="nt"&gt;transactions&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;waiting&lt;/span&gt; &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;server&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;shut&lt;/span&gt; &lt;span class="nt"&gt;down&lt;/span&gt;&lt;span class="o"&gt;..&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;autovacuum&lt;/span&gt; &lt;span class="nt"&gt;launcher&lt;/span&gt; &lt;span class="nt"&gt;shutting&lt;/span&gt; &lt;span class="nt"&gt;down&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;shutting&lt;/span&gt; &lt;span class="nt"&gt;down&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;shut&lt;/span&gt; &lt;span class="nt"&gt;down&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt;  &lt;span class="nt"&gt;done&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;server&lt;/span&gt; &lt;span class="nt"&gt;stopped&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;PostgreSQL&lt;/span&gt; &lt;span class="nt"&gt;init&lt;/span&gt; &lt;span class="nt"&gt;process&lt;/span&gt; &lt;span class="nt"&gt;complete&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;ready&lt;/span&gt; &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;start&lt;/span&gt; &lt;span class="nt"&gt;up&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;was&lt;/span&gt; &lt;span class="nt"&gt;shut&lt;/span&gt; &lt;span class="nt"&gt;down&lt;/span&gt; &lt;span class="nt"&gt;at&lt;/span&gt; &lt;span class="nt"&gt;2016-02-11&lt;/span&gt; &lt;span class="nt"&gt;04&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;34&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;38&lt;/span&gt; &lt;span class="nt"&gt;UTC&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;MultiXact&lt;/span&gt; &lt;span class="nt"&gt;member&lt;/span&gt; &lt;span class="nt"&gt;wraparound&lt;/span&gt; &lt;span class="nt"&gt;protections&lt;/span&gt; &lt;span class="nt"&gt;are&lt;/span&gt; &lt;span class="nt"&gt;now&lt;/span&gt; &lt;span class="nt"&gt;enabled&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;ready&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;accept&lt;/span&gt; &lt;span class="nt"&gt;connections&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;autovacuum&lt;/span&gt; &lt;span class="nt"&gt;launcher&lt;/span&gt; &lt;span class="nt"&gt;started&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;was&lt;/span&gt; &lt;span class="nt"&gt;interrupted&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;last&lt;/span&gt; &lt;span class="nt"&gt;known&lt;/span&gt; &lt;span class="nt"&gt;up&lt;/span&gt; &lt;span class="nt"&gt;at&lt;/span&gt; &lt;span class="nt"&gt;2016-02-11&lt;/span&gt; &lt;span class="nt"&gt;04&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;34&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;39&lt;/span&gt; &lt;span class="nt"&gt;UTC&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;was&lt;/span&gt; &lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;properly&lt;/span&gt; &lt;span class="nt"&gt;shut&lt;/span&gt; &lt;span class="nt"&gt;down&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;automatic&lt;/span&gt; &lt;span class="nt"&gt;recovery&lt;/span&gt; &lt;span class="nt"&gt;in&lt;/span&gt; &lt;span class="nt"&gt;progress&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;invalid&lt;/span&gt; &lt;span class="nt"&gt;record&lt;/span&gt; &lt;span class="nt"&gt;length&lt;/span&gt; &lt;span class="nt"&gt;at&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;1707848&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;redo&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;required&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;MultiXact&lt;/span&gt; &lt;span class="nt"&gt;member&lt;/span&gt; &lt;span class="nt"&gt;wraparound&lt;/span&gt; &lt;span class="nt"&gt;protections&lt;/span&gt; &lt;span class="nt"&gt;are&lt;/span&gt; &lt;span class="nt"&gt;now&lt;/span&gt; &lt;span class="nt"&gt;enabled&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;database&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;is&lt;/span&gt; &lt;span class="nt"&gt;ready&lt;/span&gt; &lt;span class="nt"&gt;to&lt;/span&gt; &lt;span class="nt"&gt;accept&lt;/span&gt; &lt;span class="nt"&gt;connections&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;LOG&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;autovacuum&lt;/span&gt; &lt;span class="nt"&gt;launcher&lt;/span&gt; &lt;span class="nt"&gt;started&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;ERROR&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;relation&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt; &lt;span class="nt"&gt;does&lt;/span&gt; &lt;span class="nt"&gt;not&lt;/span&gt; &lt;span class="nt"&gt;exist&lt;/span&gt; &lt;span class="nt"&gt;at&lt;/span&gt; &lt;span class="nt"&gt;character&lt;/span&gt; &lt;span class="nt"&gt;280&lt;/span&gt;
+&lt;span class="nt"&gt;db_1&lt;/span&gt;  &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;STATEMENT&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;  &lt;span class="nt"&gt;SELECT&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;password&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;last_login&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;is_superuser&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;username&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;first_name&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;last_name&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;email&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;is_staff&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;is_active&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;date_joined&amp;quot;&lt;/span&gt; &lt;span class="nt"&gt;FROM&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt; &lt;span class="nt"&gt;WHERE&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;auth_user&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;username&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;root&amp;#39;&lt;/span&gt;
+&lt;span class="nt"&gt;web_1&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;Performing&lt;/span&gt; &lt;span class="nt"&gt;system&lt;/span&gt; &lt;span class="nt"&gt;checks&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;
+&lt;span class="nt"&gt;web_1&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; 
+&lt;span class="nt"&gt;web_1&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;System&lt;/span&gt; &lt;span class="nt"&gt;check&lt;/span&gt; &lt;span class="nt"&gt;identified&lt;/span&gt; &lt;span class="nt"&gt;no&lt;/span&gt; &lt;span class="nt"&gt;issues&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt; &lt;span class="nt"&gt;silenced&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;
+&lt;span class="nt"&gt;web_1&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;February&lt;/span&gt; &lt;span class="nt"&gt;11&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;2016&lt;/span&gt; &lt;span class="nt"&gt;-&lt;/span&gt; &lt;span class="nt"&gt;12&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;38&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;56&lt;/span&gt;
+&lt;span class="nt"&gt;web_1&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;Django&lt;/span&gt; &lt;span class="nt"&gt;version&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;9&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;2&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;using&lt;/span&gt; &lt;span class="nt"&gt;settings&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;djangoapp.settings&amp;#39;&lt;/span&gt;
+&lt;span class="nt"&gt;web_1&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;Starting&lt;/span&gt; &lt;span class="nt"&gt;development&lt;/span&gt; &lt;span class="nt"&gt;server&lt;/span&gt; &lt;span class="nt"&gt;at&lt;/span&gt; &lt;span class="nt"&gt;http&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nd"&gt;8000&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;span class="nt"&gt;web_1&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;Quit&lt;/span&gt; &lt;span class="nt"&gt;the&lt;/span&gt; &lt;span class="nt"&gt;server&lt;/span&gt; &lt;span class="nt"&gt;with&lt;/span&gt; &lt;span class="nt"&gt;CONTROL-C&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sólo queda abrir el navegador en la siguiente URL http://127.0.0.1:8000/admin.&lt;/p&gt;
+&lt;p&gt;A continuación la imagen de la sesión de admin de Django:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/iniciandodjangocondockerusandodockercomposeconpostgresqlcomomicroservicio-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Y la figura de los logs de la ejecución de Django:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/iniciandodjangocondockerusandodockercomposeconpostgresqlcomomicroservicio-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Como se vió en el artículo se puede ejecutar los comandos del manage.py desde fuera del contenedor que estos comandos se ejecutarán en el contenedor.&lt;/p&gt;
+&lt;p&gt;Ya con esto se pueden realizar configuraciones más complejas como incorporar redis o rabbitMQ (con Django Celery, explicado en un &lt;a href="https://blog.crespo.org.ve/search/label/Django-celery"&gt;artículo anterior&lt;/a&gt;) y lo mejor es que la configuración es simplemente adaptar lo que existe a las necesidades puntuales del proyecto.&lt;/p&gt;
+&lt;p&gt;Referencias:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://docs.docker.com/compose/django/"&gt;Quickstart: Compose and Django.&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="http://michal.karzynski.pl/blog/2015/04/19/packaging-django-applications-as-docker-container-images/"&gt;Packaging Django applications into Docker container images.&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.cristalab.com/tutoriales/deploy-de-django-sobre-docker-c114082l/"&gt;Deploy de Django sobre Docker.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.digitalocean.com/community/tutorials/docker-explicado-como-crear-contenedores-de-docker-corriendo-en-memcached-es"&gt;Docker Explicado: Cómo crear Contenedores de Docker corriendo en Memcached.&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://abirtone.com/docker/2015/07/28/uso-de-docker-en-aplicacion-de-nodejs/"&gt;Docker en la ejecución de test de integración en NodeJS.&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Python"></category><category term="Docker"></category><category term="Django"></category></entry><entry><title>Extracción de Datos del PDF de reporte de salud de Cencoex</title><link href="https://ecrespo.github.io/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html" rel="alternate"></link><published>2016-02-08T09:00:00-05:30</published><updated>2016-02-08T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-02-08:/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html</id><summary type="html">&lt;p&gt;Este artículo es la continuación de los artículos de extracción de datos de un PDF, enfocado al reporte de Cencoex del área de &lt;a href="http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf"&gt;salud&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;La siguiente figura muestra el pdf antes mencionado:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-1.png"&gt;&lt;/p&gt;
 &lt;p&gt;Los artículos anteriores de extracción de pdf son:&lt;br&gt;
@@ -13,7 +309,7 @@
 &lt;p&gt;En el caso del Pdf del reporte de Cencoex se tiene el script ya explicado anteriormente que guarda la información en una base de datos mongodb llamada &lt;code&gt;cencoex&lt;/code&gt; en una colección llamada salud. &lt;/p&gt;
 &lt;p&gt;La siguiente figura muestra los documentos de la colección:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-2.png"&gt;&lt;/p&gt;
-&lt;p&gt;Con está información almacenada en mongodb se creará un API Restful con Eve como se explico en los &lt;a href="http://blog.crespo.org.ve/search/label/Eve"&gt;artículos anteriores&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Con está información almacenada en mongodb se creará un API Restful con Eve como se explico en los &lt;a href="https://www.seraph.to/tag/eve.html"&gt;artículos anteriores&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;La imagen anterior muestra que los documentos tienen los siguientes campos:  &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;_id&lt;/code&gt;: En el identificador del objeto  &lt;/li&gt;

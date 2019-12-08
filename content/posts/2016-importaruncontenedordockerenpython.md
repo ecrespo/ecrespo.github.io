@@ -1,5 +1,5 @@
 Title: Importar un contenedor Docker en Python.
-Date: 2016-02-24 10:00  
+Date: 2016-02-24 09:00  
 Category: Tutorial de Docker 
 Tags: Linux,Python, Docker  
 lang: es  

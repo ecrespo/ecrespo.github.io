@@ -1,5 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-02-11T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Iniciando Django con docker usando docker-compose con postgresql como microservicio.</title><link href="https://ecrespo.github.io/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html" rel="alternate"></link><published>2016-02-11T09:00:00-05:30</published><updated>2016-02-11T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-02-11:/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html</id><summary type="html">&lt;p&gt;En este artículo se tomará lo visto en el artículo de microservicios con docker donde se uso flask y redis, en este caso será con postgresql y Django.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2016-03-25T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Descarga de documentos (Informes de gestión del 2015) de la página web de la Asamblea Nacional con Python.</title><link href="https://ecrespo.github.io/descarga-de-documentos-informes-de-gestion-del-2015-de-la-pagina-web-de-la-asamblea-nacional-con-python.html" rel="alternate"></link><published>2016-03-25T09:00:00-05:30</published><updated>2016-03-25T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-03-25:/descarga-de-documentos-informes-de-gestion-del-2015-de-la-pagina-web-de-la-asamblea-nacional-con-python.html</id><summary type="html">&lt;p&gt;Retomando los artículos sobre webscraping (pueden visitarlos en el siguiente &lt;a href="https://www.seraph.to/tag/webscraping.html"&gt;enlace&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Se tiene la página de la Asamblea Nacional,  donde se alojan las memorias y cuentas del Ejecutivo Nacional, pueden visitar el sitio en el siguiente &lt;a href="http://www.asambleanacional.gob.ve//documento/show2/id/64"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El url es: &lt;a href="http://www.asambleanacional.gob.ve//documento/show2/id/64"&gt;http://www.asambleanacional.gob.ve//documento/show2/id/64 &lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Retomando los artículos sobre webscraping (pueden visitarlos en el siguiente &lt;a href="https://www.seraph.to/tag/webscraping.html"&gt;enlace&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Se tiene la página de la Asamblea Nacional,  donde se alojan las memorias y cuentas del Ejecutivo Nacional, pueden visitar el sitio en el siguiente &lt;a href="http://www.asambleanacional.gob.ve//documento/show2/id/64"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El url es: &lt;a href="http://www.asambleanacional.gob.ve//documento/show2/id/64"&gt;http://www.asambleanacional.gob.ve//documento/show2/id/64 &lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A continuación se muestra una imagen de la página ya citada:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/descargadedocumentosinformesdegestiondel2015delapaginawebdelaasambleanacionalconpython-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Algunos de los enlaces son archivos en pdf y otros archivos .tar.&lt;/p&gt;
+&lt;p&gt;La idea es usar &lt;code&gt;request&lt;/code&gt; y &lt;code&gt;BeautifulSoup&lt;/code&gt; para primero abrir la página, luego extraer la información, llegar a los enlaces y bajar los archivos.&lt;/p&gt;
+&lt;p&gt;El repositorio de github del script se encuentra en el siguiente &lt;a href="https://github.com/ecrespo/pyurldownload_file"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El código se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/python3&lt;/span&gt;
+
+
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;bs4&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt; 
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;wget&lt;/span&gt;
+
+
+
+
+&lt;span class="c1"&gt;#Entrada del url y del patrón a buscar&lt;/span&gt;
+&lt;span class="n"&gt;url&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Enter URL -&amp;gt; &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;pattern&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Enter search pattern-&amp;gt; &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se lee la página web&lt;/span&gt;
+&lt;span class="n"&gt;html&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se define el directorio donde se descargará los archivos&lt;/span&gt;
+&lt;span class="n"&gt;dir_download&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;./download/&amp;quot;&lt;/span&gt;
+
+
+
+
+&lt;span class="c1"&gt;#Si en la página se tiene bad request se sale de la aplicación&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;html&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;400 Bad Request&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Bad Request&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se instancia BeautifulSoup con el texto de la página web&lt;/span&gt;
+&lt;span class="n"&gt;soup&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;BeautifulSoup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;html&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se genera una lista de los tags &amp;#39;a&amp;#39; que tiene la página&lt;/span&gt;
+&lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;soup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se recorre los tags buscando si existe el tag href&lt;/span&gt;
+&lt;span class="c1"&gt;#Si no existe se busca en el siguiente tag &amp;#39;a&amp;#39;&lt;/span&gt;
+&lt;span class="c1"&gt;#se crea el url a descargar.&lt;/span&gt;
+&lt;span class="c1"&gt;#Y se intenta descargar el archivo&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+ &lt;span class="n"&gt;url_path&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;href&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url_path&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;continue&lt;/span&gt;
+
+ &lt;span class="n"&gt;domain&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;http://&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+ &lt;span class="n"&gt;urldownload&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;domain&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;
+
+ &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Retrieve: {0},{1}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tag&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;contents&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;urldownload&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+ &lt;span class="nb"&gt;file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;  &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+ &lt;span class="n"&gt;path_and_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dir_download&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nb"&gt;file&lt;/span&gt;
+
+ &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+  &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;urldownload&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+  &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;path_and_file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;wb&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+   &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+ &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;ConnectionError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+  &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Can&amp;#39;t download file: {0}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;file&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+ &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="n"&gt;HTTPError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+  &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Can&amp;#39;t download file: {0}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;file&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+ &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;close&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar el programa se tiene:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;pyurldownload_file&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; 
+&lt;span class="n"&gt;Enter&lt;/span&gt; &lt;span class="n"&gt;URL&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="n"&gt;www&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;asambleanacional&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gob&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ve&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;documento&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;show2&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;64&lt;/span&gt;
+&lt;span class="n"&gt;Enter&lt;/span&gt; &lt;span class="n"&gt;search&lt;/span&gt; &lt;span class="n"&gt;pattern&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;documentos&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al final de la ejecución del script se tendrán todos los archivos .tar y .pdf de la memoria y cuenta del Poder Ejecutivo del año 2015. &lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra el directorio download con los primeros archivos descargados:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/descargadedocumentosinformesdegestiondel2015delapaginawebdelaasambleanacionalconpython-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Y en la siguiente figura se muestra uno de los archivos abierto con &lt;code&gt;evince&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/descargadedocumentosinformesdegestiondel2015delapaginawebdelaasambleanacionalconpython-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Es necesario resaltar que el formato pdf es un crimen usarlo a la hora de análisis de datos ya que es posible por medio de humanos, los programas les cuenta leer contenido de un pdf, aunque se puede, se pierde información. &lt;/p&gt;
+&lt;p&gt;Es necesario que estos reportes de las instituciones y ministerios sean colocados como API Rest Ful enfocado a datos (json o xml) directamente de los portales de dichas instituciones. &lt;/p&gt;
+&lt;p&gt;Esto facilitaría el análisis de la información de dichos reportes. &lt;/p&gt;
+&lt;p&gt;En un futuro el script manejará hilos a fin de acelerar el proceso de descarga de los archivos.&lt;/p&gt;
+&lt;p&gt;Otro ejemplo de webscraping lo pueden encontrar en este &lt;a href="https://www.analyticsvidhya.com/blog/2015/10/beginner-guide-web-scraping-beautiful-soup-python/?utm_content=buffer466ae&amp;amp;utm_medium=social&amp;amp;utm_source=plus.google.com&amp;amp;utm_campaign=buffer"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Linux"></category><category term="Python"></category><category term="requests"></category><category term="BeautifulSoup"></category><category term="Webscraping"></category></entry><entry><title>Iniciando Django con docker usando docker-compose con postgresql como microservicio.</title><link href="https://ecrespo.github.io/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html" rel="alternate"></link><published>2016-02-11T09:00:00-05:30</published><updated>2016-02-11T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-02-11:/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html</id><summary type="html">&lt;p&gt;En este artículo se tomará lo visto en el artículo de microservicios con docker donde se uso flask y redis, en este caso será con postgresql y Django.&lt;/p&gt;
 &lt;p&gt;Dejo a continuación la lista de artículos sobre docker que se ha tocado en el blog:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;  &lt;/li&gt;

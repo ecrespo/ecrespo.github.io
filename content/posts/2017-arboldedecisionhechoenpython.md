@@ -1,7 +1,7 @@
 Title: Árbol de decisión hecho en Python 
 Date: 2017-11-19 09:00
 Category: Tutorial Python
-Tags: General,Debian,Python,Machine Learning,Scikit-Learn
+Tags: General,Debian,Python,Machine Learning,Scikit-Learn,Árbol de decisión
 lang: es
 translation: true
 

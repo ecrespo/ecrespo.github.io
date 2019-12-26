@@ -21,6 +21,7 @@ A continuación les dejo los artículos anteriores:
 11. [Compartir imagenes Docker por medio de archivos tar](https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar).
 12. [Crear un registro de imagenes Docker privado.](https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado)
 
+
 Lo primero que se estarán preguntando es, ¿Qué es Anaconda?. 
 
 La respuesta se la pueden conseguir en el enlace oficial del sitio [continuum](http://abirtone.com/docker/2015/07/28/uso-de-docker-en-aplicacion-de-nodejs/):

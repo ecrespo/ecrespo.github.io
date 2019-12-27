@@ -1,5 +1,5 @@
 Title: Usar Anaconda desde un contenedor Docker.   
-Date: 2016-03-26 10:00    
+Date: 2016-03-26 09:00    
 Category: Tutorial Python   
 Tags: Python,Docker,Anaconda,Ingeniería de Datos,Ciencia de Datos,Dockerhub  
 lang: es  
@@ -16,9 +16,13 @@ A continuación les dejo los artículos anteriores:
 6. [Instalar Gitlab por medio de Docker](https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html)  
 7. [Ejecutando microservicios con docker usando docker-compose](https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html)  
 8. [Docker en Docker (DinD)](https://www.seraph.to/docker-en-docker-dind.html)
+
 9. [Iniciando Django con docker usando docker-compose con postgresql como microservicio.](https://www.seraph.to/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html)
+
 10. [Importar un contenedor Docker en Python.](https://www.seraph.to/importar-un-contenedor-docker-en-python.html#importar-un-contenedor-docker-en-python) 
+
 11. [Compartir imagenes Docker por medio de archivos tar](https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar).
+
 12. [Crear un registro de imagenes Docker privado.](https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado)
 
 

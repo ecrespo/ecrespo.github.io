@@ -22,6 +22,8 @@ A continuación les dejo los artículos anteriores:
 12. [Crear un registro de imagenes Docker privado.](https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado)
 
 
+
+
 Lo primero que se estarán preguntando es, ¿Qué es Anaconda?. 
 
 La respuesta se la pueden conseguir en el enlace oficial del sitio [continuum](http://abirtone.com/docker/2015/07/28/uso-de-docker-en-aplicacion-de-nodejs/):

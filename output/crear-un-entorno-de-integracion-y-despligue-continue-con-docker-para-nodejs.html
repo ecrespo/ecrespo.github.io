@@ -1,0 +1,998 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con los artículos de Docker, está vez se muestra como tener un entorno de integración continua CI y de despliegue continuo CD con Docker para una aplicación web con node.js. Los artículos anteriores sobre Docker son: 1. Instalar Docker en Debian Jessie 2. Uso de Docker en Debian …" />
+<meta name="keywords" content="Python, node.js, Docker, Despliegue Continuo, DevOps, Integración Continua">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Crear un entorno de Integración y Despligue continue con Docker para node.js"/>
+<meta property="og:description" content="Continuando con los artículos de Docker, está vez se muestra como tener un entorno de integración continua CI y de despliegue continuo CD con Docker para una aplicación web con node.js. Los artículos anteriores sobre Docker son: 1. Instalar Docker en Debian Jessie 2. Uso de Docker en Debian …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-03-26 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="node.js"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="Despliegue Continuo"/>
+<meta property="article:tag" content="DevOps"/>
+<meta property="article:tag" content="Integración Continua"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Crear un entorno de Integración y Despligue continue con Docker para node.js</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/bitly.html">
+            bit.ly
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/entorno-desarrollo.html">
+            Entorno Desarrollo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/asincrono.html">
+            asincrono
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/memcached.html">
+            memcached
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/python-daemon.html">
+            Python-daemon
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/exif.html">
+            exif
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/kvm.html">
+            KVM
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/aiohttp.html">
+            aiohttp
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            dnsmasq
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/python-lockfile.html">
+            Python-lockfile
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cerberus.html">
+            Cerberus
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pyowm.html">
+            PyOWM
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ncurses.html">
+            ncurses
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/integracion-continua.html">
+            Integración Continua
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            csv
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/django-celery.html">
+            Django-Celery
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-rest.html">
+            API rest
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/scrapermark.html">
+            Scrapermark
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">158</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/despliegue-continuo.html">
+            Despliegue Continuo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/scapy.html">
+            scapy
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/nodejs.html">
+            node.js
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/requests.html">
+            requests
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/google-translate.html">
+            Google Translate
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">213</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de Datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/material-design.html">
+            Material design
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/scipy.html">
+            scipy
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            matplotlib
+                    <span class="badge">23</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            numpy
+                    <span class="badge">21</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/qemu.html">
+            qemu
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">158</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/anaconda.html">
+            Anaconda
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            Gitlab
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/dockerhub.html">
+            Dockerhub
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ipcalc.html">
+            ipcalc
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ingenieria-de-datos.html">
+            Ingeniería de Datos
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">108</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-stream.html">
+            API Stream
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            pylab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            Mongodb
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            ssh
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/rasberry-pi.html">
+            Rasberry Pi
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/rasbian.html">
+            Rasbian
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">99</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/urwid.html">
+            urwid
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/csvkit.html">
+            csvkit
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs">Crear un entorno de Integración y Despligue continue con Docker para node.js</h1>
+    <p>
+          Posted on sáb 26 marzo 2016 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Continuando con los artículos de Docker, está vez se muestra como tener un entorno de integración continua CI y de despliegue continuo CD con Docker para una aplicación web con node.js.</p>
+<p>Los artículos anteriores sobre Docker son:<br>
+1. <a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html">Instalar Docker en Debian Jessie</a><br>
+2. <a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html">Uso de Docker en Debian Jessie (parte 1)</a><br>
+3. <a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html">Uso de Docker en Debian Jessie (parte 2)</a><br>
+4. <a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo Dockerfile</a><br>
+5. <a href="https://www.seraph.to/iniciando-django-usando-docker.html">Iniciando Django usando Docker</a><br>
+6. <a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">Instalar Gitlab por medio de Docker</a><br>
+7. <a href="https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando microservicios con docker usando docker-compose</a><br>
+8. <a href="https://www.seraph.to/docker-en-docker-dind.html">Docker en Docker (DinD)</a>
+9. <a href="https://www.seraph.to/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html">Iniciando Django con docker usando docker-compose con postgresql como microservicio.</a>
+10. <a href="https://www.seraph.to/importar-un-contenedor-docker-en-python.html#importar-un-contenedor-docker-en-python">Importar un contenedor Docker en Python.</a> 
+11. <a href="https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar">Compartir imagenes Docker por medio de archivos tar</a>.
+12. <a href="https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado">Crear un registro de imagenes Docker privado.</a>
+13. <a href="https://www.seraph.to/usar-anaconda-desde-un-contenedor-docker.html#usar-anaconda-desde-un-contenedor-docker">Usar Anaconda desde un contenedor Docker.</a>  </p>
+<p>Se creo un directorio llamado <code>nodejs</code> que contendrá lo siguiente:</p>
+<div class="highlight"><pre><span></span>nodejs
+├── app.js
+├── Dockerfile
+└── package.json
+</pre></div>
+
+
+<p>Dentro del directorio se tiene el archivo javascript llamado <code>app.js</code>, se tiene el archivo <code>Dockerfile</code> y el otro el <code>package.json</code>. </p>
+<p>El archivo <code>app.js</code> contiene lo siguiente:</p>
+<div class="highlight"><pre><span></span><span class="o">//</span> <span class="nt">se</span> <span class="nt">crea</span> <span class="nt">la</span> <span class="nt">instancia</span> <span class="nt">de</span> <span class="nt">http</span>
+<span class="nt">var</span> <span class="nt">http</span> <span class="o">=</span> <span class="nt">require</span><span class="o">(</span><span class="s1">&#39;http&#39;</span><span class="o">);</span>
+<span class="o">//</span> <span class="nt">Se</span> <span class="nt">crea</span> <span class="nt">la</span> <span class="nt">instancia</span> <span class="nt">del</span> <span class="nt">servidor</span> <span class="nt">donde</span> <span class="nt">se</span> <span class="nt">define</span> <span class="nt">el</span> <span class="nt">tipo</span> <span class="nt">del</span> <span class="nt">Content-type</span> <span class="nt">como</span> <span class="nt">text</span><span class="o">/</span><span class="nt">plain</span>
+<span class="o">//</span><span class="nt">Devuelve</span> <span class="nt">un</span> <span class="nt">hola</span> <span class="nt">mundo</span> <span class="nt">particular</span><span class="o">.</span>
+<span class="nt">var</span> <span class="nt">server</span> <span class="o">=</span> <span class="nt">http</span><span class="p">.</span><span class="nc">createServer</span><span class="o">(</span><span class="nt">function</span> <span class="o">(</span><span class="nt">request</span><span class="o">,</span> <span class="nt">response</span><span class="o">)</span> <span class="p">{</span>
+        <span class="err">response.writeHead(200,</span> <span class="err">{&quot;Content-Type&quot;:</span> <span class="err">&quot;text/plain&quot;</span><span class="p">}</span><span class="o">);</span>
+        <span class="nt">response</span><span class="p">.</span><span class="nc">end</span><span class="o">(</span><span class="s2">&quot;Hola mundo desde un contenedor Docker con nodejs.&quot;</span><span class="o">);</span>
+<span class="err">}</span><span class="o">);</span>
+<span class="o">//</span><span class="nt">El</span> <span class="nt">servidor</span> <span class="nt">escuchará</span> <span class="nt">el</span> <span class="nt">puerto</span> <span class="nt">8000</span><span class="o">.</span>
+<span class="nt">server</span><span class="p">.</span><span class="nc">listen</span><span class="o">(</span><span class="nt">8000</span><span class="o">);</span>
+<span class="o">//</span><span class="nt">se</span> <span class="nt">devuelve</span> <span class="nt">un</span> <span class="nt">mensaje</span> <span class="nt">en</span> <span class="nt">la</span> <span class="nt">consola</span> <span class="nt">que</span> <span class="nt">se</span> <span class="nt">ejecuta</span> <span class="nt">el</span> <span class="nt">servidor</span> <span class="nt">web</span><span class="o">.</span>
+<span class="nt">console</span><span class="p">.</span><span class="nc">log</span><span class="o">(</span><span class="s2">&quot;Server running at http://127.0.0.1:8000/&quot;</span><span class="o">);</span>
+</pre></div>
+
+
+<p>El archivo <code>package.json</code> contiene lo siguiente:</p>
+<div class="highlight"><pre><span></span>{
+    &quot;name&quot;: &quot;hola-mundo&quot;,
+    &quot;description&quot;: &quot;hola mundo&quot;,
+    &quot;version&quot;: &quot;0.0.1&quot;,
+    &quot;private&quot;: true,
+    &quot;dependencies&quot;: {
+        &quot;express&quot;: &quot;3.x&quot;
+
+    },
+    &quot;scripts&quot;: {&quot;start&quot;: &quot;node app.js&quot;}
+
+}
+</pre></div>
+
+
+<p>Se le da el nombre de la aplicación, su descripción, la versión, que es privada y en las dependencias se instala express la versión 3.x, por último el script inicia la aplicación <code>app.js</code>.</p>
+<p>Ahora se explicará el archivo <code>Dockerfile</code>:</p>
+<div class="highlight"><pre><span></span>FROM google/nodejs
+MAINTAINER Ernesto Crespo &lt;ecrespo@gmail.com&gt;
+WORKDIR /app
+ADD package.json /app/
+RUN npm install
+ADD . /app
+EXPOSE 8000
+CMD []
+ENTRYPOINT [&quot;/nodejs/bin/npm&quot;, &quot;start&quot;]
+</pre></div>
+
+
+<p>Se descargará <code>nodejs</code> del repositorio que maneja google, se define el mantenedor de la imagen, el directorio de trabajo es <code>/app</code>, se agrega el archivo <code>package.json</code> al directorio de trabajo, se ejecuta <code>npm install</code>, se agrega el directorio app que se encuentra en la estructura de directorio ya explicada, se expone el puerto 8000, CMD se pasa [] y el entrypoint inicia npm. .</p>
+<p>Para construir la imagen se ejecuta:</p>
+<div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">nodejs_img</span> <span class="o">.</span>
+</pre></div>
+
+
+<p>Al ejecutar <code>docker images</code> se tiene la imagen <code>nodejs_img</code>:</p>
+<div class="highlight"><pre><span></span>docker images 
+REPOSITORY                    TAG                 IMAGE ID            CREATED              SIZE
+nodejs_img                    latest              38d1802c8726        About a minute ago   501.6 MB
+</pre></div>
+
+
+<p>Ahora se ejecuta el contenedor:</p>
+<div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">p</span> <span class="mi">8000</span><span class="p">:</span><span class="mi">8000</span> <span class="n">nodejs_img</span>
+
+<span class="o">&gt;</span> <span class="n">hola</span><span class="o">-</span><span class="n">mundo</span><span class="nd">@0.0.1</span> <span class="n">start</span> <span class="o">/</span><span class="n">app</span>
+<span class="o">&gt;</span> <span class="n">node</span> <span class="n">app</span><span class="o">.</span><span class="n">js</span>
+
+<span class="n">Server</span> <span class="n">running</span> <span class="n">at</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span>
+</pre></div>
+
+
+<p>Al abrir el navegador en esa dirección se tiene:</p>
+<p><img alt="" src="./images/crearunentornodeintegracionydespliguecontinuocondockerparanodejs-1.png"></p>
+<p>Se puede modificar el archivo <code>app.js</code> agregando lo siguiente:</p>
+<div class="highlight"><pre><span></span><span class="nt">var</span> <span class="nt">http</span> <span class="o">=</span> <span class="nt">require</span><span class="o">(</span><span class="s1">&#39;http&#39;</span><span class="o">);</span>
+<span class="nt">var</span> <span class="nt">server</span> <span class="o">=</span> <span class="nt">http</span><span class="p">.</span><span class="nc">createServer</span><span class="o">(</span><span class="nt">function</span> <span class="o">(</span><span class="nt">request</span><span class="o">,</span> <span class="nt">response</span><span class="o">)</span> <span class="p">{</span>
+        <span class="err">response.writeHead(200,</span> <span class="err">{&quot;Content-Type&quot;:</span> <span class="err">&quot;text/plain&quot;</span><span class="p">}</span><span class="o">);</span>
+        <span class="nt">response</span><span class="p">.</span><span class="nc">end</span><span class="o">(</span><span class="s2">&quot;Hola mundo desde un contenedor Docker con nodejs, prueba modificando al vuelo&quot;</span><span class="o">);</span>
+<span class="err">}</span><span class="o">);</span>
+
+<span class="nt">server</span><span class="p">.</span><span class="nc">listen</span><span class="o">(</span><span class="nt">8000</span><span class="o">);</span>
+
+<span class="nt">console</span><span class="p">.</span><span class="nc">log</span><span class="o">(</span><span class="s2">&quot;Server running at http://127.0.0.1:8000/&quot;</span><span class="o">);</span>
+</pre></div>
+
+
+<p>Se detiene el contenedor y se vuelve a ejecutar:</p>
+<div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span> 
+<span class="n">CONTAINER</span> <span class="n">ID</span>        <span class="n">IMAGE</span>               <span class="n">COMMAND</span>                  <span class="n">CREATED</span>             <span class="n">STATUS</span>              <span class="n">PORTS</span>                    <span class="n">NAMES</span>
+<span class="n">ee8395c6c1b0</span>        <span class="n">nodejs_img</span>          <span class="s2">&quot;/nodejs/bin/npm star&quot;</span>   <span class="mi">4</span> <span class="n">minutes</span> <span class="n">ago</span>       <span class="n">Up</span> <span class="mi">4</span> <span class="n">minutes</span>        <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">8000</span><span class="o">-&gt;</span><span class="mi">8000</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">clever_shirley</span>
+
+<span class="n">docker</span> <span class="n">stop</span> <span class="n">ee8395c6c1b0</span>
+<span class="n">ee8395c6c1b0</span>
+</pre></div>
+
+
+<p>Para que se refleje los cambios del archivo <code>app.js</code> se reconstruye la imagen del docker y luego se vuelve a iniciar el contenedor:</p>
+<div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">nodejs_img</span> <span class="o">.</span>
+<span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">p</span> <span class="mi">8000</span><span class="p">:</span><span class="mi">8000</span> <span class="o">-</span><span class="n">v</span> <span class="s2">&quot;$PWD&quot;</span><span class="p">:</span><span class="o">/</span><span class="n">app</span> <span class="n">nodejs_img</span> 
+
+<span class="o">&gt;</span> <span class="n">hola</span><span class="o">-</span><span class="n">mundo</span><span class="nd">@0.0.1</span> <span class="n">start</span> <span class="o">/</span><span class="n">app</span>
+<span class="o">&gt;</span> <span class="n">node</span> <span class="n">app</span><span class="o">.</span><span class="n">js</span>
+
+
+<span class="n">Server</span> <span class="n">running</span> <span class="n">at</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8000</span><span class="o">/</span>
+</pre></div>
+
+
+<p>Y al abrir el navegador en el url:</p>
+<p><img alt="" src="./images/crearunentornodeintegracionydespliguecontinuocondockerparanodejs-2.png"></p>
+<p>Se puede crear script para parar, borrar y reconstruir las imagenes haciendo más fácil el proceso de integración continua y despliegue continuo.</p>
+<p>Más información la pueden conseguir en el artículo: <a href="http://abirtone.com/docker/2015/07/28/uso-de-docker-en-aplicacion-de-nodejs/">Docker en la ejecución de test de integración en NodeJS</a></p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/nodejs.html">node.js</a>
+      <a href="https://ecrespo.github.io/tag/docker.html">Docker</a>
+      <a href="https://ecrespo.github.io/tag/despliegue-continuo.html">Despliegue Continuo</a>
+      <a href="https://ecrespo.github.io/tag/devops.html">DevOps</a>
+      <a href="https://ecrespo.github.io/tag/integracion-continua.html">Integración Continua</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Crear%20un%20entorno%20de%20Integraci%C3%B3n%20y%20Despligue%20continue%20con%20Docker%20para%20node.js&url=https%3A//ecrespo.github.io/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html&hashtags=python,nodejs,docker,despliegue-continuo,devops,integracion-continua" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html&title=Crear%20un%20entorno%20de%20Integraci%C3%B3n%20y%20Despligue%20continue%20con%20Docker%20para%20node.js&summary=Continuando%20con%20los%20art%C3%ADculos%20de%20Docker%2C%20est%C3%A1%20vez%20se%20muestra%20como%20tener%20un%20entorno%20de%20integraci%C3%B3n%20continua%20CI%20y%20de%20despliegue%20continuo%20CD%20con%20Docker%20para%20una%20aplicaci%C3%B3n%20web%20con%20node.js.%0ALos%20art%C3%ADculos%20anteriores%20sobre%20Docker%20son%3A%0A1.%20Instalar%20Docker%20en%20Debian%20Jessie%0A2.%20Uso%20de%20Docker%20en%20Debian%20%E2%80%A6&source=https%3A//ecrespo.github.io/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Crear%20un%20entorno%20de%20Integraci%C3%B3n%20y%20Despligue%20continue%20con%20Docker%20para%20node.js&amp;body=https%3A//ecrespo.github.io/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/descarga-de-documentos-informes-de-gestion-del-2015-de-la-pagina-web-de-la-asamblea-nacional-con-python.html" title="Descarga de documentos (Informes de gestión del 2015) de la página web de la Asamblea Nacional con Python.">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/usar-anaconda-desde-un-contenedor-docker.html" title="Usar Anaconda desde un contenedor Docker.">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/usar-anaconda-desde-un-contenedor-docker.html">Usar Anaconda desde un contenedor Docker.</a></li>
+      <li><a href="https://ecrespo.github.io/importar-un-contenedor-docker-en-python.html">Importar un contenedor Docker en Python.</a></li>
+      <li><a href="https://ecrespo.github.io/pyday-evento-pytatuy-en-merida.html">PyDay: Evento #PyTatuy en Mérida</a></li>
+      <li><a href="https://ecrespo.github.io/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html">Iniciando Django con docker usando docker-compose con postgresql como microservicio.</a></li>
+      <li><a href="https://ecrespo.github.io/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando micros servicios con docker usando docker-compose</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

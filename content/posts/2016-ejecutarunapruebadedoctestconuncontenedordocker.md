@@ -5,7 +5,7 @@ Tags: Python, Docker, Jupyter Notebook, DevOps, Doctest
 lang: es  
 translation: true  
 
-Ahora se mostrará como usar un contenedor de Docker para hacer pruebas doctest, este artículo se basa en un post anterior del blog llamado [Separar código de pruebas de la documentación (doctest,2da parte)](http://blog.crespo.org.ve/2012/12/separar-codigo-de-pruebas-de-la.html).
+Ahora se mostrará como usar un contenedor de Docker para hacer pruebas doctest, este artículo se basa en un post anterior del blog llamado [Separar código de pruebas de la documentación (doctest,2da parte)](https://www.seraph.to/separar-codigo-de-pruebas-de-la-documentacion-doctest-2da-parte.html).
 
 Los artículos anteriores sobre docker son:  
 1. [Instalar Docker en Debian Jessie](https://www.seraph.to/instalar-docker-en-debian-jessie.html)  

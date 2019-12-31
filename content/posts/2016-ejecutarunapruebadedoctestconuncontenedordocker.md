@@ -1,5 +1,5 @@
 Title: Ejecutar una prueba de doctest con un contenedor Docker.   
-Date: 2016-03-27 08:00  
+Date: 2016-03-27 10:00  
 Category: Tutorial Python  
 Tags: Python, Docker, Jupyter Notebook, DevOps, Doctest  
 lang: es  

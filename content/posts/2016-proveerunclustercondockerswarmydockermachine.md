@@ -52,7 +52,7 @@ Los artículos anteriores sobre Docker son:
 
 19. [Uso de docker-machine.  ](https://www.seraph.to/uso-de-docker-machine.html#uso-de-docker-machine)
 
-Este artículo usará comandos ya explicados en el artículo sobre "[Uso de docker-machine](http://blog.crespo.org.ve/2016/05/uso-de-docker-machine.html)".
+Este artículo usará comandos ya explicados en el artículo sobre "[Uso de docker-machine](https://www.seraph.to/uso-de-docker-machine.html#uso-de-docker-machine)".
 
 En el artículo anterior se usó virtualbox, se seguirá usando, pero también se pueden usar servicios en la nube o un host local ([los drivers soportados](https://docs.docker.com/machine/drivers/)): amazon web services, Microsoft Azure, Digital Ocean, Exoscale, Google Compute Engine, Genérico, OpenStack entre otros. 
 

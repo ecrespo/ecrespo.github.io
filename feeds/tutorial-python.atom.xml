@@ -127,7 +127,235 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="General"></category><category term="Debian"></category><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Consulta a MongoDB desde Flask (parte 2 - paginación)</title><link href="https://ecrespo.github.io/consulta-a-mongodb-desde-flask-parte-2-paginacion.html" rel="alternate"></link><published>2016-09-28T10:00:00-04:00</published><updated>2016-09-28T10:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-28:/consulta-a-mongodb-desde-flask-parte-2-paginacion.html</id><summary type="html">&lt;p&gt;Continuando con la serie de artículos sobre acceso a mongodb desde Flask. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="General"></category><category term="Debian"></category><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>CRUD usando Flask para MongoDB (parte 3).</title><link href="https://ecrespo.github.io/crud-usando-flask-para-mongodb-parte-3.html" rel="alternate"></link><published>2016-09-28T11:00:00-04:00</published><updated>2016-09-28T11:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-28:/crud-usando-flask-para-mongodb-parte-3.html</id><summary type="html">&lt;p&gt;Continuando con la serie de artículos sobre acceso a mongodb desde Flask. &lt;/p&gt;
+&lt;p&gt;Los artículos anteriores son:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-1.html"&gt;Consulta a MongoDB desde Flask (parte 1)&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-2-paginacion.html"&gt;Consulta a MongoDB desde Flask (parte 2 - paginación)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para revisar los artículos relacionados a este artículo pueden ver:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/docker.html"&gt;Artículos sobre Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;Artículos sobre MongoDB&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/flask.html"&gt;Artículos sobre Flask …&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Continuando con la serie de artículos sobre acceso a mongodb desde Flask. &lt;/p&gt;
+&lt;p&gt;Los artículos anteriores son:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-1.html"&gt;Consulta a MongoDB desde Flask (parte 1)&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-2-paginacion.html"&gt;Consulta a MongoDB desde Flask (parte 2 - paginación)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para revisar los artículos relacionados a este artículo pueden ver:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/docker.html"&gt;Artículos sobre Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;Artículos sobre MongoDB&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/flask.html"&gt;Artículos sobre Flask&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;En la base de datos mongodb se tiene lo siguientes datos de los empleados:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[{&amp;quot;edad&amp;quot;: 29, &amp;quot;nombre&amp;quot;: &amp;quot;Jane Doe&amp;quot;, &amp;quot;dni&amp;quot;: 8, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbce45fd2bbeffc51330b&amp;quot;}}, {&amp;quot;edad&amp;quot;: 39, &amp;quot;nombre&amp;quot;: &amp;quot;John Doe&amp;quot;, &amp;quot;dni&amp;quot;: 7, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd195fd2bbeffc51330c&amp;quot;}}, {&amp;quot;edad&amp;quot;: 55, &amp;quot;nombre&amp;quot;: &amp;quot;Pedro Perez&amp;quot;, &amp;quot;dni&amp;quot;: 6, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd505fd2bbeffc51330d&amp;quot;}}, {&amp;quot;edad&amp;quot;: 65, &amp;quot;nombre&amp;quot;: &amp;quot;Petra&amp;quot;, &amp;quot;dni&amp;quot;: 5, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd6b5fd2bbeffc51330e&amp;quot;}}, {&amp;quot;edad&amp;quot;: 18, &amp;quot;nombre&amp;quot;: &amp;quot;Luis Gonzalez&amp;quot;, &amp;quot;dni&amp;quot;: 4, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc34d5fd2bbeffc51330f&amp;quot;}}, {&amp;quot;edad&amp;quot;: 28, &amp;quot;nombre&amp;quot;: &amp;quot;Carolina&amp;quot;, &amp;quot;dni&amp;quot;: 3, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc3715fd2bbeffc513310&amp;quot;}}, {&amp;quot;edad&amp;quot;: 34, &amp;quot;nombre&amp;quot;: &amp;quot;Luissana&amp;quot;, &amp;quot;dni&amp;quot;: 2, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc3935fd2bbeffc513311&amp;quot;}}, {&amp;quot;edad&amp;quot;: 43, &amp;quot;nombre&amp;quot;: &amp;quot;Neg&amp;quot;, &amp;quot;dni&amp;quot;: 1, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc4b85fd2bbeffc513312&amp;quot;}}]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para este artículo se va a desarrollar y probar un CRUD con Flask usando como base de datos mongodb.&lt;/p&gt;
+&lt;h4&gt;Insertar un empleado en la colección&lt;/h4&gt;
+&lt;p&gt;El código para insertar un empleado se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#Se define la funcion add con metodo get
+
+
+@app.route(&amp;#39;/add&amp;#39;,methods=[&amp;#39;GET&amp;#39;])
+
+
+def add():
+
+
+    #Se toma el nombre, sexo, edad y dni como argumentos del url
+
+
+    nombre = str(request.args[&amp;#39;nombre&amp;#39;])
+
+
+    sexo = str(request.args[&amp;#39;sexo&amp;#39;])
+
+
+    edad = int(request.args[&amp;#39;edad&amp;#39;])
+
+
+    dni = int(request.args[&amp;#39;dni&amp;#39;])
+
+
+
+
+
+    #Se usa la coleccin empleados.
+
+
+    empleados = mongo.db.empleados
+
+
+    #Se inserta el documento a la coleccion
+
+
+    empleados.insert({&amp;#39;nombre&amp;#39;:nombre,&amp;#39;sexo&amp;#39;:sexo,&amp;#39;edad&amp;#39;:edad,&amp;#39;dni&amp;#39;:dni})
+
+
+    #Se retorna que el usuario fue agregado.
+
+
+    return jsonify({&amp;#39;resultado&amp;#39;: &amp;#39;Usuario agregado&amp;#39; })
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Buscar un empleado en la colección&lt;/h4&gt;
+&lt;p&gt;El código para buscar un empleado en la colección se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#Se crea la funcion find con metodo get. @app.route(&amp;#39;/find&amp;#39;,methods=[&amp;#39;GET&amp;#39;]) def find():     #Se obtiene el nombre como argumento del url.     nombre = str(request.args[&amp;#39;nombre&amp;#39;])     #Se conecta a la coleccion empleados.     empleados = mongo.db.empleados     #Se busca el nombre en la coleccion.     resultado = empleados.find_one({&amp;#39;nombre&amp;#39;:nombre})     #Y se devuelve el resultado.     return dumps(resultado)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Actualizar un empleado en la colección&lt;/h4&gt;
+&lt;p&gt;El código para actualizar un empleado se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#Se define la funcion update con metodo get que actualiza un documento de la
+
+#coleccion.
+
+@app.route(&amp;#39;/update&amp;#39;,methods=[&amp;#39;GET&amp;#39;])
+
+def update():
+
+    #Se toma el nombre,edad y dni como argumentos.
+
+    nombre = str(request.args[&amp;#39;nombre&amp;#39;])
+
+    edad = int(request.args[&amp;#39;edad&amp;#39;])
+
+    dni = int(request.args[&amp;#39;dni&amp;#39;])
+
+    #Se conecta a la coleccion.
+
+    empleados = mongo.db.empleados
+
+    #Se busca el nombre en los documentos.
+
+    empleado = empleados.find_one({&amp;#39;nombre&amp;#39;:nombre})
+
+    #Se actuliza la edad, el dni.
+
+    empleado[&amp;#39;edad&amp;#39;] = edad
+
+    empleado[&amp;#39;dni&amp;#39;] = dni
+
+    #Se salva el empleado en la coleccion.
+
+    empleados.save(empleado)
+
+    #Se devuelve que el usuario ha sido actualizado.
+
+    return dumps({&amp;#39;resultado&amp;#39;: &amp;#39;Usuario actualizado&amp;#39;})
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Remover un empleado de la colección&lt;/h4&gt;
+&lt;p&gt;El código para remover un empleado de la colección es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#Se define la funcion delete.
+
+
+#donde en el url se pasa el nombre del empleado a borrar
+
+
+@app.route(&amp;#39;/delete/&amp;lt;nombre&amp;gt;&amp;#39;)
+
+
+def delete(nombre):
+
+
+    #Se conecta a la coleccion empleados.
+
+
+    empleados = mongo.db.empleados
+
+
+    #Se busca el documento del empleado por el nombre.
+
+
+    empleado = empleados.find_one({&amp;#39;nombre&amp;#39;:nombre})
+
+
+    #Se remueve el empleado de la coleccion.
+
+
+    empleados.remove(empleado)
+
+
+    #Se devuelve el resultado.
+
+
+    return dumps({&amp;#39;resultado&amp;#39;: &amp;#39;Usuario removido&amp;#39;})
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Noten que la forma de pasar argumentos a la función delete es diferente de las demás funciones.&lt;/p&gt;
+&lt;p&gt;Construcción de la imagen Docker y ejecución de los contenedores
+Los archivos Dockerfile y docker-compose.yml se explicaron en el primer artículo de esta sección ( se encuentran en el inicio de este artículo los enlaces).&lt;/p&gt;
+&lt;p&gt;Para construir la imagen docker se ejecuta:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose build
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar los contenedores de la aplicación y de mongodb se ejecuta:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Prueba del CRUD&lt;/p&gt;
+&lt;p&gt;Para crear un empleado se abre el siguiente URL en el navegador:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://localhost:5000/add?nombre=Ernesto&amp;amp;dni=33&amp;amp;edad=11&amp;amp;sexo=Masculino
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Devuelve un json:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{
+  &amp;quot;resultado&amp;quot;: &amp;quot;Usuario agregado&amp;quot;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para buscar el empleado que se incorporó anteriormente se abre el navegador en el URL:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://localhost:5000/find?nombre=Ernesto
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Devuelve el siguiente json:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{&amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ec8714b7cd2f00565e8784&amp;quot;}, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;edad&amp;quot;: 11, &amp;quot;nombre&amp;quot;: &amp;quot;Ernesto&amp;quot;, &amp;quot;dni&amp;quot;: 33}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para actualizar al empleado Ernesto se abre el navegador en el siguiente URL:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://localhost:5000/update?nombre=Ernesto&amp;amp;edad=45&amp;amp;dni=50
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Acá se actualiza la edad y el dni.&lt;/p&gt;
+&lt;p&gt;Esto devuelve el siguiente json:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{&amp;quot;resultado&amp;quot;: &amp;quot;Usuario actualizado&amp;quot;}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Por último se va a eliminar al empleado abriendo el navegador en el siguiente URL:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://localhost:5000/delete/Ernesto
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Esto devuelve el siguiente json:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{&amp;quot;resultado&amp;quot;: &amp;quot;Usuario removido&amp;quot;}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se nota que para el delete la forma de pasar el URL es distinta a las demás que se han ejecutado.&lt;/p&gt;
+&lt;p&gt;El código fuente de este artículo se encuentra en la rama &lt;a href="https://gitlab.com/ecrespo/tutorial-flask/tree/mongo3/"&gt;mongo3 de gitlab.com&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="MongoDB"></category><category term="Flask"></category><category term="Docker"></category><category term="CRUD"></category></entry><entry><title>Consulta a MongoDB desde Flask (parte 2 - paginación)</title><link href="https://ecrespo.github.io/consulta-a-mongodb-desde-flask-parte-2-paginacion.html" rel="alternate"></link><published>2016-09-28T10:00:00-04:00</published><updated>2016-09-28T10:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-28:/consulta-a-mongodb-desde-flask-parte-2-paginacion.html</id><summary type="html">&lt;p&gt;Continuando con la serie de artículos sobre acceso a mongodb desde Flask. &lt;/p&gt;
 &lt;p&gt;El artículo anterior &lt;a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-1.html"&gt;hace una consulta incial a la base de datos.&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Para revisar los artículos relacionados a este artículo pueden ver:&lt;/p&gt;
 &lt;ul&gt;

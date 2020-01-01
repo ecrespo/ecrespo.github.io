@@ -1,7 +1,7 @@
 Title: Estructura de datos en Python (Lista Enlazada)
 Date: 2017-03-11 09:00
 Category: Tutorial Python
-Tags: Python,Estructura de datos
+Tags: General,Python
 lang: es
 translation: true
 
@@ -10,7 +10,6 @@ Continuando con la serie de estructuras de datos, en el artículo anterior se tr
 Este artículo se basa del tutorial en youtube llamado [Python:Linked Lists](http://www.youtube.com/watch?v=Ast5sKQXxEU) donde pasan el enlace al [código en github](http://github.com/joeyajames/Python/blob/master/LinkedLists.py).
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Ast5sKQXxEU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 
 La lista enlazada se basa en el `Nodo`, como recordarán el Nodo tiene el dato y lo que apunta al próximo nodo.  En el caso de la lista enlazada contendrá lo siguiente:
 

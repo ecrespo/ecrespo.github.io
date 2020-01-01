@@ -5,7 +5,7 @@ Tags: Linux,Debian,Ubuntu, Tor
 lang: es
 translation: true
 
-En el artículo anterior expliqué [como consultar DNS de manera cifrada](http://blog.crespo.org.ve/2017/06/cifrar-el-trafico-de-dns-en-debian-9.html) , ahora vamos a utilizar tor para navegar de manera anónima.
+En el artículo anterior expliqué [como consultar DNS de manera cifrada](https://www.seraph.to/cifrar-el-trafico-de-dns-en-debian-9-stretch-actualizacion-2017.html) , ahora vamos a utilizar tor para navegar de manera anónima.
 
 Se tiene dos opciones, una es bajar el [tar.xz de tor-browser en la página oficial](https://www.torproject.org/projects/torbrowser.html.en) y la otra es instalar tor a lo Debian. Ese será el caso de este artículo.
 

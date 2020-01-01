@@ -1447,6 +1447,520 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="API restful"></category><category term="Flask"></category><category term="MongoDB"></category><category term="Flask-restful"></category><category term="Flask-MongoAlchemy"></category><category term="Docker"></category><category term="Docker-compose"></category></entry><entry><title>API Rest Ful con Flask y MongoDB (Flask-MongoAlchemy)</title><link href="https://ecrespo.github.io/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy.html" rel="alternate"></link><published>2016-10-06T09:00:00-04:00</published><updated>2016-10-06T09:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-10-06:/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy.html</id><summary type="html">&lt;p&gt;En artículo &lt;a href="https://www.seraph.to/crud-usando-flask-y-mongodb-con-orm-flask-mongoalchemy-parte-4.html"&gt;anterior&lt;/a&gt; se hizo un CRUD para Flask con MongoDB usando Mongo-Alchemy, en dicho artículo se manejaron varios URL para hacer el CRUD.&lt;/p&gt;
+&lt;p&gt;En este artículo se manejará el REST por medio de los URL y con Flask solamente, en próximos artículos se usará Flask-RESTful y Flask-Restless.  &lt;/p&gt;
+&lt;h4&gt;Métodos de …&lt;/h4&gt;</summary><content type="html">&lt;p&gt;En artículo &lt;a href="https://www.seraph.to/crud-usando-flask-y-mongodb-con-orm-flask-mongoalchemy-parte-4.html"&gt;anterior&lt;/a&gt; se hizo un CRUD para Flask con MongoDB usando Mongo-Alchemy, en dicho artículo se manejaron varios URL para hacer el CRUD.&lt;/p&gt;
+&lt;p&gt;En este artículo se manejará el REST por medio de los URL y con Flask solamente, en próximos artículos se usará Flask-RESTful y Flask-Restless.  &lt;/p&gt;
+&lt;h4&gt;Métodos de HTTP&lt;/h4&gt;
+&lt;p&gt;En este caso se va a estandarizar el CRUD por medio de API Rest Ful, donde se usará el mismo URL con métodos GET, POST, PUT y DELETE.&lt;/p&gt;
+&lt;p&gt;Los métodos se usarán de la siguiente forma:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Agregar Empleado: Método POST, URL /empleado, sin parámetros.  &lt;/li&gt;
+&lt;li&gt;Buscar Empleado: Método  GET, URL /empleado, parámetro &lt;string:nombre&gt;.  &lt;/li&gt;
+&lt;li&gt;Listar Empleados: Método GET, URL /empleado. &lt;/li&gt;
+&lt;li&gt;Editar/Actualizar Empleado: Método PUT, URL /empleado, parámetro &lt;string:nombre&gt;.  &lt;/li&gt;
+&lt;li&gt;Borrar Empleado: Método DELETE, URL /empleado, parámetro &lt;string:nombre&gt;.  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Como puede notarse, con un sólo URL se tiene las acciones del CRUD usando los métodos de HTTP, esto permite estándarizar y simplificar el uso de los URL, y principalmente hacer un correcto uso de HTTP:&lt;/p&gt;
+&lt;p&gt;Para más información sobre el estilo arquitectónico API REST pueden revisar en &lt;a href="https://es.wikipedia.org/wiki/Representational_State_Transfer"&gt;wikipedia&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Estructura de directorios y archivos
+Se mantiene la misma estructura de archivos y directorios del artículo sobre CRUD:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tutorial-flask
+├── app
+│   └── run.py
+├── docker-compose.yml
+├── Dockerfile
+└── README.md
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Archivo &lt;code&gt;Dockerfile&lt;/code&gt; y &lt;code&gt;docker-compose.yml&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;El archivo &lt;code&gt;Docker&lt;/code&gt; contiene lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;FROM&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;
+
+
+&lt;span class="n"&gt;WORKDIR&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;upgrade&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt;  &lt;span class="n"&gt;pymongo&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;PyMongo&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;MongoAlchemy&lt;/span&gt;
+
+
+
+&lt;span class="n"&gt;EXPOSE&lt;/span&gt; &lt;span class="mi"&gt;5000&lt;/span&gt;
+
+
+
+&lt;span class="n"&gt;ADD&lt;/span&gt; &lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/*&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+
+
+&lt;span class="n"&gt;COPY&lt;/span&gt; &lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/*&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+
+
+&lt;span class="n"&gt;CMD&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El archivo &lt;code&gt;docker-compose.yml&lt;/code&gt; contiene lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;flask-rest1:
+
+  build: .
+
+  ports:
+
+    - &amp;quot;5000:5000&amp;quot;
+
+  volumes:
+
+    - &amp;quot;./app/:/code&amp;quot;
+
+  links:
+
+    - mongo
+
+mongo:
+
+  image: mongo
+
+  ports:
+
+    - &amp;quot;27017:27017&amp;quot;
+
+  volumes:
+
+    - &amp;quot;/srv/data/db:/data/db:rw&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Codigo de la aplicación&lt;/h4&gt;
+&lt;p&gt;El código de &lt;code&gt;run.py&lt;/code&gt; se muestra a continuación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se importa Flask, reqest y jsonify&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;jsonify&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se importa MongoAlchemy&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask_mongoalchemy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MongoAlchemy&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se importa dumps&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;bson.json_util&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se instancia la clase de Flask, se configura el acceso&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#a la base de datos mongodb a empleados&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;MONGOALCHEMY_DATABASE&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;empleados&amp;#39;&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;MONGOALCHEMY_CONNECTION_STRING&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;mongodb://mongo:27017/empleados&amp;#39;&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se instancia mongoalchemy pasando la app.&lt;/span&gt;
+
+
+&lt;span class="n"&gt;db&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;MongoAlchemy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se crea la clase empleados la cual manejara los documentos.&lt;/span&gt;
+
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;empleados&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Document&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;nombre&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;sexo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;StringField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;edad&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IntField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;dni&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IntField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se define la funcion agregar con metodo get&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/empleado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;POST&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;agregar&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se crea la instancia empleado de la clase empleados donde se&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#logra hacer la inserción de un empleado con el metodo save.&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;nombre&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;sexo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sexo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;edad&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;edad&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;dni&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;empleado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;sexo&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;sexo&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;edad&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;edad&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;dni&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;dni&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;empleado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+
+
+
+    &lt;span class="c1"&gt;#Se retorna que el usuario fue agregado.&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;###&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;consulta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;listado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;consulta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wrap&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se crea la funcion buscar con metodo get.&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/empleado/&amp;lt;string:nombre&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;buscar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se realiza la busqueda y se devuelve el resultado, si existe un error de atributo (que el empleado no existe)&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se devuelve empleado no encontrado.&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resultado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;first&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;resultado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sexo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sexo&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;edad&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;edad&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dni&lt;/span&gt;&lt;span class="p"&gt;}})&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;resultado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Empleado no encontrado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/empleado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;listar&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se realiza la busqueda y se devuelve el resultado, si existe un error de atributo (que el empleado no existe)&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se devuelve empleado no encontrado.&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;consulta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resultado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;consulta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wrap&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;resultado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Empleado no encontrado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se crea la funcion actualizar que tiene metodo put, con&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#url /empleado y se le pasa el nombre a buscar&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/empleado/&amp;lt;string:nombre&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;PUT&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;actualizar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se intenta buscar al empleado en la base de datos, si no esta devuelve error&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se consulta en la base de datos, donde devuelve el primer elemento encontrado&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resultado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;first&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se toma los datos de un json y se guardan en sus variables, salvando luego&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#en la base de datos.&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sexo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sexo&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resulado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;edad&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;edad&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dni&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;save&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se realiza la consulta desplegando los empleados&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;consulta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;listado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;consulta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wrap&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se devuelve la nueva lista de empleados en un json.&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;resultado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Empleado no encontrado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Borrar un empleado de la base de datos, se pasa el url /empleado con el&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#string nombre usando el metodo delete.&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/empleado/&amp;lt;string:nombre&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;DELETE&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;borrar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se busca el empleado, si existe se borra de la base de datos y se devuelve&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#mensaje de empleado borrado, si no, se devuelve el mensaje de empleado no&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#encontrado.&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resultado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nombre&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;nombre&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;first&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;resultado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;###&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;consulta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;listado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;consulta&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wrap&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ne"&gt;AttributeError&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;resultado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Empleado no encontrado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se corre la aplicacion en modo debug&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Construcción de la imagen y ejecución del contenedor&lt;/h4&gt;
+&lt;p&gt;Construcción de la imagen Docker:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose build
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ejecución del contenedor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Pruebas del API REST FUL&lt;/h3&gt;
+&lt;p&gt;Para este caso se usará POSTMAN, una aplicación para google chrome.&lt;/p&gt;
+&lt;h4&gt;Listar Empleados&lt;/h4&gt;
+&lt;p&gt;Se usa postman colocando 127.0.0.1:5000/empleados con método GET, en la siguiente figura se muestra el listado:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconflaskymongodbflaskmongoalchemy-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;El JSON que devuelve es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[{&amp;quot;edad&amp;quot;: 29, &amp;quot;dni&amp;quot;: 8, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Jane Doe&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbce45fd2bbeffc51330b&amp;quot;}}, {&amp;quot;edad&amp;quot;: 39, &amp;quot;dni&amp;quot;: 7, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;John Doe&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd195fd2bbeffc51330c&amp;quot;}}, {&amp;quot;edad&amp;quot;: 55, &amp;quot;dni&amp;quot;: 6, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Pedro Perez&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd505fd2bbeffc51330d&amp;quot;}}, {&amp;quot;edad&amp;quot;: 65, &amp;quot;dni&amp;quot;: 5, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Petra&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd6b5fd2bbeffc51330e&amp;quot;}}, {&amp;quot;edad&amp;quot;: 18, &amp;quot;dni&amp;quot;: 4, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Luis Gonzalez&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc34d5fd2bbeffc51330f&amp;quot;}}, {&amp;quot;edad&amp;quot;: 34, &amp;quot;dni&amp;quot;: 2, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Luissana&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc3935fd2bbeffc513311&amp;quot;}}, {&amp;quot;edad&amp;quot;: 43, &amp;quot;dni&amp;quot;: 1, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Neg&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc4b85fd2bbeffc513312&amp;quot;}}, {&amp;quot;edad&amp;quot;: 29, &amp;quot;dni&amp;quot;: 1050, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Dayana&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57f64d7d557e3f00086651e8&amp;quot;}}]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Buscar un Empleado&lt;/h4&gt;
+&lt;p&gt;En el postman se coloca el siguiente url con método GET 127.0.0.1/empleado/Neg , la siguiente figura muestra el resultado:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconflaskymongodbflaskmongoalchemy-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;EL JSON que devuelve es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{&amp;quot;resultado&amp;quot;: {&amp;quot;edad&amp;quot;: 43, &amp;quot;dni&amp;quot;: 1, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Neg&amp;quot;}}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Agregar Empleado&lt;/h4&gt;
+&lt;p&gt;En postman se agrega el url con método POST 127.0.0.1:5000/empleado y se pasa en formato JSON lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{
+ &amp;quot;nombre&amp;quot;: &amp;quot;Fatima&amp;quot;,
+ &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;,
+ &amp;quot;edad&amp;quot;: 24,
+ &amp;quot;dni&amp;quot;: 1052
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La siguiente figura muestra la captura de la información que se coloca en postman:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconflaskymongodbflaskmongoalchemy-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Esto devuelve el siguiente JSON:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[{&amp;quot;edad&amp;quot;: 29, &amp;quot;dni&amp;quot;: 8, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Jane Doe&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbce45fd2bbeffc51330b&amp;quot;}}, {&amp;quot;edad&amp;quot;: 39, &amp;quot;dni&amp;quot;: 7, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;John Doe&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd195fd2bbeffc51330c&amp;quot;}}, {&amp;quot;edad&amp;quot;: 55, &amp;quot;dni&amp;quot;: 6, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Pedro Perez&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd505fd2bbeffc51330d&amp;quot;}}, {&amp;quot;edad&amp;quot;: 65, &amp;quot;dni&amp;quot;: 5, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Petra&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd6b5fd2bbeffc51330e&amp;quot;}}, {&amp;quot;edad&amp;quot;: 18, &amp;quot;dni&amp;quot;: 4, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Luis Gonzalez&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc34d5fd2bbeffc51330f&amp;quot;}}, {&amp;quot;edad&amp;quot;: 34, &amp;quot;dni&amp;quot;: 2, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Luissana&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc3935fd2bbeffc513311&amp;quot;}}, {&amp;quot;edad&amp;quot;: 43, &amp;quot;dni&amp;quot;: 1, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Neg&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc4b85fd2bbeffc513312&amp;quot;}}, {&amp;quot;edad&amp;quot;: 29, &amp;quot;dni&amp;quot;: 1050, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Dayana&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57f64d7d557e3f00086651e8&amp;quot;}}, {&amp;quot;edad&amp;quot;: 24, &amp;quot;dni&amp;quot;: 1052, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Fatima&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57f68505557e3f000e1aa766&amp;quot;}}]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Como se nota el empleado Fátima aparece en la base de datos al final.&lt;/p&gt;
+&lt;h4&gt;Borrar Empleado&lt;/h4&gt;
+&lt;p&gt;Para este caso se buscará borrar al empleado Fátima, se coloca el siguiente url en postman con método DELETE: 127.0.0.1:5000/empleado/Fatima .&lt;/p&gt;
+&lt;p&gt;La siguiente imagen muestra la ejecución en postman:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconflaskymongodbflaskmongoalchemy-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Esto devuelve el siguiente JSON:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[{&amp;quot;edad&amp;quot;: 29, &amp;quot;dni&amp;quot;: 8, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Jane Doe&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbce45fd2bbeffc51330b&amp;quot;}}, {&amp;quot;edad&amp;quot;: 39, &amp;quot;dni&amp;quot;: 7, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;John Doe&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd195fd2bbeffc51330c&amp;quot;}}, {&amp;quot;edad&amp;quot;: 55, &amp;quot;dni&amp;quot;: 6, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Pedro Perez&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd505fd2bbeffc51330d&amp;quot;}}, {&amp;quot;edad&amp;quot;: 65, &amp;quot;dni&amp;quot;: 5, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Petra&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd6b5fd2bbeffc51330e&amp;quot;}}, {&amp;quot;edad&amp;quot;: 18, &amp;quot;dni&amp;quot;: 4, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Luis Gonzalez&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc34d5fd2bbeffc51330f&amp;quot;}}, {&amp;quot;edad&amp;quot;: 34, &amp;quot;dni&amp;quot;: 2, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Luissana&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc3935fd2bbeffc513311&amp;quot;}}, {&amp;quot;edad&amp;quot;: 43, &amp;quot;dni&amp;quot;: 1, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Neg&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc4b85fd2bbeffc513312&amp;quot;}}, {&amp;quot;edad&amp;quot;: 29, &amp;quot;dni&amp;quot;: 1050, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;nombre&amp;quot;: &amp;quot;Dayana&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57f64d7d557e3f00086651e8&amp;quot;}}]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4&gt;Modificar empleado&lt;/h4&gt;
+&lt;p&gt;Para este caso se modificará el empleado Neg, cambiando su edad.&lt;/p&gt;
+&lt;p&gt;Se abre el postman colocando el url 127.0.0.1:5000/empleado/Neg con método PUT. Adicional se agrega el JSON:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{
+ &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;,
+ &amp;quot;edad&amp;quot;: 41,
+ &amp;quot;dni&amp;quot;: 1
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La siguiente imagen muestra el postman:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/apirestfulconflaskymongodbflaskmongoalchemy-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;Esto devuelve el siguiente JSON:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[{&amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbce45fd2bbeffc51330b&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Jane Doe&amp;quot;, &amp;quot;dni&amp;quot;: 8, &amp;quot;edad&amp;quot;: 29}, {&amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd195fd2bbeffc51330c&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;John Doe&amp;quot;, &amp;quot;dni&amp;quot;: 7, &amp;quot;edad&amp;quot;: 39}, {&amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd505fd2bbeffc51330d&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Pedro Perez&amp;quot;, &amp;quot;dni&amp;quot;: 6, &amp;quot;edad&amp;quot;: 55}, {&amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd6b5fd2bbeffc51330e&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Petra&amp;quot;, &amp;quot;dni&amp;quot;: 5, &amp;quot;edad&amp;quot;: 65}, {&amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc34d5fd2bbeffc51330f&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Luis Gonzalez&amp;quot;, &amp;quot;dni&amp;quot;: 4, &amp;quot;edad&amp;quot;: 18}, {&amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc3935fd2bbeffc513311&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Luissana&amp;quot;, &amp;quot;dni&amp;quot;: 2, &amp;quot;edad&amp;quot;: 34}, {&amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc4b85fd2bbeffc513312&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Neg&amp;quot;, &amp;quot;dni&amp;quot;: 1, &amp;quot;edad&amp;quot;: 41}, {&amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57f64d7d557e3f00086651e8&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Dayana&amp;quot;, &amp;quot;dni&amp;quot;: 1050, &amp;quot;edad&amp;quot;: 29}]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se muestra en subrayado el empleado Neg que cambió su edad en la base de datos.&lt;/p&gt;
+&lt;p&gt;Para terminar, ahora se muestra la salida del servidor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;flask-rest1_1 | 172.17.0.1 - - [06/Oct/2016 15:59:33] &amp;quot;GET /empleado HTTP/1.1&amp;quot; 200 -
+flask-rest1_1 | 172.17.0.1 - - [06/Oct/2016 16:03:48] &amp;quot;GET /empleado/Neg HTTP/1.1&amp;quot; 200 -
+flask-rest1_1 | 172.17.0.1 - - [06/Oct/2016 17:08:22] &amp;quot;POST /empleado HTTP/1.1&amp;quot; 200 -
+flask-rest1_1 | 172.17.0.1 - - [06/Oct/2016 17:39:24] &amp;quot;DELETE /empleado/Fatima HTTP/1.1&amp;quot; 200 -
+flask-rest1_1 | 172.17.0.1 - - [06/Oct/2016 17:47:59] &amp;quot;PUT /empleado/Neg HTTP/1.1&amp;quot; 200 -
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Como se ve, la salida devuelve el URL que se usa y los métodos utilizados.&lt;/p&gt;
+&lt;p&gt;De esta manera se muestra el uso del estilo arquitectónico API REST y el uso de HTTP con sus diferentes métodos. &lt;/p&gt;
+&lt;p&gt;El código fuente de este artículo se encuentra en el repositorio &lt;a href="https://gitlab.com/ecrespo/tutorial-flask/tree/mongo-restful"&gt;tutorial-flask de gitlab en la rama mongo-restful&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="API restful"></category><category term="Flask"></category><category term="MongoDB"></category><category term="Flask-restful"></category><category term="Flask-MongoAlchemy"></category><category term="Docker"></category><category term="Docker-compose"></category></entry><entry><title>Iniciando Django usando Docker</title><link href="https://ecrespo.github.io/iniciando-django-usando-docker.html" rel="alternate"></link><published>2016-01-18T09:00:00-05:30</published><updated>2016-01-18T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-01-18:/iniciando-django-usando-docker.html</id><summary type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;artículo anterior&lt;/a&gt; 
 se tocó el tema de uso de un archivo Dockerfile para crear una imagen de docker que muestra una página estática por medio de apache.&lt;/p&gt;
 &lt;p&gt;En este artículo se usará el framework django para mostrar el funcionamiento del admin de Django desde Docker (&lt;a href="http://blog.crespo.org.ve/search/label/Django"&gt;artículos anteriores de …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html#crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile"&gt;artículo anterior&lt;/a&gt; 

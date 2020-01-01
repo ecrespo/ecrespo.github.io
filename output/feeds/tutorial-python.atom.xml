@@ -127,7 +127,266 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="General"></category><category term="Debian"></category><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Consulta a MongoDB desde Flask (parte 1)</title><link href="https://ecrespo.github.io/consulta-a-mongodb-desde-flask-parte-1.html" rel="alternate"></link><published>2016-09-27T00:00:00-04:00</published><updated>2016-09-27T00:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-27:/consulta-a-mongodb-desde-flask-parte-1.html</id><summary type="html">&lt;p&gt;En este artículo se usará Docker para construir la imagen que contiene el script en Flask con sus dependencias, se usará docker-compose.yml para asociar dicha imagen como contenedor con un contenedor de mongoDB.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="General"></category><category term="Debian"></category><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Consulta a MongoDB desde Flask (parte 2 - paginación)</title><link href="https://ecrespo.github.io/consulta-a-mongodb-desde-flask-parte-2-paginacion.html" rel="alternate"></link><published>2016-09-28T10:00:00-04:00</published><updated>2016-09-28T10:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-28:/consulta-a-mongodb-desde-flask-parte-2-paginacion.html</id><summary type="html">&lt;p&gt;Continuando con la serie de artículos sobre acceso a mongodb desde Flask. &lt;/p&gt;
+&lt;p&gt;El artículo anterior &lt;a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-1.html"&gt;hace una consulta incial a la base de datos.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Para revisar los artículos relacionados a este artículo pueden ver:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/docker.html"&gt;Artículos sobre Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;Artículos sobre MongoDB&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/flask.html"&gt;Artículos sobre Flask&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;En la base de datos mongodb se …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con la serie de artículos sobre acceso a mongodb desde Flask. &lt;/p&gt;
+&lt;p&gt;El artículo anterior &lt;a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-1.html"&gt;hace una consulta incial a la base de datos.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Para revisar los artículos relacionados a este artículo pueden ver:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/docker.html"&gt;Artículos sobre Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;Artículos sobre MongoDB&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/flask.html"&gt;Artículos sobre Flask&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;En la base de datos mongodb se tiene lo siguientes datos de los empleados:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[{&amp;quot;edad&amp;quot;: 29, &amp;quot;nombre&amp;quot;: &amp;quot;Jane Doe&amp;quot;, &amp;quot;dni&amp;quot;: 8, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbce45fd2bbeffc51330b&amp;quot;}}, {&amp;quot;edad&amp;quot;: 39, &amp;quot;nombre&amp;quot;: &amp;quot;John Doe&amp;quot;, &amp;quot;dni&amp;quot;: 7, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd195fd2bbeffc51330c&amp;quot;}}, {&amp;quot;edad&amp;quot;: 55, &amp;quot;nombre&amp;quot;: &amp;quot;Pedro Perez&amp;quot;, &amp;quot;dni&amp;quot;: 6, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd505fd2bbeffc51330d&amp;quot;}}, {&amp;quot;edad&amp;quot;: 65, &amp;quot;nombre&amp;quot;: &amp;quot;Petra&amp;quot;, &amp;quot;dni&amp;quot;: 5, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebbd6b5fd2bbeffc51330e&amp;quot;}}, {&amp;quot;edad&amp;quot;: 18, &amp;quot;nombre&amp;quot;: &amp;quot;Luis Gonzalez&amp;quot;, &amp;quot;dni&amp;quot;: 4, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc34d5fd2bbeffc51330f&amp;quot;}}, {&amp;quot;edad&amp;quot;: 28, &amp;quot;nombre&amp;quot;: &amp;quot;Carolina&amp;quot;, &amp;quot;dni&amp;quot;: 3, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc3715fd2bbeffc513310&amp;quot;}}, {&amp;quot;edad&amp;quot;: 34, &amp;quot;nombre&amp;quot;: &amp;quot;Luissana&amp;quot;, &amp;quot;dni&amp;quot;: 2, &amp;quot;sexo&amp;quot;: &amp;quot;Femenino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc3935fd2bbeffc513311&amp;quot;}}, {&amp;quot;edad&amp;quot;: 43, &amp;quot;nombre&amp;quot;: &amp;quot;Neg&amp;quot;, &amp;quot;dni&amp;quot;: 1, &amp;quot;sexo&amp;quot;: &amp;quot;Masculino&amp;quot;, &amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57ebc4b85fd2bbeffc513312&amp;quot;}}]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se agregó un campo llamado dni, y se tienen 8 empleados. &lt;/p&gt;
+&lt;p&gt;El código fuente de este artículo lo pueden ver en la rama &lt;a href="https://gitlab.com/ecrespo/tutorial-flask/tree/mongo2"&gt;mongo2 de gitlab&lt;/a&gt;.  &lt;/p&gt;
+&lt;p&gt;Estructura de directorios y archivos  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tutorial-flask
+├── app
+│   └── run.py
+├── docker-compose.yml
+├── Dockerfile
+└── README.md
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Esta es la misma estructura del artículo anterior.&lt;/p&gt;
+&lt;h3&gt;Archivo Dockerfile y docker-compose.yml&lt;/h3&gt;
+&lt;p&gt;Estos archivos son los mismos del artículo anterior.&lt;/p&gt;
+&lt;h4&gt;Script app/run.py&lt;/h4&gt;
+&lt;p&gt;Este script permite paginar según una variable llamada dni, el cual se usará para realizar la consulta paginada. &lt;/p&gt;
+&lt;p&gt;A continuación el código de run.py:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se importa Flask, reqest y jsonify&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;jsonify&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se importa pyMOngo&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask_pymongo&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt;  &lt;span class="n"&gt;PyMongo&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;pymongo&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se importa dumps&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;bson.json_util&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se instancia la clase de Flask, se configura el acceso&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#a la base de datos mongodb a empleados&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;MONGO_DBNAME&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;empleados&amp;#39;&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;MONGO_URI&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;mongodb://mongo:27017/empleados&amp;#39;&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se asocia la app a pymongo&lt;/span&gt;
+
+
+&lt;span class="n"&gt;mongo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PyMongo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se define la ruta /dnis con metodo GET&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/dnis&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;dni&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se consutla la coleccion empleados&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;empleados&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;empleados&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se toma los argumentos del url offset y limite&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;offset&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;offset&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;limite&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;limite&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+
+
+    &lt;span class="c1"&gt;#Se define el decremento como la diferencia entre offset y el limite&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;decremento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;limite&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se define el incremento como la suma entre offset y limite&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;incremento&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;limite&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Mientras no de error de indice&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se define el dni inicial, el ultimo&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;dniInicio&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;pymongo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ASCENDING&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;dniUltimo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dniInicio&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se hace la consulta a la base de datos&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;empleados&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;$gte&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;dniUltimo&lt;/span&gt;&lt;span class="p"&gt;}})&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;pymongo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ASCENDING&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;limit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;limite&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se crea el listado de donde se almacena los diccionarios.&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;listado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se agrega a listado os dni y nombres de los empleados.&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;dni&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;nombre&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]})&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se define el url previo y siguiente, donde se juega con el offset para avanzar o regresar&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;prev_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://localhost:5000/dnis?limite=&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;limite&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;amp;offset=&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;decremento&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;next_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://localhost:5000/dnis?limite=&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;limite&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;amp;offset=&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;incremento&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+
+
+        &lt;span class="c1"&gt;#Si decremento es negativo se coloca el url en blanco.&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;if&lt;/span&gt;  &lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;decremento&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;  &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+
+
+            &lt;span class="n"&gt;prev_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+
+
+
+
+
+        &lt;span class="c1"&gt;#Se retorna el json con los resultados y los urls.&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;jsonify&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;resultado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;listado&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;prev_url&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;prev_url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;next_url&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;next_url&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+
+
+
+
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ne"&gt;IndexError&lt;/span&gt;&lt;span class="p"&gt;,):&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Si hay error de indice se defin el url siguiente en blanco, el url previo se mantiene.&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;next_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+
+
+        &lt;span class="n"&gt;prev_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://localhost:5000/dnis?limite=&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;limite&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;amp;offset=&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;decremento&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+        &lt;span class="c1"&gt;#Se retorna un json con el resultado y urls .&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;jsonify&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;resultado&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;FIN&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;prev_url&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;prev_url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;next_url&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se corre la aplicacion en modo debug&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Creación de la imagen docker y ejecución de los contenedores&lt;/p&gt;
+&lt;p&gt;Para crear la imagen docker se ejecuta:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose build
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar los contenedores:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestra una imagen de la salida de la ejecución:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/consultaamongodbdesdeflask2-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;A continuación se muestran los documentos por medio de la aplicación robomongo:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/consultaamongodbdesdeflask2-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al abrir el url (http://localhost:5000/dnis?limite=3&amp;amp;offset=0 ), donde limite es la cantidad de objetos a mostrar por página, el offset es el desplazamiento.&lt;/p&gt;
+&lt;p&gt;La primera figura muestra el primer grupo de empleados (no se tiene url para regresar):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/consultaamongodbdesdeflask2-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al darle click al siguiente url se tiene a continuación los dni 4,5 y 6 (aparece el url de regresar y avanzar):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/consultaamongodbdesdeflask2-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al darle click a avanzar se tienen los empleados de dni 7 y 8:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/consultaamongodbdesdeflask2-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;Como se tienen 8 elementos, se llegó al dni 8, al darle avanzar muestra que se terminó el json y que sólo se tiene enlace para regresar:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/consultaamongodbdesdeflask2-6.png"&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="Docker"></category><category term="Flask"></category><category term="MongoDB"></category></entry><entry><title>Consulta a MongoDB desde Flask (parte 1)</title><link href="https://ecrespo.github.io/consulta-a-mongodb-desde-flask-parte-1.html" rel="alternate"></link><published>2016-09-27T00:00:00-04:00</published><updated>2016-09-27T00:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-27:/consulta-a-mongodb-desde-flask-parte-1.html</id><summary type="html">&lt;p&gt;En este artículo se usará Docker para construir la imagen que contiene el script en Flask con sus dependencias, se usará docker-compose.yml para asociar dicha imagen como contenedor con un contenedor de mongoDB.&lt;/p&gt;
 &lt;p&gt;Para revisar los artículos relacionados a este artículo pueden ver:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://www.seraph.to/tag/docker.html"&gt;Artículos sobre Docker&lt;/a&gt;&lt;/li&gt;

@@ -1,7 +1,7 @@
 Title: Crear datos JSON a partir de un diccionario en Flask (parte 1) (actualización- Docker) 
 Date: 2016-06-26 09:00  
 Category: Tutorial Python  
-Tags: Python,Flask, json
+Tags: Python,Flask, json,Docker
 lang: es  
 translation: true  
 

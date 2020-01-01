@@ -1,5 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial de Linux</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-de-linux.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2017-06-10T09:00:00-04:00</updated><subtitle>Data Scientist </subtitle><entry><title>Fabric como un ssh con esteroides en Debian Stretch</title><link href="https://ecrespo.github.io/fabric-como-un-ssh-con-esteroides-en-debian-stretch.html" rel="alternate"></link><published>2017-06-10T09:00:00-04:00</published><updated>2017-06-10T09:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2017-06-10:/fabric-como-un-ssh-con-esteroides-en-debian-stretch.html</id><summary type="html">&lt;p&gt;&lt;code&gt;Fabric&lt;/code&gt; es una librería y herramienta de línea de comandos que genera un flujo de tareas para la automatización de despliegues y tareas administrativas de manera remota.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial de Linux</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-de-linux.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2017-06-24T12:00:00-04:00</updated><subtitle>Data Scientist </subtitle><entry><title>Base de datos InfluxDB en Debian Stretch</title><link href="https://ecrespo.github.io/base-de-datos-influxdb-en-debian-stretch.html" rel="alternate"></link><published>2017-06-24T12:00:00-04:00</published><updated>2017-06-24T12:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2017-06-24:/base-de-datos-influxdb-en-debian-stretch.html</id><summary type="html">&lt;p&gt;InfluxDB es una base de datos opensource de series de tiempo, para manejo de eventos,monitoreo, métricas, Internet de las cosas y Analítica en tiempo real. Desarrollada por &lt;a href="https://www.influxdata.com/"&gt;InfluxData&lt;/a&gt; en Lenguaje Go. Pueden ver más información en &lt;a href="https://en.wikipedia.org/wiki/InfluxDB"&gt;wikipedia&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Para instalar en Debian simplemente se usa &lt;code&gt;apt-get&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# apt-cache search influxdb 
+golang-github-influxdb-enterprise-client-dev …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;InfluxDB es una base de datos opensource de series de tiempo, para manejo de eventos,monitoreo, métricas, Internet de las cosas y Analítica en tiempo real. Desarrollada por &lt;a href="https://www.influxdata.com/"&gt;InfluxData&lt;/a&gt; en Lenguaje Go. Pueden ver más información en &lt;a href="https://en.wikipedia.org/wiki/InfluxDB"&gt;wikipedia&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Para instalar en Debian simplemente se usa &lt;code&gt;apt-get&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# apt-cache search influxdb 
+golang-github-influxdb-enterprise-client-dev - Golang client for speaking to the InfluxDB Enterprise application
+golang-github-influxdb-usage-client-dev - library for speaking to the InfluxDB Anonymous Usage Reporting API
+golang-gopkg-alexcesaro-statsd.v1-dev - simple and efficient Golang StatsD client
+golang-github-influxdb-influxdb-dev - Scalable datastore for metrics, events, and real-time analytics. Dev package
+influxdb - Scalable datastore for metrics, events, and real-time analytics
+influxdb-client - command line interface for InfluxDB
+influxdb-dev - Transitional package for golang-github-influxdb-influxdb-dev
+ruby-influxdb - library for InfluxDB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para instalar:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# apt-get install influxdb influxdb-client
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para probar que está en funcionamiento:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# influx
+Visit https://enterprise.influxdata.com to register for updates, InfluxDB server management, and monitoring.
+Connected to http://localhost:8086 version 1.0.2
+InfluxDB shell version: 1.0.2
+&amp;gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para crear una base de datos llamada &lt;code&gt;mydb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; create database mydb
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Listar las bases de datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; show databases
+name: databases
+---------------
+name
+_internal
+mydb
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Insertar datos y consultarlos en la base de datos &lt;code&gt;mydb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; use mydb
+Using database mydb
+&amp;gt; INSERT cpu,host=ServerA,region=us_west value=0.64
+&amp;gt; SELECT host, region, value FROM cpu
+name: cpu
+---------
+time                   host         region value
+1498340879346347895 ServerA us_west 0.64
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Por lo que se ve, la clave primaria de los datos siempre es el tiempo. &lt;/p&gt;
+&lt;p&gt;Ahora una pequeña prueba con Python.&lt;/p&gt;
+&lt;p&gt;Para instalar la librería en Python:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# pip3 install influxdb&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se tiene el siguiente script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se importa influxdb&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;influxdb&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;InfluxDBClient&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se define un json con los datos a insertar&lt;/span&gt;
+
+
+&lt;span class="n"&gt;json_body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+
+
+    &lt;span class="p"&gt;{&lt;/span&gt;
+
+
+        &lt;span class="s2"&gt;&amp;quot;measurement&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;cpu_load_short&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+
+        &lt;span class="s2"&gt;&amp;quot;tags&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+
+            &lt;span class="s2"&gt;&amp;quot;host&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;server01&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+
+            &lt;span class="s2"&gt;&amp;quot;region&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;us-west&amp;quot;&lt;/span&gt;
+
+
+        &lt;span class="p"&gt;},&lt;/span&gt;
+
+
+        &lt;span class="s2"&gt;&amp;quot;time&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2009-11-10T23:00:00Z&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+
+        &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+
+            &lt;span class="s2"&gt;&amp;quot;value&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.64&lt;/span&gt;
+
+
+        &lt;span class="p"&gt;}&lt;/span&gt;
+
+
+    &lt;span class="p"&gt;},&lt;/span&gt;
+
+
+    &lt;span class="p"&gt;{&lt;/span&gt;
+
+
+        &lt;span class="s2"&gt;&amp;quot;measurement&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;cpu_load_short&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+
+        &lt;span class="s2"&gt;&amp;quot;tags&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+
+            &lt;span class="s2"&gt;&amp;quot;host&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;server02&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+
+            &lt;span class="s2"&gt;&amp;quot;region&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;us-west&amp;quot;&lt;/span&gt;
+
+
+        &lt;span class="p"&gt;},&lt;/span&gt;
+
+
+        &lt;span class="s2"&gt;&amp;quot;time&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2009-12-10T23:00:00Z&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+
+        &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+
+            &lt;span class="s2"&gt;&amp;quot;value&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.65&lt;/span&gt;
+
+
+        &lt;span class="p"&gt;}&lt;/span&gt;
+
+
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+
+&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se conecta a la base de datos&lt;/span&gt;
+
+
+&lt;span class="n"&gt;client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;InfluxDBClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;localhost&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;8086&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;root&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;root&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;mydb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se crea la base de datos mydb&lt;/span&gt;
+
+
+&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_database&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;mydb&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se inserta los datos&lt;/span&gt;
+
+
+&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write_points&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;json_body&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se consulta y se muestra en pantalla&lt;/span&gt;
+
+
+&lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;select value from cpu_load_short;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Result: {0}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al ejecutar el script, este devuelve lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;prueba&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;influxdb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; 
+&lt;span class="n"&gt;Result&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;ResultSet&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;(&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;cpu_load_short&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;, None)&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;value&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.64&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;time&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;2009-11-10T23:00:00Z&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;value&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.65&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;time&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;2009-12-10T23:00:00Z&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}]})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;O desde el cliente de &lt;code&gt;influxdb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt; use mydb
+Using database mydb
+&amp;gt; select value from cpu_load_short;
+name: cpu_load_short
+--------------------
+time   value
+1257894000000000000 0.64
+1260486000000000000 0.65
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Como se muestra, la clave que maneja las consultas es el tiempo.&lt;/p&gt;
+&lt;p&gt;Para más información se tienen los siguientes enlaces:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Grafana, influxdb y python.  &lt;/li&gt;
+&lt;li&gt;influxdb-python y su documentación.   &lt;/li&gt;
+&lt;li&gt;Documentación de influxdata.  &lt;/li&gt;
+&lt;li&gt;Plataforma de Influxdata  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Linux"></category><category term="Debian"></category><category term="Ubuntu"></category><category term="InfluxDB"></category></entry><entry><title>Fabric como un ssh con esteroides en Debian Stretch</title><link href="https://ecrespo.github.io/fabric-como-un-ssh-con-esteroides-en-debian-stretch.html" rel="alternate"></link><published>2017-06-10T09:00:00-04:00</published><updated>2017-06-10T09:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2017-06-10:/fabric-como-un-ssh-con-esteroides-en-debian-stretch.html</id><summary type="html">&lt;p&gt;&lt;code&gt;Fabric&lt;/code&gt; es una librería y herramienta de línea de comandos que genera un flujo de tareas para la automatización de despliegues y tareas administrativas de manera remota.&lt;/p&gt;
 &lt;p&gt;Este artículo se basa en un vídeo de youtube de una introducción a Fabric.&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://youtu.be/bY2U4ikgezk"&gt;https://youtu.be/bY2U4ikgezk&lt;/a&gt; &lt;/p&gt;
 &lt;iframe width="560" height="315" src="https://www.youtube.com/embed/bY2U4ikgezk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;

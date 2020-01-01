@@ -1,0 +1,908 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Privoxy es un proxy web que se usa normalmente con tor. En el artículo anterior se explica como instalar tor. Ahora se usará privoxy como proxy para tor. Para instalar simplemente se usa apt: #apt-get install privoxy En privoxy se define el sock forward quien será el puerto e IP …" />
+<meta name="keywords" content="Linux, Debian, Ubuntu, Tor, Privoxy">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Usar tor desde privoxy en Debian Stretch"/>
+<meta property="og:description" content="Privoxy es un proxy web que se usa normalmente con tor. En el artículo anterior se explica como instalar tor. Ahora se usará privoxy como proxy para tor. Para instalar simplemente se usa apt: #apt-get install privoxy En privoxy se define el sock forward quien será el puerto e IP …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/usar-tor-desde-privoxy-en-debian-stretch.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-06-06 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Linux"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Tor"/>
+<meta property="article:tag" content="Privoxy"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Usar tor desde privoxy en Debian Stretch</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mocking.html">
+            Mocking
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            matplotlib
+                    <span class="badge">23</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">17</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/privoxy.html">
+            Privoxy
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">23</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">176</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/nube.html">
+            Nube
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/opendns.html">
+            OpenDNS
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/aiohttp.html">
+            aiohttp
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            pylab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-rest.html">
+            API rest
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/entorno-desarrollo.html">
+            Entorno Desarrollo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">252</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de Datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/asincrono.html">
+            asincrono
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/dnscrypt.html">
+            DNSCrypt
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">183</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">12</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">132</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/fabric.html">
+            Fabric
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cerberus.html">
+            Cerberus
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cloud9.html">
+            Cloud9
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">50</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/debootstrap.html">
+            debootstrap
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/memcached.html">
+            memcached
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/metodo-de-montecarlo.html">
+            Método de Montecarlo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">112</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="usar-tor-desde-privoxy-en-debian-stretch">Usar tor desde privoxy en Debian Stretch</h1>
+    <p>
+          Posted on mar 06 junio 2017 in <a href="https://ecrespo.github.io/category/tutorial-de-linux.html">Tutorial de Linux</a>
+
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p><code>Privoxy</code> es un proxy web que se usa normalmente con tor.</p>
+<p>En el artículo anterior se explica como <a href="https://www.seraph.to/navegar-de-manera-anonima-con-tor-en-debian-stretch.html">instalar tor</a>. Ahora se usará privoxy como proxy para tor.</p>
+<p>Para instalar simplemente se usa <code>apt</code>:</p>
+<div class="highlight"><pre><span></span>#apt-get install privoxy
+</pre></div>
+
+
+<p>En <code>privoxy</code> se define el <code>sock forward</code> quien será el puerto e IP donde se está ejecutando tor (localhost y puerto 9050), se edita el archivo <code>/etc/privoxy/config</code> y se agrega la siguiente línea:</p>
+<div class="highlight"><pre><span></span>forward-socks4a / localhost:9050 .
+</pre></div>
+
+
+<p>Se reinicia privoxy:</p>
+<div class="highlight"><pre><span></span># /etc/init.d/privoxy restart
+[ ok ] Restarting privoxy (via systemctl): privoxy.service.
+</pre></div>
+
+
+<p>Se revisa que esté funcionando:</p>
+<div class="highlight"><pre><span></span><span class="err">#</span> <span class="o">/</span><span class="nt">etc</span><span class="o">/</span><span class="nt">init</span><span class="p">.</span><span class="nc">d</span><span class="o">/</span><span class="nt">privoxy</span> <span class="nt">status</span>
+<span class="err">●</span> <span class="nt">privoxy</span><span class="p">.</span><span class="nc">service</span> <span class="nt">-</span> <span class="nt">Privacy</span> <span class="nt">enhancing</span> <span class="nt">HTTP</span> <span class="nt">Proxy</span>
+   <span class="nt">Loaded</span><span class="o">:</span> <span class="nt">loaded</span> <span class="o">(/</span><span class="nt">lib</span><span class="o">/</span><span class="nt">systemd</span><span class="o">/</span><span class="nt">system</span><span class="o">/</span><span class="nt">privoxy</span><span class="p">.</span><span class="nc">service</span><span class="o">;</span> <span class="nt">enabled</span><span class="o">;</span> <span class="nt">vendor</span> <span class="nt">preset</span><span class="o">:</span> <span class="nt">enabled</span><span class="o">)</span>
+   <span class="nt">Active</span><span class="o">:</span> <span class="nt">active</span> <span class="o">(</span><span class="nt">running</span><span class="o">)</span> <span class="nt">since</span> <span class="nt">Tue</span> <span class="nt">2017-06-06</span> <span class="nt">22</span><span class="p">:</span><span class="nd">50</span><span class="p">:</span><span class="nd">00</span> <span class="nt">-04</span><span class="o">;</span> <span class="nt">1s</span> <span class="nt">ago</span>
+     <span class="nt">Docs</span><span class="o">:</span> <span class="nt">man</span><span class="p">:</span><span class="nd">privoxy</span><span class="o">(</span><span class="nt">8</span><span class="o">)</span>
+           <span class="nt">https</span><span class="o">://</span><span class="nt">www</span><span class="p">.</span><span class="nc">privoxy</span><span class="p">.</span><span class="nc">org</span><span class="o">/</span><span class="nt">user-manual</span><span class="o">/</span>
+  <span class="nt">Process</span><span class="o">:</span> <span class="nt">20044</span> <span class="nt">ExecStopPost</span><span class="o">=/</span><span class="nt">bin</span><span class="o">/</span><span class="nt">rm</span> <span class="nt">-f</span> <span class="o">$</span><span class="nt">PIDFILE</span> <span class="o">(</span><span class="nt">code</span><span class="o">=</span><span class="nt">exited</span><span class="o">,</span> <span class="nt">status</span><span class="o">=</span><span class="nt">0</span><span class="o">/</span><span class="nt">SUCCESS</span><span class="o">)</span>
+  <span class="nt">Process</span><span class="o">:</span> <span class="nt">20082</span> <span class="nt">ExecStart</span><span class="o">=/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">sbin</span><span class="o">/</span><span class="nt">privoxy</span> <span class="nt">--pidfile</span> <span class="o">$</span><span class="nt">PIDFILE</span> <span class="nt">--user</span> <span class="o">$</span><span class="nt">OWNER</span> <span class="o">$</span><span class="nt">CONFIGFILE</span> <span class="o">(</span><span class="nt">code</span><span class="o">=</span><span class="nt">exited</span><span class="o">,</span> <span class="nt">status</span><span class="o">=</span><span class="nt">0</span><span class="o">/</span><span class="nt">SUCCESS</span><span class="o">)</span>
+ <span class="nt">Main</span> <span class="nt">PID</span><span class="o">:</span> <span class="nt">20083</span> <span class="o">(</span><span class="nt">privoxy</span><span class="o">)</span>
+    <span class="nt">Tasks</span><span class="o">:</span> <span class="nt">1</span> <span class="o">(</span><span class="nt">limit</span><span class="o">:</span> <span class="nt">4915</span><span class="o">)</span>
+   <span class="nt">Memory</span><span class="o">:</span> <span class="nt">1</span><span class="p">.</span><span class="nc">3M</span>
+      <span class="nt">CPU</span><span class="o">:</span> <span class="nt">8ms</span>
+   <span class="nt">CGroup</span><span class="o">:</span> <span class="o">/</span><span class="nt">system</span><span class="p">.</span><span class="nc">slice</span><span class="o">/</span><span class="nt">privoxy</span><span class="p">.</span><span class="nc">service</span>
+           <span class="err">└─</span><span class="nt">20083</span> <span class="o">/</span><span class="nt">usr</span><span class="o">/</span><span class="nt">sbin</span><span class="o">/</span><span class="nt">privoxy</span> <span class="nt">--pidfile</span> <span class="o">/</span><span class="nt">var</span><span class="o">/</span><span class="nt">run</span><span class="o">/</span><span class="nt">privoxy</span><span class="p">.</span><span class="nc">pid</span> <span class="nt">--user</span> <span class="nt">privoxy</span> <span class="o">/</span><span class="nt">etc</span><span class="o">/</span><span class="nt">privoxy</span><span class="o">/</span><span class="nt">config</span>
+
+<span class="nt">jun</span> <span class="nt">06</span> <span class="nt">22</span><span class="p">:</span><span class="nd">49</span><span class="p">:</span><span class="nd">59</span> <span class="nt">grievous</span> <span class="nt">systemd</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span><span class="o">:</span> <span class="nt">Starting</span> <span class="nt">Privacy</span> <span class="nt">enhancing</span> <span class="nt">HTTP</span> <span class="nt">Proxy</span><span class="o">...</span>
+<span class="nt">jun</span> <span class="nt">06</span> <span class="nt">22</span><span class="p">:</span><span class="nd">50</span><span class="p">:</span><span class="nd">00</span> <span class="nt">grievous</span> <span class="nt">systemd</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span><span class="o">:</span> <span class="nt">Started</span> <span class="nt">Privacy</span> <span class="nt">enhancing</span> <span class="nt">HTTP</span> <span class="nt">Proxy</span><span class="o">.</span>
+</pre></div>
+
+
+<p>En firefox se instala <code>foxy proxy standar</code>:</p>
+<p><img alt="" src="./images/usartordesdeprivoxyendebianstretch-1.png"></p>
+<p>Se configura para usar el proxy localhost y puerto 8118:</p>
+<p><img alt="" src="./images/usartordesdeprivoxyendebianstretch-2.png"></p>
+<p>Al verificar con la siguiente URL el uso de tor <code>https://check.torproject.org/?lang=es_AR</code>, se tiene lo siguiente:</p>
+<p><img alt="" src="./images/usartordesdeprivoxyendebianstretch-3.png"></p>
+<p>Al lado izquierdo de la caja de busqueda está el icono de <code>foxyproxy</code>, el cual se encuentra activo al momento de verificar si se está usando tor.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/tag/tor.html">Tor</a>
+      <a href="https://ecrespo.github.io/tag/privoxy.html">Privoxy</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Usar%20tor%20desde%20privoxy%20en%20Debian%20Stretch&url=https%3A//ecrespo.github.io/usar-tor-desde-privoxy-en-debian-stretch.html&hashtags=linux,debian,ubuntu,tor,privoxy" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/usar-tor-desde-privoxy-en-debian-stretch.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/usar-tor-desde-privoxy-en-debian-stretch.html&title=Usar%20tor%20desde%20privoxy%20en%20Debian%20Stretch&summary=Privoxy%20es%20un%20proxy%20web%20que%20se%20usa%20normalmente%20con%20tor.%0AEn%20el%20art%C3%ADculo%20anterior%20se%20explica%20como%20instalar%20tor.%20Ahora%20se%20usar%C3%A1%20privoxy%20como%20proxy%20para%20tor.%0APara%20instalar%20simplemente%20se%20usa%20apt%3A%0A%23apt-get%20install%20privoxy%0A%0AEn%20privoxy%20se%20define%20el%20sock%20forward%20quien%20ser%C3%A1%20el%20puerto%20e%20IP%20%E2%80%A6&source=https%3A//ecrespo.github.io/usar-tor-desde-privoxy-en-debian-stretch.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Usar%20tor%20desde%20privoxy%20en%20Debian%20Stretch&amp;body=https%3A//ecrespo.github.io/usar-tor-desde-privoxy-en-debian-stretch.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/navegar-de-manera-anonima-con-tor-en-debian-stretch.html" title="Navegar de manera anónima con tor en Debian Stretch">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/mejorar-las-respuestas-de-consultas-de-dns-con-dnsmasq-usando-dnscrypt.html" title="Mejorar las respuestas de consultas de DNS con dnsmasq usando DNSCrypt">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/navegar-de-manera-anonima-con-tor-en-debian-stretch.html">Navegar de manera anónima con tor en Debian Stretch</a></li>
+      <li><a href="https://ecrespo.github.io/entorno_desarrollo_datascience.html">Crear entorno de desarrollo para Ciencia de Datos con Anaconda, Jupyter, git y cookiecutter</a></li>
+      <li><a href="https://ecrespo.github.io/fabric-como-un-ssh-con-esteroides-en-debian-stretch.html">Fabric como un ssh con esteroides en Debian Stretch</a></li>
+      <li><a href="https://ecrespo.github.io/mejorar-las-respuestas-de-consultas-de-dns-con-dnsmasq-usando-dnscrypt.html">Mejorar las respuestas de consultas de DNS con dnsmasq usando DNSCrypt</a></li>
+      <li><a href="https://ecrespo.github.io/entorno-de-desarrollo-en-la-nube-cloud9.html">Entorno de Desarrollo en la nube Cloud9</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

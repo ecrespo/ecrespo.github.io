@@ -1,4 +1,4 @@
-Title: Crear una imagen Docker para MongoDB 3  
+Title: Crear una imagen Docker para MongoDB 3
 Date: 2016-05-22 09:00  
 Category: Tutorial de Docker
 Tags: Canaima,Debian,Linux,Ubuntu,Docker,MongoDB
@@ -10,7 +10,7 @@ En Docker hub, la gente de MongoDB tiene una imagen oficial para varias versione
 
 Pero para los que quieren crear y probar imágenes les dejo [una imagen creada a partir de Debian](https://hub.docker.com/r/ecrespo/mongo3-custom/).
 
-Los artículos anteriores sobre Docker son:  
+Los artículos anteriores sobre Docker son:
 
 1. [Instalar Docker en Debian Jessie](https://www.seraph.to/instalar-docker-en-debian-jessie.html)  
 

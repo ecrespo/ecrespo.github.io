@@ -127,7 +127,105 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="General"></category><category term="Debian"></category><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Ejecutar una prueba de unittest en Python con un contenedor Docker.</title><link href="https://ecrespo.github.io/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html" rel="alternate"></link><published>2016-03-27T11:00:00-05:30</published><updated>2016-03-27T11:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-03-27:/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html</id><summary type="html">&lt;p&gt;En este artículo prácticamente se hará lo mismo que el artículo &lt;a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker"&gt;anterior&lt;/a&gt;, pero se creará un archivo donde se define una clase la cual hará las pruebas unitarias.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="General"></category><category term="Debian"></category><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Profiling de un script Python con la herramienta cProfile</title><link href="https://ecrespo.github.io/profiling-de-un-script-python-con-la-herramienta-cprofile.html" rel="alternate"></link><published>2016-06-13T12:00:00-04:00</published><updated>2016-06-13T12:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-06-13:/profiling-de-un-script-python-con-la-herramienta-cprofile.html</id><summary type="html">&lt;p&gt;Hace un tiempo toque el tema de herramientas de profiling para Python (&lt;a href="https://www.seraph.to/tag/profiling.html"&gt;ver enlace&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Hay otras herramientas como cProfile que se pueden usar y son menos invasiva que las de los artículos anteriores, quiero decir, no necesitan modificar el código de la aplicación para que sea utilizada.&lt;/p&gt;
+&lt;p&gt;Como script de …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hace un tiempo toque el tema de herramientas de profiling para Python (&lt;a href="https://www.seraph.to/tag/profiling.html"&gt;ver enlace&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Hay otras herramientas como cProfile que se pueden usar y son menos invasiva que las de los artículos anteriores, quiero decir, no necesitan modificar el código de la aplicación para que sea utilizada.&lt;/p&gt;
+&lt;p&gt;Como script de prueba usaré el mismo de raíz cuadrada que se encuentra en mi repo en &lt;a href="https://github.com/ecrespo/raizcuadrada"&gt;github&lt;/a&gt;, el mismo de los artículos sobre &lt;a href="https://www.seraph.to/pruebas-unitarias-en-python-con-unittest.html#pruebas-unitarias-en-python-con-unittest"&gt;pruebas unitarias&lt;/a&gt;, &lt;a href="https://www.seraph.to/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html#ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker"&gt;pruebas unitarias con docker&lt;/a&gt;, &lt;a href="https://www.seraph.to/separar-codigo-de-pruebas-de-la-documentacion-doctest-2da-parte.html"&gt;pruebas de documentación&lt;/a&gt;, &lt;a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker"&gt;pruebas de documentación con docker&lt;/a&gt;  y el de &lt;a href="https://www.seraph.to/analizar-codigo-python-con-pylint-desde-docker.html#analizar-codigo-python-con-pylint-desde-docker"&gt;pylint con docker&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;No se necesita instalar nada para usar &lt;code&gt;cProfile&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;El código del módulo raíz cuadrada es el siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
+
+&lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
+
+
+
+&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+&lt;span class="sd"&gt;Se importa el módulo math para calcular la raiz cuadrada.&lt;/span&gt;
+
+&lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;math&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Función raiz cuadrada.&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;Raiz&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Si a es mayor o igual a cero se calcula la raiz cuadrada&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;math&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Si es menor a cero se genera una excepción donde se informa que a debe ser mayor o igual a cero.&lt;/span&gt;
+
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+        &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;ValueError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;a debe ser &amp;gt;= 0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se importa el módulo doctest&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#import doctest&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se realiza la prueba al archivo raizcuadra.txt&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#doctest.testfile(&amp;quot;raizcuadrada.txt&amp;quot;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;Raiz&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;Raiz&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;Raiz&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Raiz(-1)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar cProfile:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="n"&gt;cProfile&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;cumtime&lt;/span&gt; &lt;span class="n"&gt;raizcuadrada&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+
+         &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="n"&gt;function&lt;/span&gt; &lt;span class="n"&gt;calls&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="mf"&gt;0.000&lt;/span&gt; &lt;span class="n"&gt;seconds&lt;/span&gt;
+
+
+
+   &lt;span class="n"&gt;Ordered&lt;/span&gt; &lt;span class="n"&gt;by&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;cumulative&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+
+
+
+   &lt;span class="n"&gt;ncalls&lt;/span&gt;  &lt;span class="n"&gt;tottime&lt;/span&gt;  &lt;span class="n"&gt;percall&lt;/span&gt;  &lt;span class="n"&gt;cumtime&lt;/span&gt;  &lt;span class="n"&gt;percall&lt;/span&gt; &lt;span class="n"&gt;filename&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;lineno&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;function&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="mi"&gt;1&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt; &lt;span class="n"&gt;raizcuadrada&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="mi"&gt;3&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt; &lt;span class="n"&gt;raizcuadrada&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Raiz&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="mi"&gt;3&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;math&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+        &lt;span class="mi"&gt;1&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt;    &lt;span class="mf"&gt;0.000&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;disable&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;_lsprof.Profiler&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Esto mismo se puede ejecutar desde el contenedor que se usó en el artículo de &lt;code&gt;pyLint&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run  -v &amp;quot;$PWD:/app&amp;quot; -ti prueba-python  python -m cProfile -s cumtime raizcuadrada.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestra una figura de la ejecución del comando:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/profilingdeunscriptpythonconcprofile-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Para más información pueden revisar la &lt;a href="https://docs.python.org/2/library/profile.html"&gt;documentación oficial de python&lt;/a&gt;, &lt;a href="https://julien.danjou.info/guide-to-python-profiling-cprofile-concrete-case-carbonara/"&gt;un artículo en inglés sobre cProfile&lt;/a&gt; y una &lt;a href="https://www.huyng.com/posts/python-performance-analysis"&gt;guía de análisis de rendimiento para python&lt;/a&gt;. &lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="Profiling"></category><category term="cProfile"></category></entry><entry><title>Ejecutar una prueba de unittest en Python con un contenedor Docker.</title><link href="https://ecrespo.github.io/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html" rel="alternate"></link><published>2016-03-27T11:00:00-05:30</published><updated>2016-03-27T11:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-03-27:/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html</id><summary type="html">&lt;p&gt;En este artículo prácticamente se hará lo mismo que el artículo &lt;a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker"&gt;anterior&lt;/a&gt;, pero se creará un archivo donde se define una clase la cual hará las pruebas unitarias.&lt;/p&gt;
 &lt;p&gt;La parte de pruebas unitarias se basa de un post anterior que se llama &lt;a href="https://www.seraph.to/pruebas-unitarias-en-python-con-unittest.html"&gt;Pruebas unitarias con unittest en Python&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Los artículos …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En este artículo prácticamente se hará lo mismo que el artículo &lt;a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker"&gt;anterior&lt;/a&gt;, pero se creará un archivo donde se define una clase la cual hará las pruebas unitarias.&lt;/p&gt;
 &lt;p&gt;La parte de pruebas unitarias se basa de un post anterior que se llama &lt;a href="https://www.seraph.to/pruebas-unitarias-en-python-con-unittest.html"&gt;Pruebas unitarias con unittest en Python&lt;/a&gt;.&lt;/p&gt;

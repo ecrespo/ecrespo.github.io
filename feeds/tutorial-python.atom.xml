@@ -127,7 +127,232 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="General"></category><category term="Debian"></category><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Trabajar con datos JSON en Flask</title><link href="https://ecrespo.github.io/trabajar-con-datos-json-en-flask.html" rel="alternate"></link><published>2016-09-25T12:00:00-04:00</published><updated>2016-09-25T12:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-25:/trabajar-con-datos-json-en-flask.html</id><summary type="html">&lt;p&gt;Este artículo es la continuación del artículo anterior &lt;a href="https://www.seraph.to/crear-datos-json-a-partir-de-un-diccionario-en-flask-parte-1-actualizacion-docker.html"&gt;Crear datos JSON a partir de un diccionario en Flask (parte 1) (actualización- Docker)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="General"></category><category term="Debian"></category><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Consulta a MongoDB desde Flask (parte 1)</title><link href="https://ecrespo.github.io/consulta-a-mongodb-desde-flask-parte-1.html" rel="alternate"></link><published>2016-09-27T00:00:00-04:00</published><updated>2016-09-27T00:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-27:/consulta-a-mongodb-desde-flask-parte-1.html</id><summary type="html">&lt;p&gt;En este artículo se usará Docker para construir la imagen que contiene el script en Flask con sus dependencias, se usará docker-compose.yml para asociar dicha imagen como contenedor con un contenedor de mongoDB.&lt;/p&gt;
+&lt;p&gt;Para revisar los artículos relacionados a este artículo pueden ver:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/docker.html"&gt;Artículos sobre Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;Artículos sobre MongoDB …&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;En este artículo se usará Docker para construir la imagen que contiene el script en Flask con sus dependencias, se usará docker-compose.yml para asociar dicha imagen como contenedor con un contenedor de mongoDB.&lt;/p&gt;
+&lt;p&gt;Para revisar los artículos relacionados a este artículo pueden ver:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/docker.html"&gt;Artículos sobre Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/mongodb.html"&gt;Artículos sobre MongoDB&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/tag/flask.html"&gt;Artículos sobre Flask&lt;/a&gt; &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Se tiene una colección empleados en una base de datos empleados  con los siguientes datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[{&amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57eb0887c535b9e290a6386d&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Jane Doe&amp;quot;, &amp;quot;sexo&amp;quot;: &amp;quot;femenino&amp;quot;, &amp;quot;edad&amp;quot;: 29.0}, {&amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57eb0892c535b9e290a6386e&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;John Doe&amp;quot;, &amp;quot;sexo&amp;quot;: &amp;quot;masculino&amp;quot;, &amp;quot;edad&amp;quot;: 39.0}, {&amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57eb1c16c535b9e290a6386f&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Pedro Perez&amp;quot;, &amp;quot;sexo&amp;quot;: &amp;quot;masculino&amp;quot;, &amp;quot;edad&amp;quot;: 55.0}, {&amp;quot;_id&amp;quot;: {&amp;quot;$oid&amp;quot;: &amp;quot;57eb1c66c535b9e290a63870&amp;quot;}, &amp;quot;nombre&amp;quot;: &amp;quot;Petra&amp;quot;, &amp;quot;sexo&amp;quot;: &amp;quot;femenino&amp;quot;, &amp;quot;edad&amp;quot;: 65.0}]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Estructura de archivos y directorios&lt;/h3&gt;
+&lt;p&gt;La estructura de archivos y directorios del proyecto del artículo es la siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tutorial-flask
+├── app
+│   └── run.py
+├── docker-compose.yml
+├── Dockerfile
+├── README.md
+└── tmp
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Archivo Dockerfile&lt;/h3&gt;
+&lt;p&gt;El archivo Dockerfile usa de sistema base Python, e instalará las siguientes dependencias:  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Actualización de pip  &lt;/li&gt;
+&lt;li&gt;pymongo  &lt;/li&gt;
+&lt;li&gt;Flask  &lt;/li&gt;
+&lt;li&gt;Flask-PyMongo  &lt;/li&gt;
+&lt;li&gt;Además expone el puerto 5000 y ejecuta el script &lt;code&gt;run.py&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A continuación el contenido del archivo Dockerfile:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;FROM&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt;
+
+
+&lt;span class="n"&gt;WORKDIR&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;upgrade&lt;/span&gt; &lt;span class="n"&gt;pip&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt;  &lt;span class="n"&gt;pymongo&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;
+
+
+&lt;span class="n"&gt;RUN&lt;/span&gt; &lt;span class="n"&gt;pip3&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;PyMongo&lt;/span&gt;
+
+
+&lt;span class="n"&gt;EXPOSE&lt;/span&gt; &lt;span class="mi"&gt;5000&lt;/span&gt;
+
+&lt;span class="n"&gt;ADD&lt;/span&gt; &lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/*&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+
+
+&lt;span class="n"&gt;COPY&lt;/span&gt; &lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;/*&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+
+
+&lt;span class="n"&gt;CMD&lt;/span&gt; &lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Archivo docker-compose.yml&lt;/h3&gt;
+&lt;p&gt;El archivo docker-compose.yml define la construcción de la imagen Docker a partir del archivo Dockerfile, el puerto a exponer, el volumen a exponer y se enlaza con el contenedor mongo, el cual usa la imagen de mongo, expone el puerto 27017, y por último expone el volumen.&lt;/p&gt;
+&lt;p&gt;A continuación el contenido del archivo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;flask-mongo:
+
+
+  build: .
+
+
+  ports:
+
+
+    - &amp;quot;5000:5000&amp;quot;
+
+
+  volumes:
+
+
+    - &amp;quot;./app/:/code&amp;quot;
+
+
+  links:
+
+
+    - mongo
+
+
+mongo:
+
+
+  image: mongo
+
+
+  ports:
+
+
+    - &amp;quot;27017:27017&amp;quot;
+
+
+  volumes:
+
+
+    - &amp;quot;/srv/data/db:/data/db:rw&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Si se quiere que la base de datos mongodb sea pública se expone los puertos, si no, entonces no se define los puertos. Para el caso de manejar persistencia de datos en la base de datos si es necesario definir el volumen. &lt;/p&gt;
+&lt;h3&gt;Script run.py&lt;/h3&gt;
+&lt;p&gt;Este script se muestra a continuación: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se importa Flask&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se importa PyMongo&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask_pymongo&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt;  &lt;span class="n"&gt;PyMongo&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se importa dumps de bson.json_util&lt;/span&gt;
+
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;bson.json_util&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se crea la instancia Flask&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="c1"&gt;#Se configura el acceso a la base de datos mongodb&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;MONGO_DBNAME&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;empleados&amp;#39;&lt;/span&gt;
+
+
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;MONGO_URI&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;mongodb://mongo:27017/empleados&amp;#39;&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se asocia la configuración pasando la app&lt;/span&gt;
+
+
+&lt;span class="n"&gt;mongo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PyMongo&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+
+
+&lt;span class="c1"&gt;#Se define la ruta raiz con metodo POST&lt;/span&gt;
+
+
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;methods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;POST&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;index&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se realiza la conexion a la coleccion empleados&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;empleados&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;empleados&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se hace la consulta y se devuelve  en formato json_util&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;resultados&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;empleados&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;resultados&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+
+    &lt;span class="c1"&gt;#Se corre la aplicacion en modo debug&lt;/span&gt;
+
+
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;host&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;0.0.0.0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Crear la imagen Docker y ejecutar los contenedores&lt;/h3&gt;
+&lt;p&gt;Para crear la imagen Docker se ejecuta:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose build
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar los dos contenedores se ejecuta:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker-compose up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestran los documentos de la colección desde robomongo:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/consultaamongodbdesdeflask1-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Para realizar la consulta se usará postman (una aplicación para google chrome), a continuación se muestra la imagen del resultado de la consulta:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/consultaamongodbdesdeflask1-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al consultar vía POST a 127.0.0.1 puerto 5000, se devuelve el json con todos los empleados que se tienen en la base de datos mongodb.&lt;/p&gt;
+&lt;p&gt;El código fuente de este artículo lo pueden ver en la rama &lt;a href="https://gitlab.com/ecrespo/tutorial-flask/tree/mongo1"&gt;mongo1 en gitlab.&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="Docker"></category><category term="Flask"></category></entry><entry><title>Trabajar con datos JSON en Flask</title><link href="https://ecrespo.github.io/trabajar-con-datos-json-en-flask.html" rel="alternate"></link><published>2016-09-25T12:00:00-04:00</published><updated>2016-09-25T12:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2016-09-25:/trabajar-con-datos-json-en-flask.html</id><summary type="html">&lt;p&gt;Este artículo es la continuación del artículo anterior &lt;a href="https://www.seraph.to/crear-datos-json-a-partir-de-un-diccionario-en-flask-parte-1-actualizacion-docker.html"&gt;Crear datos JSON a partir de un diccionario en Flask (parte 1) (actualización- Docker)&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Este  artículo se basa del artículo en inglés: &lt;a href="http://codehandbook.org/working-with-json-in-python-flask/"&gt;Working with JSON in Python Flask&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;El código fuente de este artículo lo pueden bajar de la &lt;a href="https://gitlab.com/ecrespo/tutorial-flask/tree/json2"&gt;rama json2 en …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Este artículo es la continuación del artículo anterior &lt;a href="https://www.seraph.to/crear-datos-json-a-partir-de-un-diccionario-en-flask-parte-1-actualizacion-docker.html"&gt;Crear datos JSON a partir de un diccionario en Flask (parte 1) (actualización- Docker)&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Este  artículo se basa del artículo en inglés: &lt;a href="http://codehandbook.org/working-with-json-in-python-flask/"&gt;Working with JSON in Python Flask&lt;/a&gt;.&lt;/p&gt;

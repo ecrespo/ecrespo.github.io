@@ -1,6 +1,6 @@
 Title: Montar una Plataforma como servicio (PaaS) con Dokku (docker).  
 Date: 2016-05-05 09:00  
-Category: Tutorial Linux  
+Category: Tutorial de Docker 
 Tags: Canaima,Debian,Linux,Ubuntu,Docker, Dokku, PaaS,DevOps  
 lang: es  
 translation: true

@@ -10,6 +10,7 @@ Docker-machine se usa para equipos con Windows o MACOSX, o para equipos que no s
 Este artículo se basa en la documentación oficial en inglés que se encuentra en el siguiente [enlace](https://docs.docker.com/machine/get-started/), y en el siguiente [tutorial](https://devopscube.com/docker-machine-tutorial-getting-started-guide/).
 
 Los artículos anteriores sobre docker son:  
+
 1. [Instalar Docker en Debian Jessie](https://www.seraph.to/instalar-docker-en-debian-jessie.html)  
 
 2. [Uso de Docker en Debian Jessie (parte 1)](https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html)  

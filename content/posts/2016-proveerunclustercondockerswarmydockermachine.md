@@ -1,5 +1,5 @@
 Title: Proveer un cluster con docker swarm y docker-machine.  
-Date: 2016-05-09 09:00  
+Date: 2016-05-09 09:00
 Category: Tutorial de Docker 
 Tags: Canaima,Debian,Linux,Ubuntu,Docker, docker-swarm, docker-machine  
 lang: es  

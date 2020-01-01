@@ -1,0 +1,1007 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En un artículo anterior se explicó como instalar gitlab-ce por medio de Docker (enlace). El problema es que al gitlab le falta configurar lo de Integración Continua (CI), para ello es necesario instalar gitlab-runner (en el mismo equipo, en otro equipo o como un contenedor aparte). La descripción sobre las …" />
+<meta name="keywords" content="Canaima, Linux, General, Python, Ubuntu, gitlab, gitlab-ci, Docker">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Instalar gitlab-runner de gitlab-ci por medio de Docker"/>
+<meta property="og:description" content="En un artículo anterior se explicó como instalar gitlab-ce por medio de Docker (enlace). El problema es que al gitlab le falta configurar lo de Integración Continua (CI), para ello es necesario instalar gitlab-runner (en el mismo equipo, en otro equipo o como un contenedor aparte). La descripción sobre las …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-06-13 11:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Docker"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="gitlab"/>
+<meta property="article:tag" content="gitlab-ci"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Instalar gitlab-runner de gitlab-ci por medio de Docker</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/aiohttp.html">
+            aiohttp
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/docker-swarm.html">
+            docker-swarm
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            ssh
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/jenkins.html">
+            Jenkins
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/desktop.html">
+            Desktop
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            dnsmasq
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/django-celery.html">
+            Django-Celery
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cerberus.html">
+            Cerberus
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">219</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/paas.html">
+            PaaS
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/dokku.html">
+            Dokku
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">109</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/anaconda.html">
+            Anaconda
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">170</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/despliegue-continuo.html">
+            Despliegue Continuo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">167</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/rethinkdb.html">
+            RethinkDB
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/google-translate.html">
+            Google Translate
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/memcached.html">
+            memcached
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/nodejs.html">
+            node.js
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ncurses.html">
+            ncurses
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/ingenieria-de-datos.html">
+            Ingeniería de Datos
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">29</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">123</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/material-design.html">
+            Material design
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/integracion-continua.html">
+            Integración Continua
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/dockerhub.html">
+            Dockerhub
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/entorno-desarrollo.html">
+            Entorno Desarrollo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/sailsjs.html">
+            Sails.js
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/aplicaciones.html">
+            Aplicaciones
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/github.html">
+            Github
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            pylab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            matplotlib
+                    <span class="badge">23</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-rest.html">
+            API rest
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/requests.html">
+            requests
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/asincrono.html">
+            asincrono
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            numpy
+                    <span class="badge">21</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            gitlab-ci
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de Datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/dockerui.html">
+            Dockerui
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/urwid.html">
+            urwid
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker">Instalar gitlab-runner de gitlab-ci por medio de Docker</h1>
+    <p>
+          Posted on lun 13 junio 2016 in <a href="https://ecrespo.github.io/category/tutorial-de-docker.html">Tutorial de Docker</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>En un artículo anterior se explicó como instalar gitlab-ce por medio de Docker (<a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">enlace</a>).</p>
+<p>El problema es que al gitlab le falta configurar lo de Integración Continua (CI), para ello es necesario instalar gitlab-runner (en el mismo equipo, en otro equipo o como un contenedor aparte). </p>
+<p>La descripción sobre las características de gitlab-ci la pueden ver en el siguiente <a href="https://about.gitlab.com/product/continuous-integration/">enlace</a>.</p>
+<p>La guía para instalar gitlab-runner lo pueden revisar en el siguiente <a href="https://gitlab.com/gitlab-org/gitlab-runner#installation">enlace</a>.</p>
+<p>Para el caso de docker se puede ver la documentación <a href="https://about.gitlab.com/2016/05/23/gitlab-container-registry/">siguiente</a>.</p>
+<p>Los artículos anteriores sobre Docker son:</p>
+<ol>
+<li>
+<p><a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html">Instalar Docker en Debian Jessie</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html">Uso de Docker en Debian Jessie (parte 1)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html">Uso de Docker en Debian Jessie (parte 2)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo Dockerfile</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-usando-docker.html">Iniciando Django usando Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">Instalar Gitlab por medio de Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando microservicios con docker usando docker-compose</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/docker-en-docker-dind.html">Docker en Docker (DinD)</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html">Iniciando Django con docker usando docker-compose con postgresql como microservicio.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/importar-un-contenedor-docker-en-python.html#importar-un-contenedor-docker-en-python">Importar un contenedor Docker en Python.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar">Compartir imagenes Docker por medio de archivos tar</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado">Crear un registro de imagenes Docker privado.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-anaconda-desde-un-contenedor-docker.html#usar-anaconda-desde-un-contenedor-docker">Usar Anaconda desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html#crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs">Crear un entorno de Integración y Despligue continue con Docker para node.js.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-jupyter-notebook-desde-un-contenedor-de-docker.html#usar-jupyter-notebook-desde-un-contenedor-de-docker">Usar Jupyter Notebook desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker">Ejecutar una prueba de doctest con un contenedor Docker</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html#ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker">Ejecutar una prueba de unittest en Python con un contenedor Docker.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/montar-una-plataforma-como-servicio-paas-con-dokku-docker.html#montar-una-plataforma-como-servicio-paas-con-dokku-docker">Montar una Plataforma como servicio (PaaS) con Dokku (docker)</a>.  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-machine.html#uso-de-docker-machine">Uso de docker-machine.  </a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/proveer-un-cluster-con-docker-swarm-y-docker-machine.html#proveer-un-cluster-con-docker-swarm-y-docker-machine">Proveer un cluster con docker swarm y docker-machine.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/instalar-jenkins-por-medio-de-docker-y-crear-una-imagen-docker-de-jenkins.html#instalar-jenkins-por-medio-de-docker-y-crear-una-imagen-docker-de-jenkins">Instalar Jenkins por medio de Docker y crear una imagen Docker de Jenkins</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/automatizar-la-construccion-de-imagenes-docker-con-github.html#automatizar-la-construccion-de-imagenes-docker-con-github">Automatizar la construcción de imágenes Docker con github.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-para-mongodb-3.html#crear-una-imagen-docker-para-mongodb-3">Crear una imagen Docker para MongoDB3.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-contenedor-docker-como-entorno-de-desarrollo-para-sailsjs.html#crear-un-contenedor-docker-como-entorno-de-desarrollo-para-sailsjs">Crear un contenedor Docker como entorno de desarrollo para Sails.js.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/correr-aplicaciones-de-escritorio-desde-un-contenedor-docker.html#correr-aplicaciones-de-escritorio-desde-un-contenedor-docker">Correr aplicaciones de escritorio desde un contenedor Docker.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-dockerui-para-la-gestion-de-imagenes-y-contenedores-de-docker.html#usar-dockerui-para-la-gestion-de-imagenes-y-contenedores-de-docker">Usar dockerui para la gestión de imágenes y contenedores de Docker</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-de-rethinkdb.html#crear-una-imagen-docker-de-rethinkdb">Crear una imagen Docker de RethinkDB</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/analizar-codigo-python-con-pylint-desde-docker.html#analizar-codigo-python-con-pylint-desde-docker">Analizar código python con pylint desde Docker</a></p>
+</li>
+</ol>
+<p>Lo primero que se tiene que hacer es bajar la imagen de Docker para gitlab-runner:</p>
+<div class="highlight"><pre><span></span>docker pull gitlab/gitlab-runner
+</pre></div>
+
+
+<p>Luego se inicia el servicio de registro de gitlab-runner:</p>
+<div class="highlight"><pre><span></span>docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner
+</pre></div>
+
+
+<p>De esta forma el gitlab-runner usará el docker que se encuentra en la máquina anfitrión, se tiene acceso a la configuración de gitlab-runner desde la máquina anfitrión.</p>
+<p>Al ejecutar un <code>docker ps</code> se tiene lo siguiente:</p>
+<div class="highlight"><pre><span></span>docker ps 
+CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS              PORTS                                                            NAMES
+13ffb573fadf        gitlab/gitlab-runner      &quot;/entrypoint run --us&quot;   3 hours ago         Up 3 hours                                                                           gitlab-runner
+b483b38fe29e        gitlab/gitlab-ce:latest   &quot;/assets/wrapper&quot;        12 days ago         Up 4 hours          0.0.0.0:22-&gt;22/tcp, 0.0.0.0:443-&gt;443/tcp, 0.0.0.0:9080-&gt;80/tcp   gitlab1
+</pre></div>
+
+
+<p>Como se nota ya se tienen activo gitlab-ce y gitlab-runner.</p>
+<p>Para registrar un proyecto se ejecuta en la máquina el siguiente comando:</p>
+<div class="highlight"><pre><span></span>docker exec -ti  13ffb573fadf  gitlab-runner register 
+</pre></div>
+
+
+<p>Lo que viene a continuación es registrar un proyecto que se encuentre en gitlab. En este caso se va a crear un proyecto en gitlab-ce y se va a la configuración del mismo, ahí se selecciona la parte de runners:</p>
+<p>Se tiene el proyecto <code>prueba-nodejs</code>:</p>
+<p><img alt="" src="./images/instalargitlabrunnerdegitlabcipormediodedocker-1.png"></p>
+<p>Los datos importantes son:</p>
+<div class="highlight"><pre><span></span><span class="n">URL</span><span class="o">:</span><span class="n">http</span><span class="o">://</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">0.60</span><span class="o">:</span><span class="mi">9080</span><span class="o">/</span><span class="n">ci</span>
+<span class="n">TOKEN</span><span class="o">:</span><span class="mi">6</span><span class="n">kN_Uo_j2YitsJkh7q94</span>
+</pre></div>
+
+
+<p>A continuación se ejecuta el register:</p>
+<div class="highlight"><pre><span></span>docker exec -ti  13ffb573fadf  gitlab-runner register 
+</pre></div>
+
+
+<p>Y se pasan los datos que pide (la siguiente figura muestra la configuración del registro del proyecto):</p>
+<p><img alt="" src="./images/instalargitlabrunnerdegitlabcipormediodedocker-2.png"></p>
+<p>Se le pasó el url, el token, luego pregunta la descripción del proyecto en este caso <code>prueba-nodejs</code>, luego unas etiquetas del mismo, se va a usar docker y por último la imagen base de Docker que se va a usar.</p>
+<p>Para terminar se muestra una imagen de la configuración del runner que indica que el runner y gitlab se encuentran conectados:</p>
+<p><img alt="" src="./images/instalargitlabrunnerdegitlabcipormediodedocker-3.png"></p>
+<p>Y la información de esa conexión:</p>
+<p><img alt="" src="./images/instalargitlabrunnerdegitlabcipormediodedocker-4.png"></p>
+<p>En próximo artículo se explicará como correr una prueba de CI. </p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/tag/gitlab.html">gitlab</a>
+      <a href="https://ecrespo.github.io/tag/gitlab-ci.html">gitlab-ci</a>
+      <a href="https://ecrespo.github.io/tag/docker.html">Docker</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Instalar%20gitlab-runner%20de%20gitlab-ci%20por%20medio%20de%20Docker&url=https%3A//ecrespo.github.io/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html&hashtags=canaima,linux,general,python,ubuntu,gitlab,gitlab-ci,docker" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html&title=Instalar%20gitlab-runner%20de%20gitlab-ci%20por%20medio%20de%20Docker&summary=En%20un%20art%C3%ADculo%20anterior%20se%20explic%C3%B3%20como%20instalar%20gitlab-ce%20por%20medio%20de%20Docker%20%28enlace%29.%0AEl%20problema%20es%20que%20al%20gitlab%20le%20falta%20configurar%20lo%20de%20Integraci%C3%B3n%20Continua%20%28CI%29%2C%20para%20ello%20es%20necesario%20instalar%20gitlab-runner%20%28en%20el%20mismo%20equipo%2C%20en%20otro%20equipo%20o%20como%20un%20contenedor%20aparte%29.%20%0ALa%20descripci%C3%B3n%20sobre%20las%20%E2%80%A6&source=https%3A//ecrespo.github.io/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Instalar%20gitlab-runner%20de%20gitlab-ci%20por%20medio%20de%20Docker&amp;body=https%3A//ecrespo.github.io/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/analizar-codigo-python-con-pylint-desde-docker.html" title="Analizar código python con pylint desde Docker">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/arbol-de-decision-hecho-en-python.html" title="Árbol de decisión hecho en Python">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/analizar-codigo-python-con-pylint-desde-docker.html">Analizar código python con pylint desde Docker</a></li>
+      <li><a href="https://ecrespo.github.io/crear-una-imagen-docker-de-rethinkdb.html">Crear una imagen Docker de RethinkDB</a></li>
+      <li><a href="https://ecrespo.github.io/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando micros servicios con docker usando docker-compose</a></li>
+      <li><a href="https://ecrespo.github.io/instalar-gitlab-por-medio-de-docker.html">Instalar Gitlab por medio de Docker</a></li>
+      <li><a href="https://ecrespo.github.io/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo dockerfile.</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

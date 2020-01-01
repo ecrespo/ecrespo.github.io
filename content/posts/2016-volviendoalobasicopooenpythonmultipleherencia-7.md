@@ -1,12 +1,12 @@
 Title: Volviendo a lo básico, POO en Python (multiple herencia) (parte 7)  
-Date: 2016-12-31 12:00  
+Date: 2016-12-31 16:00  
 Category: Tutorial Python    
 Tags: Python,POO
 lang: es  
 translation: true  
 
 
-Continuando con los artículos de programación orientada a objetos con python, en este caso se tocará el caso de multiple herencia.
+Continuando con los [artículos de programación orientada a objetos con python](https://www.seraph.to/tag/poo.html), en este caso se tocará el caso de multiple herencia.
 
 La siguiente figura se muestra el diagrama UML:
 

@@ -1,11 +1,11 @@
 Title: Crear datos JSON a partir de un diccionario en Flask (parte 1) (actualización- Docker) 
-Date: 2016-06-26 09:00  
+Date: 2016-09-25 09:00  
 Category: Tutorial Python  
-Tags: Python,Flask, json,Docker
+Tags: Python,Flask, json
 lang: es  
 translation: true  
 
-El artículo original lo pueden revisar [acá](https://codehandbook.org/create-json-using-python-flask/).
+El artículo original lo pueden revisar [acá](https://www.seraph.to/crear-datos-json-a-partir-de-un-diccionario-en-flask-parte-1.html).
 
 El repositorio donde se encuentra el código en [gitlab en la rama json1](https://gitlab.com/ecrespo/tutorial-flask/tree/json1).
 

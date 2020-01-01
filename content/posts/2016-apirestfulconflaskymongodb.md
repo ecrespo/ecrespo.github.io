@@ -5,7 +5,7 @@ Tags: Python,API restful,Flask,MongoDB,Flask-restful,Flask-MongoAlchemy,Docker,D
 lang: es
 translation: true
 
-En el artículo [anterior](https://www.seraph.to/crud-usando-flask-y-mongodb-con-orm-flask-mongoalchemy-parte-4.html) se explicó como hacer el API Rest Ful usando HTTP con los métodos GET, POST, PUT y DELETE, sin usar una librería para el Rest Ful. 
+En el artículo [anterior](https://www.seraph.to/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy.html) se explicó como hacer el API Rest Ful usando HTTP con los métodos GET, POST, PUT y DELETE, sin usar una librería para el Rest Ful. 
 
 En este artículo se usará la librería Flask-RestFul, su documentación la pueden revisar [acá](https://flask-restful-cn.readthedocs.io/en/0.3.5/index.html). 
 

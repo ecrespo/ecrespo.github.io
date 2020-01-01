@@ -1,6 +1,6 @@
 Title: Crear un contenedor Docker como entorno de desarrollo para sails.js
 Date: 2016-05-24 09:00
-Category: Tutorial de Docker  
+Category: Tutorial de Docker
 Tags: Canaima,Debian,Linux,Ubuntu,Docker, Sails.js
 lang: es
 translation: true

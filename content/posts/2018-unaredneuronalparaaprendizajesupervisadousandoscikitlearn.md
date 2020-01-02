@@ -1,7 +1,7 @@
 Title: Una red Neuronal para aprendizaje supervisado usando Scikit-learn  
 Date: 2018-02-12 11:00  
-Category: Tutorial Python  
-Tags: General,Python  
+Category: Tutorial de Python  
+Tags: Python,Numpy,Red Neuronal, Inteligencia Artificial, Scikit-learn
 lang: es  
 translation: true  
 
@@ -12,7 +12,7 @@ Lo primero es instalar `scikit-learn` en Linux con `pip`:
 pip3 install  scikit-learn
 ```
 
-Se tendrán dos ejemplos, el primero es entrenar la red neuronal con la tabla de la verdad de XOR y ver que devuelve la red, el segundo ejercicio es tomando los datos del artículo anterior ([construir una red neuronal en pocos minutos](http://blog.crespo.org.ve/2018/02/construir-una-red-neuronal-en-pocos.html)) y ver si se logra el mismo resultado.
+Se tendrán dos ejemplos, el primero es entrenar la red neuronal con la tabla de la verdad de XOR y ver que devuelve la red, el segundo ejercicio es tomando los datos del artículo anterior ([construir una red neuronal en pocos minutos](https://www.seraph.to/construir-una-red-neuronal-en-pocos-minutos.html)) y ver si se logra el mismo resultado.
 
 La resolución de XOR se hará con el algoritmo de [K nearest neighbor algorithm](http://www.codeday.top/2017/10/15/50798.html) y también se usará [multi-layer perceptron Classifier](http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html#sklearn.neural_network.MLPClassifier) con backpropagation ([redes neuronales supervisadas](http://scikit-learn.org/stable/modules/neural_networks_supervised.html)).
 

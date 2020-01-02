@@ -1,5 +1,5 @@
 Title: Construir una red neuronal en pocos minutos  
-Date: 2018-02-11 09:00  
+Date: 2018-02-11 12:00  
 Category: Tutorial de Python  
 Tags: Python, Numpy,Red Neuronal, Inteligencia Artificial
 lang: es  

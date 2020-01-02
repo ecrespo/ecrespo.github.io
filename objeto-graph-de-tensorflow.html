@@ -1,0 +1,1007 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con la serie de artículos sobre Tensorflow, en este caso se explicará el significado y uso de Grapg. Antes de continuar les dejo la lista de artículos de esta serie: Hola mundo desde TensorFlow Matemáticas básicas con TensorFlow Manejo de matrices con Tensorflow Variables y placeholders en Tensorflow tf …" />
+<meta name="keywords" content="Python, TensorFlow">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Objeto Graph de TensorFlow"/>
+<meta property="og:description" content="Continuando con la serie de artículos sobre Tensorflow, en este caso se explicará el significado y uso de Grapg. Antes de continuar les dejo la lista de artículos de esta serie: Hola mundo desde TensorFlow Matemáticas básicas con TensorFlow Manejo de matrices con Tensorflow Variables y placeholders en Tensorflow tf …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/objeto-graph-de-tensorflow.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-02-11 11:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="TensorFlow"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Objeto Graph de TensorFlow</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pymongo.html">
+            Pymongo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-rest.html">
+            API rest
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/asincrono.html">
+            asincrono
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">28</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de Datos
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cerberus.html">
+            Cerberus
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/aiohttp.html">
+            aiohttp
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mpl_toolkits.html">
+            mpl_toolkits
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">266</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/request.html">
+            Request
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/redes-neuronales.html">
+            Redes neuronales
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">51</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">12</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pandas.html">
+            Pandas
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/memcached.html">
+            memcached
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">24</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/graphql.html">
+            GraphQL
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">18</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/entorno-desarrollo.html">
+            Entorno Desarrollo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="objeto-graph-de-tensorflow">Objeto Graph de TensorFlow</h1>
+    <p>
+          Posted on dom 11 febrero 2018 in <a href="https://ecrespo.github.io/category/tutorial-de-python.html">Tutorial de Python</a>
+
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Continuando con la serie de artículos sobre Tensorflow, en este caso se explicará el significado y uso de Grapg.</p>
+<p>Antes de continuar les dejo la lista de artículos de esta serie:</p>
+<ol>
+<li><a href="https://www.seraph.to/hola-mundo-desde-tensorflow.html">Hola mundo desde TensorFlow</a>  </li>
+<li><a href="https://www.seraph.to/matematicas-basicas-con-tensorflow.html">Matemáticas básicas con TensorFlow</a></li>
+<li><a href="https://www.seraph.to/manejo-de-matrices-con-tensorflow.html">Manejo de matrices con Tensorflow</a> </li>
+<li><a href="https://www.seraph.to/variables-y-placeholders-en-tensorflow.html">Variables y placeholders en Tensorflow</a>  </li>
+</ol>
+<p><code>tf.Graph</code>:
+Cada computo en Tensorflow es representado por un Grafo de flujo de datos, este tiene dos elementos: </p>
+<ul>
+<li>Un objeto tf.Operation, que representa la unidad de computo.  </li>
+<li>Un objeto tf.Tensor, que representa unidades de datos,  que se necesita para las operaciones.</li>
+</ul>
+<p>A continuación se muestra una figura de la representación de un Grafo:</p>
+<p><img alt="" src="./images/objetographdetensorflow-1.png"> </p>
+<p>A continuación se muestra el uso de Graph:</p>
+<p>In [1]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se importa tensorflow</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+</pre></div>
+
+
+<p>In [2]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se define dos constantes</span>
+<span class="n">n1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">n2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+
+
+<p>In [3]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se realiza la suma de las dos constantes</span>
+<span class="n">n3</span> <span class="o">=</span> <span class="n">n1</span><span class="o">+</span><span class="n">n2</span>
+</pre></div>
+
+
+<p>In [4]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se instancia la sesión y se ejecuta almacenando el resultado de n3 que se muestra</span>
+
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">n3</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="mi">30</span>
+</pre></div>
+
+
+<p>In [5]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se imprime la constante n3, es una suma, y de tipo int32</span>
+<span class="k">print</span><span class="p">(</span><span class="n">n3</span><span class="p">)</span>
+
+<span class="n">Tensor</span><span class="p">(</span><span class="s2">&quot;add:0&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+</pre></div>
+
+
+<p>In [6]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se obtiene el valor por defecto del grafo en memoria</span>
+<span class="k">print</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">())</span>
+
+<span class="o">&lt;</span><span class="n">tensorflow</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">Graph</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f1026aa1cf8</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>In [7]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se instancia el objeto grafo </span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+</pre></div>
+
+
+<p>In [8]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se imprime su valor, los valores en memoria serán distintos del por defecto al creado.</span>
+<span class="k">print</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">tensorflow</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">Graph</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f1026ad00b8</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>In [9]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se define graph1 como el grafo por defecto</span>
+<span class="n">graph1</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">()</span>
+</pre></div>
+
+
+<p>In [10]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se imprime graph1, será el valor por defecto en memoria</span>
+<span class="k">print</span><span class="p">(</span><span class="n">graph1</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">tensorflow</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">Graph</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f1026aa1cf8</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>In [11]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se instancia el grafo2</span>
+<span class="n">graph2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+</pre></div>
+
+
+<p>In [12]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se muestra el valor de grafo2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">graph2</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">tensorflow</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">Graph</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f1026ad0390</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>In [13]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se define el grafo2 como si fuera  por defecto y se muestra si en verdad es por defecto </span>
+<span class="k">with</span> <span class="n">graph2</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">graph2</span> <span class="ow">is</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">())</span>
+
+<span class="bp">True</span>
+</pre></div>
+
+
+<p>In [14]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se evalua si grafo 2, es el de por defecto</span>
+<span class="k">print</span><span class="p">(</span><span class="n">graph2</span> <span class="ow">is</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">())</span>
+
+<span class="bp">False</span>
+</pre></div>
+
+
+<p>Otro ejemplo de Grafo  </p>
+<p>In [15]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se define el grafo</span>
+<span class="n">grafo</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+</pre></div>
+
+
+<p>In [16]:</p>
+<div class="highlight"><pre><span></span><span class="c1">#Se define la sesión pasandole el grafo</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">grafo</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="c1">#Se define las constantes x y y que son arreglos</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mi">11</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">16</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>
+    <span class="c1">#Se realiza la operación de suma de x+y</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1">#Se ejecuta la operación en la sesión</span>
+    <span class="n">resultado</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">fetches</span><span class="o">=</span><span class="n">op</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">resultado</span><span class="p">)</span>
+
+<span class="p">[</span><span class="mi">21</span> <span class="mi">23</span> <span class="mi">26</span><span class="p">]</span>
+</pre></div>
+
+
+<p>In [ ]:</p>
+<div class="highlight"><pre><span></span>
+</pre></div>
+
+
+<p>Si quiere investigar más sobre Graph puede revisar su documentación en tensorflow (<a href="http://www.tensorflow.org/api_docs/python/tf/Graph">documentación del api</a> y <a href="http://www.tensorflow.org/programmers_guide/graphs">guía para los progamadores</a>), pueden revisar el artículo en <a href="http://medium.com/@camrongodbout/tensorflow-in-a-nutshell-part-one-basics-3f4403709c9d">medium Tensorflow in a nutshell-Part 1: Basics</a>, también pueden revisar el tutorial de la gente de datacamp <a href="http://www.datacamp.com/community/tutorials/tensorflow-tutorial">Tensorflow tutorial for beginners</a>.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/tensorflow.html">TensorFlow</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Objeto%20Graph%20de%20TensorFlow&url=https%3A//ecrespo.github.io/objeto-graph-de-tensorflow.html&hashtags=python,tensorflow" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/objeto-graph-de-tensorflow.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/objeto-graph-de-tensorflow.html&title=Objeto%20Graph%20de%20TensorFlow&summary=Continuando%20con%20la%20serie%20de%20art%C3%ADculos%20sobre%20Tensorflow%2C%20en%20este%20caso%20se%20explicar%C3%A1%20el%20significado%20y%20uso%20de%20Grapg.%0AAntes%20de%20continuar%20les%20dejo%20la%20lista%20de%20art%C3%ADculos%20de%20esta%20serie%3A%0A%0AHola%20mundo%20desde%20TensorFlow%20%0AMatem%C3%A1ticas%20b%C3%A1sicas%20con%20TensorFlow%0AManejo%20de%20matrices%20con%20Tensorflow%20%0AVariables%20y%20placeholders%20en%20Tensorflow%20%0A%0Atf%20%E2%80%A6&source=https%3A//ecrespo.github.io/objeto-graph-de-tensorflow.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Objeto%20Graph%20de%20TensorFlow&amp;body=https%3A//ecrespo.github.io/objeto-graph-de-tensorflow.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/construir-una-red-neuronal-en-pocos-minutos.html" title="Construir una red neuronal en pocos minutos">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/visualizacion-de-arbol-de-decision.html" title="Visualización de Árbol de decisión">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/variables-y-placeholders-en-tensorflow.html">Variables y placeholders en Tensorflow</a></li>
+      <li><a href="https://ecrespo.github.io/matematicas-basicas-con-tensorflow.html">Matemáticas básicas con TensorFlow</a></li>
+      <li><a href="https://ecrespo.github.io/manejo-de-matrices-con-tensorflow.html">Manejo de matrices con TensorFlow</a></li>
+      <li><a href="https://ecrespo.github.io/hola-mundo-desde-tensorflow.html">Hola Mundo desde TensorFlow</a></li>
+      <li><a href="https://ecrespo.github.io/memcached_2019.html">Usar memcached para tener datos a la mano</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

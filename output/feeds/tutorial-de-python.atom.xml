@@ -831,7 +831,138 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Obtener datos de eventos sismológicos de Funvisis con Python3 (segunda versión)</title><link href="https://ecrespo.github.io/obtener-datos-de-eventos-sismologicos-de-funvisis-con-python3-segunda-version.html" rel="alternate"></link><published>2017-06-24T11:00:00-04:00</published><updated>2017-06-24T11:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2017-06-24:/obtener-datos-de-eventos-sismologicos-de-funvisis-con-python3-segunda-version.html</id><summary type="html">&lt;p&gt;El primer artículo sobre &lt;a href="https://www.seraph.to/obtener-datos-de-eventos-sismologicos-de-funvisis-con-python.html"&gt;obtener los datos sismológicos de Funvisis con Python&lt;/a&gt;, se usó la librería &lt;code&gt;python-mechanize&lt;/code&gt;, en este caso se usará la librería &lt;code&gt;request&lt;/code&gt; y &lt;code&gt;Python 3.*&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Debian"></category><category term="Python"></category><category term="Wikipedia"></category><category term="Ubuntu"></category></entry><entry><title>Desarrollar un API con GraphQL en Flask</title><link href="https://ecrespo.github.io/desarrollar-un-api-con-graphql-en-flask.html" rel="alternate"></link><published>2017-06-25T09:00:00-04:00</published><updated>2017-06-25T09:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2017-06-25:/desarrollar-un-api-con-graphql-en-flask.html</id><summary type="html">&lt;p&gt;Continuando con los artículos sobre &lt;a href="https://www.seraph.to/tag/flask.html"&gt;Flask&lt;/a&gt;, donde el último artículo fue de como &lt;a href="https://www.seraph.to/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy-y-flask-restful.html"&gt;crear un API Restful con Flask y MongoDB&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;En este artículo se toca el uso de GraphQL para crear un API. GraphQL es un lenguaje de consulta de datos desarrollado por Facebook, es una alternativa a Rest …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Continuando con los artículos sobre &lt;a href="https://www.seraph.to/tag/flask.html"&gt;Flask&lt;/a&gt;, donde el último artículo fue de como &lt;a href="https://www.seraph.to/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy-y-flask-restful.html"&gt;crear un API Restful con Flask y MongoDB&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;En este artículo se toca el uso de GraphQL para crear un API. GraphQL es un lenguaje de consulta de datos desarrollado por Facebook, es una alternativa a Rest (más información en &lt;a href="https://en.wikipedia.org/wiki/GraphQL"&gt;wikipedia&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;La librería para Flask de GraphQL lo pueden ver en el siguiente &lt;a href="https://pypi.python.org/pypi/Flask-GraphQL"&gt;enlace&lt;/a&gt;. El artículo explicará el ejemplo que aparece en la &lt;a href="https://bcb.github.io/graphql/flask"&gt;página oficial de graphQL para Flask&lt;/a&gt; .&lt;/p&gt;
+&lt;p&gt;Instalación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#pip3 install flask graphene flask-graphql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Script servidor (&lt;code&gt;server.py&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se importa flask, graphene y graphql.&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;graphene&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;ObjectType&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Schema&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;flask_graphql&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;GraphQLView&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se crea la clase Query que hereda de graphene ObjectType.&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Query&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ObjectType&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se define la descripcion&lt;/span&gt;
+
+    &lt;span class="n"&gt;hello&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Hello&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se define la funcion resolve_hello, se le pasa args, context e info.&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;resolve_hello&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;context&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;info&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;World&amp;#39;&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se define la funcion de la vista.&lt;/span&gt;
+
+&lt;span class="c1"&gt;#que se le pasa el esquema con la clase Query.&lt;/span&gt;
+
+&lt;span class="n"&gt;view_func&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;GraphQLView&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;as_view&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;graphql&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;schema&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;Schema&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;query&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;Query&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se crea la app como instancia de la clase Flask.&lt;/span&gt;
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Flask&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se define el url donde se le pasa la funcion de la vista&lt;/span&gt;
+
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_url_rule&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;view_func&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;view_func&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+
+    &lt;span class="c1"&gt;#Se ejecuta flask.&lt;/span&gt;
+
+    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al ejecutar el script:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/desarrollarunapicongraphqlenflask-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se consulta usando &lt;code&gt;curl&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl -H &amp;#39;Content-type: application/graphql&amp;#39; -d &amp;#39;{hello}&amp;#39; http://localhost:5000/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Y este devuelve:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;{&amp;quot;data&amp;quot;:{&amp;quot;hello&amp;quot;:&amp;quot;World&amp;quot;}}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Desde un script en python:&lt;/p&gt;
+&lt;p&gt;Instalación de librerías necesarias:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#pip3 install gql requests
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El script &lt;code&gt;cliente.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se importa json&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;json&lt;/span&gt;
+
+&lt;span class="c1"&gt;#se importa ggl&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;gql&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;gql&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Client&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;gql.transport.requests&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RequestsHTTPTransport&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#Se define el transport, se conecta el cliente.&lt;/span&gt;
+
+&lt;span class="n"&gt;transport&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RequestsHTTPTransport&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;http://localhost:5000/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;client&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Client&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;transport&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;transport&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#Se realiza una consulta buscando la  variable hello&lt;/span&gt;
+
+&lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gql&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{hello}&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+
+
+&lt;span class="c1"&gt;#muestra en pantalla la respuesta como un json.&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se ejecuta el script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;python3&lt;/span&gt; &lt;span class="n"&gt;cliente&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; 
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;hello&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;World&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En un &lt;a href="https://www.genbetadev.com/desarrollo-aplicaciones-moviles/por-que-deberiamos-abandonar-rest-y-empezar-a-usar-graphql-en-nuestras-apis"&gt;artículo en genbetadev comparan API Restful con GraphQL y por que es necesario dejar de usar API Restful.&lt;/a&gt; 
+En futuros artículos se ampliará el uso de GraphQL.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="Debian"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="GraphQL"></category><category term="Flask"></category><category term="Flask-graphql"></category></entry><entry><title>Obtener datos de eventos sismológicos de Funvisis con Python3 (segunda versión)</title><link href="https://ecrespo.github.io/obtener-datos-de-eventos-sismologicos-de-funvisis-con-python3-segunda-version.html" rel="alternate"></link><published>2017-06-24T11:00:00-04:00</published><updated>2017-06-24T11:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2017-06-24:/obtener-datos-de-eventos-sismologicos-de-funvisis-con-python3-segunda-version.html</id><summary type="html">&lt;p&gt;El primer artículo sobre &lt;a href="https://www.seraph.to/obtener-datos-de-eventos-sismologicos-de-funvisis-con-python.html"&gt;obtener los datos sismológicos de Funvisis con Python&lt;/a&gt;, se usó la librería &lt;code&gt;python-mechanize&lt;/code&gt;, en este caso se usará la librería &lt;code&gt;request&lt;/code&gt; y &lt;code&gt;Python 3.*&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;El código se muestra a continuación:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
 

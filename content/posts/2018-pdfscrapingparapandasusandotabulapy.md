@@ -24,9 +24,13 @@ Alianza para el gobierno Abierto.
 
 [https://youtu.be/QbGDoV_HoFY](https://youtu.be/QbGDoV_HoFY "https://youtu.be/QbGDoV_HoFY")
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QbGDoV_HoFY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 Iniciativas de sitios de Datos Abiertos.
 
 [https://youtu.be/oh3g-iYAaDo](https://youtu.be/oh3g-iYAaDo "https://youtu.be/oh3g-iYAaDo")
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/oh3g-iYAaDo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Que tal que pueda hacer un scrapping y de una usar [Pandas](https://www.seraph.to/tag/pandas.html) ([Introducción a pandas](https://www.seraph.to/introduccion-a-pandas.html)) para Ciencia de Datos.
 

@@ -31,7 +31,253 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Obtener cotización de bitcoin de coinmarketcap con Python</title><link href="https://ecrespo.github.io/obtener-cotizacion-de-bitcoin-de-coinmarketcap-con-python.html" rel="alternate"></link><published>2018-03-11T09:00:00-04:00</published><updated>2018-03-11T09:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2018-03-11:/obtener-cotizacion-de-bitcoin-de-coinmarketcap-con-python.html</id><summary type="html">&lt;p&gt;Este artículo mostrará dos formas de obtener la cotización en tiempo real de Bitcoin del sitio &lt;a href="https://coinmarketcap.com/"&gt;coinmarketcap&lt;/a&gt;, la primera forma es usando la librería request, la segunda es utilizando una librería de python para acceder al API de Coinmarketcap.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="Machine Learning"></category><category term="Scikit-Learn"></category><category term="Árbol de decisión"></category></entry><entry><title>Obtener cotización de criptomonedas y almacenarlas en un archivo csv por medio de pandas</title><link href="https://ecrespo.github.io/obtener-cotizacion-de-criptomonedas-y-almacenarlas-en-un-archivo-csv-por-medio-de-pandas.html" rel="alternate"></link><published>2018-03-11T10:00:00-04:00</published><updated>2018-03-11T10:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2018-03-11:/obtener-cotizacion-de-criptomonedas-y-almacenarlas-en-un-archivo-csv-por-medio-de-pandas.html</id><summary type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/obtener-cotizacion-de-bitcoin-de-coinmarketcap-con-python.html"&gt;artículo anterior&lt;/a&gt; se obtuvo la cotización de bitcoin del sitio coinmarketcap por medio de request o directamente de una librería que accede al API.&lt;/p&gt;
+&lt;p&gt;En este artículo se obtiene la información de las primeras 100 criptomonedas que cotizan en coinmarketcap, y se manejará dicha información por medio de …&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/obtener-cotizacion-de-bitcoin-de-coinmarketcap-con-python.html"&gt;artículo anterior&lt;/a&gt; se obtuvo la cotización de bitcoin del sitio coinmarketcap por medio de request o directamente de una librería que accede al API.&lt;/p&gt;
+&lt;p&gt;En este artículo se obtiene la información de las primeras 100 criptomonedas que cotizan en coinmarketcap, y se manejará dicha información por medio de pandas.  Luego de ordenar la información de las monedas se van a almacenar en un archivo csv.&lt;/p&gt;
+&lt;p&gt;Este artículo se basa en un artículo en inglés &lt;a href="http://blockxchain.org/2017/05/29/importing-altcoin-data-with-python-and-the-coinmarketcap-api/"&gt;Importing Altcoin Data with Python and the CoinmarketCap API&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Si quieren pueden repasar lo que pueden hacer con pandas revisando los siguientes artículos:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/introduccion-a-pandas.html"&gt;Introducción a Pandas&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.tutorialspoint.com/python_pandas/index.htm"&gt;Python Pandas&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A continuación el código en formato jupyter notebook:&lt;/p&gt;
+&lt;p&gt;In [1]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se importa coinmarketcap, json, pandas y time&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;coinmarketcap&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;json&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [2]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#SE instancia la clase Market y se consulta la cotización de ethereum.&lt;/span&gt;
+&lt;span class="n"&gt;market&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;coinmarketcap&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Market&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;coin&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;market&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ethereum&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [3]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se muestra el tipo de la variable coin&lt;/span&gt;
+&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coin&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Out[3]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;list&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [4]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se muestra que la lista tiene 1 elemento.&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coin&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [5]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se muestra el tipo del primer elemento de la lista&lt;/span&gt;
+&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coin&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Out[5]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;dict&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [6]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se muestra el primer elemento de la lista el cual es un diccionario&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coin&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;symbol&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ETH&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;price_btc&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;0.0758447&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;price_usd&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;725.008&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;cached&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;market_cap_usd&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;71145122811.0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;available_supply&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;98130121.0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;24h_volume_usd&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;1559710000.0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;percent_change_1h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;0.22&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;percent_change_24h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;6.39&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Ethereum&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ethereum&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;total_supply&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;98130121.0&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;rank&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;2&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;last_updated&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;1520813352&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;max_supply&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;percent_change_7d&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;-16.25&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [7]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se muestra los datos de la variable coin, identado, y ordenada las claves.&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dumps&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coin&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;indent&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sort_keys&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;24h_volume_usd&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;1559710000.0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;available_supply&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;98130121.0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;cached&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ethereum&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;last_updated&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;1520813352&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;market_cap_usd&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;71145122811.0&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;max_supply&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;null&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Ethereum&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;percent_change_1h&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;0.22&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;percent_change_24h&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;6.39&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;percent_change_7d&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-16.25&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;price_btc&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;0.0758447&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;price_usd&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;725.008&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;rank&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;symbol&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ETH&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;total_supply&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;98130121.0&amp;quot;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [8]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Ahora se usa panda series, se toma la cotización de ethereum y se guarda en &lt;/span&gt;
+&lt;span class="c1"&gt;#la variable ether&lt;/span&gt;
+&lt;span class="n"&gt;ether&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Series&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;market&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;ethereum&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [9]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se muestra el valor de la variable ether&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ether&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="n"&gt;h_volume_usd&lt;/span&gt;         &lt;span class="mf"&gt;1559710000.0&lt;/span&gt;
+&lt;span class="n"&gt;available_supply&lt;/span&gt;         &lt;span class="mf"&gt;98130121.0&lt;/span&gt;
+&lt;span class="n"&gt;cached&lt;/span&gt;                         &lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;span class="nb"&gt;id&lt;/span&gt;                         &lt;span class="n"&gt;ethereum&lt;/span&gt;
+&lt;span class="n"&gt;last_updated&lt;/span&gt;             &lt;span class="mi"&gt;1520813352&lt;/span&gt;
+&lt;span class="n"&gt;market_cap_usd&lt;/span&gt;        &lt;span class="mf"&gt;71145122811.0&lt;/span&gt;
+&lt;span class="n"&gt;max_supply&lt;/span&gt;                     &lt;span class="bp"&gt;None&lt;/span&gt;
+&lt;span class="n"&gt;name&lt;/span&gt;                       &lt;span class="n"&gt;Ethereum&lt;/span&gt;
+&lt;span class="n"&gt;percent_change_1h&lt;/span&gt;              &lt;span class="mf"&gt;0.22&lt;/span&gt;
+&lt;span class="n"&gt;percent_change_24h&lt;/span&gt;             &lt;span class="mf"&gt;6.39&lt;/span&gt;
+&lt;span class="n"&gt;percent_change_7d&lt;/span&gt;            &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;16.25&lt;/span&gt;
+&lt;span class="n"&gt;price_btc&lt;/span&gt;                 &lt;span class="mf"&gt;0.0758447&lt;/span&gt;
+&lt;span class="n"&gt;price_usd&lt;/span&gt;                   &lt;span class="mf"&gt;725.008&lt;/span&gt;
+&lt;span class="n"&gt;rank&lt;/span&gt;                              &lt;span class="mi"&gt;2&lt;/span&gt;
+&lt;span class="n"&gt;symbol&lt;/span&gt;                          &lt;span class="n"&gt;ETH&lt;/span&gt;
+&lt;span class="n"&gt;total_supply&lt;/span&gt;             &lt;span class="mf"&gt;98130121.0&lt;/span&gt;
+&lt;span class="n"&gt;dtype&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;object&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [10]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se muestra la descripción de la serie&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ether&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;describe&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;bound&lt;/span&gt; &lt;span class="n"&gt;method&lt;/span&gt; &lt;span class="n"&gt;NDFrame&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="n"&gt;h_volume_usd&lt;/span&gt;         &lt;span class="mf"&gt;1559710000.0&lt;/span&gt;
+&lt;span class="n"&gt;available_supply&lt;/span&gt;         &lt;span class="mf"&gt;98130121.0&lt;/span&gt;
+&lt;span class="n"&gt;cached&lt;/span&gt;                         &lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;span class="nb"&gt;id&lt;/span&gt;                         &lt;span class="n"&gt;ethereum&lt;/span&gt;
+&lt;span class="n"&gt;last_updated&lt;/span&gt;             &lt;span class="mi"&gt;1520813352&lt;/span&gt;
+&lt;span class="n"&gt;market_cap_usd&lt;/span&gt;        &lt;span class="mf"&gt;71145122811.0&lt;/span&gt;
+&lt;span class="n"&gt;max_supply&lt;/span&gt;                     &lt;span class="bp"&gt;None&lt;/span&gt;
+&lt;span class="n"&gt;name&lt;/span&gt;                       &lt;span class="n"&gt;Ethereum&lt;/span&gt;
+&lt;span class="n"&gt;percent_change_1h&lt;/span&gt;              &lt;span class="mf"&gt;0.22&lt;/span&gt;
+&lt;span class="n"&gt;percent_change_24h&lt;/span&gt;             &lt;span class="mf"&gt;6.39&lt;/span&gt;
+&lt;span class="n"&gt;percent_change_7d&lt;/span&gt;            &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;16.25&lt;/span&gt;
+&lt;span class="n"&gt;price_btc&lt;/span&gt;                 &lt;span class="mf"&gt;0.0758447&lt;/span&gt;
+&lt;span class="n"&gt;price_usd&lt;/span&gt;                   &lt;span class="mf"&gt;725.008&lt;/span&gt;
+&lt;span class="n"&gt;rank&lt;/span&gt;                              &lt;span class="mi"&gt;2&lt;/span&gt;
+&lt;span class="n"&gt;symbol&lt;/span&gt;                          &lt;span class="n"&gt;ETH&lt;/span&gt;
+&lt;span class="n"&gt;total_supply&lt;/span&gt;             &lt;span class="mf"&gt;98130121.0&lt;/span&gt;
+&lt;span class="n"&gt;dtype&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [11]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se guardan otras monedas alternativas en el arreglo de pandas&lt;/span&gt;
+&lt;span class="n"&gt;wowcoin&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Series&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;market&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;wowcoin&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;bitcoin&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Series&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;market&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;bitcoin&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;coinArray&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;ether&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;bitcoin&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;wowcoin&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [12]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se muestra los datos del arreglo panda&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coinArray&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+         &lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="n"&gt;h_volume_usd&lt;/span&gt; &lt;span class="n"&gt;available_supply&lt;/span&gt;  &lt;span class="n"&gt;cached&lt;/span&gt; &lt;span class="n"&gt;last_updated&lt;/span&gt; &lt;span class="n"&gt;market_cap_usd&lt;/span&gt;  \
+&lt;span class="nb"&gt;id&lt;/span&gt;                                                                             
+&lt;span class="n"&gt;ethereum&lt;/span&gt;   &lt;span class="mf"&gt;1559710000.0&lt;/span&gt;       &lt;span class="mf"&gt;98130121.0&lt;/span&gt;    &lt;span class="bp"&gt;True&lt;/span&gt;   &lt;span class="mi"&gt;1520813352&lt;/span&gt;  &lt;span class="mf"&gt;71145122811.0&lt;/span&gt;   
+&lt;span class="n"&gt;bitcoin&lt;/span&gt;    &lt;span class="mf"&gt;6292920000.0&lt;/span&gt;       &lt;span class="mf"&gt;16913662.0&lt;/span&gt;   &lt;span class="bp"&gt;False&lt;/span&gt;   &lt;span class="mi"&gt;1520813365&lt;/span&gt;   &lt;span class="mi"&gt;162866556360&lt;/span&gt;   
+&lt;span class="n"&gt;wowcoin&lt;/span&gt;         &lt;span class="mf"&gt;106.405&lt;/span&gt;             &lt;span class="bp"&gt;None&lt;/span&gt;   &lt;span class="bp"&gt;False&lt;/span&gt;   &lt;span class="mi"&gt;1520813347&lt;/span&gt;           &lt;span class="bp"&gt;None&lt;/span&gt;   
+
+          &lt;span class="n"&gt;max_supply&lt;/span&gt;      &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="n"&gt;percent_change_1h&lt;/span&gt; &lt;span class="n"&gt;percent_change_24h&lt;/span&gt;  \
+&lt;span class="nb"&gt;id&lt;/span&gt;                                                                    
+&lt;span class="n"&gt;ethereum&lt;/span&gt;        &lt;span class="bp"&gt;None&lt;/span&gt;  &lt;span class="n"&gt;Ethereum&lt;/span&gt;              &lt;span class="mf"&gt;0.22&lt;/span&gt;               &lt;span class="mf"&gt;6.39&lt;/span&gt;   
+&lt;span class="n"&gt;bitcoin&lt;/span&gt;   &lt;span class="mf"&gt;21000000.0&lt;/span&gt;   &lt;span class="n"&gt;Bitcoin&lt;/span&gt;              &lt;span class="mf"&gt;0.42&lt;/span&gt;               &lt;span class="mf"&gt;9.61&lt;/span&gt;   
+&lt;span class="n"&gt;wowcoin&lt;/span&gt;         &lt;span class="bp"&gt;None&lt;/span&gt;   &lt;span class="n"&gt;Wowcoin&lt;/span&gt;              &lt;span class="mf"&gt;3.01&lt;/span&gt;               &lt;span class="mf"&gt;4.04&lt;/span&gt;   
+
+         &lt;span class="n"&gt;percent_change_7d&lt;/span&gt;    &lt;span class="n"&gt;price_btc&lt;/span&gt;     &lt;span class="n"&gt;price_usd&lt;/span&gt;  &lt;span class="n"&gt;rank&lt;/span&gt; &lt;span class="n"&gt;symbol&lt;/span&gt;  \
+&lt;span class="nb"&gt;id&lt;/span&gt;                                                                   
+&lt;span class="n"&gt;ethereum&lt;/span&gt;            &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;16.25&lt;/span&gt;    &lt;span class="mf"&gt;0.0758447&lt;/span&gt;       &lt;span class="mf"&gt;725.008&lt;/span&gt;     &lt;span class="mi"&gt;2&lt;/span&gt;    &lt;span class="n"&gt;ETH&lt;/span&gt;   
+&lt;span class="n"&gt;bitcoin&lt;/span&gt;             &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;15.97&lt;/span&gt;          &lt;span class="mf"&gt;1.0&lt;/span&gt;       &lt;span class="mf"&gt;9629.29&lt;/span&gt;     &lt;span class="mi"&gt;1&lt;/span&gt;    &lt;span class="n"&gt;BTC&lt;/span&gt;   
+&lt;span class="n"&gt;wowcoin&lt;/span&gt;              &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;78.7&lt;/span&gt;  &lt;span class="mf"&gt;0.000000002&lt;/span&gt;  &lt;span class="mf"&gt;0.0000163877&lt;/span&gt;  &lt;span class="mi"&gt;1467&lt;/span&gt;    &lt;span class="n"&gt;WOW&lt;/span&gt;   
+
+         &lt;span class="n"&gt;total_supply&lt;/span&gt;  
+&lt;span class="nb"&gt;id&lt;/span&gt;                     
+&lt;span class="n"&gt;ethereum&lt;/span&gt;   &lt;span class="mf"&gt;98130121.0&lt;/span&gt;  
+&lt;span class="n"&gt;bitcoin&lt;/span&gt;    &lt;span class="mf"&gt;16913662.0&lt;/span&gt;  
+&lt;span class="n"&gt;wowcoin&lt;/span&gt;          &lt;span class="bp"&gt;None&lt;/span&gt;  
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [13]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Ahora se extrae las cotizaciones de 100 cryptomonedas&lt;/span&gt;
+&lt;span class="n"&gt;coins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;market&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [14]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#El tamaño de la lista es 100&lt;/span&gt;
+&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coins&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Out[14]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [15]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se almacena las 100 monedas en un dataframe de pandas a partir de una serie panda&lt;/span&gt;
+&lt;span class="n"&gt;coinArray2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Series&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coins&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)])&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;    
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [17]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Obtengo los primeros 3 criptomonedas&lt;/span&gt;
+&lt;span class="n"&gt;coinArray2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Out[17]:&lt;/p&gt;
+&lt;p&gt;|   ID    | 24h_volume_usd | available_supply | cached | last_updated | market_cap_usd | max_supply  | name          | percent_change_1h | percent_change_24h |percent_change_7d |  price_btc | price_usd |  rank | symbol | total_supply | 
+| :------: | :------:       | :-----:           | :-----: | :------:     | :-----:         | :-------:    | :-----:       | :-----:           | :-------:           | :------:         | :-----:     | :-------:  | :------:       | :-----:       |
+| bitcoin | 6292920000.0   | 16913662.0       | False  | 1520813365   | 162866556360   | 21000000.0  | Bitcoin  0.42  | 9.61              | -15.97             | 1.0              | 9629.2     | 1         | BTC           | 16913662.0   |
+|ethereum | 1559710000.0   | 98130121.0       | False  | 1520813352   | 71145122811.0  | None        | Ethereum 0.22 | 6.39              | -16.25             | 0.0758447        | 725.008    | 2         | ETH            | 98130121.0   |
+|ripple   | 471767000.0    | 39091956706.0    | False  | 1520813341   | 32612386698.0  | 100000000000| Ripple 0.33   | 5.49              | -14.76             | 0.00008727       | 0.834248   | 3         | XRP            | 99992520283.0|&lt;/p&gt;
+&lt;p&gt;In [18]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se define almacenar los datos en un archivo csv que maneje el tiempo en que se creo el&lt;/span&gt;
+&lt;span class="c1"&gt;#archivo como nombre del archivo&lt;/span&gt;
+&lt;span class="n"&gt;location&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Data/&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;.csv&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [19]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Se almacenan los datos en formato csv&lt;/span&gt;
+&lt;span class="n"&gt;coinArray2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In [20]:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#Ahora se repiten las instrucciones anteriores con 3 ciclos de cada 2 min&lt;/span&gt;
+&lt;span class="n"&gt;coins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;market&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ticker&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;coinArray&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Series&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;coins&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)])&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;location&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Data/&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;.csv&amp;#39;&lt;/span&gt;
+    &lt;span class="n"&gt;coinArray&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mi"&gt;60&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al terminar de ejecutar el programa se tienen 4 archivos en formato csv:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/obtenercotizaciondecriptomonedasyalmacenarlasenunarchivocsvpormediodepandas-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;En siguientes artículos se utilizarán los datos almacenados para hacer analítica de datos con Pandas.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Python"></category><category term="Pandas"></category><category term="CSV"></category><category term="Coinmarketcap"></category><category term="Blockchain"></category><category term="Bitcoin"></category></entry><entry><title>Obtener cotización de bitcoin de coinmarketcap con Python</title><link href="https://ecrespo.github.io/obtener-cotizacion-de-bitcoin-de-coinmarketcap-con-python.html" rel="alternate"></link><published>2018-03-11T09:00:00-04:00</published><updated>2018-03-11T09:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2018-03-11:/obtener-cotizacion-de-bitcoin-de-coinmarketcap-con-python.html</id><summary type="html">&lt;p&gt;Este artículo mostrará dos formas de obtener la cotización en tiempo real de Bitcoin del sitio &lt;a href="https://coinmarketcap.com/"&gt;coinmarketcap&lt;/a&gt;, la primera forma es usando la librería request, la segunda es utilizando una librería de python para acceder al API de Coinmarketcap.&lt;/p&gt;
 &lt;p&gt;Coinmarketcap es un sitio que muestra la capitalización de las distintas …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Este artículo mostrará dos formas de obtener la cotización en tiempo real de Bitcoin del sitio &lt;a href="https://coinmarketcap.com/"&gt;coinmarketcap&lt;/a&gt;, la primera forma es usando la librería request, la segunda es utilizando una librería de python para acceder al API de Coinmarketcap.&lt;/p&gt;
 &lt;p&gt;Coinmarketcap es un sitio que muestra la capitalización de las distintas criptomonedas existentes en tiempo real, a continuación se muestra una captura de pantalla del sitio:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="./images/obtenercotizaciondebitcoindecoinmarketcapconpython-1.png"&gt;&lt;/p&gt;
@@ -141,7 +387,7 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Numpy"></category><category term="Python"></category><category term="Coinmarketcap"></category><category term="Request"></category></entry><entry><title>Funciones de activación para un perceptron</title><link href="https://ecrespo.github.io/funciones-de-activacion-para-un-perceptron.html" rel="alternate"></link><published>2018-02-13T09:00:00-04:00</published><updated>2018-02-13T09:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2018-02-13:/funciones-de-activacion-para-un-perceptron.html</id><summary type="html">&lt;p&gt;En el artículo (&lt;a href="https://www.seraph.to/introduccion-al-perceptron-con-python.html"&gt;introducción al perceptron&lt;/a&gt;), se muestra el perceptron con la función de activación que en la figura es una onda cuadrada, pero puede ser también otro tipo de función.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Numpy"></category><category term="Python"></category><category term="Coinmarketcap"></category><category term="Request"></category><category term="Blockchain"></category><category term="Bitcoin"></category></entry><entry><title>Funciones de activación para un perceptron</title><link href="https://ecrespo.github.io/funciones-de-activacion-para-un-perceptron.html" rel="alternate"></link><published>2018-02-13T09:00:00-04:00</published><updated>2018-02-13T09:00:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2018-02-13:/funciones-de-activacion-para-un-perceptron.html</id><summary type="html">&lt;p&gt;En el artículo (&lt;a href="https://www.seraph.to/introduccion-al-perceptron-con-python.html"&gt;introducción al perceptron&lt;/a&gt;), se muestra el perceptron con la función de activación que en la figura es una onda cuadrada, pero puede ser también otro tipo de función.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="./images/funcionesdeactivacionparaunperceptron-1.png"&gt; &lt;/p&gt;
 &lt;p&gt;En el artículo  (&lt;a href="https://www.seraph.to/construir-una-red-neuronal-en-pocos-minutos.html"&gt;construir una red neuronal en pocos minutos&lt;/a&gt;), se muestra la función de activación llamada sigmoide.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="./images/funcionesdeactivacionparaunperceptron-2.png"&gt; &lt;/p&gt;

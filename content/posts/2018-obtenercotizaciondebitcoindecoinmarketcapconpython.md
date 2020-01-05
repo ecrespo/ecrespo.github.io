@@ -1,7 +1,7 @@
 Title: Obtener cotización de bitcoin de coinmarketcap con Python  
 Date: 2018-03-11 09:00  
 Category: Tutorial Python  
-Tags: Numpy,Python,Coinmarketcap,Request  
+Tags: Numpy,Python,Coinmarketcap,Request,Blockchain,Bitcoin
 lang: es  
 translation: true  
 

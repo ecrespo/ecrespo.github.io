@@ -1,0 +1,1062 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Existe el área de análisis de redes sociales, puedes hacer gráficos de tendencias, lograr cual fue el origen de un tweet. La idea es usar la librería tweepy para conectase a Twitter y de allí capturar los tweets para luego realizar un análisis de sentimiento y graficar el resultado. El …" />
+<meta name="keywords" content="Python, TextBlob, Tweepy, Análisis de Sentimiento, Twitter">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Análisis de Sentimiento de tweets con Python, TextBlob y tweepy"/>
+<meta property="og:description" content="Existe el área de análisis de redes sociales, puedes hacer gráficos de tendencias, lograr cual fue el origen de un tweet. La idea es usar la librería tweepy para conectase a Twitter y de allí capturar los tweets para luego realizar un análisis de sentimiento y graficar el resultado. El …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/analisis-de-sentimiento-de-tweets-con-python-textblob-y-tweepy.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-06-10 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="TextBlob"/>
+<meta property="article:tag" content="Tweepy"/>
+<meta property="article:tag" content="Análisis de Sentimiento"/>
+<meta property="article:tag" content="Twitter"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Análisis de Sentimiento de tweets con Python, TextBlob y tweepy</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pandas.html">
+            Pandas
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/memcached.html">
+            memcached
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/aiohttp.html">
+            aiohttp
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/entorno-desarrollo.html">
+            Entorno Desarrollo
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">25</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/asincrono.html">
+            asincrono
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cerberus.html">
+            Cerberus
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">276</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">51</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de Datos
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-rest.html">
+            API rest
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">18</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="analisis-de-sentimiento-de-tweets-con-python-textblob-y-tweepy">Análisis de Sentimiento de tweets con Python, TextBlob y tweepy</h1>
+    <p>
+          Posted on dom 10 junio 2018 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Existe el área de análisis de redes sociales, puedes hacer gráficos de tendencias, lograr cual fue el origen de un tweet. La idea es usar la librería tweepy para conectase a Twitter y de allí capturar los tweets para luego realizar un análisis de sentimiento y graficar el resultado.</p>
+<p>El análisis de sentimiento se refiere al uso de procesamiento de lenguaje natural, análisis de texto y lingüistica computacional para identificar y extraer información subjetiva de los recursos (más información en <a href="https://es.wikipedia.org/wiki/An%C3%A1lisis_de_sentimiento">wikipedia</a>).</p>
+<p>Se puede realizar análisis de sentimiento a cualquier texto, puede ser de correos, de páginas web, de publicaciones en redes sociales como twitter, facebook, google+, entre otros.  Con ello se puede lograr un aproximado de la evaluación emocional que tiene un tema o persona en algún momento en las redes sociales o contenidos evaluados.</p>
+<p>La idea es obtener el tráfico de twitter sobre un tema o persona, aplicarle análisis de sentimiento y graficar los resultados.</p>
+<p>Este artículo se basa en un artículo en inglés publicado en freecodecamp con título <a href="https://medium.freecodecamp.org/basic-data-analysis-on-twitter-with-python-251c2a85062e">Basic data analysis on Twitter with Python</a>. Este artículo se desarrolla una aplicación gráfica en TK para obtener la información y luego realizar la captura, cálculos y gráficos. El código fuente de la aplicación del artículo se encuentra en <a href="https://github.com/Fidel-Willis/Twitter-Data/blob/master/twitterData.py">github</a>.</p>
+<p>Para tener acceso al API de twitter se tiene que crear una cuenta en la <a href="https://apps.twitter.com/">página para las aplicaciones que lo requieran</a>.</p>
+<p>Para autenticarse se usará el siguiente código:</p>
+<div class="highlight"><pre><span></span>consumer_key = &#39;consumer key&#39;
+consumer_secret = &#39;consumer secrets&#39;
+access_token = &#39;access token&#39;
+access_token_secret = &#39;access token secret&#39;
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
+api = tweepy.API(auth)
+</pre></div>
+
+
+<p>En este caso se usará <code>jupyter lab</code> para mostrar la aplicación con ajustes en el código para su reutilización, por ejemplo, que realice el análisis en Español o Inglés.</p>
+<p>La librería a usar será <code>tweepy</code>, la librería para análisis de texto <code>TextBlob</code> y <code>matplotlib</code>.</p>
+<p>Para instalar <code>tweepy</code> se usará <code>pip3</code>:</p>
+<div class="highlight"><pre><span></span>pip3 install tweepy textblob
+</pre></div>
+
+
+<p>Revisemos primero las tendencias en twitter para Valencia (Venezuela), a continuación una imagen de las tendencias.</p>
+<p><img alt="" src="./images/analisisdesentimientodetweetsconpythontextblobytweepy-1.png"></p>
+<p>Se buscará el análisis de sentimiento de la tendencia Rafael Nadal, se buscará en 200 tweets y en español.</p>
+<p>A continuación el código fuente:</p>
+<p>El código fuente en el repositorio de gitlab lo pueden ver en el <a href="https://gitlab.com/mangoosta/articulos-cienciasdedatos/blob/master/tweetanalitica.ipynb">enlace</a>.</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+
+
+<span class="c1">#Se importa la librería tweepy</span>
+
+<span class="kn">import</span> <span class="nn">tweepy</span>
+
+<span class="c1">#Se importa sleep, datetime, TextBlob y matplotlib</span>
+
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">textblob</span> <span class="kn">import</span> <span class="n">TextBlob</span> 
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> 
+
+
+
+<span class="c1">#Se define las variables para el acceso al API de twitter</span>
+
+<span class="n">consumer_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="n">consumer_secret</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="n">access_token</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="n">access_token_secret</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+
+
+<span class="c1">#Se autentica en twitter</span>
+
+<span class="n">auth</span> <span class="o">=</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">OAuthHandler</span><span class="p">(</span><span class="n">consumer_key</span><span class="p">,</span> <span class="n">consumer_secret</span><span class="p">)</span>
+
+<span class="n">auth</span><span class="o">.</span><span class="n">set_access_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">access_token_secret</span><span class="p">)</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">API</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+
+
+
+<span class="c1">#se verifica que el usuario conectado en twitter es de uno</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">me</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+
+
+<span class="c1">#Se pregunta por la palabra a preguntar</span>
+
+<span class="n">palabra</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Buscar: &quot;</span><span class="p">)</span>
+
+
+
+<span class="c1">#Se define la cantida de tweets a capturar</span>
+
+<span class="n">numero_de_Tweets</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;Número de tweets a capturar: &quot;</span><span class="p">))</span>
+
+
+
+<span class="c1">#Se define el idioma de los tweets a analizar</span>
+
+<span class="n">lenguaje</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Idioma [es/en]:&quot;</span><span class="p">)</span>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">ObtenerTweets</span><span class="p">(</span><span class="n">palabra</span><span class="o">=</span><span class="s2">&quot;Trump&quot;</span><span class="p">,</span><span class="n">times</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">leguanje</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">):</span>
+
+    <span class="c1">#Se define las listas que capturan la popularidad</span>
+
+    <span class="n">popularidad_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">numeros_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">numero</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">tweet</span> <span class="ow">in</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">Cursor</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">search</span><span class="p">,</span> <span class="n">palabra</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lenguaje</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">numero_de_Tweets</span><span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1">#Se toma el texto, se hace el analisis de sentimiento</span>
+
+            <span class="c1">#y se agrega el resultado a las listas</span>
+
+            <span class="n">analisis</span> <span class="o">=</span> <span class="n">TextBlob</span><span class="p">(</span><span class="n">tweet</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">analisis</span> <span class="o">=</span> <span class="n">analisis</span><span class="o">.</span><span class="n">sentiment</span>
+
+            <span class="n">popularidad</span> <span class="o">=</span> <span class="n">analisis</span><span class="o">.</span><span class="n">polarity</span>
+
+            <span class="n">popularidad_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">popularidad</span><span class="p">)</span>
+
+            <span class="n">numeros_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numero</span><span class="p">)</span>
+
+            <span class="n">numero</span> <span class="o">=</span> <span class="n">numero</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+
+        <span class="k">except</span> <span class="n">tweepy</span><span class="o">.</span><span class="n">TweepError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+            <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span>
+
+
+
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">numeros_list</span><span class="p">,</span><span class="n">popularidad_list</span><span class="p">,</span><span class="n">numero</span><span class="p">)</span>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">GraficarDatos</span><span class="p">(</span><span class="n">numeros_list</span><span class="p">,</span><span class="n">popularidad_list</span><span class="p">,</span><span class="n">numero</span><span class="p">):</span>
+
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">numeros_list</span><span class="p">,</span> <span class="n">popularidad_list</span><span class="p">)</span>
+
+    <span class="n">popularidadPromedio</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">popularidad_list</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">popularidad_list</span><span class="p">))</span>
+
+    <span class="n">popularidadPromedio</span> <span class="o">=</span> <span class="s2">&quot;{0:.0f}%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">popularidadPromedio</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span>
+
+    <span class="n">time</span>  <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;A : %H:%M</span><span class="se">\n</span><span class="s2"> El: %m-</span><span class="si">%d</span><span class="s2">-%y&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> 
+
+             <span class="s2">&quot;Sentimiento promedio:  &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">popularidadPromedio</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">time</span><span class="p">,</span> 
+
+             <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> 
+
+             <span class="n">bbox</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> 
+
+                         <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> 
+
+                         <span class="n">boxstyle</span><span class="o">=</span><span class="s1">&#39;square, pad = 1&#39;</span><span class="p">))</span>
+
+
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Sentimientos sobre &quot;</span> <span class="o">+</span> <span class="n">palabra</span> <span class="o">+</span> <span class="s2">&quot; en twitter&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Numero de tweets&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Sentimiento&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+
+
+
+<span class="n">numeros_list</span><span class="p">,</span><span class="n">popularidad_list</span><span class="p">,</span><span class="n">numero</span> <span class="o">=</span> <span class="n">ObtenerTweets</span><span class="p">(</span><span class="n">palabra</span><span class="p">,</span><span class="n">numero_de_Tweets</span><span class="p">,</span><span class="n">lenguaje</span><span class="p">)</span>
+
+<span class="n">GraficarDatos</span><span class="p">(</span><span class="n">numeros_list</span><span class="p">,</span><span class="n">popularidad_list</span><span class="p">,</span><span class="n">numero</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Al ejecutar el programa se tiene la siguiente gráfica.</p>
+<p><img alt="" src="./images/analisisdesentimientodetweetsconpythontextblobytweepy-2.png"></p>
+<p>Para el caso de Nadal, tiene un valor promedio positivo, habrá casos donde el sentimiento sea de un valor negativo, pero para este caso, lo mejor es ampliar la cantidad de tweets a capturar para tener una mejor aproximación del sentimiento de la gente de lo que habla en twitter de Nadal.</p>
+<p>Sí tienes alguna pregunta u observación, puedes hacerlo en los comentarios del post.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/textblob.html">TextBlob</a>
+      <a href="https://ecrespo.github.io/tag/tweepy.html">Tweepy</a>
+      <a href="https://ecrespo.github.io/tag/analisis-de-sentimiento.html">Análisis de Sentimiento</a>
+      <a href="https://ecrespo.github.io/tag/twitter.html">Twitter</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=An%C3%A1lisis%20de%20Sentimiento%20de%20tweets%20con%20Python%2C%20TextBlob%20y%20tweepy&url=https%3A//ecrespo.github.io/analisis-de-sentimiento-de-tweets-con-python-textblob-y-tweepy.html&hashtags=python,textblob,tweepy,analisis-de-sentimiento,twitter" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/analisis-de-sentimiento-de-tweets-con-python-textblob-y-tweepy.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/analisis-de-sentimiento-de-tweets-con-python-textblob-y-tweepy.html&title=An%C3%A1lisis%20de%20Sentimiento%20de%20tweets%20con%20Python%2C%20TextBlob%20y%20tweepy&summary=Existe%20el%20%C3%A1rea%20de%20an%C3%A1lisis%20de%20redes%20sociales%2C%20puedes%20hacer%20gr%C3%A1ficos%20de%20tendencias%2C%20lograr%20cual%20fue%20el%20origen%20de%20un%20tweet.%20La%20idea%20es%20usar%20la%20librer%C3%ADa%20tweepy%20para%20conectase%20a%20Twitter%20y%20de%20all%C3%AD%20capturar%20los%20tweets%20para%20luego%20realizar%20un%20an%C3%A1lisis%20de%20sentimiento%20y%20graficar%20el%20resultado.%0AEl%20%E2%80%A6&source=https%3A//ecrespo.github.io/analisis-de-sentimiento-de-tweets-con-python-textblob-y-tweepy.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=An%C3%A1lisis%20de%20Sentimiento%20de%20tweets%20con%20Python%2C%20TextBlob%20y%20tweepy&amp;body=https%3A//ecrespo.github.io/analisis-de-sentimiento-de-tweets-con-python-textblob-y-tweepy.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/como-obtener-datos-financieros-de-quandl-con-python-y-pandas.html" title="Como obtener datos Financieros de Quandl con Python y Pandas">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/visualizacion-de-arbol-de-decision.html" title="Visualización de Árbol de decisión">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/mostrar-tweets-en-tiempo-real-con-twython-y-el-api-stream-de-twitter.html">Mostrar tweets en tiempo real con twython y el API Stream de Twitter</a></li>
+      <li><a href="https://ecrespo.github.io/probando-la-libreria-twython-para-twitter.html">Probando la librería twython para twitter</a></li>
+      <li><a href="https://ecrespo.github.io/descubriendo-trending-topics-de-twitter-con-twython-y-python.html">Descubriendo Trending Topics de Twitter con twython y python</a></li>
+      <li><a href="https://ecrespo.github.io/utilizando-el-api-de-stream-de-twitter-con-python-y-tweetstream-parte-1.html">Utilizando el API de Stream de Twitter con Python y tweetstream. Parte 1.</a></li>
+      <li><a href="https://ecrespo.github.io/descubriendo-trending-topics-de-twitter-con-python-twitter.html">Descubriendo trending topics de twitter con python-twitter.</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

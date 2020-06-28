@@ -17,13 +17,13 @@ Antes de empezar con el código, unas aclaraciones:
 
 * Este script y artículo se basa en el artículo en ingles [de descargas de los libros de Springer, usando Python](https://towardsdatascience.com/download-all-free-textbooks-from-springer-using-python-bd0b10e0ccc).
 * Los libros que descarga el script se encuentran en el artículo de descargas dedicadas a [Data Science y Machine Learning](https://towardsdatascience.com/springer-has-released-65-machine-learning-and-data-books-for-free-961f8181f189).
-* Investigando un poco los libros se podrán descargar hasta finales de Julio por lo que leí en [Hiptertextual](https://hipertextual.com/2020/04/springer-libros-gratis-cuarentena?utm_source=dlvr.it&utm_medium=socialnetworks&utm_campaign=facebook&fbclid=IwAR2SMKZmQOt6soAjxvZMi442lXH1mTn8GDVZ_6AFW_cqFZr-luRu1PuhHAI)
+* Investigando un poco los libros se podrán descargar hasta finales de Julio por lo que leí en [Hipertextual](https://hipertextual.com/2020/04/springer-libros-gratis-cuarentena?utm_source=dlvr.it&utm_medium=socialnetworks&utm_campaign=facebook&fbclid=IwAR2SMKZmQOt6soAjxvZMi442lXH1mTn8GDVZ_6AFW_cqFZr-luRu1PuhHAI)
 * Así que el script a continuación  dejará de funcionar luego que la editorial los bloquee para descarga gratis. Si quedan libros que pueden descargarse luego de la fecha, es responsabilidad de la editorial (Springer).
 
 
 Para utilizar el script es necesario tener Python 3.7 o superior e instalado request y wget:
 
-```bash 
+```bash
 pip install request wget
 ```
 

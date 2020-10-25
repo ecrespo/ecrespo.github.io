@@ -1,0 +1,929 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En artículos anteriores se ha tocado el tema de una base de datos mongodb con python, ahora en esté artículo se tocará el tema de un archivo binario que almacene documentos JSON en vez de usar un servidor mongodb. Lo primero que se hará es crear un archivo con extensión …" />
+<meta name="keywords" content="Debian, Python, Ubuntu, Mongodb">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Escritura y lectura de un archivo con formato bson usando Python"/>
+<meta property="og:description" content="En artículos anteriores se ha tocado el tema de una base de datos mongodb con python, ahora en esté artículo se tocará el tema de un archivo binario que almacene documentos JSON en vez de usar un servidor mongodb. Lo primero que se hará es crear un archivo con extensión …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/escritura-y-lectura-de-un-archivo-con-formato-bson-usando-python.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2015-12-13 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Mongodb"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Escritura y lectura de un archivo con formato bson usando Python</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">288</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/genson.html">
+            Genson
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/streamlit.html">
+            streamlit
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="escritura-y-lectura-de-un-archivo-con-formato-bson-usando-python">Escritura y lectura de un archivo con formato bson usando Python</h1>
+    <p>
+          Posted on dom 13 diciembre 2015 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>En artículos anteriores se ha tocado <a href="https://www.seraph.to/tag/mongodb.html">el tema de una base de datos mongodb con python</a>, ahora en esté artículo se tocará el tema de un archivo binario que almacene documentos JSON en vez de usar un servidor mongodb.</p>
+<p>Lo primero que se hará es crear un archivo con extensión bson donde se guardará un diccionario (json) con datos aleatorios y luego se busca la información del archivo.</p>
+<p>Se tiene que tener instalado la libería bson para python:</p>
+<div class="highlight"><pre><span></span><span class="err">apt-get install python-bson python3-bson</span>
+</pre></div>
+
+
+<p>Escribir en un archivo <code>bson</code>:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="c1">#Se importa el módulo bson</span>
+
+<span class="kn">import</span> <span class="nn">bson</span>
+
+<span class="c1">#Se abre el archivo prueba.bson para escritura y binario</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;prueba.bson&quot;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+
+<span class="c1">#Se intenta guardando un rango de valores del 1 al 99 decodificandolo en formato bson</span>
+
+<span class="k">try</span><span class="p">:</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">):</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bson</span><span class="o">.</span><span class="n">BSON</span><span class="o">.</span><span class="n">encode</span><span class="p">({</span><span class="s2">&quot;dato&quot;</span><span class="p">:</span><span class="n">i</span><span class="p">}))</span>
+
+<span class="k">finally</span><span class="p">:</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Al ejecutar el script se puede ver con un <code>ls</code> que el archivo <code>pruebas.bson</code> se ha creado y tiene datos dentro del mismo:</p>
+<div class="highlight"><pre><span></span><span class="err">ls -l prueba.bson</span>
+<span class="err">-rw-r--r-- 1 ernesto ernesto 1485 dic 13 12:16 prueba.bson</span>
+</pre></div>
+
+
+<p>El código de lectura se muestra a continuación:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="c1">#Se importa la libería bson</span>
+
+<span class="kn">import</span> <span class="nn">bson</span>
+
+<span class="c1">#Se abre el archivo prueba.bson en modo lectura y binario</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;prueba.bson&quot;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+
+<span class="c1">#Se extrae la información almacenada y se decodifica el bson</span>
+
+<span class="n">resultado</span> <span class="o">=</span> <span class="n">bson</span><span class="o">.</span><span class="n">decode_all</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="c1">#Se imprime en pantalla la lista</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="n">resultado</span><span class="p">)</span>
+</pre></div>
+
+
+<p>El resultado de ejecutar el script se muestra a continuación:</p>
+<div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">lectura</span><span class="o">.</span><span class="n">py</span>
+
+<span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">13</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">15</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">16</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">17</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">19</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">21</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">23</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">24</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">26</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">27</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">28</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">29</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">31</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">33</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">34</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">36</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">37</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">38</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">39</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">41</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">43</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">44</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">45</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">46</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">47</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">48</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">49</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">51</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">52</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">53</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">54</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">55</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">56</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">57</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">58</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">59</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">61</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">62</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">63</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">64</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">65</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">66</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">67</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">68</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">69</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">70</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">71</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">72</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">73</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">74</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">75</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">76</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">77</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">78</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">79</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">81</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">82</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">83</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">84</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">85</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">86</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">87</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">88</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">89</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">90</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">91</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">92</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">93</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">94</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">95</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">96</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">97</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">98</span><span class="p">},</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;dato&#39;</span><span class="p">:</span> <span class="mi">99</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>Devuelve una lista de diccionarios(json) con los datos almacenados en el archivo.</p>
+<p>El archivo binario contiene algo como lo siguiente:</p>
+<p><img alt="" src="./images/escrituraylecturadeunarchivoconformatobsonusandopython-1.png"></p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/tag/mongodb.html">Mongodb</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Escritura%20y%20lectura%20de%20un%20archivo%20con%20formato%20bson%20usando%20Python&url=https%3A//ecrespo.github.io/escritura-y-lectura-de-un-archivo-con-formato-bson-usando-python.html&hashtags=debian,python,ubuntu,mongodb" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/escritura-y-lectura-de-un-archivo-con-formato-bson-usando-python.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/escritura-y-lectura-de-un-archivo-con-formato-bson-usando-python.html&title=Escritura%20y%20lectura%20de%20un%20archivo%20con%20formato%20bson%20usando%20Python&summary=En%20art%C3%ADculos%20anteriores%20se%20ha%20tocado%20el%20tema%20de%20una%20base%20de%20datos%20mongodb%20con%20python%2C%20ahora%20en%20est%C3%A9%20art%C3%ADculo%20se%20tocar%C3%A1%20el%20tema%20de%20un%20archivo%20binario%20que%20almacene%20documentos%20JSON%20en%20vez%20de%20usar%20un%20servidor%20mongodb.%0ALo%20primero%20que%20se%20har%C3%A1%20es%20crear%20un%20archivo%20con%20extensi%C3%B3n%20%E2%80%A6&source=https%3A//ecrespo.github.io/escritura-y-lectura-de-un-archivo-con-formato-bson-usando-python.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Escritura%20y%20lectura%20de%20un%20archivo%20con%20formato%20bson%20usando%20Python&amp;body=https%3A//ecrespo.github.io/escritura-y-lectura-de-un-archivo-con-formato-bson-usando-python.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/hacer-traducciones-con-google-translate-desde-python.html" title="Hacer traducciones con google translate desde python">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/volviendo-a-lo-basico-poo-en-python-parte-1.html" title="Volviendo a lo básico, POO en Python (parte 1)">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/usar-mongodb-en-django.html">Usar mongodb en Django</a></li>
+      <li><a href="https://ecrespo.github.io/utilizando-mongodb-por-medio-de-python.html">Utilizando mongodb por medio de python.</a></li>
+      <li><a href="https://ecrespo.github.io/memcached_2019.html">Usar memcached para tener datos a la mano</a></li>
+      <li><a href="https://ecrespo.github.io/entorno_desarrollo_datascience.html">Crear entorno de desarrollo para Ciencia de Datos con Anaconda, Jupyter, git y cookiecutter</a></li>
+      <li><a href="https://ecrespo.github.io/apirest-aiohttp-cerberus-2019.html">Validando un API rest asíncrono con Cerberus</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

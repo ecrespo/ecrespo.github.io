@@ -1,0 +1,1001 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Este artículo explicará como corregir los mensajes generados por lintian, estos mensajes son debido a que el programa empaquetado o metapaquete no cumple con el policy de Debian y para subir dicho programa es necesario que esté sin errores ni warning. El archivo que se va a verificar es el …" />
+<meta name="keywords" content="Canaima, Debian, Empaquetado, General, Linux, Ubuntu">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Corrigiendo los reportes generados por lintian de un metapaquete"/>
+<meta property="og:description" content="Este artículo explicará como corregir los mensajes generados por lintian, estos mensajes son debido a que el programa empaquetado o metapaquete no cumple con el policy de Debian y para subir dicho programa es necesario que esté sin errores ni warning. El archivo que se va a verificar es el …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2011-09-22 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Linux,Empaquetado"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Empaquetado"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Corrigiendo los reportes generados por lintian de un metapaquete</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">288</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/genson.html">
+            Genson
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/streamlit.html">
+            streamlit
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete">Corrigiendo los reportes generados por lintian de un metapaquete</h1>
+    <p>
+          Posted on jue 22 septiembre 2011 in <a href="https://ecrespo.github.io/category/linuxempaquetado.html">Linux,Empaquetado</a>
+
+
+        &#8226; 4 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Este artículo explicará como corregir los mensajes generados por <code>lintian</code>, estos mensajes son debido a que el programa empaquetado o metapaquete no cumple con el <a href="http://www.debian.org/doc/debian-policy/">policy de Debian</a> y para subir dicho programa es necesario que esté sin errores ni warning.</p>
+<p>El archivo que se va a verificar es el <a href="https://gitorious.org/sierra-nevada/canaima-caribay-radio/blobs/master/canaima-caribay-radio_1.0.dsc">.dsc del metapaquete creado al empaquetar canaima-caribay-radio</a>.</p>
+<p>Al ejecutar <code>lintian</code> con el archivo <code>dsc</code> devuelve el siguiente mensaje:</p>
+<div class="highlight"><pre><span></span><span class="err">lintian -i canaima-caribay-radio_1.0.dsc</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">W</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">caribay</span><span class="o">-</span><span class="n">radio</span> <span class="n">source</span><span class="o">:</span> <span class="n">debhelper</span><span class="o">-</span><span class="n">but</span><span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="n">misc</span><span class="o">-</span><span class="n">depends</span> <span class="n">canaima</span><span class="o">-</span><span class="n">caribay</span><span class="o">-</span><span class="n">radio</span>
+<span class="n">N</span><span class="o">:</span> 
+<span class="n">N</span><span class="o">:</span><span class="n">The</span> <span class="n">source</span> <span class="k">package</span> <span class="nn">uses</span> <span class="n">debhelper</span><span class="o">,</span> <span class="n">but</span> <span class="n">it</span> <span class="n">does</span> <span class="n">not</span> <span class="k">include</span>
+<span class="n">N</span><span class="o">:</span><span class="n">$</span><span class="o">{</span><span class="n">misc</span><span class="o">:</span><span class="n">Depends</span><span class="o">}</span> <span class="k">in</span> <span class="n">the</span> <span class="n">given</span> <span class="n">binary</span> <span class="kd">package</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">debian</span><span class="o">/</span><span class="n">control</span> <span class="n">entry</span><span class="o">.</span> <span class="n">Any</span>
+<span class="n">N</span><span class="o">:</span><span class="n">debhelper</span> <span class="n">command</span> <span class="n">may</span> <span class="n">add</span> <span class="n">dependencies</span> <span class="n">to</span> <span class="n">$</span><span class="o">{</span><span class="n">misc</span><span class="o">:</span><span class="n">Depends</span><span class="o">}</span> <span class="n">that</span> <span class="n">are</span>
+<span class="n">N</span><span class="o">:</span><span class="n">required</span> <span class="k">for</span> <span class="n">the</span> <span class="n">work</span> <span class="n">that</span> <span class="n">it</span> <span class="n">does</span><span class="o">,</span> <span class="n">so</span> <span class="n">recommended</span> <span class="n">best</span> <span class="n">practice</span> <span class="k">is</span> <span class="n">to</span>
+<span class="n">N</span><span class="o">:</span><span class="n">always</span> <span class="n">add</span> <span class="n">$</span><span class="o">{</span><span class="n">misc</span><span class="o">:</span><span class="n">Depends</span><span class="o">}</span> <span class="n">to</span> <span class="n">the</span> <span class="n">dependencies</span> <span class="n">of</span> <span class="k">each</span> <span class="n">binary</span> <span class="k">package</span> <span class="nn">if</span>
+<span class="n">N</span><span class="o">:</span><span class="n">debhelper</span> <span class="k">is</span> <span class="k">in</span> <span class="n">use</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">debhelper</span><span class="o">(</span><span class="mi">7</span><span class="o">)</span> <span class="n">manual</span> <span class="n">page</span> <span class="k">for</span> <span class="n">details</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Severity</span><span class="o">:</span> <span class="n">normal</span><span class="o">,</span> <span class="n">Certainty</span><span class="o">:</span> <span class="n">possible</span>
+<span class="n">N</span><span class="o">:</span> 
+<span class="n">W</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">caribay</span><span class="o">-</span><span class="n">radio</span> <span class="n">source</span><span class="o">:</span> <span class="kd">package</span><span class="o">-</span><span class="n">uses</span><span class="o">-</span><span class="n">deprecated</span><span class="o">-</span><span class="n">debhelper</span><span class="o">-</span><span class="n">compat</span><span class="o">-</span><span class="n">version</span> <span class="mi">4</span>
+<span class="n">N</span><span class="o">:</span> 
+<span class="n">N</span><span class="o">:</span><span class="n">The</span> <span class="n">debhelper</span> <span class="n">compatibility</span> <span class="n">version</span> <span class="n">used</span> <span class="n">by</span> <span class="k">this</span> <span class="k">package</span> <span class="nn">is</span> <span class="n">marked</span> <span class="k">as</span>
+<span class="n">N</span><span class="o">:</span><span class="n">deprecated</span> <span class="n">by</span> <span class="n">the</span> <span class="n">debhelper</span> <span class="n">developer</span><span class="o">.</span> <span class="n">You</span> <span class="n">should</span> <span class="n">really</span> <span class="n">consider</span> <span class="n">using</span>
+<span class="n">N</span><span class="o">:</span><span class="n">a</span> <span class="n">newer</span> <span class="n">compatibility</span> <span class="n">version</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">The</span> <span class="n">compatibility</span> <span class="n">version</span> <span class="n">can</span> <span class="n">be</span> <span class="kd">set</span> <span class="k">in</span> <span class="o">(</span><span class="n">preferred</span><span class="o">)</span> <span class="n">debian</span><span class="o">/</span><span class="n">compat</span> <span class="n">or</span> <span class="n">by</span>
+<span class="n">N</span><span class="o">:</span><span class="n">setting</span> <span class="n">and</span> <span class="n">exporting</span> <span class="n">DH_COMPAT</span> <span class="k">in</span> <span class="n">debian</span><span class="o">/</span><span class="n">rules</span><span class="o">.</span> <span class="n">If</span> <span class="n">it</span> <span class="k">is</span> <span class="n">not</span> <span class="kd">set</span> <span class="k">in</span>
+<span class="n">N</span><span class="o">:</span><span class="n">either</span> <span class="n">place</span><span class="o">,</span> <span class="n">debhelper</span> <span class="n">defaults</span> <span class="n">to</span> <span class="n">the</span> <span class="n">deprecated</span> <span class="n">compatibility</span> <span class="n">version</span>
+<span class="n">N</span><span class="o">:</span><span class="mi">1</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">debhelper</span><span class="o">(</span><span class="mi">7</span><span class="o">)</span> <span class="n">manual</span> <span class="n">page</span> <span class="k">for</span> <span class="n">details</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Severity</span><span class="o">:</span> <span class="n">normal</span><span class="o">,</span> <span class="n">Certainty</span><span class="o">:</span> <span class="n">certain</span>
+<span class="n">N</span><span class="o">:</span> 
+<span class="n">W</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">caribay</span><span class="o">-</span><span class="n">radio</span> <span class="n">source</span><span class="o">:</span> <span class="n">binary</span><span class="o">-</span><span class="n">arch</span><span class="o">-</span><span class="n">rules</span><span class="o">-</span><span class="n">but</span><span class="o">-</span><span class="n">pkg</span><span class="o">-</span><span class="k">is</span><span class="o">-</span><span class="n">arch</span><span class="o">-</span><span class="n">indep</span>
+<span class="n">N</span><span class="o">:</span> 
+<span class="n">N</span><span class="o">:</span><span class="n">It</span> <span class="n">looks</span> <span class="n">like</span> <span class="n">you</span> <span class="k">try</span> <span class="n">to</span> <span class="n">run</span> <span class="n">code</span> <span class="k">in</span> <span class="n">the</span> <span class="n">binary</span><span class="o">-</span><span class="n">arch</span> <span class="n">target</span> <span class="n">of</span>
+<span class="n">N</span><span class="o">:</span><span class="n">debian</span><span class="o">/</span><span class="n">rules</span><span class="o">,</span> <span class="n">even</span> <span class="n">though</span> <span class="n">your</span> <span class="k">package</span> <span class="nn">is</span> <span class="n">architecture</span><span class="o">-</span> <span class="n">independent</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Severity</span><span class="o">:</span> <span class="n">normal</span><span class="o">,</span> <span class="n">Certainty</span><span class="o">:</span> <span class="n">certain</span>
+<span class="n">N</span><span class="o">:</span> 
+</pre></div>
+
+
+<p>El primer warning es que hace falta agregar <code>${misc:Depends]</code> en las dependencias.  Adicionalmente se tiene que cambiar el parámetro <code>Standards-Version</code> a la versión <code>3.9.1</code>.</p>
+<div class="highlight"><pre><span></span><span class="n">Section</span><span class="o">:</span> <span class="n">misc</span>
+<span class="n">Priority</span><span class="o">:</span> <span class="n">optional</span>
+<span class="n">Homepage</span><span class="o">:</span> <span class="n">http</span><span class="o">://</span><span class="n">canaima</span><span class="o">.</span><span class="na">softwarelibre</span><span class="o">.</span><span class="na">gob</span><span class="o">.</span><span class="na">ve</span>
+<span class="n">Standards</span><span class="o">-</span><span class="n">Version</span><span class="o">:</span> <span class="mf">3.9</span><span class="o">.</span><span class="mi">1</span>
+
+<span class="n">Package</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">caribay</span><span class="o">-</span><span class="n">radio</span>
+<span class="n">Version</span><span class="o">:</span> <span class="mf">1.0</span>
+<span class="n">Maintainer</span><span class="o">:</span> <span class="n">Ernesto</span> <span class="n">Nadir</span> <span class="n">Crespo</span> <span class="n">Avila</span> <span class="o">&lt;</span><span class="n">ecrespo</span><span class="err">@</span><span class="n">cenditel</span><span class="o">.</span><span class="na">gob</span><span class="o">.</span><span class="na">ve</span><span class="o">&gt;</span>
+<span class="n">Depends</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">misc</span><span class="o">:</span><span class="n">Depends</span><span class="o">},</span><span class="n">jackd2</span><span class="o">,</span> <span class="n">libjack</span><span class="o">-</span><span class="n">jackd2</span><span class="o">-</span><span class="mi">0</span><span class="o">,</span> <span class="n">libjack</span><span class="o">-</span><span class="n">jackd2</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">pulseaudio</span><span class="o">-</span><span class="n">module</span><span class="o">-</span><span class="n">jack</span><span class="o">,</span> <span class="n">qjackctl</span><span class="o">,</span>  
+<span class="n">libjack</span><span class="o">-</span><span class="n">jackd2</span><span class="o">-</span><span class="mi">0</span><span class="o">,</span> <span class="n">libjack</span><span class="o">-</span><span class="n">jackd2</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">vorbis</span><span class="o">-</span><span class="n">tools</span><span class="o">,</span> <span class="n">libvorbis</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libogg</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libmad0</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libsamplerate0</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span>  
+<span class="n">libflac</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libsndfile1</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libavcodec</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libavformat</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libspeex</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">python</span><span class="o">-</span><span class="n">gtk2</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span>  
+<span class="n">python</span><span class="o">-</span><span class="n">mutagen</span><span class="o">,</span> <span class="n">libdbus</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">ffmpeg</span><span class="o">,</span> <span class="n">libshout3</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libtwolame</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">twolame</span><span class="o">,</span>
+<span class="n">idjc</span><span class="o">,</span> <span class="n">audacity</span><span class="o">,</span> <span class="n">audacity</span><span class="o">-</span><span class="n">data</span><span class="o">,</span> <span class="n">audacity</span><span class="o">-</span><span class="n">dbg</span><span class="o">,</span> <span class="n">icecast2</span><span class="o">,</span> <span class="n">easytag</span>
+<span class="n">Architecture</span><span class="o">:</span> <span class="n">all</span>
+<span class="n">Copyright</span><span class="o">:</span> <span class="n">copyright</span>
+<span class="n">Changelog</span><span class="o">:</span> <span class="n">changelog</span> 
+<span class="n">Description</span><span class="o">:</span> <span class="n">Metapaquete</span> <span class="n">para</span> <span class="n">la</span> <span class="n">instalacion</span> <span class="n">de</span> <span class="n">radio</span> <span class="n">streaming</span>
+<span class="n">Metapaquete</span> <span class="n">para</span> <span class="n">la</span> <span class="n">instalacion</span> <span class="n">de</span> <span class="n">radio</span> <span class="n">streaming</span> <span class="n">con</span> <span class="n">icecast2</span> <span class="n">e</span> <span class="n">idjc</span><span class="o">.</span>
+</pre></div>
+
+
+<p>El segundo warning menciona que el archivo <code>debian/compat</code> tiene dentro el número 4 y es necesario que se actualice a la versión de <code>debhelper</code> que se está usando para empaquetar, en este caso debe cambiar a 8. Esto se tiene que cambiar en la plantilla de <code>equivs</code>.  </p>
+<div class="highlight"><pre><span></span><span class="err">vim /usr/share/equivs/template/debian/compat</span>
+</pre></div>
+
+
+<p>Cambiar 4 por 8.</p>
+<p>El siguiente warning menciona un problema en la definición de la arquitectura, que es necesario quitar <code>binary-arch</code> y nuestro paquete es independiente de la plataforma. Esto se resuelve modificando <code>canaima-caribay-radio</code> cambian el parámetro <code>Architecture: all</code> por <code>any</code>.</p>
+<p>Luego de realizar esos cambios se vuelve a crear el metapaquete y a ejecutar <code>lintian</code>:</p>
+<div class="highlight"><pre><span></span><span class="err">lintian -i canaima-caribay-radio_1.0.dsc</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">W</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">caribay</span><span class="o">-</span><span class="n">radio</span> <span class="n">source</span><span class="o">:</span> <span class="n">dh</span><span class="o">-</span><span class="n">clean</span><span class="o">-</span><span class="n">k</span><span class="o">-</span><span class="k">is</span><span class="o">-</span><span class="n">deprecated</span>
+<span class="n">N</span><span class="o">:</span> 
+<span class="n">N</span><span class="o">:</span><span class="n">This</span> <span class="k">package</span> <span class="nn">calls</span> <span class="n">dh_clean</span> <span class="o">-</span><span class="n">k</span> <span class="k">in</span> <span class="n">its</span> <span class="n">debian</span><span class="o">/</span><span class="n">rules</span> <span class="n">file</span> <span class="n">and</span> <span class="n">declares</span> <span class="n">a</span>
+<span class="n">N</span><span class="o">:</span><span class="n">debhelper</span> <span class="n">compatibility</span> <span class="n">version</span> <span class="n">of</span> <span class="n">at</span> <span class="n">least</span> <span class="mi">7</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">debhelper</span> <span class="mi">7</span> <span class="n">deprecated</span> <span class="n">dh_clean</span> <span class="o">-</span><span class="n">k</span> <span class="k">in</span> <span class="n">favour</span> <span class="n">of</span> <span class="n">dh_prep</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">dh_clean</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="n">manual</span> <span class="n">page</span> <span class="k">for</span> <span class="n">details</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Severity</span><span class="o">:</span> <span class="n">normal</span><span class="o">,</span> <span class="n">Certainty</span><span class="o">:</span> <span class="n">certain</span>
+<span class="n">N</span><span class="o">:</span> 
+<span class="n">W</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">caribay</span><span class="o">-</span><span class="n">radio</span> <span class="n">source</span><span class="o">:</span> <span class="kd">package</span><span class="o">-</span><span class="n">lacks</span><span class="o">-</span><span class="n">versioned</span><span class="o">-</span><span class="n">build</span><span class="o">-</span><span class="n">depends</span><span class="o">-</span><span class="n">on</span><span class="o">-</span><span class="n">debhelper</span> <span class="mi">8</span>
+<span class="n">N</span><span class="o">:</span> 
+<span class="n">N</span><span class="o">:</span><span class="n">The</span> <span class="k">package</span> <span class="nn">either</span> <span class="n">doesn</span><span class="s1">&#39;t declare a versioned build dependency on</span>
+<span class="s1">N:debhelper or does not declare a versioned build dependency on a new</span>
+<span class="s1">N:enough version of debhelper to satisfy the declared compatibility level.</span>
+<span class="s1">N:</span>
+<span class="s1">N:Recommended practice is to always declare an explicit versioned</span>
+<span class="s1">N:dependency on debhelper equal to or greater than the compatibility level</span>
+<span class="s1">N:used by the package, even if the versioned dependency isn&#39;</span><span class="n">t</span> <span class="n">strictly</span>
+<span class="n">N</span><span class="o">:</span><span class="n">necessary</span><span class="o">.</span> <span class="n">Having</span> <span class="n">a</span> <span class="n">versioned</span> <span class="n">dependency</span> <span class="n">also</span> <span class="n">helps</span> <span class="k">with</span> <span class="n">backports</span> <span class="n">to</span>
+<span class="n">N</span><span class="o">:</span><span class="n">older</span> <span class="n">releases</span> <span class="n">and</span> <span class="n">correct</span> <span class="n">builds</span> <span class="n">on</span> <span class="n">partially</span> <span class="n">updated</span> <span class="n">systems</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Refer</span> <span class="n">to</span> <span class="n">the</span> <span class="n">debhelper</span><span class="o">(</span><span class="mi">7</span><span class="o">)</span> <span class="n">manual</span> <span class="n">page</span> <span class="k">for</span> <span class="n">details</span><span class="o">.</span>
+<span class="n">N</span><span class="o">:</span>
+<span class="n">N</span><span class="o">:</span><span class="n">Severity</span><span class="o">:</span> <span class="n">minor</span><span class="o">,</span> <span class="n">Certainty</span><span class="o">:</span> <span class="n">certain</span>
+<span class="n">N</span><span class="o">:</span> 
+</pre></div>
+
+
+<p>Luego de cambiar el archivo <code>compat</code> y la versión del <code>standards-version</code> aparece un warning sobre el comando <code>dh_clean -k</code> que se tiene que sustituir por <code>dh_prep</code> en el archivo <code>debian/rules</code> de la plantilla:</p>
+<div class="highlight"><pre><span></span><span class="err">vim /usr/share/equivs/template/debian/rules</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">install</span><span class="o">:</span> <span class="n">build</span>
+<span class="n">dh_testdir</span>
+<span class="n">dh_testroot</span>
+<span class="n">dh_prep</span>
+</pre></div>
+
+
+<p>El otro warning menciona que <code>debhelper</code> tiene un número de versión viejo. Para cambiarlo se busca el archivo <code>control.in</code> en las plantillas y se modifica la <code>dep</code></p>
+<div class="highlight"><pre><span></span><span class="err">vim /usr/share/equivs/template/debian/control.in</span>
+</pre></div>
+
+
+<p>Se modifica la siguiente línea:</p>
+<div class="highlight"><pre><span></span><span class="c">Build-Depends: debhelper (&gt;= 8)</span>
+</pre></div>
+
+
+<p>Se vuelve a empaquetar y a ejecutar <code>lintian</code>:  </p>
+<div class="highlight"><pre><span></span><span class="err">lintian -i canaima-caribay-radio_1.0.dsc</span>
+</pre></div>
+
+
+<p>Listo, no más mensajes de error o warnings.  </p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/empaquetado.html">Empaquetado</a>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Corrigiendo%20los%20reportes%20generados%20por%20lintian%20de%20un%20metapaquete&url=https%3A//ecrespo.github.io/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html&hashtags=canaima,debian,empaquetado,general,linux,ubuntu" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html&title=Corrigiendo%20los%20reportes%20generados%20por%20lintian%20de%20un%20metapaquete&summary=Este%20art%C3%ADculo%20explicar%C3%A1%20como%20corregir%20los%20mensajes%20generados%20por%20lintian%2C%20estos%20mensajes%20son%20debido%20a%20que%20el%20programa%20empaquetado%20o%20metapaquete%20no%20cumple%20con%20el%20policy%20de%20Debian%20y%20para%20subir%20dicho%20programa%20es%20necesario%20que%20est%C3%A9%20sin%20errores%20ni%20warning.%0AEl%20archivo%20que%20se%20va%20a%20verificar%20es%20el%20%E2%80%A6&source=https%3A//ecrespo.github.io/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Corrigiendo%20los%20reportes%20generados%20por%20lintian%20de%20un%20metapaquete&amp;body=https%3A//ecrespo.github.io/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/como-crear-un-metapaquete-version-2.html" title="Como crear un metapaquete (versión 2)">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/como-crear-un-metapaquete-metapaquete-con-archivos-de-configuracion.html" title="Como crear un metapaquete (metapaquete con archivos de configuración)">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/como-crear-un-metapaquete-version-2.html">Como crear un metapaquete (versión 2)</a></li>
+      <li><a href="https://ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html">Habilitar autenticación en un servidor mongodb</a></li>
+      <li><a href="https://ecrespo.github.io/instalar-un-servidor-mongodb-en-debian.html">Instalar un servidor mongodb en Debian</a></li>
+      <li><a href="https://ecrespo.github.io/urwid-libreria-ncurses-para-hacer-aplicaciones-de-texto-para-la-consola-parte-1.html">Urwid librería ncurses para hacer aplicaciones de texto para la consola (parte 1).</a></li>
+      <li><a href="https://ecrespo.github.io/restful-api-con-django-tastypie-y-django-celery.html">Restful API con Django-tastypie y Django-Celery</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1091 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En el artículo de hoy se probará que al usar dnsmasq como dnscache mejorará la conexión a internet en especial cuando se navega por el celular o se tiene una conexión a internet algo lenta. Adicionalmente se mencionarán varias herramientas de diagnostico de consultas de DNS como lo son dnstracer …" />
+<meta name="keywords" content="Linux, Python, DNS, Debian, dnsmasq, python-dns, Redes">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Mejorando la velocidad de consultas de DNS con dnsmasq y probar pruebas de diagnostico"/>
+<meta property="og:description" content="En el artículo de hoy se probará que al usar dnsmasq como dnscache mejorará la conexión a internet en especial cuando se navega por el celular o se tiene una conexión a internet algo lenta. Adicionalmente se mencionarán varias herramientas de diagnostico de consultas de DNS como lo son dnstracer …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2011-02-03 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Linux y Python"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="DNS"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="dnsmasq"/>
+<meta property="article:tag" content="python-dns"/>
+<meta property="article:tag" content="Redes"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Mejorando la velocidad de consultas de DNS con dnsmasq y probar pruebas de diagnostico</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/asus.html">
+            Asus
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">288</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/paquetes.html">
+            Paquetes
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/genson.html">
+            Genson
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/streamlit.html">
+            streamlit
+                    <span class="badge">1</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico">Mejorando la velocidad de consultas de DNS con dnsmasq y probar pruebas de diagnostico</h1>
+    <p>
+          Posted on jue 03 febrero 2011 in <a href="https://ecrespo.github.io/category/tutorial-linux-y-python.html">Tutorial Linux y Python</a>
+
+
+        &#8226; 5 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>En el artículo de hoy se probará que al usar dnsmasq como dnscache mejorará la conexión a internet en especial cuando se navega por el celular o se tiene una conexión a internet algo lenta. Adicionalmente se mencionarán varias herramientas de diagnostico de consultas de DNS como lo son dnstracer, dnswalk, dig, host. Adicionalmente se mostrará u par de scripts en python para consultas de DNS.</p>
+<p>Revisar los DNS que usa nuestro equipo:
+Los DNS que se está usando en el equipo son los DNS de CANTV, esto se puede ver al ejecutar un cat a /etc/resolv.conf</p>
+<div class="highlight"><pre><span></span><span class="err"># Dynamic resolv.conf(5) file for glibc resolver(3) generated by resolvconf(8)</span>
+<span class="err">#     DO NOT EDIT THIS FILE BY HAND -- YOUR CHANGES WILL BE OVERWRITTEN</span>
+<span class="err">nameserver 200.44.32.12</span>
+<span class="err">nameserver 200.11.248.12</span>
+</pre></div>
+
+
+<p>Está información es la que maneja los servidores de DHCP de donde se encuentra conectado el equipo.</p>
+<p>Ahora se ejecuta el comando dig el cual una de las informaciones que trae es el tiempo de la consulta.
+La consulta se realizo con www.velug.org.ve:</p>
+<div class="highlight"><pre><span></span><span class="nt">dig</span> <span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span>
+
+<span class="o">;</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">DiG</span> <span class="nt">9</span><span class="p">.</span><span class="nc">7</span><span class="p">.</span><span class="nc">2-P3</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span>
+<span class="o">;;</span> <span class="nt">global</span> <span class="nt">options</span><span class="o">:</span> <span class="o">+</span><span class="nt">cmd</span>
+<span class="o">;;</span> <span class="nt">Got</span> <span class="nt">answer</span><span class="o">:</span>
+<span class="o">;;</span> <span class="nt">-</span><span class="o">&gt;&gt;</span><span class="nt">HEADER</span><span class="o">&lt;&lt;</span><span class="nt">-</span> <span class="nt">opcode</span><span class="o">:</span> <span class="nt">QUERY</span><span class="o">,</span> <span class="nt">status</span><span class="o">:</span> <span class="nt">NOERROR</span><span class="o">,</span> <span class="nt">id</span><span class="o">:</span> <span class="nt">14680</span>
+<span class="o">;;</span> <span class="nt">flags</span><span class="o">:</span> <span class="nt">qr</span> <span class="nt">rd</span> <span class="nt">ra</span><span class="o">;</span> <span class="nt">QUERY</span><span class="o">:</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">ANSWER</span><span class="o">:</span> <span class="nt">2</span><span class="o">,</span> <span class="nt">AUTHORITY</span><span class="o">:</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">ADDITIONAL</span><span class="o">:</span> <span class="nt">0</span>
+
+<span class="o">;;</span> <span class="nt">QUESTION</span> <span class="nt">SECTION</span><span class="o">:</span>
+<span class="o">;</span><span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span>  <span class="nt">IN</span> <span class="nt">A</span>
+
+<span class="o">;;</span> <span class="nt">ANSWER</span> <span class="nt">SECTION</span><span class="o">:</span>
+<span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span> <span class="nt">3600</span> <span class="nt">IN</span> <span class="nt">CNAME</span> <span class="nt">libertad</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span>
+<span class="nt">libertad</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span> <span class="nt">3600</span> <span class="nt">IN</span> <span class="nt">A</span> <span class="nt">150</span><span class="p">.</span><span class="nc">188</span><span class="p">.</span><span class="nc">8</span><span class="p">.</span><span class="nc">196</span>
+
+<span class="o">;;</span> <span class="nt">Query</span> <span class="nt">time</span><span class="o">:</span> <span class="nt">320</span> <span class="nt">msec</span>
+<span class="o">;;</span> <span class="nt">SERVER</span><span class="o">:</span> <span class="nt">200</span><span class="p">.</span><span class="nc">44</span><span class="p">.</span><span class="nc">32</span><span class="p">.</span><span class="nc">12</span><span class="p">#</span><span class="nn">53</span><span class="o">(</span><span class="nt">200</span><span class="p">.</span><span class="nc">44</span><span class="p">.</span><span class="nc">32</span><span class="p">.</span><span class="nc">12</span><span class="o">)</span>
+<span class="o">;;</span> <span class="nt">WHEN</span><span class="o">:</span> <span class="nt">Thu</span> <span class="nt">Feb</span>  <span class="nt">3</span> <span class="nt">20</span><span class="p">:</span><span class="nd">59</span><span class="p">:</span><span class="nd">08</span> <span class="nt">2011</span>
+<span class="o">;;</span> <span class="nt">MSG</span> <span class="nt">SIZE</span>  <span class="nt">rcvd</span><span class="o">:</span> <span class="nt">73</span>
+</pre></div>
+
+
+<p>Da como resultado 320 mili segundos.</p>
+<p>Ahora con la herramienta dnstracer se verifica como se resuelven la resolución de nombres desde el DNS de CANTV saltando por los distintos servidores de nombres.
+dnstracer -c -s 200.11.248.12  www.velug.org.ve
+La opción -c deshabilita la cache local, -s se le dice cual es el servidor de nombres y luego se le pasa el sitio a consultar.
+El resultado es el siguiente:</p>
+<div class="highlight"><pre><span></span><span class="n">dnstracer</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="mf">200.11.248.12</span><span class="w">  </span><span class="n">www</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="w"></span>
+<span class="n">Tracing</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">www</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="o">[</span><span class="n">a</span><span class="o">]</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="mf">200.11.248.12</span><span class="p">,</span><span class="w"> </span><span class="n">maximum</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">retries</span><span class="w"></span>
+<span class="mf">200.11.248.12</span><span class="w"> </span><span class="p">(</span><span class="mf">200.11.248.12</span><span class="p">)</span><span class="w"> </span><span class="n">Got</span><span class="w"> </span><span class="n">answer</span><span class="w"> </span><span class="o">[</span><span class="n">received type is cname</span><span class="o">]</span><span class="w"></span>
+</pre></div>
+
+
+<p>Se logro la consulta y se ve que el sitio de velug está dentro del entorno de CANTV o nic.ve.</p>
+<p>La siguiente prueba es con la herramienta dnswalk la cual devuelve un resultado de la consulta de DNS.</p>
+<div class="highlight"><pre><span></span><span class="n">dnswalk</span> <span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">.</span>
+
+<span class="n">Checking</span> <span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">.</span>
+<span class="n">Getting</span> <span class="k">zone</span> <span class="n">transfer</span> <span class="k">of</span> <span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">.</span> <span class="k">from</span> <span class="n">turpial</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">...</span><span class="n">failed</span>
+<span class="n">FAIL</span><span class="p">:</span> <span class="k">Zone</span> <span class="n">transfer</span> <span class="k">of</span> <span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">.</span> <span class="k">from</span> <span class="n">turpial</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span> <span class="n">failed</span><span class="p">:</span> <span class="n">Response</span> <span class="n">code</span> <span class="k">from</span> <span class="n">server</span><span class="p">:</span> <span class="n">REFUSED</span>
+<span class="n">Getting</span> <span class="k">zone</span> <span class="n">transfer</span> <span class="k">of</span> <span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">.</span> <span class="k">from</span> <span class="n">libertad</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">...</span><span class="n">failed</span>
+<span class="n">FAIL</span><span class="p">:</span> <span class="k">Zone</span> <span class="n">transfer</span> <span class="k">of</span> <span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">.</span> <span class="k">from</span> <span class="n">libertad</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span> <span class="n">failed</span><span class="p">:</span> <span class="k">connection</span> <span class="n">failed</span>
+<span class="n">BAD</span><span class="p">:</span> <span class="k">All</span> <span class="k">zone</span> <span class="n">transfer</span> <span class="n">attempts</span> <span class="k">of</span> <span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="p">.</span> <span class="n">failed</span><span class="o">!</span>
+<span class="mi">2</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">warnings</span><span class="p">,</span> <span class="mi">1</span> <span class="n">errors</span><span class="p">.</span>
+</pre></div>
+
+
+<p>El resultado es que no acepta transferir la zona de velug.org.ve.</p>
+<p>Ahora a instalar dnsmasq como dnscache.
+Para instalarlo se ejecuta aptitude.</p>
+<div class="highlight"><pre><span></span><span class="err">aptitude install dnsmasq</span>
+</pre></div>
+
+
+<p>Ahora al revisar el archivo resolv.conf aparece como nameserver el 127.0.0.1.
+Al revisar el directorio /etc/resolvconf/resolv.conf.d/ aparece el archivo original que contiene los servidores de nombre de CANTV:</p>
+<div class="highlight"><pre><span></span><span class="n">cat</span> <span class="n">original</span>
+
+<span class="k">domain</span> <span class="n">cantv</span><span class="p">.</span><span class="n">net</span>
+<span class="k">search</span> <span class="n">cantv</span><span class="p">.</span><span class="n">net</span>
+<span class="n">nameserver</span> <span class="mi">200</span><span class="p">.</span><span class="mi">44</span><span class="p">.</span><span class="mi">32</span><span class="p">.</span><span class="mi">12</span>
+<span class="n">nameserver</span> <span class="mi">200</span><span class="p">.</span><span class="mi">11</span><span class="p">.</span><span class="mi">248</span><span class="p">.</span><span class="mi">12</span>
+</pre></div>
+
+
+<p>Ahora se vuelve a ejecutar dig al sitio a www.velug.org.ve</p>
+<div class="highlight"><pre><span></span><span class="nt">dig</span> <span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span>
+
+
+<span class="o">;</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">DiG</span> <span class="nt">9</span><span class="p">.</span><span class="nc">7</span><span class="p">.</span><span class="nc">2-P3</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span>
+<span class="o">;;</span> <span class="nt">global</span> <span class="nt">options</span><span class="o">:</span> <span class="o">+</span><span class="nt">cmd</span>
+<span class="o">;;</span> <span class="nt">Got</span> <span class="nt">answer</span><span class="o">:</span>
+<span class="o">;;</span> <span class="nt">-</span><span class="o">&gt;&gt;</span><span class="nt">HEADER</span><span class="o">&lt;&lt;</span><span class="nt">-</span> <span class="nt">opcode</span><span class="o">:</span> <span class="nt">QUERY</span><span class="o">,</span> <span class="nt">status</span><span class="o">:</span> <span class="nt">NOERROR</span><span class="o">,</span> <span class="nt">id</span><span class="o">:</span> <span class="nt">40987</span>
+<span class="o">;;</span> <span class="nt">flags</span><span class="o">:</span> <span class="nt">qr</span> <span class="nt">rd</span> <span class="nt">ra</span><span class="o">;</span> <span class="nt">QUERY</span><span class="o">:</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">ANSWER</span><span class="o">:</span> <span class="nt">2</span><span class="o">,</span> <span class="nt">AUTHORITY</span><span class="o">:</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">ADDITIONAL</span><span class="o">:</span> <span class="nt">0</span>
+
+<span class="o">;;</span> <span class="nt">QUESTION</span> <span class="nt">SECTION</span><span class="o">:</span>
+<span class="o">;</span><span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span>  <span class="nt">IN</span> <span class="nt">A</span>
+
+<span class="o">;;</span> <span class="nt">ANSWER</span> <span class="nt">SECTION</span><span class="o">:</span>
+<span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span> <span class="nt">1250</span> <span class="nt">IN</span> <span class="nt">CNAME</span> <span class="nt">libertad</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span>
+<span class="nt">libertad</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span> <span class="nt">76</span> <span class="nt">IN</span> <span class="nt">A</span> <span class="nt">150</span><span class="p">.</span><span class="nc">188</span><span class="p">.</span><span class="nc">8</span><span class="p">.</span><span class="nc">196</span>
+
+<span class="o">;;</span> <span class="nt">Query</span> <span class="nt">time</span><span class="o">:</span> <span class="nt">92</span> <span class="nt">msec</span>
+<span class="o">;;</span> <span class="nt">SERVER</span><span class="o">:</span> <span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="p">#</span><span class="nn">53</span><span class="o">(</span><span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="o">)</span>
+<span class="o">;;</span> <span class="nt">WHEN</span><span class="o">:</span> <span class="nt">Thu</span> <span class="nt">Feb</span>  <span class="nt">3</span> <span class="nt">21</span><span class="p">:</span><span class="nd">06</span><span class="p">:</span><span class="nd">08</span> <span class="nt">2011</span>
+<span class="o">;;</span> <span class="nt">MSG</span> <span class="nt">SIZE</span>  <span class="nt">rcvd</span><span class="o">:</span> <span class="nt">73</span>
+</pre></div>
+
+
+<p>Ahora devuelve un tiempo de la consulta de 92 milisegundos.</p>
+<p>Se vuelve a ejecutar dnstracer colocando como servidor el servidor dnsmasq con el siguiente resultado:</p>
+<div class="highlight"><pre><span></span><span class="n">dnstracer</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="w"> </span><span class="n">www</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="w"></span>
+
+<span class="n">Tracing</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">www</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="o">[</span><span class="n">a</span><span class="o">]</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="mf">127.0.0.1</span><span class="p">,</span><span class="w"> </span><span class="n">maximum</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="n">retries</span><span class="w"></span>
+<span class="mf">127.0.0.1</span><span class="w"> </span><span class="p">(</span><span class="mf">127.0.0.1</span><span class="p">)</span><span class="w"> </span><span class="n">Got</span><span class="w"> </span><span class="n">answer</span><span class="w"> </span><span class="o">[</span><span class="n">received type is cname</span><span class="o">]</span><span class="w"></span>
+<span class="w"> </span><span class="o">|</span><span class="err">\</span><span class="n">___</span><span class="w"> </span><span class="n">libertad</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="w"> </span><span class="o">[</span><span class="n">velug.org.ve</span><span class="o">]</span><span class="w"> </span><span class="p">(</span><span class="k">No</span><span class="w"> </span><span class="n">IP</span><span class="w"> </span><span class="n">address</span><span class="p">)</span><span class="w"></span>
+<span class="w">  </span><span class="err">\</span><span class="n">___</span><span class="w"> </span><span class="n">turpial</span><span class="p">.</span><span class="n">velug</span><span class="p">.</span><span class="n">org</span><span class="p">.</span><span class="n">ve</span><span class="w"> </span><span class="o">[</span><span class="n">velug.org.ve</span><span class="o">]</span><span class="w"> </span><span class="p">(</span><span class="mf">150.188.92.2</span><span class="p">)</span><span class="w"> </span><span class="n">Got</span><span class="w"> </span><span class="n">authoritative</span><span class="w"> </span><span class="n">answer</span><span class="w"> </span><span class="o">[</span><span class="n">received type is cname</span><span class="o">]</span><span class="w"></span>
+</pre></div>
+
+
+<p>Se nota que consulta con el servidor de nombres local y luego devuelve el resultado de la consulta.</p>
+<p>Ahora el siguiente cambio que se realizará es usar los DNS públicos de google y los de opendns.com. Esos DNS se agregan en el archivo original antes mencionado.</p>
+<p>Ahora el archivo contiene primero los DNS de google, luego los de opendns y al final los de cantv.</p>
+<div class="highlight"><pre><span></span><span class="n">nameserver</span> <span class="mi">8</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">8</span>
+<span class="n">nameserver</span> <span class="mi">8</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">4</span>
+<span class="n">nameserver</span> <span class="mi">208</span><span class="p">.</span><span class="mi">67</span><span class="p">.</span><span class="mi">222</span><span class="p">.</span><span class="mi">222</span>
+<span class="n">nameserver</span> <span class="mi">208</span><span class="p">.</span><span class="mi">67</span><span class="p">.</span><span class="mi">220</span><span class="p">.</span><span class="mi">220</span>
+
+<span class="k">domain</span> <span class="n">cantv</span><span class="p">.</span><span class="n">net</span>
+<span class="k">search</span> <span class="n">cantv</span><span class="p">.</span><span class="n">net</span>
+<span class="n">nameserver</span> <span class="mi">200</span><span class="p">.</span><span class="mi">44</span><span class="p">.</span><span class="mi">32</span><span class="p">.</span><span class="mi">12</span>
+<span class="n">nameserver</span> <span class="mi">200</span><span class="p">.</span><span class="mi">11</span><span class="p">.</span><span class="mi">248</span><span class="p">.</span><span class="mi">12</span>
+</pre></div>
+
+
+<p>Se vuelve a realizar una consulta dig pero antes se reinicia el servicio de dnsmasq para evitar que ya se encuentra en cache el sitio de velug.</p>
+<div class="highlight"><pre><span></span><span class="nt">dig</span> <span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span>
+
+<span class="o">;</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">DiG</span> <span class="nt">9</span><span class="p">.</span><span class="nc">7</span><span class="p">.</span><span class="nc">2-P3</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span>
+<span class="o">;;</span> <span class="nt">global</span> <span class="nt">options</span><span class="o">:</span> <span class="o">+</span><span class="nt">cmd</span>
+<span class="o">;;</span> <span class="nt">Got</span> <span class="nt">answer</span><span class="o">:</span>
+<span class="o">;;</span> <span class="nt">-</span><span class="o">&gt;&gt;</span><span class="nt">HEADER</span><span class="o">&lt;&lt;</span><span class="nt">-</span> <span class="nt">opcode</span><span class="o">:</span> <span class="nt">QUERY</span><span class="o">,</span> <span class="nt">status</span><span class="o">:</span> <span class="nt">NOERROR</span><span class="o">,</span> <span class="nt">id</span><span class="o">:</span> <span class="nt">26497</span>
+<span class="o">;;</span> <span class="nt">flags</span><span class="o">:</span> <span class="nt">qr</span> <span class="nt">rd</span> <span class="nt">ra</span><span class="o">;</span> <span class="nt">QUERY</span><span class="o">:</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">ANSWER</span><span class="o">:</span> <span class="nt">2</span><span class="o">,</span> <span class="nt">AUTHORITY</span><span class="o">:</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">ADDITIONAL</span><span class="o">:</span> <span class="nt">0</span>
+
+<span class="o">;;</span> <span class="nt">QUESTION</span> <span class="nt">SECTION</span><span class="o">:</span>
+<span class="o">;</span><span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span>  <span class="nt">IN</span> <span class="nt">A</span>
+
+<span class="o">;;</span> <span class="nt">ANSWER</span> <span class="nt">SECTION</span><span class="o">:</span>
+<span class="nt">www</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span> <span class="nt">3600</span> <span class="nt">IN</span> <span class="nt">CNAME</span> <span class="nt">libertad</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span>
+<span class="nt">libertad</span><span class="p">.</span><span class="nc">velug</span><span class="p">.</span><span class="nc">org</span><span class="p">.</span><span class="nc">ve</span><span class="o">.</span> <span class="nt">2907</span> <span class="nt">IN</span> <span class="nt">A</span> <span class="nt">150</span><span class="p">.</span><span class="nc">188</span><span class="p">.</span><span class="nc">8</span><span class="p">.</span><span class="nc">196</span>
+
+<span class="o">;;</span> <span class="nt">Query</span> <span class="nt">time</span><span class="o">:</span> <span class="nt">158</span> <span class="nt">msec</span>
+<span class="o">;;</span> <span class="nt">SERVER</span><span class="o">:</span> <span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="p">#</span><span class="nn">53</span><span class="o">(</span><span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="o">)</span>
+<span class="o">;;</span> <span class="nt">WHEN</span><span class="o">:</span> <span class="nt">Thu</span> <span class="nt">Feb</span>  <span class="nt">3</span> <span class="nt">21</span><span class="p">:</span><span class="nd">14</span><span class="p">:</span><span class="nd">27</span> <span class="nt">2011</span>
+<span class="o">;;</span> <span class="nt">MSG</span> <span class="nt">SIZE</span>  <span class="nt">rcvd</span><span class="o">:</span> <span class="nt">73</span>
+</pre></div>
+
+
+<p>Subio un poco pero al volver a hacer una consulta baja a 0 mili segundos.</p>
+<p>La siguiente herramienta mostrará el tráfico generado por las consultas de DNS, esa herramienta se llama dnstop.</p>
+<div class="highlight"><pre><span></span><span class="err">dnstop -l 4    wlan0</span>
+</pre></div>
+
+
+<p>El comando define niveles de tablas con la opción -l luego se le pasa la interfaz por donde va a escuchar el tráfico de DNS.
+Las siguiente figura muestra la pantalla que despliega la aplicación con la opción s que muestra la fuente de la consulta.</p>
+<p><img alt="dnstop" src="./images/dnsmasq1-1.png"></p>
+<p>Muestra la IP del servidor local.</p>
+<p>La siguiente figura muestra los DNS de CANTV con la cantidad de consultas realizadas a cada servidor. Esa información se ve al presionar la tecla d.</p>
+<p><img alt="dnstop 2" src="./images/dnsmasq1-2.png"></p>
+<p>Luego se puede ver la cantidad de tablas por niveles de profundidad que se le dio al comando, al presionar el 2 se muestra lo siguiente:</p>
+<p><img alt="dnstop 3" src="./images/dnsmasq1-3.png"></p>
+<p>Aqui aparecen los dominios consultados con la cantidad de veces que se usaron.</p>
+<p>Luego al presionar 3 aparecerá más información de dichos sitios:</p>
+<p><img alt="dnstop 4" src="./images/dnsmasq1-4.png"></p>
+<p>La siguiente muestra la tabla del nivel 4.</p>
+<p><img alt="dnstop 5" src="./images/dnsmasq1-5.png"></p>
+<p>Para terminar se mostrará el uso del módulo python-dns, se creará un script en python para consultar los las IPs de varios sitios en internet.</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Nombre: consulta-dns.py</span>
+<span class="sd">Descripcion: Programa que permite realizar consultas de IPs a sitios en internet</span>
+<span class="sd">Autor: Ernesto Crespo</span>
+<span class="sd">Correo: ecrespo@gmail.com</span>
+<span class="sd">Version:0.1</span>
+<span class="sd">Licencia: GPLv3.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">#Se importa el modulo dns para resolver nombres</span>
+<span class="kn">import</span> <span class="nn">dns.resolver</span>
+
+<span class="c1">#Se crea la lista de sitios a consultar</span>
+<span class="n">sitios</span>  <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;python.org&quot;</span><span class="p">,</span><span class="s2">&quot;debian.org&quot;</span><span class="p">,</span><span class="s2">&quot;debian.org.ve&quot;</span><span class="p">,</span><span class="s2">&quot;velug.org.ve&quot;</span><span class="p">]</span>
+
+
+<span class="c1">#Se crea la funcion consulta que se le pasa la lista de sitios.</span>
+<span class="c1">#Se crea la funcion consulta que se le pasa la lista de sitios.</span>
+<span class="k">def</span> <span class="nf">consulta</span><span class="p">(</span><span class="n">lista</span><span class="o">=</span><span class="n">sitios</span><span class="p">):</span>
+    <span class="c1">#Se crea un diccionario donde se almacena los resultados</span>
+    <span class="n">resultado</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1">#Se crea un ciclo de los sitios de internet para averiguar las IPs de cada uno</span>
+    <span class="k">for</span> <span class="n">equipo</span> <span class="ow">in</span> <span class="n">lista</span><span class="p">:</span>
+        <span class="c1">#Se crea una lista para las IPs</span>
+        <span class="n">ips</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1">#Se consulta la IP del equipo.</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">dns</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">equipo</span><span class="p">,</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+        <span class="c1">#Si tiene varias IPs se almacena en la lista de IPs</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ip</span><span class="p">:</span>
+            <span class="n">ips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="c1">#Se guarda las IPs del equipo en el diccionario</span>
+        <span class="n">resultado</span><span class="p">[</span><span class="n">equipo</span><span class="p">]</span> <span class="o">=</span> <span class="n">ips</span>
+    <span class="c1">#Se retorna el diccionario con el resultado</span>
+    <span class="k">return</span> <span class="n">resultado</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1">#Se llama a la funcion consulta</span>
+    <span class="n">respuesta</span> <span class="o">=</span> <span class="n">consulta</span><span class="p">()</span>
+    <span class="c1">#Se toma la lista de equipos de la funcion keys del diccionario donde se recorre en un ciclo.</span>
+    <span class="k">for</span> <span class="n">lista</span> <span class="ow">in</span> <span class="n">respuesta</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="c1">#Se presenta en pantalla cada sitio con sus IPs</span>
+        <span class="nb">print</span> <span class="n">lista</span><span class="p">,</span> <span class="n">respuesta</span><span class="p">[</span><span class="n">lista</span><span class="p">]</span>
+</pre></div>
+
+
+<p>El resultado del programa es el siguiente:</p>
+<div class="highlight"><pre><span></span><span class="err">debian.org [&#39;206.12.19.7&#39;, &#39;128.31.0.51&#39;]</span>
+<span class="err">python.org [&#39;82.94.164.162&#39;]</span>
+<span class="err">velug.org.ve [&#39;150.188.92.2&#39;]</span>
+<span class="err">debian.org.ve [&#39;75.119.207.96&#39;]</span>
+</pre></div>
+
+
+<p>===</p>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/dns.html">DNS</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/dnsmasq.html">dnsmasq</a>
+      <a href="https://ecrespo.github.io/tag/python-dns.html">python-dns</a>
+      <a href="https://ecrespo.github.io/tag/redes.html">Redes</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Mejorando%20la%20velocidad%20de%20consultas%20de%20DNS%20con%20dnsmasq%20y%20probar%20pruebas%20de%20diagnostico&url=https%3A//ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html&hashtags=linux,python,dns,debian,dnsmasq,python-dns,redes" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html&title=Mejorando%20la%20velocidad%20de%20consultas%20de%20DNS%20con%20dnsmasq%20y%20probar%20pruebas%20de%20diagnostico&summary=En%20el%20art%C3%ADculo%20de%20hoy%20se%20probar%C3%A1%20que%20al%20usar%20dnsmasq%20como%20dnscache%20mejorar%C3%A1%20la%20conexi%C3%B3n%20a%20internet%20en%20especial%20cuando%20se%20navega%20por%20el%20celular%20o%20se%20tiene%20una%20conexi%C3%B3n%20a%20internet%20algo%20lenta.%20Adicionalmente%20se%20mencionar%C3%A1n%20varias%20herramientas%20de%20diagnostico%20de%20consultas%20de%20DNS%20como%20lo%20son%20dnstracer%20%E2%80%A6&source=https%3A//ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Mejorando%20la%20velocidad%20de%20consultas%20de%20DNS%20con%20dnsmasq%20y%20probar%20pruebas%20de%20diagnostico&amp;body=https%3A//ecrespo.github.io/mejorando-la-velocidad-de-consultas-de-dns-con-dnsmasq-y-probar-pruebas-de-diagnostico.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/aplicacion-que-muestra-las-coordenadas-del-celular-en-google-maps-en-el-escritorio.html" title="Aplicación que muestra las coordenadas del Celular en google maps en el escritorio">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/accesibilidad-en-squeeze.html" title="Accesibilidad en squeeze">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/mejorar-las-respuestas-de-consultas-de-dns-con-dnsmasq-usando-dnscrypt.html">Mejorar las respuestas de consultas de DNS con dnsmasq usando DNSCrypt</a></li>
+      <li><a href="https://ecrespo.github.io/geolocalizacion-de-direcciones-ip-y-dominios-de-internet-con-geoip-en-python.html">Geolocalización de direcciones IP y dominios de Internet con GeoIP en python</a></li>
+      <li><a href="https://ecrespo.github.io/cifrar-el-trafico-de-dns-en-linux-con-dnscrypt-y-opendns.html">Cifrar el tráfico de DNS en Linux con DNSCrypt y OpenDNS</a></li>
+      <li><a href="https://ecrespo.github.io/entorno_desarrollo_datascience.html">Crear entorno de desarrollo para Ciencia de Datos con Anaconda, Jupyter, git y cookiecutter</a></li>
+      <li><a href="https://ecrespo.github.io/desarrollar-un-api-con-graphql-en-flask.html">Desarrollar un API con GraphQL en Flask</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

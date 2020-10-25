@@ -1,0 +1,1213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Linux</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-linux.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2015-12-28T09:00:00-05:30</updated><subtitle>Data Scientist </subtitle><entry><title>Uso de docker en Debian Jessie (parte 2)</title><link href="https://ecrespo.github.io/uso-de-docker-en-debian-jessie-parte-2.html" rel="alternate"></link><published>2015-12-28T09:00:00-05:30</published><updated>2015-12-28T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-12-28:/uso-de-docker-en-debian-jessie-parte-2.html</id><summary type="html">&lt;p&gt;Los artículos anteriores sobre docker son:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1).&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;En este artículo se explicará como mantener ejecutando una instancia, como iniciar las instancias automáticamente, acceder a los servicios que se ejecutan en el contenedor y ejecutar la imagen desde diferentes …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Los artículos anteriores sobre docker son:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Instalar Docker en Debian Jessie&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html#uso-de-docker-en-debian-jessie-parte-1"&gt;Uso de Docker en Debian Jessie (parte 1).&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;En este artículo se explicará como mantener ejecutando una instancia, como iniciar las instancias automáticamente, acceder a los servicios que se ejecutan en el contenedor y ejecutar la imagen desde diferentes máquinas al registrar el contenedor.&lt;/p&gt;
+&lt;p&gt;Del artículo anterior se tiene 2 imagenes en el equipo, una de Debian y la otra creada por mi persona que viene del repositorio de docker hub:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+ecrespo/empaquetadodebian   latest              ee5883957d64        &lt;span class="m"&gt;18&lt;/span&gt; hours ago        &lt;span class="m"&gt;656&lt;/span&gt;.9 MB
+debian                      latest              8b9a99209d5c        &lt;span class="m"&gt;3&lt;/span&gt; weeks ago         &lt;span class="m"&gt;125&lt;/span&gt;.1 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para ejecutar &lt;code&gt;apache&lt;/code&gt; y que quede funcionando en primer plano de la imagen que se construyo, se usa la opción &lt;code&gt;-D&lt;/code&gt; y la &lt;code&gt;-d&lt;/code&gt; para que se ejecute sin adjuntar.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$docker run -d   ecrespo/empaquetadodebian /usr/sbin/apache2ctl -D FOREGROUND&lt;/span&gt;
+&lt;span class="err"&gt;eeb8041b4331e572b3e452fc00da5d364115ba8a08ad015aa05eb1d243a1bf4b&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Como se nota devuelve un hash. Ahora se revisan los procesos del docker y se tiene el contenedor con &lt;code&gt;apachectl&lt;/code&gt; ejecutandose:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES
+eeb8041b4331        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;4&lt;/span&gt; minutes ago       Up &lt;span class="m"&gt;4&lt;/span&gt; minutes                            tender_goodall
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para detener un proceso se toma el id del contenedor ejecutando &lt;code&gt;docker stop&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker stop eeb8041b4331
+eeb8041b4331
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al volver a listar los procesos se tiene que ya no hay contenedores corriendo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+$ docker run -d -p &lt;span class="m"&gt;80&lt;/span&gt;:80 ecrespo/empaquetadodebian /usr/sbin/apache2ctl -D FOREGROUND
+8c7d49ac2e671e0f7dd1bbfb038f5a23ff06e3120d07d059c0cde99dc76f1a79
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al volver a listar los procesos  se tiene el contenedor corriendo &lt;code&gt;apache2ctl&lt;/code&gt; en el puerto 80:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                NAMES
+8c7d49ac2e67        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;51&lt;/span&gt; seconds ago      Up &lt;span class="m"&gt;45&lt;/span&gt; seconds       &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:80-&amp;gt;80/tcp   stupefied_darwin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se abre el navegador a localhost (ojo el servicio apache debe estar apagado en el equipo) y se tiene apache corriendo como se muestra a continuación:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usodedockerendebianjessie2-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se sube la imagen a los repositorios con el comando &lt;code&gt;docker push&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker push ecrespo/empaquetadodebian
+The push refers to a repository &lt;span class="o"&gt;[&lt;/span&gt;docker.io/ecrespo/empaquetadodebian&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;len: &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+ee5883957d64: Pushed
+8b9a99209d5c: Pushed
+6d1ae97ee388: Pushed
+latest: digest: sha256:893cb08536430d5555434bb4b120fb54e9f21da7cd87325120c1698aa57e2882 size: &lt;span class="m"&gt;4009&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;También se puede probar una aplicación como por ejemplo &lt;code&gt;sonarqube&lt;/code&gt; el cual es una aplicación web hace métricas de calidad de software. &lt;a href="https://hub.docker.com/_/sonarqube/"&gt;La imagen la encuentran en el docker hub de sonarqube.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Se puede ejecutar &lt;code&gt;sonarqube&lt;/code&gt; con los puertos 9000 y 9092 de la siguiente forma:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run -d --name sonarqube -p &lt;span class="m"&gt;9000&lt;/span&gt;:9000 -p &lt;span class="m"&gt;9092&lt;/span&gt;:9092 sonarqube
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al terminar de descargar se ejecuta docker images y se nota que se tiene la imagen de sonarqube:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+ecrespo/empaquetadodebian   latest              ee5883957d64        &lt;span class="m"&gt;23&lt;/span&gt; hours ago        &lt;span class="m"&gt;656&lt;/span&gt;.9 MB
+debian                      latest              8b9a99209d5c        &lt;span class="m"&gt;3&lt;/span&gt; weeks ago         &lt;span class="m"&gt;125&lt;/span&gt;.1 MB
+sonarqube                   latest              dd47274097f7        &lt;span class="m"&gt;7&lt;/span&gt; weeks ago         &lt;span class="m"&gt;942&lt;/span&gt;.5 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se revisan los contenedores:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+f44317723253        sonarqube                   &lt;span class="s2"&gt;&amp;quot;./bin/run.sh&amp;quot;&lt;/span&gt;           &lt;span class="m"&gt;8&lt;/span&gt; minutes ago       Up &lt;span class="m"&gt;7&lt;/span&gt; minutes        &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:9000-&amp;gt;9000/tcp, &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:9092-&amp;gt;9092/tcp   sonarqube
+8c7d49ac2e67        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;3&lt;/span&gt; hours ago         Up &lt;span class="m"&gt;3&lt;/span&gt; hours          &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:80-&amp;gt;80/tcp                               stupefied_darwin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se tiene sonarqube corriendo en el puerto 9000, al abrir el navegador en localhost:9000 se tiene lo siguiente:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usodedockerendebianjessie2-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se detiene el contenedor de sonarqube:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker stop f44317723253
+f44317723253
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se revisan los procesos y ya no aparece &lt;code&gt;sonarqube&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                NAMES
+8c7d49ac2e67        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;3&lt;/span&gt; hours ago         Up &lt;span class="m"&gt;3&lt;/span&gt; hours          &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:80-&amp;gt;80/tcp   stupefied_darwin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Si se quiere iniciar &lt;code&gt;sonarqube&lt;/code&gt; se ejecuta &lt;code&gt;docker start&lt;/code&gt; con el id del contenedor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker start f44317723253
+f44317723253
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se lista de nuevo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+f44317723253        sonarqube                   &lt;span class="s2"&gt;&amp;quot;./bin/run.sh&amp;quot;&lt;/span&gt;           &lt;span class="m"&gt;22&lt;/span&gt; minutes ago      Up About a minute   &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:9000-&amp;gt;9000/tcp, &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:9092-&amp;gt;9092/tcp   sonarqube
+8c7d49ac2e67        ecrespo/empaquetadodebian   &lt;span class="s2"&gt;&amp;quot;/usr/sbin/apache2ctl&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;3&lt;/span&gt; hours ago         Up &lt;span class="m"&gt;3&lt;/span&gt; hours          &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0:80-&amp;gt;80/tcp                               stupefied_darwin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se nota que sonarqube vuelve a levantar ya con los puertos definidos.&lt;/p&gt;
+&lt;p&gt;En el próximo artículo se explicará como construir una imagen por medio del archivo dockerfile.&lt;/p&gt;
+&lt;p&gt;Referencias:&lt;br&gt;
+1. &lt;a href="https://coreos.com/os/docs/latest/getting-started-with-docker.html"&gt;Getting Started with Docker&lt;/a&gt;&lt;br&gt;
+2. &lt;a href="https://hub.docker.com/_/sonarqube/"&gt;Docker y sonarqube.&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Canaima"></category><category term="Debian"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="Docker"></category></entry><entry><title>Uso de docker en Debian Jessie (parte 1)</title><link href="https://ecrespo.github.io/uso-de-docker-en-debian-jessie-parte-1.html" rel="alternate"></link><published>2015-12-27T09:00:00-05:30</published><updated>2015-12-27T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-12-27:/uso-de-docker-en-debian-jessie-parte-1.html</id><summary type="html">&lt;p&gt;En el artículo &lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;anterior&lt;/a&gt; se explicó la instalación de &lt;code&gt;docker&lt;/code&gt;, al final del mismo se realizó una prueba de funcionamiento ejecutando una imagen llamada hello-word.&lt;/p&gt;
+&lt;p&gt;Al ejecutar el comando:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;# docker run hello-world&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El comando retorna:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Unable&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;hello-world:latest&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;locally&lt;/span&gt;
+&lt;span class="n"&gt;latest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pulling&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;library&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;hello&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;world&lt;/span&gt;
+&lt;span class="n"&gt;b901d36b6f2f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pull …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;En el artículo &lt;a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html#instalar-docker-en-debian-jessie"&gt;anterior&lt;/a&gt; se explicó la instalación de &lt;code&gt;docker&lt;/code&gt;, al final del mismo se realizó una prueba de funcionamiento ejecutando una imagen llamada hello-word.&lt;/p&gt;
+&lt;p&gt;Al ejecutar el comando:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;# docker run hello-world&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El comando retorna:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Unable&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;hello-world:latest&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;locally&lt;/span&gt;
+&lt;span class="n"&gt;latest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pulling&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;library&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;hello&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;world&lt;/span&gt;
+&lt;span class="n"&gt;b901d36b6f2f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pull&lt;/span&gt; &lt;span class="n"&gt;complete&lt;/span&gt;
+&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;a6ba66e537a&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pull&lt;/span&gt; &lt;span class="n"&gt;complete&lt;/span&gt;
+&lt;span class="n"&gt;Digest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sha256&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;be990ef2aeb16dbcb9271ddfe2610fa6658d13f6dfb8bc72074cc1ca36966a7&lt;/span&gt;
+&lt;span class="n"&gt;Status&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Downloaded&lt;/span&gt; &lt;span class="n"&gt;newer&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;hello&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;world&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;latest&lt;/span&gt;
+
+&lt;span class="n"&gt;Hello&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Docker&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="n"&gt;shows&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="n"&gt;installation&lt;/span&gt; &lt;span class="n"&gt;appears&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;working&lt;/span&gt; &lt;span class="n"&gt;correctly&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La parte subrayada indica que la imagen no está descargada localmente y procede a descargarla.&lt;/p&gt;
+&lt;p&gt;Si se vuelve a ejecutar el comando ya el mensaje no aparece ya que la imagen hello-work ya se encuentra descargada.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;docker&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="n"&gt;hello&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;world&lt;/span&gt;
+
+&lt;span class="n"&gt;Hello&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Docker&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Podemos listar las imágenes existentes con el siguiente comando:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+hello-world                 latest              0a6ba66e537a        &lt;span class="m"&gt;10&lt;/span&gt; weeks ago        &lt;span class="m"&gt;960&lt;/span&gt; B
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se muestra el repositorio, la etiqueta que maneja la imagen, el identificador de la imagen, la fecha de creado y el tamaño de la imagen.&lt;/p&gt;
+&lt;p&gt;Ahora probemos con una imagen que nos muestra un mensaje de la vaca que dice boo (pueden ver la info de la imagen whalesay desde &lt;a href="https://hub.docker.com/r/docker/whalesay/"&gt;acá&lt;/a&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker run docker/whalesay cowsay boo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A continuación se muestra una imagen del resultado de la ejecución del comando anterior:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usodedockerendebianjessie1-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Como ven la ejecución de la imagen devuelve un resultado.&lt;/p&gt;
+&lt;p&gt;Al volver a listar las imagenes se tiene:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+hello-world                 latest              0a6ba66e537a        &lt;span class="m"&gt;10&lt;/span&gt; weeks ago        &lt;span class="m"&gt;960&lt;/span&gt; B
+docker/whalesay         latest              ded5e192a685        &lt;span class="m"&gt;7&lt;/span&gt; months ago        &lt;span class="m"&gt;247&lt;/span&gt; MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para eliminar una imagen se ejecuta &lt;code&gt;docker rm idimagen&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$docker rmi ded5e192a685&lt;/span&gt;
+&lt;span class="c"&gt;Untagged: docker/whalesay:latest&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: ded5e192a685b2c5f048ea98ca24f4c8c4dccc012185448a0247b49b24645007&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 8f17e9411cf6e7467e630b369a0216b582a8a811901befc800de41537bde1f04&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 517de05c9075311e28a12b52c38fbc4d46c47750efc71a6d88ba40a7547fd89d&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 3a2e7fe79da7865d735739288585f82c694088fc1163b415de7f5f5db12671c7&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 326bddfde6c0dd63908afd6b62b3db9cbc3d33ab23497493691e6230e051dbae&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 35217eff2e300e3b9a5402920a71ede310fe5e47d0c88d56e1d7baaa4d0aab04&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 2ce633e3e9c9bd9e8fe7ade5984d7656ec3fc3994f05a97d5490190ef95bce8d&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 98b15185dba7f85308eb0e21196956bba653cf142b36dc08059b3468a01bf35d&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 515565c29c940355ec886c992231c6019a6cffa17ff1d2abdfc844867c9080c5&lt;/span&gt;
+&lt;span class="c"&gt;Deleted: 2880a3395eded9b748c94d27767e1e202f8d7cb06f1e40e18d1b1c77687aef77&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al ejecutar docker images se tiene sólo el de hello-world:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+
+
+hello-world                 latest              0a6ba66e537a        &lt;span class="m"&gt;10&lt;/span&gt; weeks ago        &lt;span class="m"&gt;960&lt;/span&gt; B
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora ejecutaremos una imagen de Debian jessie que devuelve el mensaje de hello world:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt; &lt;span class="n"&gt;docker&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="n"&gt;debian&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;echo&lt;/span&gt; &lt;span class="n"&gt;hello&lt;/span&gt; &lt;span class="n"&gt;world&lt;/span&gt;
+
+&lt;span class="n"&gt;Unable&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;debian:latest&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;locally&lt;/span&gt;
+&lt;span class="n"&gt;Pulling&lt;/span&gt; &lt;span class="n"&gt;repository&lt;/span&gt; &lt;span class="n"&gt;docker&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;library&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;debian&lt;/span&gt;
+&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;b9a99209d5c&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pulling&lt;/span&gt; &lt;span class="n"&gt;dependent&lt;/span&gt; &lt;span class="n"&gt;layers&lt;/span&gt;
+&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;b9a99209d5c&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Download&lt;/span&gt; &lt;span class="n"&gt;complete&lt;/span&gt;
+&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="n"&gt;d1ae97ee388&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Download&lt;/span&gt; &lt;span class="n"&gt;complete&lt;/span&gt;
+&lt;span class="n"&gt;Status&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Downloaded&lt;/span&gt; &lt;span class="n"&gt;newer&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;debian&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;latest&lt;/span&gt;
+&lt;span class="n"&gt;docker&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;io&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;library&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;debian&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;this&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="n"&gt;was&lt;/span&gt; &lt;span class="n"&gt;pulled&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;legacy&lt;/span&gt; &lt;span class="n"&gt;registry&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;  &lt;span class="n"&gt;Important&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="n"&gt;registry&lt;/span&gt; &lt;span class="n"&gt;version&lt;/span&gt; &lt;span class="n"&gt;will&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;supported&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;future&lt;/span&gt; &lt;span class="n"&gt;versions&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;docker&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;hello&lt;/span&gt; &lt;span class="n"&gt;world&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se ejecuta la misma imagen con las opciones &lt;code&gt;-t&lt;/code&gt; y &lt;code&gt;-i&lt;/code&gt; las cuales abren un seudo tty y lo mantienen abierto, ya  de esa forma se puede hacer ejecución de comandos dentro del contenedor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;$&lt;/span&gt; &lt;span class="n"&gt;docker&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="n"&gt;debian&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bash&lt;/span&gt;
+&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="mi"&gt;@10668&lt;/span&gt;&lt;span class="nl"&gt;b1e1336&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al ejecutar en otra consola &lt;code&gt;docker ps&lt;/code&gt; nos muestra la ejecución del contenedor de debian:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="" src="./images/usodedockerendebianjessie1-2.png"&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+debian              latest              8b9a99209d5c        &lt;span class="m"&gt;3&lt;/span&gt; weeks ago         &lt;span class="m"&gt;125&lt;/span&gt;.1 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Como se muestra, la imagen de Debian tiene un contenedor.&lt;/p&gt;
+&lt;p&gt;En este contenedor se instalará algunos paquetes de Debian que permiten crear paquetes de Debian, subiré la imagen a mi cuenta en los repositorios de docker.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="mi"&gt;@10668&lt;/span&gt;&lt;span class="nl"&gt;b1e1336&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;apt&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="n"&gt;apt&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;quilt&lt;/span&gt; &lt;span class="n"&gt;devscripts&lt;/span&gt; &lt;span class="n"&gt;pbuilder&lt;/span&gt; &lt;span class="n"&gt;git&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;buildpackage&lt;/span&gt; &lt;span class="n"&gt;apache2&lt;/span&gt; &lt;span class="n"&gt;lintian&lt;/span&gt; &lt;span class="n"&gt;cdbs&lt;/span&gt; &lt;span class="n"&gt;autotools&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;package&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;reprepro&lt;/span&gt; &lt;span class="n"&gt;equivs&lt;/span&gt; &lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;package&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;debaux&lt;/span&gt; &lt;span class="n"&gt;dput&lt;/span&gt; &lt;span class="n"&gt;elida&lt;/span&gt; &lt;span class="n"&gt;dh&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;make&lt;/span&gt; &lt;span class="n"&gt;piuparts&lt;/span&gt; &lt;span class="n"&gt;dpatch&lt;/span&gt; &lt;span class="n"&gt;patch&lt;/span&gt; &lt;span class="n"&gt;patchutils&lt;/span&gt;  &lt;span class="n"&gt;dpkg&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;dev&lt;/span&gt; &lt;span class="n"&gt;build&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;essential&lt;/span&gt; &lt;span class="n"&gt;debhelper&lt;/span&gt; &lt;span class="n"&gt;openssh&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt; &lt;span class="n"&gt;vim&lt;/span&gt; &lt;span class="n"&gt;mc&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;He creado en &lt;a href="https://hub.docker.com/"&gt;Docker hub&lt;/a&gt; un repositorio con mi cuenta que manejará la imagen que modifique, el enlace es el &lt;a href="https://hub.docker.com/r/ecrespo/empaquetadodebian/"&gt;siguiente&lt;/a&gt;. Ahí se muestra el usuario/nombre del repositorio, en este caso ecrespo/empaquetadodebian.&lt;/p&gt;
+&lt;p&gt;Se muestra la imagen del sitio del repositorio:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/usodedockerendebianjessie1-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Para subir los cambios se tiene el id del contenedor que se obtiene de ejecutar &lt;code&gt;docker ps&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+10668b1e1336        debian              &lt;span class="s2"&gt;&amp;quot;/bin/bash&amp;quot;&lt;/span&gt;         &lt;span class="m"&gt;2&lt;/span&gt; hours ago         Up &lt;span class="m"&gt;2&lt;/span&gt; hours                              cranky_wright
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El comando para hacer commit al repositorio de docker es:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker commit 10668b1e1336 ecrespo/empaquetadodebian
+ee5883957d643419258c19c10b38d6c5e510bb2b369949be7152571083b4b421
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al salirse del contenedor ya no se tiene un contenedor activo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Y al listar las imágenes se tiene la imagen creada:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker images
+REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+ecrespo/empaquetadodebian   latest              ee5883957d64        &lt;span class="m"&gt;4&lt;/span&gt; minutes ago       &lt;span class="m"&gt;656&lt;/span&gt;.9 MB
+debian                      latest              8b9a99209d5c        &lt;span class="m"&gt;3&lt;/span&gt; weeks ago         &lt;span class="m"&gt;125&lt;/span&gt;.1 MB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En el siguiente artículo se explicará como usar el archivo &lt;code&gt;dockerfile&lt;/code&gt; para facilitar la construcción.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Canaima"></category><category term="Debian"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="Docker"></category></entry><entry><title>Instalar Docker en Debian Jessie</title><link href="https://ecrespo.github.io/instalar-docker-en-debian-jessie.html" rel="alternate"></link><published>2015-12-25T08:00:00-05:30</published><updated>2015-12-25T08:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-12-25:/instalar-docker-en-debian-jessie.html</id><summary type="html">&lt;p&gt;Hace un tiempo me toco dictar un curso de empaquetado para Debian y un compañero preparo una máquina virtual de Virtualbox con &lt;a href="https://www.vagrantup.com/"&gt;vagrant&lt;/a&gt; (un tutorial lo pueden revisar en el siguiente &lt;a href="https://styde.net/como-crear-un-entorno-de-desarrollo-virtual-con-vagrant/"&gt;enlace&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Hubo un momento que dañamos algunos paquetes y recuperamos la imagen de forma rápida para continuar con el …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Hace un tiempo me toco dictar un curso de empaquetado para Debian y un compañero preparo una máquina virtual de Virtualbox con &lt;a href="https://www.vagrantup.com/"&gt;vagrant&lt;/a&gt; (un tutorial lo pueden revisar en el siguiente &lt;a href="https://styde.net/como-crear-un-entorno-de-desarrollo-virtual-con-vagrant/"&gt;enlace&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Hubo un momento que dañamos algunos paquetes y recuperamos la imagen de forma rápida para continuar con el curso.&lt;/p&gt;
+&lt;p&gt;En mi caso como mi máquina personal no tengo como manejar varias máquinas virtuales con virtualbox preferí irme hacía la tecnología de contenedores con &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;. &lt;a href="https://es.wikipedia.org/wiki/Docker_(software)"&gt;Pueden revisar wikipedia para saber más de docker.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;La guía de instalación para Debian Jessie en inglés lo pueden encontrar en el siguiente &lt;a href="https://docs.docker.com/config/daemon/"&gt;enlace&lt;/a&gt;; y la guía de usuario en el siguiente &lt;a href="https://docs.docker.com/config/daemon/"&gt;enlace&lt;/a&gt;. El repositorio donde se alojan imágenes lo pueden revisar en este &lt;a href="https://hub.docker.com/"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Instalar soporte de https para los repositorios:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#apt-get install apt-transport-https&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Borrar paquetes viejos o de lxc:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#apt-get purge lxc-docker*&lt;/span&gt;
+&lt;span class="err"&gt;#apt-get purge docker.io*&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Agregar la llave gpg de docker.io:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys  58118E89F3A912897C070ADBF76221572C52609D&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Agregar el repositorio al &lt;code&gt;sources.list.d&lt;/code&gt;:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;vim&lt;/span&gt; &lt;span class="err"&gt;/etc/apt/sources.list.d/docker.list&lt;/span&gt;
+
+&lt;span class="k"&gt;deb&lt;/span&gt; &lt;span class="s"&gt;https://apt.dockerproject.org/repo&lt;/span&gt; &lt;span class="kp"&gt;debian-jessie&lt;/span&gt; &lt;span class="kp"&gt;main&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Actualizar la lista de repositorios:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#apt-get update&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Verificar que se baja el paquete del repositorio correcto:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#apt-cache policy docker-engine&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Instalar docker:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#apt-get install docker-engine&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Iniciar el demonio docker:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#service docker start&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Verificar que se instaló correctamente:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# docker run hello-world&lt;/span&gt;
+&lt;span class="n"&gt;Unable&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;find&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;hello-world:latest&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;locally&lt;/span&gt;
+&lt;span class="n"&gt;latest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pulling&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;library&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;hello&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;world&lt;/span&gt;
+&lt;span class="n"&gt;b901d36b6f2f&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pull&lt;/span&gt; &lt;span class="n"&gt;complete&lt;/span&gt;
+&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;a6ba66e537a&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Pull&lt;/span&gt; &lt;span class="n"&gt;complete&lt;/span&gt;
+&lt;span class="n"&gt;Digest&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;sha256&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;be990ef2aeb16dbcb9271ddfe2610fa6658d13f6dfb8bc72074cc1ca36966a7&lt;/span&gt;
+&lt;span class="n"&gt;Status&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Downloaded&lt;/span&gt; &lt;span class="n"&gt;newer&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;hello&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;world&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;latest&lt;/span&gt;
+
+&lt;span class="n"&gt;Hello&lt;/span&gt; &lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;Docker&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="n"&gt;This&lt;/span&gt; &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="n"&gt;shows&lt;/span&gt; &lt;span class="n"&gt;that&lt;/span&gt; &lt;span class="n"&gt;your&lt;/span&gt; &lt;span class="n"&gt;installation&lt;/span&gt; &lt;span class="n"&gt;appears&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;working&lt;/span&gt; &lt;span class="n"&gt;correctly&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Dar acceso de docker a usuarios no root:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;9.1 Agregar el grupo docker si no existe:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$sudo groupadd docker&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;9.2 Agregar al usuario al grupo docker:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo gpasswd -a &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;USER&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; docker
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;9.3 Reiniciar el demonio docker:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$sudo service docker restart&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En siguientes artículos se mostrará el uso de docker, como crear imágenes y por último se creará un entorno para empaquetar para Debian.
+Dejaré por acá las referencias para usarlas en un futuro:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://docs.docker.com/install/linux/docker-ce/debian/"&gt;Instalación de docker en Debian.&lt;/a&gt;    &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://wiki.debian.org/PackagingWithDocker?highlight=%28%28Docker%29%29"&gt;Empaquetar con docker.&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://wiki.debian.org/PackagingWithDocker?highlight=%28%28Docker%29%29"&gt;Docker intro and installation.&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.google.com/document/d/1f8iflnFSZxAU9FhoLQPEVlSKhVPXbtCaqTVPTTJb9yo/edit"&gt;Docker image building.&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.google.com/document/d/1tgzbbc76tV82nxJCpHTSb-Y5tns8Uim8sLDExy12e5k/edit"&gt;Docker Advanced volumes.&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://sfxpt.wordpress.com/2013/11/10/debianubuntu-package-developing-with-docker/"&gt;Debian/Ubuntu Package Developing with Docker.&lt;/a&gt;    &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://sfxpt.wordpress.com/2013/11/17/debianubuntu-package-developing-with-docker-continued/"&gt;Debian/Ubuntu Package Developing with Docker, Continued.&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://wiki.debian.org/Cloud/CreateDockerImage"&gt;Create docker image.&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://magmax.org/blog/docker/"&gt;Artículo en español sobre docker y como cambiar los despliegues de docker. &lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Algunos artículos del blog de Javier Garzas: &lt;br&gt;
+10.1 &lt;a href="http://www.javiergarzas.com/2015/07/que-es-docker-sencillo.html"&gt;¿Qué es Docker? ¿Para qué se utiliza? Explicado de forma sencilla&lt;/a&gt;&lt;br&gt;
+10.2 &lt;a href="http://www.javiergarzas.com/2015/07/entendiendo-docker.html"&gt;Entendiendo Docker. Conceptos básicos: Imágenes, Contenedores, Links… &lt;/a&gt;&lt;br&gt;
+10.3 &lt;a href="http://www.javiergarzas.com/2015/11/para-los-que-empiezan-crear-y-ejecutar-una-imagen-propia-en-un-contenedor-docker-12.html"&gt;Para los que empiezan: crear y ejecutar una imagen propia en un contenedor Docker (1/2)&lt;/a&gt;
+10.4 &lt;a href="http://www.javiergarzas.com/2015/11/para-los-que-empiezan-crear-y-ejecutar-una-imagen-propia-en-un-contenedor-docker-22.html"&gt;Para los que empiezan: crear y ejecutar una imagen propia en un contenedor Docker (2/2)&lt;/a&gt;&lt;br&gt;
+10.5 &lt;a href="http://www.javiergarzas.com/2015/11/y-si-queremos-orquestar-varios-contenedores-docker-microservicios-docker-compose-yaml-que-jaleo-12.html"&gt;¿Y si queremos orquestar varios contenedores Docker? Microservicios, Docker Compose, Yaml… ¡Qué jaleo! (1/2)&lt;/a&gt;&lt;br&gt;
+10.6 &lt;a href="http://www.javiergarzas.com/2015/12/y-si-queremos-orquestar-varios-contenedores-docker-microservicios-docker-compose-yaml-que-jaleo-22.html"&gt;¿Y si queremos orquestar varios contenedores Docker? Microservicios, Docker Compose, Yaml… ¡Qué jaleo! (2/2)&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://usersnap.com/blog/docker-for-web-developers/?utm_source=quora&amp;amp;utm_medium=referral&amp;amp;utm_campaign=quora_docker"&gt;CONTAINERIZE YOUR WEB DEVELOPMENT: HOW DOCKER IS SOLVING REAL WORLD PROBLEMS FOR WEB DEVELOPERS!&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://sites.google.com/site/practicadesarrollosoft/temario/continuous-inspection/continuous-inspection-en-java"&gt;Continuous Inspection en Java&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://hub.docker.com/_/sonarqube/"&gt;Imagen docker de sonarqube&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://hub.docker.com/_/jenkins/"&gt;Imagen docker de Jenkins&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://hub.docker.com/_/debian/"&gt;Imagen docker para debian jessie&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.securitybydefault.com/2015/12/auditoria-y-analisis-de.html"&gt;AUDITORÍA Y ANÁLISIS DE VULNERABILIDADES EN DOCKER&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="http://abirtone.com/docker/2015/07/28/uso-de-docker-en-aplicacion-de-nodejs/"&gt;Docker en la ejecución de test de integración en NodeJS&lt;/a&gt;  &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.digitalocean.com/community/tutorials/docker-explicado-como-crear-contenedores-de-docker-corriendo-en-memcached-es"&gt;Docker Explicado: Cómo crear Contenedores de Docker corriendo en Memcached&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="canaima"></category><category term="Debian"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="Docker"></category></entry><entry><title>Habilitar autenticación en un servidor mongodb</title><link href="https://ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html" rel="alternate"></link><published>2015-05-08T09:00:00-05:30</published><updated>2015-05-08T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2015-05-08:/habilitar-autenticacion-en-un-servidor-mongodb.html</id><summary type="html">&lt;p&gt;En el artículo sobre la instalación de un &lt;a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian"&gt;servidor mongodb&lt;/a&gt; faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor.&lt;/p&gt;
+&lt;p&gt;En este caso se habilitará dicha autenticación para el acceso al servidor.&lt;/p&gt;
+&lt;p&gt;Lo primero es deshabilitar la autenticación en el archivo &lt;code&gt;/etc/mongodb.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;# Turn on/off security …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;En el artículo sobre la instalación de un &lt;a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian"&gt;servidor mongodb&lt;/a&gt; faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor.&lt;/p&gt;
+&lt;p&gt;En este caso se habilitará dicha autenticación para el acceso al servidor.&lt;/p&gt;
+&lt;p&gt;Lo primero es deshabilitar la autenticación en el archivo &lt;code&gt;/etc/mongodb.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;# Turn on/off security.  Off is currently the default&lt;/span&gt;
+&lt;span class="err"&gt;#noauth = true&lt;/span&gt;
+&lt;span class="err"&gt;#auth = true&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se inicia el servicio de &lt;code&gt;mongodb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt; systemctl start  mongodb.service&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se revisa si levanto:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;systemctl&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;  &lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;
+&lt;span class="err"&gt;●&lt;/span&gt; &lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;An&lt;/span&gt; &lt;span class="n"&gt;object&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;document&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;oriented&lt;/span&gt; &lt;span class="n"&gt;database&lt;/span&gt;
+   &lt;span class="n"&gt;Loaded&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;loaded&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;systemd&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;enabled&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;Active&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;active&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;running&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;since&lt;/span&gt; &lt;span class="n"&gt;vie&lt;/span&gt; &lt;span class="mi"&gt;2015&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;05&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;08&lt;/span&gt; &lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;44&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt; &lt;span class="n"&gt;VET&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;ago&lt;/span&gt;
+     &lt;span class="n"&gt;Docs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;man&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;mongod&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ &lt;span class="n"&gt;Main&lt;/span&gt; &lt;span class="n"&gt;PID&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3405&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mongod&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;CGroup&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;slice&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;
+           &lt;span class="err"&gt;└─&lt;/span&gt;&lt;span class="mi"&gt;3405&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongod&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt;
+
+&lt;span class="n"&gt;may&lt;/span&gt; &lt;span class="mi"&gt;08&lt;/span&gt; &lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;44&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt; &lt;span class="n"&gt;grievous&lt;/span&gt; &lt;span class="n"&gt;mongod&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3405&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt; &lt;span class="n"&gt;going&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="k"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;log&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se accede al shell de &lt;code&gt;mongodb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;mongo&lt;/span&gt;
+&lt;span class="err"&gt;MongoDB shell version: 2.4.10&lt;/span&gt;
+&lt;span class="err"&gt;connecting to: test&lt;/span&gt;
+&lt;span class="err"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se cambia a la base de datos &lt;code&gt;admin&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;&amp;gt; use admin&lt;/span&gt;
+&lt;span class="err"&gt;switched to db admin&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea el usuario admin con clave 123456 (sólo de manera didactica) y rol lectura y escritura dbAdmin.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;&amp;gt; db.addUser(&amp;quot;admin&amp;quot;,&amp;quot;123&amp;quot;)&lt;/span&gt;
+&lt;span class="err"&gt;{&lt;/span&gt;
+&lt;span class="err"&gt; &amp;quot;user&amp;quot; : &amp;quot;admin&amp;quot;,&lt;/span&gt;
+&lt;span class="err"&gt; &amp;quot;readOnly&amp;quot; : false,&lt;/span&gt;
+&lt;span class="err"&gt; &amp;quot;pwd&amp;quot; : &amp;quot;9f3121efccbe3fef09a799d5e63077c2&amp;quot;,&lt;/span&gt;
+&lt;span class="err"&gt; &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;554cf1405cf1b965e6f5c10f&amp;quot;)&lt;/span&gt;
+&lt;span class="err"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se sale de la base de datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;&amp;gt; exit&lt;/span&gt;
+&lt;span class="err"&gt;bye&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se edita el archivo &lt;code&gt;/etc/mongodb.conf&lt;/code&gt;  para habilitar la autenticación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;# Turn on/off security.  Off is currently the default&lt;/span&gt;
+&lt;span class="err"&gt;#noauth = true&lt;/span&gt;
+&lt;span class="err"&gt;auth = true&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se reinicia &lt;code&gt;mongodb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;systemctl&lt;/span&gt; &lt;span class="n"&gt;stop&lt;/span&gt;  &lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;
+&lt;span class="n"&gt;systemctl&lt;/span&gt; &lt;span class="n"&gt;stop&lt;/span&gt;  &lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;
+&lt;span class="n"&gt;systemctl&lt;/span&gt; &lt;span class="n"&gt;status&lt;/span&gt;   &lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;
+&lt;span class="err"&gt;●&lt;/span&gt; &lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;An&lt;/span&gt; &lt;span class="n"&gt;object&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;document&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;oriented&lt;/span&gt; &lt;span class="n"&gt;database&lt;/span&gt;
+   &lt;span class="n"&gt;Loaded&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;loaded&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;systemd&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;enabled&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;Active&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;active&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;running&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;since&lt;/span&gt; &lt;span class="n"&gt;vie&lt;/span&gt; &lt;span class="mi"&gt;2015&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;05&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;08&lt;/span&gt; &lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;58&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;44&lt;/span&gt; &lt;span class="n"&gt;VET&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;ago&lt;/span&gt;
+     &lt;span class="n"&gt;Docs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;man&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;mongod&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ &lt;span class="n"&gt;Main&lt;/span&gt; &lt;span class="n"&gt;PID&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4188&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mongod&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+   &lt;span class="n"&gt;CGroup&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;slice&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;service&lt;/span&gt;
+           &lt;span class="err"&gt;└─&lt;/span&gt;&lt;span class="mi"&gt;4188&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongod&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt;
+
+&lt;span class="n"&gt;may&lt;/span&gt; &lt;span class="mi"&gt;08&lt;/span&gt; &lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;58&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;44&lt;/span&gt; &lt;span class="n"&gt;grievous&lt;/span&gt; &lt;span class="n"&gt;mongod&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;4188&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt; &lt;span class="n"&gt;going&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="k"&gt;var&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nb"&gt;log&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mongodb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se ejecuta el shell de &lt;code&gt;mongodb&lt;/code&gt; y se intentan visualizar las bases de datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;&amp;gt; show dbs&lt;/span&gt;
+&lt;span class="err"&gt;Fri May  8 12:06:19.122 listDatabases failed:{ &amp;quot;ok&amp;quot; : 0, &amp;quot;errmsg&amp;quot; : &amp;quot;unauthorized&amp;quot; } at src/mongo/shell/mongo.js:46&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se nota que no se tiene autorización para ver la lista de bases de datos.&lt;/p&gt;
+&lt;p&gt;Para ingresar y autenticar al usuario se hace lo siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;&amp;gt; use admin&lt;/span&gt;
+&lt;span class="err"&gt;switched to db admin&lt;/span&gt;
+&lt;span class="err"&gt;&amp;gt; db.auth(&amp;quot;admin&amp;quot;, &amp;quot;123&amp;quot;)&lt;/span&gt;
+&lt;span class="err"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Listar bases de datos:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;&amp;gt; show dbs&lt;/span&gt;
+&lt;span class="err"&gt;admin 0.203125GB&lt;/span&gt;
+&lt;span class="err"&gt;local 0.078125GB&lt;/span&gt;
+&lt;span class="err"&gt;personasdb 0.203125GB&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Listar usuarios:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;&amp;gt; db.system.users.find()&lt;/span&gt;
+&lt;span class="err"&gt;{ &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;554ce337c597c2dbd0089d74&amp;quot;), &amp;quot;user&amp;quot; : &amp;quot;admin&amp;quot;, &amp;quot;pwd&amp;quot; : &amp;quot;95ec4261124ba5951720b199908d892b&amp;quot;, &amp;quot;roles&amp;quot; : [  &amp;quot;readWrite&amp;quot;,  &amp;quot;dbAdmin&amp;quot; ] }  &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para más información se tienen los siguientes enlaces:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.crespo.org.ve/2014/09/instalar-un-servidor-mongodb-en-debian.html"&gt;https://dezkareid.wordpress.com/2013/07/29/control-de-usuarios-en-mongodb/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://carlosazaustre.es/blog/como-conectarte-remotamente-a-tu-base-de-datos-mongodb/"&gt;https://carlosazaustre.es/blog/como-conectarte-remotamente-a-tu-base-de-datos-mongodb/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://docs.mongodb.org/v2.4/tutorial/add-user-to-database/"&gt;http://docs.mongodb.org/v2.4/tutorial/add-user-to-database/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://juanvicenteherrera.es/2011/12/20/mongodb-conceptos-de-seguridad/"&gt;http://juanvicenteherrera.es/2011/12/20/mongodb-conceptos-de-seguridad/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://alexanderae.com/mongodb-autenticacion-autorizacion.html"&gt;https://alexanderae.com/mongodb-autenticacion-autorizacion.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="Mongodb"></category></entry><entry><title>Máquinas virtuales con kvm y qemu</title><link href="https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html" rel="alternate"></link><published>2013-06-02T09:00:00-05:30</published><updated>2013-06-02T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-06-02:/maquinas-virtuales-con-kvm-y-qemu.html</id><summary type="html">&lt;p&gt;Hace años usaba &lt;code&gt;qemu&lt;/code&gt; para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox.
+Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé &lt;code&gt;qemu&lt;/code&gt; con &lt;code&gt;kvm&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;Los paquetes necesario son:  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;kvm&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;virt-manager&lt;/code&gt;: Para manejar las máquians virtuales de forma gráfica&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;libvirt-bin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;qemu-kvm …&lt;/code&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Hace años usaba &lt;code&gt;qemu&lt;/code&gt; para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox.
+Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé &lt;code&gt;qemu&lt;/code&gt; con &lt;code&gt;kvm&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;Los paquetes necesario son:  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;kvm&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;virt-manager&lt;/code&gt;: Para manejar las máquians virtuales de forma gráfica&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;libvirt-bin&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;qemu-kvm&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Instalación:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;apt-get install kvm virt-manager libvirt-bin qemu-kvm&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Prueba inicial:
+Se iniciará una máquina virtual que arranca un live-cd, por ejemplo el live-cd de Linuxmint 15 con 720M de RAM:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;kvm -m 720 -cdrom  linuxmint-15-cinnamon-dvd-32bit.iso&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En la siguiente figura se muestra la captura de pantalla de la máquina virtual:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/maquinasvirtualesconkvmyqemu-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Crear un disco duro para la máquina virtual:
+Se crea el disco duro virtual en un archivo, en este caso se creará un disco duro virtual de 10 GB para instalar Debian en dicho disco duro virtual:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;qemu-img create debian.img 10G&lt;/span&gt;
+&lt;span class="err"&gt;Formatting &amp;#39;debian.img&amp;#39;, fmt=raw size=10737418240&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se tiene: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;ernesto@debian:~/imagenes$ ls -l&lt;/span&gt;
+&lt;span class="err"&gt;total 1808024&lt;/span&gt;
+&lt;span class="err"&gt;-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 16:22 debian.img&lt;/span&gt;
+&lt;span class="err"&gt;-rw-r--r-- 1 root    root    10737418240 jun  2 16:00 debianserver.img&lt;/span&gt;
+&lt;span class="err"&gt;-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 15:30 linuxmint.img&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Instalación de  Debian en la máquina virtual:&lt;/p&gt;
+&lt;p&gt;Ahora se instalará en el disco duro virtual llamado debian.img la distribución Debian para i386 con 720MB de RAM, se le define el disco duro a usar y el iso a utilizar:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;qemu -m 720 -hda debian.img  -cdrom ../Isos/debian-7.0.0-i386-lxde-CD-1.iso&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En la siguiente captura de pantalla se muestra el inicio del cd de Debian:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/maquinasvirtualesconkvmyqemu-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Luego de terminar el proceso de instalación se inicia la máquina virtual de la siguiente forma:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;qemu -m 720 -hda debian.img&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La siguiente figura muestra el escritorio de LXDE de Debian con la consola abierta mostrando la IP que tiene la máquina virtual:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/maquinasvirtualesconkvmyqemu-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Como se puede ver la IP que tiene la máquina virtual es una IP privada, la única forma de acceder a la máquina virtual es directamente desde &lt;code&gt;qemu&lt;/code&gt;, no se podrá abrir una sesión remota por que desde el equipo que aloja la máquina virtual no se tiene una ruta de como llegar a la IP de la máquina virtual.&lt;/p&gt;
+&lt;p&gt;Para ello necesitaremos darle unas opciones de redes a &lt;code&gt;qemu&lt;/code&gt;, estas son &lt;code&gt;nic&lt;/code&gt; y &lt;code&gt;tap&lt;/code&gt;, la última crea una interfaz &lt;code&gt;tap&lt;/code&gt; en el equipo que aloja la máquina virtual con la ruta de una red.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;qemu -m 720 -hda debian.img   -net nic -net tap&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Adicional a esto es necesario instalar &lt;code&gt;dnsmasq&lt;/code&gt; y configurar una regla de &lt;code&gt;iptables&lt;/code&gt; en la configuración de &lt;code&gt;kvm&lt;/code&gt; para poder navegar desde la máquina virtual.&lt;/p&gt;
+&lt;p&gt;Instalar dnsmasq:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;apt-get install dnsmasq&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Agregar la siguiente configuración en el archivo &lt;code&gt;/etc/dnsmasq.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#Archivo de resolv.conf con la configuración de dns de la red local.&lt;/span&gt;
+&lt;span class="err"&gt;resolv-file=/etc/resolv-orig.conf&lt;/span&gt;
+&lt;span class="err"&gt;#Interface a la cual acepta peticiones, en este caso tap0 para la máquina virtual (dns y dhcp) y wlan0 (sólo dns).&lt;/span&gt;
+&lt;span class="err"&gt;interface=tap0,wlan0&lt;/span&gt;
+&lt;span class="err"&gt;#No se activa el dhcp a la interfaz wlan0&lt;/span&gt;
+&lt;span class="err"&gt;no-dhcp-interface=wlan0&lt;/span&gt;
+&lt;span class="err"&gt;#Se define el rango de red de dhcp y el tiempo de liberación de las IPs.&lt;/span&gt;
+&lt;span class="err"&gt;dhcp-range=172.20.0.10,172.20.0.15,12h&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se agrega la siguiente regla de iptables al archivo &lt;code&gt;/etc/kvm/kvm-ifup&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;vim /etc/kvm/kvm-ifup&lt;/span&gt;
+&lt;span class="err"&gt;exec iptables  -t nat -A POSTROUTING -s 172.20.0.0/16 -o wlan0 -j MASQUERADE&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Está regla aplica nat a la red 172.20.0.0/255.255.0.0.&lt;/p&gt;
+&lt;p&gt;Ya con esta configuración ya se puede navegar y acceder remotamente a la máquina virtual.&lt;/p&gt;
+&lt;p&gt;Para terminar las configuraciones se agrega una regla de iptables que borre las tablas de nat en el archivo /etc/kvm/kvm-ifdown:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;vim&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;kvm&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;kvm&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ifdown&lt;/span&gt;
+
+&lt;span class="k"&gt;exec&lt;/span&gt; &lt;span class="n"&gt;iptables&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="n"&gt;nat&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;F&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;La tabla de enrutamiento del equipo donde se levanta la máquina virtual es la siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;root@debian:~# route -n&lt;/span&gt;
+&lt;span class="err"&gt;Kernel IP routing table&lt;/span&gt;
+&lt;span class="err"&gt;Destination     Gateway         Genmask         Flags Metric Ref    Use Iface&lt;/span&gt;
+&lt;span class="err"&gt;0.0.0.0         185.29.52.131   0.0.0.0         UG    0      0        0 wlan0&lt;/span&gt;
+&lt;span class="err"&gt;172.20.0.0      0.0.0.0         255.255.0.0     U     0      0        0 tap0&lt;/span&gt;
+&lt;span class="err"&gt;185.29.52.128   0.0.0.0         255.255.255.128 U     0      0        0 wlan0&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En la siguiente captura de pantalla se muestra la página de este blog desde la máquina virtual y la consola donde se muestra la IP que está usando la máquina virtual, con esa IP se puede acceder desde el equipo que aloja la máquina virtual.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/maquinasvirtualesconkvmyqemu-4.png"&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Debian"></category><category term="General"></category><category term="KVM"></category><category term="qemu"></category></entry><entry><title>Encender y apagar un LED constantemente con Arduino</title><link href="https://ecrespo.github.io/encender-y-apagar-un-led-constantemente-con-arduino.html" rel="alternate"></link><published>2013-02-01T09:00:00-05:30</published><updated>2013-02-01T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2013-02-01:/encender-y-apagar-un-led-constantemente-con-arduino.html</id><summary type="html">&lt;p&gt;Tenía mucho tiempo sin hacer pruebas en el área de diseño digital o electrónica. A finales del año pasado decidí comprar una placa &lt;a href="https://es.wikipedia.org/wiki/Arduino"&gt;Arduino&lt;/a&gt; y empezar a hacer pruebas. A continuación explico un ejemplo sencillo de encendido y apagado de un Diodo Emisor de Luz (LED).&lt;/p&gt;
+&lt;p&gt;Arduino es una plataforma …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Tenía mucho tiempo sin hacer pruebas en el área de diseño digital o electrónica. A finales del año pasado decidí comprar una placa &lt;a href="https://es.wikipedia.org/wiki/Arduino"&gt;Arduino&lt;/a&gt; y empezar a hacer pruebas. A continuación explico un ejemplo sencillo de encendido y apagado de un Diodo Emisor de Luz (LED).&lt;/p&gt;
+&lt;p&gt;Arduino es una plataforma de Hardware Libre basada en un microcontrolador y  un entorno de Desarrollo que facilita el desarrollo de proyectos de Electrónica.&lt;/p&gt;
+&lt;p&gt;Como primer ejemplo se conectará un LED en serie con una resistencia de (270 Ohm) y conectado al Arduino.&lt;/p&gt;
+&lt;p&gt;Los componentes son:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Resistencia de 270 Ohm (0.5 W).&lt;/li&gt;
+&lt;li&gt;Un LED Rojo de 5 mm.&lt;/li&gt;
+&lt;li&gt;Una placa Arduino Uno.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Es necesario instalar en Debian el programa fritzing y Arduino IDE:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;apt-get install arduino-mk arduino-core arduino fritzing fritzing-data&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;El esquema de conexión se desarrolló con la herramienta &lt;code&gt;Fritzing&lt;/code&gt;. Se muestra en la siguiente figura el esquema:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/encenderyapagarunledconstantementeconarduino-1.jpg"&gt; &lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra una foto de la interconexión:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/encenderyapagarunledconstantementeconarduino-2.jpg"&gt; &lt;/p&gt;
+&lt;p&gt;El programa se verifica, se compila y se carga en el Arduino con la herramienta Arduino IDE.
+La siguiente figura muestra una captura de pantalla de la herramienta Arduino IDE:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/encenderyapagarunledconstantementeconarduino-3.png"&gt; &lt;/p&gt;
+&lt;p&gt;A continuación se muestra el código:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/* Ejemplo de encendido y apagado de&lt;/span&gt;
+
+&lt;span class="cm"&gt;  un LED&lt;/span&gt;
+
+
+
+&lt;span class="cm"&gt; */&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+
+
+&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Se&lt;span class="w"&gt; &lt;/span&gt;define&lt;span class="w"&gt; &lt;/span&gt;el&lt;span class="w"&gt; &lt;/span&gt;Pin&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;13&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;donde&lt;span class="w"&gt; &lt;/span&gt;se&lt;span class="w"&gt; &lt;/span&gt;conectara&lt;span class="w"&gt; &lt;/span&gt;el&lt;span class="w"&gt; &lt;/span&gt;LED&lt;span class="w"&gt;&lt;/span&gt;
+
+int&lt;span class="w"&gt; &lt;/span&gt;led&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;13&lt;/span&gt;&lt;span class="err"&gt;;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+
+
+&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Se&lt;span class="w"&gt; &lt;/span&gt;inicializa&lt;span class="w"&gt; &lt;/span&gt;el&lt;span class="w"&gt; &lt;/span&gt;Pin&lt;span class="w"&gt; &lt;/span&gt;digital&lt;span class="w"&gt; &lt;/span&gt;como&lt;span class="w"&gt; &lt;/span&gt;una&lt;span class="w"&gt; &lt;/span&gt;salida&lt;span class="w"&gt;&lt;/span&gt;
+
+void&lt;span class="w"&gt; &lt;/span&gt;setup&lt;span class="o"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="w"&gt;                &lt;/span&gt;
+
+&lt;span class="w"&gt;  &lt;/span&gt;pinMode&lt;span class="o"&gt;(&lt;/span&gt;led&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;OUTPUT&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="err"&gt;;&lt;/span&gt;&lt;span class="w"&gt;     &lt;/span&gt;
+
+&lt;span class="err"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+
+
+&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Se&lt;span class="w"&gt; &lt;/span&gt;crea&lt;span class="w"&gt; &lt;/span&gt;una&lt;span class="w"&gt; &lt;/span&gt;funcion&lt;span class="w"&gt; &lt;/span&gt;ciclo&lt;span class="w"&gt; &lt;/span&gt;donde&lt;span class="w"&gt; &lt;/span&gt;se&lt;span class="w"&gt; &lt;/span&gt;enciende&lt;span class="w"&gt; &lt;/span&gt;y&lt;span class="w"&gt; &lt;/span&gt;apaga&lt;span class="w"&gt; &lt;/span&gt;el&lt;span class="w"&gt; &lt;/span&gt;LED&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;cada&lt;span class="w"&gt; &lt;/span&gt;segundo&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+void&lt;span class="w"&gt; &lt;/span&gt;loop&lt;span class="o"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="w"&gt;  &lt;/span&gt;digitalWrite&lt;span class="o"&gt;(&lt;/span&gt;led&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;HIGH&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="err"&gt;;&lt;/span&gt;&lt;span class="w"&gt;   &lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Se&lt;span class="w"&gt; &lt;/span&gt;enciende&lt;span class="w"&gt; &lt;/span&gt;el&lt;span class="w"&gt; &lt;/span&gt;LED&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="w"&gt;  &lt;/span&gt;delay&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;1000&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="err"&gt;;&lt;/span&gt;&lt;span class="w"&gt;               &lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;se&lt;span class="w"&gt; &lt;/span&gt;espera&lt;span class="w"&gt; &lt;/span&gt;un&lt;span class="w"&gt; &lt;/span&gt;segundo&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="w"&gt;  &lt;/span&gt;digitalWrite&lt;span class="o"&gt;(&lt;/span&gt;led&lt;span class="o"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;LOW&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="err"&gt;;&lt;/span&gt;&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;Se&lt;span class="w"&gt; &lt;/span&gt;apaga&lt;span class="w"&gt; &lt;/span&gt;el&lt;span class="w"&gt; &lt;/span&gt;LED&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="w"&gt;  &lt;/span&gt;delay&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;1000&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="err"&gt;;&lt;/span&gt;&lt;span class="w"&gt;               &lt;/span&gt;&lt;span class="o"&gt;//&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;se&lt;span class="w"&gt; &lt;/span&gt;espera&lt;span class="w"&gt; &lt;/span&gt;un&lt;span class="w"&gt; &lt;/span&gt;segundo&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="err"&gt;}&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al cargar el programa el LED empieza a encender y apagarse a intervalos de 1 segundo.&lt;/p&gt;
+&lt;p&gt;A continuación se muestra un vídeo del encendido y apagado del LED:&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://youtu.be/vzgGxkola_0"&gt;https://youtu.be/vzgGxkola_0&lt;/a&gt; &lt;/p&gt;
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/vzgGxkola_0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="Arduino"></category></entry><entry><title>Configurar pantalla touch Bematech en Debian</title><link href="https://ecrespo.github.io/configurar-pantalla-touch-bematech-en-debian.html" rel="alternate"></link><published>2012-12-12T09:00:00-05:30</published><updated>2012-12-12T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2012-12-12:/configurar-pantalla-touch-bematech-en-debian.html</id><summary type="html">&lt;p&gt;Se realiza la instalación de Debian Squeeze con la pantacha táctil conectada. en este caso la pantalla es una pantalla táctil por medio de una conexión USB.&lt;/p&gt;
+&lt;p&gt;Al terminar la instalación se ejecuta el comando lsusb para ver como se detecta la pantalla:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;lsusb&lt;/span&gt;
+&lt;span class="err"&gt;Bus 004 Device 002: ID 0eef …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Se realiza la instalación de Debian Squeeze con la pantacha táctil conectada. en este caso la pantalla es una pantalla táctil por medio de una conexión USB.&lt;/p&gt;
+&lt;p&gt;Al terminar la instalación se ejecuta el comando lsusb para ver como se detecta la pantalla:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;lsusb&lt;/span&gt;
+&lt;span class="err"&gt;Bus 004 Device 002: ID 0eef:0001 D-WAV Scientific Co., Ltd eGalax TouchScreen&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Es un dispositivo de la Empresa eGalax.
+Se visita la página de eGalax para bakar los drivers para &lt;a href="http://home.eeti.com.tw/web20/eGalaxTouchDriver/linuxDriver.htm"&gt;Linux&lt;/a&gt;,el driver es eGTouch_v2.5.2107.L-x, este driver es el que tiene soporte para kernel superior a 2.6.24.&lt;/p&gt;
+&lt;p&gt;Instalar paquetes necesarios para la configuración del touch:&lt;/p&gt;
+&lt;p&gt;Es necesario instalar librerías de xorg y los headers del kernel que tiene Squeeze.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;apt-get install xserver-xorg-input-evtouch xinput xserver-xorg-dev xserver-xorg-input-evdev-dev xserver-xorg-input-evdev xserver-xorg-input-synaptics-dev  linux-headers-2.6.32-5-686&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al tener el archivo comprimido en el equipo se descomprime:
+&lt;code&gt;tar -xvzf eGTouch_v2.5.2107.L-x.tar.gz&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Se entra en el directorio del driver:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;cd eGTouch_v2.5.2107.L-x/&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ahora se ejecuta el script &lt;code&gt;setup.sh&lt;/code&gt; el cual es una ayuda para el proceso de Instalación del driver:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;setup&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sh&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;continuación&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;se&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sigue&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;las&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;instrucciones&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;del&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;instalador&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Se&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;resaltará&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;la&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;parte&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;de&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;las&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;preguntas&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;del&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;instalador&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Driver&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;installer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;touch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;controller&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Script&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Version&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;1.04.2013&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Check&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;user&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;permission&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;you&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;supervisor&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Platform&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nc"&gt;binary&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;interface&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i686&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;W&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;detected&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="n"&gt;Declaration&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Disclaimer&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;The&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;programs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;including&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;but&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;not&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;limited&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;software&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;and&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;firmware&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hereinafter&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;referred&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;&amp;quot;Programs&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ss"&gt;&amp;quot;PROGRAMS&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;are&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;owned&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;by&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;eGalax_eMPIA&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Technology&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Inc&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hereinafter&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;referred&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;are&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;compiled&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Source&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;hereby&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;grants&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;licensee&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;personal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;non&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;exclusive&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;non&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;transferable&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;license&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;copy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;use&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;and&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="k"&gt;create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;derivative&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;works&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;of&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Programs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sole&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;purpose&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;conjunction&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;an&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Product&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;including&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;but&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;not&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;limited&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;integrated&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;circuit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;and&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;controller&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;Any&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;reproduction&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;copies&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;modification&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;translation&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;compilation&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;representation&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="k"&gt;of&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Programs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;except&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;specified&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;above&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;prohibited&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;without&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;express&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;written&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;permission&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;by&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="nl"&gt;Disclaimer&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;MAKES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;NO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;WARRANTY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;OF&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;ANY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;KIND&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EXPRESS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;OR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;IMPLIED&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="k"&gt;WITH&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;REGARD&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;TO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PROGRAMS&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;INCLUDING&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;BUT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;NOT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;LIMITED&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;TO&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;THE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;IMPLIED&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;WARRANTIES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;OF&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;MERCHANTABILITY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;FITNESS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FOR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PARTICULAR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PURPOSE&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;reserves&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;right&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;make&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;changes&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;without&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;further&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;notice&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Programs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;described&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;herein&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Licensee&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;agrees&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;that&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;does&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;not&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;assume&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="ow"&gt;any&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;liability&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;damages&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;costs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;including&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;but&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;not&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;limited&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;attorney&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;fees&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;arising&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;out&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Programs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;themselves&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;those&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;arising&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;out&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;combination&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Programs&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;into&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;other&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;products&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;circuit&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;The&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;use&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;inclusion&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;of&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;EETI&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;s Programs implies that the&lt;/span&gt;
+&lt;span class="s1"&gt;Licensee assumes all risk of such use and in doing so indemnifies EETI&lt;/span&gt;
+&lt;span class="s1"&gt;against all charges, including but not limited to any claims to&lt;/span&gt;
+&lt;span class="s1"&gt;infringement of any third party&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;intellectual&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;property&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;right&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="n"&gt;Do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;you&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;agree&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;above&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;patent&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;declaration&lt;/span&gt;&lt;span class="vm"&gt;?&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Yes&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;agree&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;No&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;don&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;agree&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Y&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Q&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Which&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;interface&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;controller&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;you&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;use&lt;/span&gt;&lt;span class="vm"&gt;?&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;RS232&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;2&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;USB&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;3&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PS2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Please&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;confirm&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;touch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;controller&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;linked&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;your&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Press&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Enter&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;key&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;continue&lt;/span&gt;&lt;span class="p"&gt;..........&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Found&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;rc&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;local&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;file&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Found&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;HID&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;compliant&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;touch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;controller&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Org&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;1.7.7&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;verion&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;1.7.6&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;upwards&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Found&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;uinput&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ko&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;modules&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Attach&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;uinput&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;at&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;boot&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Add&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;uinput&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;module&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;into&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;modules&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;file&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Place&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eGTouch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;driver&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;archive&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="k"&gt;local&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;eGTouch32withX&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eGTouch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;daemon&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shortcut&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eGTouchU&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tool&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shortcut&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eCalib&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tool&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shortcut&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Append&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eGTouch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;daemon&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;execution&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;into&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;rc&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="k"&gt;local&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Q&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;many&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;controllers&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;do&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;you&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;want&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;plug&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;system&lt;/span&gt;&lt;span class="vm"&gt;?&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;1-10&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Default&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;1&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Device&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Nums&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;is&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;set&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Copy&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;udev&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;rule&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;52&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;egalax&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;virtual&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;share&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;X11&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;xorg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;eGTouchU&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shortcut&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Driver&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;installation&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;completed&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Setup&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;version&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;1.04.2013&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Please&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;reboot&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;the&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;system&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="c1"&gt;--------------------------------------------------------------------&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Lo que queda es reiniciar el equipo.&lt;/p&gt;
+&lt;p&gt;Ahora viene el proceso de configuración del touch ejecutando el comando &lt;code&gt;eGTouchU&lt;/code&gt; desde la consola: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;eGTouchU &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Este despliega una herramienta gráfica que permite configurar y calibrar el touch:&lt;/p&gt;
+&lt;p&gt;La figura muestra la pestaña general donde debe aparecer el controlador USB.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-1.png"&gt; &lt;/p&gt;
+&lt;p&gt;La pestaña Setting se deja tal cual viene pre configurada:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-2.png"&gt; &lt;/p&gt;
+&lt;p&gt;La pestaña Tool es la que permite calibrar la pantalla toch, se selecciona la Función de Linearización con 25 puntos de calibración:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-3.png"&gt; &lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-4.png"&gt; &lt;/p&gt;
+&lt;p&gt;En la siguiente figura se muestra la pantalla en el momento de calibrarla:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-5.jpg"&gt; &lt;/p&gt;
+&lt;p&gt;Ahora se selecciona la prueba de dibujo para verificar el correcto funcionamiento de la pantalla táctil:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-6.png"&gt; &lt;/p&gt;
+&lt;p&gt;En la figura se muestra el funcionamiento de la pantalla desde la prueba de dibujo:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-7.jpg"&gt; &lt;/p&gt;
+&lt;p&gt;En la pestaña Display se selecciona modo full pantalla:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-8.png"&gt; &lt;/p&gt;
+&lt;p&gt;En la pestaña Edge no se realizan cambios:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-9.png"&gt; &lt;/p&gt;
+&lt;p&gt;En la pestaña Misc sólo se cambia el Modo del Mouse a Click on Touch:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="./images/configurarpantallatouchbematechendebian-10.png"&gt; &lt;/p&gt;
+&lt;p&gt;Luego de esto se pueden aplicar los cambios y reiniciar el equipo.
+Con esto ya se tiene la pantalla táctil funcionando.&lt;/p&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Canaima"></category><category term="Debian"></category><category term="General"></category><category term="gnome"></category><category term="Linux"></category><category term="Ubuntu"></category><category term="Pantalla táctil"></category></entry><entry><title>Accesibilidad en squeeze</title><link href="https://ecrespo.github.io/accesibilidad-en-squeeze.html" rel="alternate"></link><published>2011-02-06T09:00:00-05:30</published><updated>2011-02-06T09:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2011-02-06:/accesibilidad-en-squeeze.html</id><summary type="html">&lt;p&gt;Desde que se inicio el desarrollo de squeeze tenía claro que vendrían mejoras en el proceso de accesibilidad en el instalador de Debian. Con Lenny se podía usar una lectora Braille USB sin problemas en el proceso de instalación en modo texto y gráfico.&lt;/p&gt;
+&lt;p&gt;Con la versión de squeeze incluso …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Desde que se inicio el desarrollo de squeeze tenía claro que vendrían mejoras en el proceso de accesibilidad en el instalador de Debian. Con Lenny se podía usar una lectora Braille USB sin problemas en el proceso de instalación en modo texto y gráfico.&lt;/p&gt;
+&lt;p&gt;Con la versión de squeeze incluso en el documento de instalación se explica como habilitar la accesibilidad en este proceso, la información se encuentra en este &lt;a href="http://www.debian.org/releases/stable/i386/ch05s02.html.es"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A continuación daré un breve resumen de la guía:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Dispositivos Braille USB: Estos se detectan automáticamente en el proceso de arranque del instalador gracias a la aplicación brltty, para más información sobre está aplicación pueden visitar el &lt;a href="http://www.mielke.cc/brltty/doc/drivers/"&gt;enlace&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Dispositivos Braille seriales: Para estos dispositivos es necesario pasarle unos parámetros al kernel al momento de arranque del instalador. La sintaxis es brltty=controlador, puerto,tabla.Donde el puerto por defecto es ttyS0, la lista de controladores la puede encontrar &lt;a href="http://www.mielke.cc/brltty/doc/Manual-BRLTTY/English/BRLTTY-11.html"&gt;aquí&lt;/a&gt; y la lista de códigos de las tablas &lt;a href="http://www.mielke.cc/brltty/doc/Manual-BRLTTY/English/BRLTTY-6.html"&gt;aquí&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Dispositivos sintetizadores de voz: Está es la mejora que tiene squeeze, ya que ahora se puede reproducir voces en el proceso de instalación de Debian sólo para el instalador gráfico; es necesario pasarle unos parámetros de arranque al cd de instalación con la siguiente sintaxis: speakup.synth=controlador. La reproducción de las voces se logra por medio de la aplicación speakup pero es necesario pasarle el tipo de controlador para que pueda reproducir las voces de forma adecuada. En este &lt;a href="http://www.linux-speakup.org/spkguide.txt"&gt;enlace&lt;/a&gt; se encuentra la guía de como usar speakup y la lista de controladores.&lt;/li&gt;
+&lt;li&gt;Temas de alto contraste: Para las personas con visión disminuida se puede usar un tema de alto contraste, para habilitarlo en el arranque coloque el siguiente parámetro theme=dark. Está opción ya existía en Lenny en la interfaz gráfica del instalador.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Adicionalmente el equipo de Debian ha creado un grupo dedicado a accesibilidad en la personalización del cd de Debian, para más información visiten el sitio de Debian Pure Blends dedicado a la &lt;a href="http://www.debian.org/devel/debian-accessibility/"&gt;accesibilidad&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Linux"></category><category term="Debian"></category><category term="Accesibilidad"></category></entry><entry><title>Conectarse a internet por medio de un celular con android (AziLink)</title><link href="https://ecrespo.github.io/conectarse-a-internet-por-medio-de-un-celular-con-android-azilink.html" rel="alternate"></link><published>2010-05-29T13:00:00-05:30</published><updated>2010-05-29T13:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-29:/conectarse-a-internet-por-medio-de-un-celular-con-android-azilink.html</id><summary type="html">&lt;p&gt;A diferencia de las aplicaciones que usan http proxy AziLink permite conectarse por celular usando openvpn.&lt;/p&gt;
+&lt;p&gt;La página del proyecto AziLink lo puedes conseguir en este e&lt;a href="http://code.google.com/p/azilink/"&gt;nlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El enlace para bajar openvpn es openvpn.net. En Debian y Ubuntu con ejecutar un aptitude es suficiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;aptitude install openvpn-blacklist openvpn …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;A diferencia de las aplicaciones que usan http proxy AziLink permite conectarse por celular usando openvpn.&lt;/p&gt;
+&lt;p&gt;La página del proyecto AziLink lo puedes conseguir en este e&lt;a href="http://code.google.com/p/azilink/"&gt;nlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El enlace para bajar openvpn es openvpn.net. En Debian y Ubuntu con ejecutar un aptitude es suficiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;aptitude install openvpn-blacklist openvpn&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Los pasos son los siguientes:
+1. Habilitar el modo depuración del USB en el teléfono. En el home de las apliaciones del celular ir a Configuración-&amp;gt;Aplicaciones-&amp;gt;Desarrollo-&amp;gt;USB debugging.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Instale el SDK de Android, el procedimiento lo consigue en este &lt;a href="http://ernesto-ecrespo.blogspot.com/2010/05/instalacion-del-sdk-de-android-en-linux.html"&gt;enlace&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Instalar AziLink desde el market del celular.&lt;/li&gt;
+&lt;li&gt;En el computador hacer el redireccionamiento de puertos:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;adb forward tcp:41927 tcp:41927&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;En el celular ejecutar AziLink y verificar que su servicio esté activo.&lt;/li&gt;
+&lt;li&gt;Bajar y descomprimir azilink.zip donde se encuentra el archivo de configuración.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;La configuración de openvpn es la siguiente:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#Define tun como dispositivo&lt;/span&gt;
+&lt;span class="err"&gt;dev tun&lt;/span&gt;
+&lt;span class="err"&gt;#Define la IP y puerto remoto, el que se configuro en la redirección con adb&lt;/span&gt;
+&lt;span class="err"&gt;remote 127.0.0.1 41927 tcp-client&lt;/span&gt;
+&lt;span class="err"&gt;#Define la IP punto a punto de la conexión openvpn&lt;/span&gt;
+&lt;span class="err"&gt;ifconfig 192.168.56.2 192.168.56.1&lt;/span&gt;
+&lt;span class="err"&gt;#Define rutas&lt;/span&gt;
+&lt;span class="err"&gt;route 0.0.0.0 128.0.0.0&lt;/span&gt;
+&lt;span class="err"&gt;route 128.0.0.0 128.0.0.0&lt;/span&gt;
+&lt;span class="err"&gt;#Define flags del socket.&lt;/span&gt;
+&lt;span class="err"&gt;socket-flags TCP_NODELAY&lt;/span&gt;
+&lt;span class="err"&gt;#keepalive 10 30&lt;/span&gt;
+&lt;span class="err"&gt;ping 10&lt;/span&gt;
+&lt;span class="err"&gt;#Define el DNS por medio de las opciones de dhcp&lt;/span&gt;
+&lt;span class="err"&gt;dhcp-option DNS 192.168.56.1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Agregar en /etc/resolv.conf el siguiente DNS:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;nameserver 192.168.56.1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Iniciar openvpn con el archivo de configuración:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;sudo openvpn --config azilink.ovpn &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OpenVPN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;2.1.0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i486&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;pc&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;linux&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;gnu&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;SSL&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;LZO2&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;EPOLL&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;PKCS11&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;MH&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;PF_INET6&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;eurephia&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;built&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;on&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Apr&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;WARNING&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;ping&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;should&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;normally&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;be&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;used&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;ping&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;restart&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;ping&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="k"&gt;exit&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;NOTE&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OpenVPN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;2.1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;requires&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;--script-security 2&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;higher&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;call&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;user&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;defined&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;scripts&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;or&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;executables&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*******&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;WARNING&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*******&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;all&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;encryption&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;and&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;authentication&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;features&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;disabled&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="ow"&gt;all&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;data&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;will&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;be&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tunnelled&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;cleartext&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;TUN&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;TAP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;device&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tun0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;opened&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sbin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ifconfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tun0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;192.168.56.2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pointopoint&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;192.168.56.1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;mtu&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;1500&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Attempting&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;to&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;establish&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;TCP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;connection&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="mf"&gt;127.0.0.1&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;41927&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;nonblock&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;TCP&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;connection&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;established&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="mf"&gt;127.0.0.1&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;41927&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;TCPv4_CLIENT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;local&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;undef&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;TCPv4_CLIENT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;link&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nl"&gt;remote&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="mf"&gt;127.0.0.1&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;41927&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;21&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Peer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Connection&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Initiated&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;with&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="mf"&gt;127.0.0.1&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;41927&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="n"&gt;Sat&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;May&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;29&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="err"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;22&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Initialization&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;Sequence&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Completed&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Al revisar en whatismyip.com la IP que se está usando es la siguiente 201.239.27.224.&lt;/p&gt;
+&lt;p&gt;Personalmente prefiero está opción que usar http proxy, el archivo de configuración de openvpn se puede mejorar como permitir que copie el archivo de resolv.conf al momento de levantar el vpn y colocar el archivo anterior al detener el vpn.&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Linux"></category><category term="Android"></category><category term="Debian"></category></entry><entry><title>Conectarse a Internet por medio de un celular con android (proxoid)</title><link href="https://ecrespo.github.io/conectarse-a-internet-por-medio-de-un-celular-con-android-proxoid.html" rel="alternate"></link><published>2010-05-29T12:00:00-05:30</published><updated>2010-05-29T12:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-29:/conectarse-a-internet-por-medio-de-un-celular-con-android-proxoid.html</id><summary type="html">&lt;p&gt;Como mencioné en el artículo anterior iniciaré una serie de artículos sobre distintas aplicaciones para conectarse a internet desde el celular.&lt;/p&gt;
+&lt;p&gt;La primera aplicación se llama proxoid, es un proxy http y el sitio de la aplicación lo pueden encontrar en el &lt;a href="http://code.google.com/p/proxoid/"&gt;siguiente enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;La guía de instalación general lo …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Como mencioné en el artículo anterior iniciaré una serie de artículos sobre distintas aplicaciones para conectarse a internet desde el celular.&lt;/p&gt;
+&lt;p&gt;La primera aplicación se llama proxoid, es un proxy http y el sitio de la aplicación lo pueden encontrar en el &lt;a href="http://code.google.com/p/proxoid/"&gt;siguiente enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;La guía de instalación general lo pueden conseguir &lt;a href="http://code.google.com/p/proxoid/wiki/installationPhone"&gt;aquí&lt;/a&gt; y la dedicada a Linux &lt;a href="http://code.google.com/p/proxoid/wiki/installationLinux"&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Lo primero que hay que hacer es bajar el programa proxoid desde el market de Android.&lt;/li&gt;
+&lt;li&gt;Al tener instalado el programa y tener configurado el udev en Linux y bajar el SDK para usar adb como se explicó en este &lt;a href="http://ernesto-ecrespo.blogspot.com/2010/05/comandos-basicos-de-adb-android-debug.html"&gt;artículo&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Crear el tunel. Se ejecuta adb para reenviar los paquetes, el comando es el siguiente:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;adb forward tcp:8080 tcp:8080&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;Configurar el navegador para usar el proxy.
+Abra las preferencias de firefox como lo muestra la figura (la pestaña red 
+darle clip al botón configuración):&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img alt="proxoid 1" src="./images/proxoid1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al presionar configurar se agregará el proxy como localhost y puerto 8080 como
+lo muestra la siguiente figura:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="proxoid 2" src="./images/proxoid2.png"&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Iniciar proxoid en el celular. Simplemente ejecutan proxoid y luego le dan start&lt;/li&gt;
+&lt;li&gt;Al visitar whatismyip.com se mostrará que la IP que usa el navegador para internet
+es 201.240.16.229 y el equipo tiene un IP distinto al que muestra el navegador.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Linux"></category><category term="Android"></category><category term="Debian"></category></entry><entry><title>Comandos básicos de adb (Android Debug Bridge) para acceder al motorola milestone A853</title><link href="https://ecrespo.github.io/comandos-basicos-de-adb-android-debug-bridge-para-acceder-al-motorola-milestone-a853.html" rel="alternate"></link><published>2010-05-29T10:00:00-05:30</published><updated>2010-05-29T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-29:/comandos-basicos-de-adb-android-debug-bridge-para-acceder-al-motorola-milestone-a853.html</id><summary type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/instalacion-del-sdk-de-android-en-linux.html#instalacion-del-sdk-de-android-en-linux"&gt;artículo anterior&lt;/a&gt; se explico como instalar el SDK de Android en Debian, a continuación se explicará el comando que permite dar acceso al celular como ver la microsd, instalar aplicaciones en el celular desde el computador entre otras cosas. &lt;/p&gt;
+&lt;p&gt;Cambiarse al directorio tools del SDK de Android. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;cd …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/instalacion-del-sdk-de-android-en-linux.html#instalacion-del-sdk-de-android-en-linux"&gt;artículo anterior&lt;/a&gt; se explico como instalar el SDK de Android en Debian, a continuación se explicará el comando que permite dar acceso al celular como ver la microsd, instalar aplicaciones en el celular desde el computador entre otras cosas. &lt;/p&gt;
+&lt;p&gt;Cambiarse al directorio tools del SDK de Android. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sdk_r06&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;linux_86&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;tools&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Crear un enlace de la aplicación adb a /usr/bin . &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;ln&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ernesto&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sdk&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;linux_86&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;tools&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;adb&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;adb&lt;/span&gt; 
+
+&lt;span class="n"&gt;ls&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;adb&lt;/span&gt; 
+&lt;span class="n"&gt;lrwxrwxrwx&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;44&lt;/span&gt; &lt;span class="n"&gt;may&lt;/span&gt; &lt;span class="mi"&gt;27&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;usr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;bin&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;adb&lt;/span&gt; &lt;span class="o"&gt;-&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ernesto&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sdk&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;linux_86&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;tools&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;adb&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Crear el archivo 50-android.rules en el directorio /etc/udev/rules.d &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;vim /etc/udev/rules.d/50-android.rules &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Agregar el siguiente contenido al archivo: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;SUBSYSTEMS==&amp;quot;usb&amp;quot;, ATTRS{idVendor}==&amp;quot;0bb4&amp;quot;, ATTRS{idProduct}==&amp;quot;0c02&amp;quot;, GROUP=&amp;quot;androiddev&amp;quot;, SYMLINK+=&amp;quot;android%n&amp;quot; &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se crea el grupo androiddev. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;sudo addgroup --system androiddev &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se cambia los permisos del archivo y se recarga las reglas udev. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="n"&gt;chmod&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;rx&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;udev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;rules&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;50&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rules&lt;/span&gt; 
+&lt;span class="n"&gt;sudo&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;udev&lt;/span&gt; &lt;span class="n"&gt;reload&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En el celular asegurarse que está en modo depuración de la conexión USB. Esto es: 
+Ajustes-&amp;gt;Aplicaciones-&amp;gt;Desarrollo. &lt;/p&gt;
+&lt;p&gt;Iniciar adb como servidor: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;sudo ./adb start-server &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Luego se verifica que se tiene acceso al celular con el comando adb devices. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;adb devices &lt;/span&gt;
+&lt;span class="err"&gt;* daemon not running. starting it now * &lt;/span&gt;
+&lt;span class="err"&gt;* daemon started successfully * &lt;/span&gt;
+&lt;span class="err"&gt;List of devices attached &lt;/span&gt;
+&lt;span class="err"&gt;0403725B09015010 device &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Cuando aparece está información y no caracteres raros o ??? o no aparece nada es que ya se tiene conectado el celular al computador. &lt;/p&gt;
+&lt;p&gt;El comando adb shell nos crea un shell desde el celular y se ejecuta el comando ls -l: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ls -l 
+drwxrwxrwt root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:01 tmp 
+drwxrwxr-x system system &lt;span class="m"&gt;2010&lt;/span&gt;-02-23 &lt;span class="m"&gt;07&lt;/span&gt;:41 pds 
+drwxrwxrwt root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;13&lt;/span&gt;:21 sqlite_stmt_journals 
+dr-x------ root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:00 config 
+drwxrwx--- system cache &lt;span class="m"&gt;2010&lt;/span&gt;-05-27 &lt;span class="m"&gt;11&lt;/span&gt;:00 cache 
+d---rwxr-x system sdcard_rw &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:01 sdcard 
+lrwxrwxrwx root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:00 d -&amp;gt; /sys/kernel/debug 
+lrwxrwxrwx root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:00 etc -&amp;gt; /system/etc 
+drwxr-xr-x root root &lt;span class="m"&gt;2010&lt;/span&gt;-01-06 &lt;span class="m"&gt;09&lt;/span&gt;:29 system 
+drwxr-xr-x root root &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 sys 
+drwxr-x--- root root &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 sbin 
+dr-xr-xr-x root root &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 proc 
+-rwxr-x--- root root &lt;span class="m"&gt;453&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init_prep_keypad.sh 
+-rwxr-x--- root root &lt;span class="m"&gt;13218&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init.rc 
+-rwxr-x--- root root &lt;span class="m"&gt;14824&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init.mapphone_umts.rc 
+-rwxr-x--- root root &lt;span class="m"&gt;6840&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init.mapphone_cdma.rc 
+-rwxr-x--- root root &lt;span class="m"&gt;1677&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init.goldfish.rc 
+-rwxr-x--- root root &lt;span class="m"&gt;104324&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 init 
+-rw-r--r-- root root &lt;span class="m"&gt;118&lt;/span&gt; &lt;span class="m"&gt;1969&lt;/span&gt;-12-31 &lt;span class="m"&gt;20&lt;/span&gt;:00 default.prop 
+drwxrwx--x system system &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:01 data 
+drwx------ root root &lt;span class="m"&gt;2009&lt;/span&gt;-11-19 &lt;span class="m"&gt;15&lt;/span&gt;:42 root 
+drwxr-xr-x root root &lt;span class="m"&gt;2010&lt;/span&gt;-05-29 &lt;span class="m"&gt;08&lt;/span&gt;:01 dev 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Este comando muestra los archivos y directorios que se tienen en el celular. Noten que son comandos unix/Linux así que si se cambian de directorio al system y luego app en el encontrarán los paquetes apk que se encuentran instalados en el celular. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt; 
+&lt;span class="n"&gt;pwd&lt;/span&gt; 
+&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="n"&gt;pwd&lt;/span&gt; 
+&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;system&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt; 
+&lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="n"&gt;ls&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;1500786&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;MotoID&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;433280&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;MovilnetContainer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;2624470&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;Maps&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;677433&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;Talk&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;50410&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;GoogleContactsSyncAdapter&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;327750&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;MediaUploader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;1310501&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;Vending&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;735409&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;Gmail&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;380550&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;GoogleApps&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;778098&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;SetupWizard&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;rw&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt; &lt;span class="mi"&gt;53777&lt;/span&gt; &lt;span class="mi"&gt;2010&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;01&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;06&lt;/span&gt; &lt;span class="mi"&gt;09&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt; &lt;span class="n"&gt;TalkProvider&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apk&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Estos son algunos programas que se tienen instalados en el celular. &lt;/p&gt;
+&lt;p&gt;Los comandos que se pueden utilizar en el shell son los siguientes: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ls Lista los directorios y carpetas existentes en la ruta que estemos.&lt;/li&gt;
+&lt;li&gt;reboot Reinicia el terminal&lt;/li&gt;
+&lt;li&gt;rm Borra un archivo&lt;/li&gt;
+&lt;li&gt;rmdir Borra un directorio&lt;/li&gt;
+&lt;li&gt;cd Cambia de directorio&lt;/li&gt;
+&lt;li&gt;mkdir Crea un directorio&lt;/li&gt;
+&lt;li&gt;mkswapp Crea un sistema de intercambio&lt;/li&gt;
+&lt;li&gt;mount Monta una unidad o partición&lt;/li&gt;
+&lt;li&gt;umount Desmonta una unidad&lt;/li&gt;
+&lt;li&gt;mv Mueve o renombra un archivo &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Se puede ejecutar un ls dentro del sdcard/Videos y se muestra lo siguiente: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;adb&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;shell&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ls&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sdcard&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;Videos&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="n"&gt;How&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;I&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Met&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Your&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Mother&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;S05E21&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HDTV&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;XviD&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;LOL&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="n"&gt;VTV&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;avi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;span class="n"&gt;The&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Big&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Bang&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Theory&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;S03E20&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;The&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Spaghetti&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Catalyst&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;HDTV&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;XviD&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;FQM&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;avi&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Para Borrar los archivos se ejecuta adb shell rm y luego se vuelve a ejecutar el ls para demostrar que se han borrado los archivos de la tarjeta sd del celular: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;ernesto@jewel:~$ adb shell rm sdcard/Videos/*.avi &lt;/span&gt;
+&lt;span class="err"&gt;ernesto@jewel:~$ adb shell ls sdcard/Videos &lt;/span&gt;
+&lt;span class="err"&gt;ernesto@jewel:~$ &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;También se puede instalar aplicaciones en el celular desde el computador con el comando adb install rutapaquete.apk: &lt;/p&gt;
+&lt;p&gt;A continuación se instala una aplicación de Sudoku desde el computador al celular. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;ernesto@jewel:~$ adb install /home/ernesto/Descargas/OpenSudoku-1.1.1-02.apk &lt;/span&gt;
+&lt;span class="err"&gt;603 KB/s (223640 bytes in 0.361s) &lt;/span&gt;
+&lt;span class="c"&gt;pkg: /data/local/tmp/OpenSudoku-1.1.1-02.apk &lt;/span&gt;
+&lt;span class="err"&gt;Success &lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;También se puede copiar archivos del celular al computador y del computador al celular: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;ernesto&lt;/span&gt;&lt;span class="err"&gt;@&lt;/span&gt;&lt;span class="n"&gt;jewel&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;~$&lt;/span&gt; &lt;span class="n"&gt;adb&lt;/span&gt; &lt;span class="n"&gt;push&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;ernesto&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;varios&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mp3&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;sdcard&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;mp3z&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; 
+&lt;span class="mi"&gt;1944&lt;/span&gt; &lt;span class="n"&gt;KB&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;7768607&lt;/span&gt; &lt;span class="n"&gt;bytes&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="mf"&gt;3.901&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;En este ejemplo se coloca un archivo mp3 del computador al celular. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;ernesto@jewel:~$ adb pull /sdcard/python_scripts_r0.zip ./ &lt;/span&gt;
+&lt;span class="err"&gt;52 KB/s (4280 bytes in 0.078s)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Este comando se trae un archivo de la memoria sdcard del celular al computador. &lt;/p&gt;
+&lt;p&gt;EL próximo artículo explicará como conectarse a internet desde un celular con android. &lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Linux"></category><category term="Android"></category><category term="Debian"></category></entry><entry><title>Instalación del SDK de Android en Linux</title><link href="https://ecrespo.github.io/instalacion-del-sdk-de-android-en-linux.html" rel="alternate"></link><published>2010-05-27T10:00:00-05:30</published><updated>2010-05-27T10:00:00-05:30</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2010-05-27:/instalacion-del-sdk-de-android-en-linux.html</id><summary type="html">&lt;p&gt;Para poder acceder desde Debian en el celular con Android lo primero que se tiene que hacer es bajar el SDK de Android desde el siguiente &lt;a href="http://developer.android.com/sdk/index.html"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Luego hay que descomprimir el android-sdk_r06-linux_86.tgz.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;tar -xvzf android-sdk_r06-linux_86.tgz&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Luego cambiarse al directorio android-sdk_r06-linux_86 y al directorio tools.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sdk_r06 …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Para poder acceder desde Debian en el celular con Android lo primero que se tiene que hacer es bajar el SDK de Android desde el siguiente &lt;a href="http://developer.android.com/sdk/index.html"&gt;enlace&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Luego hay que descomprimir el android-sdk_r06-linux_86.tgz.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;tar -xvzf android-sdk_r06-linux_86.tgz&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Luego cambiarse al directorio android-sdk_r06-linux_86 y al directorio tools.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;cd&lt;/span&gt; &lt;span class="n"&gt;android&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;sdk_r06&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;linux_86&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;tools&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ejecutar android:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;./android&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Aparecerá la siguiente ventana. Se selecciona los paquetes a instalar.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="sdk 1" src="./images/sdkandroid1.png"&gt;&lt;/p&gt;
+&lt;p&gt;Luego se acepta la licencia de todos los paquetes y empieza el proceso de instalación como lo muestra la figura.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="sdk 2" src="./images/sdkandroid2.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al terminar el proceso de instalación de APIs y librerías del SDK se selecciona Dispositivos virtuales.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="sdk 3" src="./images/sdkandroid3.png"&gt;&lt;/p&gt;
+&lt;p&gt;Se crea uno como lo muestra la figura.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="sdk 4" src="./images/sdkandroid4.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al darle crear se mostrará una ventana con los resultados de la creación del dispositivo virtual al darle Aceptar el dispositivo aparecerá en la lista de dispositivos.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="sdk 5" src="./images/sdkandroid5.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al darle al botón start se abre una ventana que muestra opciones para lanzar el disposititvo virtual.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="sdk 6" src="./images/sdkandroid6.png"&gt;&lt;/p&gt;
+&lt;p&gt;Al darle al botón Launch se iniciará una virtualización de un celular con Android como lo muestra la siguiente figura.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="sdk 7" src="./images/sdkandroid7.png"&gt;&lt;/p&gt;
+&lt;p&gt;En el siguiente post se explicará el uso de adb el cual permite acceder al celular real.&lt;/p&gt;
+&lt;p&gt;===&lt;/p&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="Tutorial Linux"></category><category term="Linux"></category><category term="Android"></category><category term="Debian"></category></entry></feed>

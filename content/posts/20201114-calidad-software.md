@@ -1,4 +1,4 @@
-Title: Desarrollar código Python limpio 
+Title: Desarrollar código limpio de Python
 Date:  2020-11-15 12:01
 Category: Tutorial de Python
 Tags: Python,pydocstyle,bandit, Black, pylint, pre-commit,pyupgrade,flake8,pep8-naming,pycodestyle,pylint,isort,mypy,wily,streamlit 
@@ -6,7 +6,7 @@ lang: es
 translation: true
 Slug: python-clean-python-code
 Authors: Ernesto Crespo
-Summary: Este artículo muestra una introducción de como usar streamlit para generar una webapp.
+Summary: Este artículo explica el uso de varias herramientas de aseguramiento de la calidad y como usarlas antes de hacer un commit con pre-commit.
 
 En artículo anterior ([Herramientas de Python para desarrollar código seguro y de calidad](https://www.seraph.to/python-tools-security-quality-code.html#python-tools-security-quality-code)) se tocó el tema de herramientas que facilitan a cumplir el PEP8 de Python, mejoras de seguridad del código y formateo del mismo, en este caso se usa circle-ci para las evaluaciones. 
 

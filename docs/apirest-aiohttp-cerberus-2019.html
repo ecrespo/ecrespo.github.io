@@ -1,0 +1,1401 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Se creará un API rest asíncrono (usando aiohttp), donde se valida la entrada con cerberus" />
+<meta name="keywords" content="Debian, Python, aiohttp, Ubuntu, API rest, asincrono, Cerberus">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Validando un API rest asíncrono con Cerberus"/>
+<meta property="og:description" content="Se creará un API rest asíncrono (usando aiohttp), donde se valida la entrada con cerberus"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://localhost:8000/apirest-aiohttp-cerberus-2019.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2019-06-08 19:33:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Python"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="aiohttp"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="API rest"/>
+<meta property="article:tag" content="asincrono"/>
+<meta property="article:tag" content="Cerberus"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Validando un API rest asíncrono con Cerberus</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://localhost:8000">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="http://localhost:8000">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="http://localhost:8000/pages/About.html#About">Acerca</a></li>
+          <li><a href="http://localhost:8000/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="http://localhost:8000/tag/python.html">
+            Python
+                    <span class="badge">290</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="http://localhost:8000">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="apirest-aiohttp-cerberus-2019">Validando un API rest asíncrono con Cerberus</h1>
+    <p>
+          Posted on sáb 08 junio 2019 in <a href="http://localhost:8000/category/tutorial-de-python.html">Tutorial de Python</a>
+
+
+        &#8226; 8 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>En este artículo se mostrará como crear un API rest asincrono usando aiohttp, se usará un script para acceder a la base de datos NoSQL RethinkDB de manera asíncrona,
+y 2 formas de validar la entrada de datos del API, la primera evaluando cada variable, la segunda se usará cerberus donde se tiene un esquema de la entrada de datos y
+por último la tercera, usará cerberus pero el esquema estará guardado en rethinkdb.</p>
+<p>El repositorio del código completo de este tutorial se encuentra en <a href="https://gitlab.com/ecrespo/async-api-rest-example/tree/master">github</a>.</p>
+<p>Este artículo se basa en el artículo <a href="https://www.ecalamia.com/blog/data-validation-robust-apis/">Using Data Validation for Robust APIs</a> y en el
+artículo <a href="https://blog.apcelent.com/create-rest-api-using-aiohttp.html">How to create REST API using aiohttp</a>, donde se explica como hacer un API rest sincrónico con aiohttp.</p>
+<p>La documentación de cerberus la pueden ver en el siguiente <a href="https://cerberus-sanhe.readthedocs.io/usage.html">cerberus</a>.</p>
+<p>Se tiene la siguiente estructura de directorios y archivos del API rest:</p>
+<div class="highlight"><pre><span></span><code><span class="err">async-api-rest-example</span>
+<span class="err">├── app.py</span>
+<span class="err">├── README.md</span>
+<span class="err">├── resources</span>
+<span class="err">│   ├── api_resources.py</span>
+<span class="err">│   ├── home.py</span>
+<span class="err">│   ├── __init__.py</span>
+<span class="err">│   └── rethink_async.py</span>
+<span class="err">└── run.py</span>
+</code></pre></div>
+
+<p>Descripción de los archivos:</p>
+<ul>
+<li>app.py: Se definen las rutas de los endpoint del API rest.</li>
+<li>run.py: Script que permite correr el API rest.</li>
+<li>resources/rethin_async.py: Módulo que permite acceder de manera asíncrona a rethinkdb.</li>
+<li>resources/home.py: Página de inicio del API rest.</li>
+<li>resources/api_resources.py: Donde se define los métodos HTTP del API rest.</li>
+</ul>
+<h3>Script run.py</h3>
+<p>Este script permite iniciar el API rest, a continuación el código:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="c1">#Se importa aiohttp</span>
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+
+<span class="c1">#Se importa las rutas de los endpoint</span>
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">setup_routes</span>
+
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">init_app</span><span class="p">():</span>
+    <span class="c1">#Se instancia la aplicación</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+    <span class="c1">#A la aplicación se le pasa las rutas</span>
+    <span class="n">setup_routes</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="c1">#Se retorna la aplicación</span>
+    <span class="k">return</span> <span class="n">app</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="c1">#Se define la dirección del host, el puerto y se corre la Ap en dicha IP y puerto</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.0&#39;</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">5000</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">init_app</span><span class="p">()</span>
+
+    <span class="n">web</span><span class="o">.</span><span class="n">run_app</span><span class="p">(</span><span class="n">app</span><span class="p">,</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+
+<h3>Script app.py</h3>
+<p>Este script define las rutas y URLs de los endpoint del API rest. A continuación el código:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#Se importa los recursos del api rest y el home .</span>
+<span class="kn">from</span> <span class="nn">resources.api_resources</span> <span class="kn">import</span> <span class="n">Student</span>
+<span class="kn">from</span> <span class="nn">resources.home</span> <span class="kn">import</span> <span class="n">getIndex</span>
+
+
+
+
+
+<span class="k">def</span> <span class="nf">setup_routes</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="n">student</span> <span class="o">=</span> <span class="n">Student</span><span class="p">()</span>
+    <span class="c1">#Se tiene 3 endpoints, el primero validación clásica,</span>
+    <span class="c1"># el segundo validando con cerberus, y el 3ero con cerberus</span>
+    <span class="c1">#pero guardando el esquema de validación en una base de datos</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">&#39;/api/v1/student1&#39;</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData1</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">&#39;/api/v1/student2&#39;</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData2</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">&#39;/api/v1/student3&#39;</span><span class="p">,</span><span class="n">student</span><span class="o">.</span><span class="n">getData3</span><span class="p">)</span>
+    <span class="c1">#Por seguridad no se permite ingresar a la raiz del API rest</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">&#39;/api/v1/&#39;</span><span class="p">,</span> <span class="n">getIndex</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">getIndex</span><span class="p">)</span>
+</code></pre></div>
+
+<h3>Script rethink_async.py</h3>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">rethinkdb</span> <span class="k">as</span> <span class="nn">r</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+
+<span class="n">r</span><span class="o">.</span><span class="n">set_loop_type</span><span class="p">(</span><span class="s2">&quot;asyncio&quot;</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">createDB</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create DB to database server.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to create</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">database</span> <span class="ow">not</span> <span class="ow">in</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_list</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">):</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_create</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">createTable</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create Table in database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table_create</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">listdb</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List all database in database server.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db_list</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">listtables</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Lista tables from database.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to list tables</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table_list</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert dictionary  in table.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table to insert Dictionary</span>
+<span class="sd">    data: Dictionary data to insert</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">getAll</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">pattern</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get All documents from pattern search</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table name to search</span>
+<span class="sd">    pattern: Dictionary with pattern search</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="k">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetch_next</span><span class="p">()):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="k">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">elements</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">getFirst</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pattern</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get first document from pattern search</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table name to search</span>
+<span class="sd">    pattern: Dictionary with pattern search</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="k">await</span>  <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="k">await</span>  <span class="n">cursor</span><span class="o">.</span><span class="n">fetch_next</span><span class="p">()):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="k">await</span> <span class="n">cursor</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">elements</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">pattern</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Delete a  document from pattern search</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table name to search</span>
+<span class="sd">    pattern: Dictionary with pattern search</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span>  <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">server</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">database</span><span class="p">,</span><span class="n">table</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">pattern</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update a document from pattern search</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    server: IP server to connect</span>
+<span class="sd">    port: Port server to connect</span>
+<span class="sd">    database: Database name to connect</span>
+<span class="sd">    table: table name to search</span>
+<span class="sd">    pattern: Dictionary with pattern search</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="nb">dict</span><span class="p">())):</span>
+        <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span>  <span class="k">await</span> <span class="n">r</span><span class="o">.</span><span class="n">db</span><span class="p">(</span><span class="n">database</span><span class="p">)</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">result</span>
+</code></pre></div>
+
+<h3>Script api_resouces.py</h3>
+<p>En el script se tienen 3 métodos:</p>
+<ul>
+<li>getData1: Este método válida cada una de las entrada de datos.</li>
+<li>getData2: Este método válida la entrada de datos con un esquema validando con cerberus.</li>
+<li>getData3: Este método vuelve a usar cerberus pero ahora tomando el esquema a validar usando rethinkdb.</li>
+</ul>
+<p>A continuación se muestra el código:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span> <span class="nn">cerberus</span> <span class="kn">import</span> <span class="n">Validator</span>
+<span class="kn">import</span> <span class="nn">rethinkdb</span> <span class="k">as</span> <span class="nn">r</span>
+
+<span class="kn">from</span> <span class="nn">.rethink_async</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.0.1&#39;</span>
+
+
+<span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;uid&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;maxlength&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;grade&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;allowed&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">Student</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getData1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+
+        <span class="c1">#Se convierte el json a un diccionario</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="s2">&quot;Ill-formed JSON&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Se valida los datos de entrada</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">uid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="s2">&quot;Expecting uid:int&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">age</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="mi">18</span> <span class="o">&lt;</span> <span class="n">age</span> <span class="o">&lt;</span> <span class="mi">35</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Bad age&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="s2">&quot;Expecting age:int within the range [18:35]&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Max limit 50&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="s2">&quot;Expecting name:str within the range [0:50]&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">grade</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grade&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">grade</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">grade</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+            <span class="k">if</span> <span class="n">grade</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">):</span>
+                <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="s2">&quot;A, B or C expected&quot;</span><span class="p">}</span>
+                <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="s2">&quot;Expecting grade:str A, B or C expected&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Luego de validar se construye el diccionario de salida de datos como json</span>
+
+        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;grade&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grade&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+
+        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data_output</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
+
+
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getData2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+
+        <span class="c1">#Se convierte el json del post en un diccionario</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="s2">&quot;Ill-formed JSON&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Con la variable que contiene el esquema se realiza la validación del json</span>
+        <span class="n">student_validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">student_schema</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">errors</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Se construye el diccionario de la salida de los datos vía json</span>
+        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;grade&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grade&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+
+        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data_output</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
+
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">getData3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+
+        <span class="c1">#Se convierte el json en un diccionario</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="s2">&quot;Ill-formed JSON&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Si yo se, no debería tener  la configuración de la base de datos acá,</span>
+        <span class="c1">#pero era para no alargar el código de ejemplo</span>
+        <span class="c1">#Se definen el servidor, puerto, base de datos, la tabla y el patrón de busqueda</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">28015</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="s2">&quot;student&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;student_schema&quot;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;student3&quot;</span><span class="p">}</span>
+
+        <span class="c1">#Se realiza la consulta a rethinkdb de manera asincrona</span>
+        <span class="n">student_schemadb</span> <span class="o">=</span> <span class="k">await</span> <span class="n">getFirst</span><span class="p">(</span><span class="n">server</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span>
+
+        <span class="c1">#Se quitan del diccionario el id y el endpoint a fin de realizar la evaluación del esquema</span>
+        <span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="p">:</span> <span class="n">student_schemadb</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">item</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">student_schemadb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="s1">&#39;id&#39;</span><span class="p">}</span>
+        <span class="n">student_schema</span> <span class="o">=</span> <span class="p">{</span><span class="n">item</span><span class="p">:</span> <span class="n">student_schema</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">student_schema</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">item</span> <span class="o">!=</span> <span class="s1">&#39;endpoint&#39;</span><span class="p">}</span>
+
+        <span class="c1">#Se valida el esquema con los datos suministrados vía post</span>
+        <span class="n">student_validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">student_schema</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">student_validator</span><span class="o">.</span><span class="n">errors</span>
+            <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">205</span><span class="p">)</span>
+
+        <span class="c1">#Se toman los datos y se colocan en el diccionario para el json de salida</span>
+        <span class="n">data_output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">data_output</span><span class="p">[</span><span class="s1">&#39;grade&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grade&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+
+        <span class="n">response_obj</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">data_output</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response_obj</span><span class="p">),</span> <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+<h3>Base de datos rethinkdb con el esquema para cerberus</h3>
+<p>Para que el método getData3 funcione es necesario tener almacenado en la base de datos rethinkdb el esquema.</p>
+<p>El proceso de instalación de rethinkDB vía docker, se deja en el siguiente <a href="https://platzi.com/blog/como-instalar-rethinkdb-docker/">artículo de platzi</a>.</p>
+<p>Para insertar los datos se ejecuta en el dashboard de rethinkDB (http://localhost:8080) el siguiente comando:</p>
+<div class="highlight"><pre><span></span><code><span class="err">r.db(&quot;student&quot;).table(&quot;student_schema&quot;).insert({id:1,endpoint: &#39;student3&#39;,uid: {</span>
+<span class="err">        &#39;required&#39;: true,</span>
+<span class="err">        &#39;type&#39;: &#39;integer&#39;},</span>
+<span class="err">    age: {</span>
+<span class="err">        &#39;required&#39;: true,</span>
+<span class="err">        &#39;type&#39;: &#39;integer&#39;,</span>
+<span class="err">        &#39;min&#39;: 18,</span>
+<span class="err">        &#39;max&#39;: 35</span>
+<span class="err">    },</span>
+<span class="err">    name: {</span>
+<span class="err">        &#39;required&#39;: true,</span>
+<span class="err">        &#39;type&#39;: &#39;string&#39;,</span>
+<span class="err">        &#39;maxlength&#39;: 50</span>
+<span class="err">    },</span>
+<span class="err">    grade: {</span>
+<span class="err">        &#39;required&#39;: false,</span>
+<span class="err">        &#39;type&#39;: &#39;string&#39;,</span>
+<span class="err">        &#39;allowed&#39;: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]</span>
+<span class="err">  }})</span>
+</code></pre></div>
+
+<p>De esa forma se inserta los datos en la tabla.</p>
+<p>Para consultar la tabla vía dashboard se ejecuta:</p>
+<div class="highlight"><pre><span></span><code><span class="err">r.db(&quot;student&quot;).table(&quot;student_schema&quot;)</span>
+</code></pre></div>
+
+<p>A continuación se muestra la tabla:</p>
+<p><img alt="Tabla esquema" src="./images/2019-apirest-cerberus-5.png"></p>
+<h3>Iniciar el API rest.</h3>
+<p>Para iniciar el API rest se tiene que tener instalado la librería rethinkdb y aiohttp:</p>
+<div class="highlight"><pre><span></span><code><span class="err">pip install rethinkdb aiohttp</span>
+</code></pre></div>
+
+<p>Luego de instalada se ejecuta el script run.py:</p>
+<div class="highlight"><pre><span></span><code><span class="err">python run.py</span>
+</code></pre></div>
+
+<p>Si se tiene la siguiente salida el API rest está corriendo sin problemas:</p>
+<div class="highlight"><pre><span></span><code><span class="err">======== Running on http://0.0.0.0:5000 ========</span>
+<span class="err">(Press CTRL+C to quit)</span>
+</code></pre></div>
+
+<h3>Consultas al API rest</h3>
+<p>Para consultar el API rest se puede usar insomia o postman, ambos son clientes API rest.</p>
+<p>Se tienen 3 endpoint todos vía método post que se le pasará un json como el siguiente:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;uid&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+  <span class="nt">&quot;age&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;grade&quot;</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Los urls son los siguientes:</p>
+<ul>
+<li>http://localhost:5000/api/v1/student1 : Usa el método getData1.</li>
+<li>http://localhost:5000/api/v1/student2 : Usa el método getData2.</li>
+<li>http://localhost:5000/api/v1/student3 : Usa el método getData3.</li>
+</ul>
+<p>Primer endpoint:</p>
+<p>Se realiza la consulta con el json mostrado anteriormente:</p>
+<p><img alt="Consulta válida" src="./images/2019-apirest-cerberus-1.png"></p>
+<p>Ahora se modifica por ejemplo la variable grade a X:</p>
+<p><img alt="Consulta inválida" src="./images/2019-apirest-cerberus-2.png"></p>
+<p>En este caso el valor X para la variable grade no es válido.</p>
+<p>Segundo endpoint:</p>
+<p>En este caso se usa cerberus y la variable que contiene el esquema para validar:</p>
+<p>Se realiza la consulta con el json original:</p>
+<p><img alt="Consulta válida" src="./images/2019-apirest-cerberus-3.png"></p>
+<p>Ahora se realiza la consulta modificando la variable grade con el valor de Z:</p>
+<p><img alt="Consulta inválida" src="./images/2019-apirest-cerberus-4.png"></p>
+<p>El mensaje es más genérico no es el que se definió en el primer método.</p>
+<p>Tercer endpoint:</p>
+<p>Acá no se verán cambios significativos en la consulta, lo interesante es que, al tener muchos endpoint con distintas entradas de datos,
+lo mejor es usar una base de datos donde se tenga almacenada cada esquema por endpoint.</p>
+<p>Así que el resultado sería el mismo que los del segundo endpoint.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/tag/debian.html">Debian</a>
+      <a href="http://localhost:8000/tag/python.html">Python</a>
+      <a href="http://localhost:8000/tag/aiohttp.html">aiohttp</a>
+      <a href="http://localhost:8000/tag/ubuntu.html">Ubuntu</a>
+      <a href="http://localhost:8000/tag/api-rest.html">API rest</a>
+      <a href="http://localhost:8000/tag/asincrono.html">asincrono</a>
+      <a href="http://localhost:8000/tag/cerberus.html">Cerberus</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Validando%20un%20API%20rest%20as%C3%ADncrono%20con%20Cerberus&url=http%3A//localhost%3A8000/apirest-aiohttp-cerberus-2019.html&hashtags=debian,python,aiohttp,ubuntu,api-rest,asincrono,cerberus" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//localhost%3A8000/apirest-aiohttp-cerberus-2019.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//localhost%3A8000/apirest-aiohttp-cerberus-2019.html&title=Validando%20un%20API%20rest%20as%C3%ADncrono%20con%20Cerberus&summary=Se%20crear%C3%A1%20un%20API%20rest%20as%C3%ADncrono%20%28usando%20aiohttp%29%2C%20donde%20se%20valida%20la%20entrada%20con%20cerberus&source=http%3A//localhost%3A8000/apirest-aiohttp-cerberus-2019.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Validando%20un%20API%20rest%20as%C3%ADncrono%20con%20Cerberus&amp;body=http%3A//localhost%3A8000/apirest-aiohttp-cerberus-2019.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="http://localhost:8000/python-wikipedia-2019.html" title="Cómo usar el API de wikipedia con Python">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="http://localhost:8000/entorno_desarrollo_datascience.html" title="Crear entorno de desarrollo para Ciencia de Datos con Anaconda, Jupyter, git y cookiecutter">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/memcached_2019.html">Usar memcached para tener datos a la mano</a></li>
+      <li><a href="http://localhost:8000/entorno_desarrollo_datascience.html">Crear entorno de desarrollo para Ciencia de Datos con Anaconda, Jupyter, git y cookiecutter</a></li>
+      <li><a href="http://localhost:8000/python-wikipedia-2019.html">Cómo usar el API de wikipedia con Python</a></li>
+      <li><a href="http://localhost:8000/desarrollar-un-api-con-graphql-en-flask.html">Desarrollar un API con GraphQL en Flask</a></li>
+      <li><a href="http://localhost:8000/instalacion-de-open365io-en-un-servidor-debian-jessie-local.html">Instalación de open365.io en un servidor Debian Jessie local</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "http://localhost:8000",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

@@ -1,773 +1,190 @@
-
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="es" itemscope itemtype="http://schema.org/Person">
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="" />
+            <meta charset="utf-8">
+        <!-- Site Meta Data -->
+        <title>Máquinas virtuales con kvm y qemu</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="Ernesto Crespo">
 
-  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+        <link rel="shortcut icon" href="">
 
-    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+        <!-- schema.org -->
+        <meta itemprop="name" content="Página de Seraph">
+        <meta itemprop="image" content="">
+        <meta itemprop="description" content="">
 
-  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
-  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
-  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
-  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        <!-- Style Meta Data -->
+        <link rel="stylesheet" href="https://ecrespo.github.io/theme/css/style.css" type="text/css"/>
+        <link rel="stylesheet" href="https://ecrespo.github.io/theme/css/pygments.css" type="text/css"/>
 
+        <!-- Feed Meta Data -->
+            <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+                  title="Página de Seraph ATOM Feed"/>
 
-    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+        <!-- Twitter Feed -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="">
+        <meta name="twitter:image" content="">
 
+    <meta name="twitter:creator" content="">
+    <meta name="twitter:url" content="https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html">
+    <meta name="twitter:title" content="Página de Seraph ~ Máquinas virtuales con kvm y qemu">
+    <meta name="twitter:description" content="Hace años usaba qemu para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox. Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé qemu con kvm. Los paquetes necesario son: kvm virt-manager: Para manejar las máquians virtuales de forma gráfica libvirt-bin qemu-kvm …">
 
-
-<!-- Google Analytics -->
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-131517246-1', 'auto');
-  ga('send', 'pageview');
-</script>
-<!-- End Google Analytics -->
-    <!-- Chrome, Firefox OS and Opera -->
-    <meta name="theme-color" content="#333333">
-    <!-- Windows Phone -->
-    <meta name="msapplication-navbutton-color" content="#333333">
-    <!-- iOS Safari -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Microsoft EDGE -->
-    <meta name="msapplication-TileColor" content="#333333">
-
-<meta name="author" content="Ernesto Crespo" />
-<meta name="description" content="Hace años usaba qemu para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox. Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé qemu con kvm. Los paquetes necesario son: kvm virt-manager: Para manejar las máquians virtuales de forma gráfica libvirt-bin qemu-kvm …" />
-<meta name="keywords" content="Debian, General, KVM, qemu">
-
-<meta property="og:site_name" content="Página de Seraph"/>
-<meta property="og:title" content="Máquinas virtuales con kvm y qemu"/>
-<meta property="og:description" content="Hace años usaba qemu para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox. Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé qemu con kvm. Los paquetes necesario son: kvm virt-manager: Para manejar las máquians virtuales de forma gráfica libvirt-bin qemu-kvm …"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2013-06-02 09:00:00-04:30"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
-<meta property="article:section" content="Tutorial Linux"/>
-<meta property="article:tag" content="Debian"/>
-<meta property="article:tag" content="General"/>
-<meta property="article:tag" content="KVM"/>
-<meta property="article:tag" content="qemu"/>
-<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
-
-  <title>Página de Seraph &ndash; Máquinas virtuales con kvm y qemu</title>
-
+    <!-- Facebook Meta Data -->
+    <meta property="og:title" content="Página de Seraph ~ Máquinas virtuales con kvm y qemu"/>
+    <meta property="og:description" content="Hace años usaba qemu para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox. Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé qemu con kvm. Los paquetes necesario son: kvm virt-manager: Para manejar las máquians virtuales de forma gráfica libvirt-bin qemu-kvm …"/>
+    <meta property="og:image" content=""/>
 </head>
-<body>
-  <aside>
-    <div>
-      <a href="https://ecrespo.github.io">
-        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
-      </a>
-      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
 
-<p>Data Scientist </p>
-      <nav>
-        <ul class="list">
-          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
-          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+<body>
+<!-- Sidebar -->
+<aside>
+    <!--<center><a href="https://ecrespo.github.io"><img id="avatar" src=""></a></center>-->
+    <h1>Página de Seraph</h1>
+    <br>
+
+
+    <nav class="nav">
+        <ul class="list-bare">
+
+                <li><a class="nav__link" href="/archives.html">Archives</a></li>
+                <li><a class="nav__link" href="/categories.html">Categories</a></li>
+                <li><a class="nav__link" href="/tags.html">Tags</a></li>
+
+                <li><a class="nav__link" href="https://ecrespo.github.io/pages/About.html">Acerca</a></li>
+                <li><a class="nav__link" href="https://ecrespo.github.io/pages/Contacto.html">Contacto</a></li>
 
         </ul>
-      </nav>
-
-      <ul class="social">
-          <li>
-            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
-            <i class="fab fa-medium">
-            </i>
-          </a></li>
-          <li>
-            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
-            <i class="fab fa-linkedin">
-            </i>
-          </a></li>
-          <li>
-            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
-            <i class="fab fa-github">
-            </i>
-          </a></li>
-          <li>
-            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
-            <i class="fab fa-google">
-            </i>
-          </a></li>
-          <li>
-            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
-            <i class="fab fa-twitter">
-            </i>
-          </a></li>
-          <li>
-            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
-            <i class="fab fa-facebook">
-            </i>
-          </a></li>
-          <li>
-            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
-            <i class="fab fa-gitlab">
-            </i>
-          </a></li>
-          <li>
-            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
-            <i class="fab fa-soundcloud">
-            </i>
-          </a></li>
-          <li>
-            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
-            <i class="fas fa-rss">
-            </i>
-          </a></li>
-      </ul>
-    </div>
-    
-    <ul class="tagcloud">
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/pypdf.html">
-            pypdf
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
-            Inteligencia Artificial
-                    <span class="badge">4</span>
-            </a>
-        </li>
-        <li class="tag-1">
-            <a href="https://ecrespo.github.io/tag/general.html">
-            General
-                    <span class="badge">113</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/sympy.html">
-            Sympy
-                    <span class="badge">7</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/gps.html">
-            GPS
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/requests.html">
-            requests
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/flask-restful.html">
-            Flask-restful
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-1">
-            <a href="https://ecrespo.github.io/tag/docker.html">
-            Docker
-                    <span class="badge">52</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/webkit.html">
-            webkit
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/simplecv.html">
-            SimpleCV
-                    <span class="badge">4</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/pandas.html">
-            Pandas
-                    <span class="badge">10</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
-            Red Neuronal
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-1">
-            <a href="https://ecrespo.github.io/tag/debian.html">
-            Debian
-                    <span class="badge">180</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/pylint.html">
-            pylint
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/webscraping.html">
-            Webscraping
-                    <span class="badge">13</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/data-science.html">
-            Data Science
-                    <span class="badge">7</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/mypy.html">
-            mypy
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-0">
-            <a href="https://ecrespo.github.io/tag/python.html">
-            Python
-                    <span class="badge">290</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/json.html">
-            json
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
-            Scikit-Learn
-                    <span class="badge">5</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/pyqt.html">
-            PyQt
-                    <span class="badge">13</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
-            Flask-MongoAlchemy
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/redes.html">
-            Redes
-                    <span class="badge">5</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/networkx.html">
-            Networkx
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
-            Pruebas unitarias
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/pyautogui.html">
-            PyAutoGUI
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/eve.html">
-            Eve
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
-            Ciencia de datos
-                    <span class="badge">8</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
-            pdf scraping
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/fedora.html">
-            Fedora
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-1">
-            <a href="https://ecrespo.github.io/tag/canaima.html">
-            Canaima
-                    <span class="badge">111</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/poo.html">
-            POO
-                    <span class="badge">10</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
-            Árbol de decisión
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/devops.html">
-            DevOps
-                    <span class="badge">6</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/matplotlib.html">
-            Matplotlib
-                    <span class="badge">30</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
-            Gitlab-ci
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/gtk.html">
-            gtk
-                    <span class="badge">15</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
-            BeautifulSoup
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/blockchain.html">
-            Blockchain
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/sqlite3.html">
-            Sqlite3
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/spark.html">
-            Spark
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
-            Dnsmasq
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/visualizacion.html">
-            Visualización
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/ssh.html">
-            SSH
-                    <span class="badge">6</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/dns.html">
-            DNS
-                    <span class="badge">6</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/black.html">
-            Black
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
-            Control de versiones
-                    <span class="badge">6</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/pylab.html">
-            Pylab
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
-            tiflotecnologia
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/docker-compose.html">
-            Docker-compose
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/mercurial.html">
-            Mercurial
-                    <span class="badge">8</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
-            Reproductor Música
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-1">
-            <a href="https://ecrespo.github.io/tag/ubuntu.html">
-            Ubuntu
-                    <span class="badge">135</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/profiling.html">
-            Profiling
-                    <span class="badge">4</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/docker-machine.html">
-            docker-machine
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/seguridad.html">
-            Seguridad
-                    <span class="badge">4</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/mongodb.html">
-            MongoDB
-                    <span class="badge">13</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/bandit.html">
-            bandit
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/gnome.html">
-            gnome
-                    <span class="badge">19</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/wikipedia.html">
-            Wikipedia
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/crud.html">
-            CRUD
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/android.html">
-            Android
-                    <span class="badge">41</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/cicd.html">
-            CI/CD
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/mechanize.html">
-            Mechanize
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/numpy.html">
-            Numpy
-                    <span class="badge">33</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/kivy.html">
-            kivy
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/glade.html">
-            glade
-                    <span class="badge">14</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/redis.html">
-            Redis
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/kaggle.html">
-            Kaggle
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/gconf.html">
-            gconf
-                    <span class="badge">4</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
-            Accesibilidad
-                    <span class="badge">10</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/api-restfull.html">
-            Api restfull
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/gitlab.html">
-            gitlab
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/coinmarketcap.html">
-            Coinmarketcap
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/cprofile.html">
-            cProfile
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
-            Jupyter Notebook
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/twitter.html">
-            Twitter
-                    <span class="badge">7</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/tensorflow.html">
-            TensorFlow
-                    <span class="badge">6</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/flask.html">
-            Flask
-                    <span class="badge">19</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/paramiko.html">
-            Paramiko
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/bitcoin.html">
-            Bitcoin
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/csv.html">
-            CSV
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/sms.html">
-            SMS
-                    <span class="badge">4</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/videos.html">
-            Videos
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/api-restful.html">
-            API restful
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/tor.html">
-            Tor
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/qt.html">
-            qt
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/camara.html">
-            Camara
-                    <span class="badge">4</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/streamlit.html">
-            streamlit
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
-            Estructura de datos
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
-            Beautiful Soup
-                    <span class="badge">4</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/arduino.html">
-            Arduino
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/machine-learning.html">
-            Machine Learning
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/request.html">
-            Request
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/zeromq.html">
-            ZeroMQ
-                    <span class="badge">9</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/django.html">
-            Django
-                    <span class="badge">11</span>
-            </a>
-        </li>
-        <li class="tag-4">
-            <a href="https://ecrespo.github.io/tag/doctest.html">
-            Doctest
-                    <span class="badge">2</span>
-            </a>
-        </li>
-        <li class="tag-3">
-            <a href="https://ecrespo.github.io/tag/unittest.html">
-            unittest
-                    <span class="badge">3</span>
-            </a>
-        </li>
-        <li class="tag-1">
-            <a href="https://ecrespo.github.io/tag/linux.html">
-            Linux
-                    <span class="badge">186</span>
-            </a>
-        </li>
-        <li class="tag-2">
-            <a href="https://ecrespo.github.io/tag/empaquetado.html">
-            Empaquetado
-                    <span class="badge">9</span>
-            </a>
-        </li>
-   </ul>
-
-
-
-  </aside>
-  <main>
-
-    <nav>
-      <a href="https://ecrespo.github.io">    Home
-</a>
-
-      <a href="/archives.html">Archives</a>
-      <a href="/categories.html">Categories</a>
-      <a href="/tags.html">Tags</a>
-
-      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
-</a>
-
     </nav>
 
-<article class="single">
-  <header>
-      
-    <h1 id="maquinas-virtuales-con-kvm-y-qemu">Máquinas virtuales con kvm y qemu</h1>
-    <p>
-          Posted on dom 02 junio 2013 in <a href="https://ecrespo.github.io/category/tutorial-linux.html">Tutorial Linux</a>
-
-
-        &#8226; 3 min read
+    <p class="social">
+                <a href="https://medium.com/@_seraph1" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/medium.png"></a>
+                <a href="http://ve.linkedin.com/in/ernestocrespo" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/linkedin.png"></a>
+                <a href="https://github.com/ecrespo" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/github.png"></a>
+                <a href="https://google.com/+ErnestoCrespo" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/google.png"></a>
+                <a href="https://twitter.com/_seraph1" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/twitter.png"></a>
+                <a href="https://www.facebook.com/ernesto.crespo" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/facebook.png"></a>
+                <a href="https://gitlab.com/ecrespo" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/gitlab.png"></a>
+                <a href="https://soundcloud.com/ernesto-crespo" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/soundcloud.png"></a>
+                <a href="//www.seraph.to/feeds/all.atom.xml" target="_blank"><img
+                        src="https://ecrespo.github.io/theme/images/icons/rss.png"></a>
+            <a href="https://ecrespo.github.io/feeds/all.atom.xml" rel="alternate">
+                <img src="https://ecrespo.github.io/theme/images/icons/rss.png"></a>
     </p>
-  </header>
+
+        <h2>Categories</h2>
+        <ul class="navbar">
+                <li><a
+                        href="https://ecrespo.github.io/category/accesibilidad.html">Accesibilidad</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/anuncio.html">Anuncio</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/anuncios.html">Anuncios</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/aplicacion-android.html">Aplicación Android</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/asterisk-debian-linux.html">Asterisk, Debian, Linux</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/charla.html">Charla</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/charla-python.html">Charla Python</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/debian-linux-mac-book.html">Debian, Linux, Mac Book</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/debian-maemo-nokia-n810-python.html">Debian, maemo, Nokia N810, Python</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/demostracion-aplicacion-para-android.html">Demostración Aplicación para Android</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/desarrollomovil.html">Desarrollo,Movil</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/evento.html">Evento</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/general.html">General</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/linux.html">Linux</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/linuxdebian.html">Linux,Debian</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/linuxdesarrollo.html">Linux,Desarrollo</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/linuxempaquetado.html">Linux,Empaquetado</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/linuxofimaticadesarrollo.html">Linux,Ofimatica,Desarrollo</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/movil-nokia.html">Movil, Nokia</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/nokia-n810.html">Nokia N810</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/nokia-n810-debian-maemo.html">Nokia N810 Debian Maemo</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/posts.html">posts</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/resumen-2010.html">Resumen 2010</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/sistemas-operativos.html">Sistemas Operativos</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial.html">Tutorial</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-android.html">Tutorial Android</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-arduino.html">Tutorial de Arduino</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-data-science.html">Tutorial de Data Science</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-docker.html">Tutorial de Docker</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-integracion-continua.html">Tutorial de integración continua</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-linux.html">Tutorial de Linux</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-python.html">Tutorial de Python</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-python-en-android.html">Tutorial de Python en Android</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-python-y-linux.html">Tutorial de Python y Linux</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-de-python-y-pyqt.html">Tutorial de Python y PyQt</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-debian-bsd-y-python.html">Tutorial Debian BSD y Python</a></li>
+                <li class="active"><a
+                        href="https://ecrespo.github.io/category/tutorial-linux.html">Tutorial Linux</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-linux-y-python.html">Tutorial Linux y Python</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-python-en-android.html">Tutorial Python en Android</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorial-python-y-linux.html">Tutorial Python y Linux</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/tutorialdesarrollo.html">Tutorial,Desarrollo</a></li>
+                <li><a
+                        href="https://ecrespo.github.io/category/xml-rpcpython.html">XML-RPC,Python</a></li>
+        </ul>
 
 
-  <div>
-    <p>Hace años usaba <code>qemu</code> para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox.
+</aside>
+
+<!-- Content -->
+<article>
+    <section id="content">
+        <article>
+            <h2 class="post_title post_detail"><a href="https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html" rel="bookmark"
+                                                  title="Permalink to Máquinas virtuales con kvm y qemu">Máquinas virtuales con kvm y qemu</a></h2>
+            <div class="entry-content blog-post">
+                <p>Hace años usaba <code>qemu</code> para probar los paquetes que empaquetaba para Debian, luego me pase a virtualbox.
 Últimamente me ha parecido que consume más recursos virtualbox, así que por recomendación retomé <code>qemu</code> con <code>kvm</code>. </p>
 <p>Los paquetes necesario son:  </p>
 <ul>
@@ -777,63 +194,55 @@
 <li><code>qemu-kvm</code></li>
 </ul>
 <p>Instalación:</p>
-<div class="highlight"><pre><span></span><span class="err">apt-get install kvm virt-manager libvirt-bin qemu-kvm</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="err">apt-get install kvm virt-manager libvirt-bin qemu-kvm</span>
+</code></pre></div>
 
 <p>Prueba inicial:
 Se iniciará una máquina virtual que arranca un live-cd, por ejemplo el live-cd de Linuxmint 15 con 720M de RAM:</p>
-<div class="highlight"><pre><span></span><span class="err">kvm -m 720 -cdrom  linuxmint-15-cinnamon-dvd-32bit.iso</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="err">kvm -m 720 -cdrom  linuxmint-15-cinnamon-dvd-32bit.iso</span>
+</code></pre></div>
 
 <p>En la siguiente figura se muestra la captura de pantalla de la máquina virtual:</p>
 <p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-1.png"></p>
 <p>Crear un disco duro para la máquina virtual:
 Se crea el disco duro virtual en un archivo, en este caso se creará un disco duro virtual de 10 GB para instalar Debian en dicho disco duro virtual:</p>
-<div class="highlight"><pre><span></span><span class="err">qemu-img create debian.img 10G</span>
+<div class="highlight"><pre><span></span><code><span class="err">qemu-img create debian.img 10G</span>
 <span class="err">Formatting &#39;debian.img&#39;, fmt=raw size=10737418240</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Ahora se tiene: </p>
-<div class="highlight"><pre><span></span><span class="err">ernesto@debian:~/imagenes$ ls -l</span>
+<div class="highlight"><pre><span></span><code><span class="err">ernesto@debian:~/imagenes$ ls -l</span>
 <span class="err">total 1808024</span>
 <span class="err">-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 16:22 debian.img</span>
 <span class="err">-rw-r--r-- 1 root    root    10737418240 jun  2 16:00 debianserver.img</span>
 <span class="err">-rw-r--r-- 1 ernesto ernesto 10737418240 jun  2 15:30 linuxmint.img</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Instalación de  Debian en la máquina virtual:</p>
 <p>Ahora se instalará en el disco duro virtual llamado debian.img la distribución Debian para i386 con 720MB de RAM, se le define el disco duro a usar y el iso a utilizar:</p>
-<div class="highlight"><pre><span></span><span class="err">qemu -m 720 -hda debian.img  -cdrom ../Isos/debian-7.0.0-i386-lxde-CD-1.iso</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="err">qemu -m 720 -hda debian.img  -cdrom ../Isos/debian-7.0.0-i386-lxde-CD-1.iso</span>
+</code></pre></div>
 
 <p>En la siguiente captura de pantalla se muestra el inicio del cd de Debian:</p>
 <p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-2.png"></p>
 <p>Luego de terminar el proceso de instalación se inicia la máquina virtual de la siguiente forma:</p>
-<div class="highlight"><pre><span></span><span class="err">qemu -m 720 -hda debian.img</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="err">qemu -m 720 -hda debian.img</span>
+</code></pre></div>
 
 <p>La siguiente figura muestra el escritorio de LXDE de Debian con la consola abierta mostrando la IP que tiene la máquina virtual:</p>
 <p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-3.png"></p>
 <p>Como se puede ver la IP que tiene la máquina virtual es una IP privada, la única forma de acceder a la máquina virtual es directamente desde <code>qemu</code>, no se podrá abrir una sesión remota por que desde el equipo que aloja la máquina virtual no se tiene una ruta de como llegar a la IP de la máquina virtual.</p>
 <p>Para ello necesitaremos darle unas opciones de redes a <code>qemu</code>, estas son <code>nic</code> y <code>tap</code>, la última crea una interfaz <code>tap</code> en el equipo que aloja la máquina virtual con la ruta de una red.</p>
-<div class="highlight"><pre><span></span><span class="err">qemu -m 720 -hda debian.img   -net nic -net tap</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="err">qemu -m 720 -hda debian.img   -net nic -net tap</span>
+</code></pre></div>
 
 <p>Adicional a esto es necesario instalar <code>dnsmasq</code> y configurar una regla de <code>iptables</code> en la configuración de <code>kvm</code> para poder navegar desde la máquina virtual.</p>
 <p>Instalar dnsmasq:</p>
-<div class="highlight"><pre><span></span><span class="err">apt-get install dnsmasq</span>
-</pre></div>
-
+<div class="highlight"><pre><span></span><code><span class="err">apt-get install dnsmasq</span>
+</code></pre></div>
 
 <p>Agregar la siguiente configuración en el archivo <code>/etc/dnsmasq.conf</code>:</p>
-<div class="highlight"><pre><span></span><span class="err">#Archivo de resolv.conf con la configuración de dns de la red local.</span>
+<div class="highlight"><pre><span></span><code><span class="err">#Archivo de resolv.conf con la configuración de dns de la red local.</span>
 <span class="err">resolv-file=/etc/resolv-orig.conf</span>
 <span class="err">#Interface a la cual acepta peticiones, en este caso tap0 para la máquina virtual (dns y dhcp) y wlan0 (sólo dns).</span>
 <span class="err">interface=tap0,wlan0</span>
@@ -841,33 +250,29 @@ Se crea el disco duro virtual en un archivo, en este caso se creará un disco du
 <span class="err">no-dhcp-interface=wlan0</span>
 <span class="err">#Se define el rango de red de dhcp y el tiempo de liberación de las IPs.</span>
 <span class="err">dhcp-range=172.20.0.10,172.20.0.15,12h</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Se agrega la siguiente regla de iptables al archivo <code>/etc/kvm/kvm-ifup</code>:</p>
-<div class="highlight"><pre><span></span><span class="err">vim /etc/kvm/kvm-ifup</span>
+<div class="highlight"><pre><span></span><code><span class="err">vim /etc/kvm/kvm-ifup</span>
 <span class="err">exec iptables  -t nat -A POSTROUTING -s 172.20.0.0/16 -o wlan0 -j MASQUERADE</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>Está regla aplica nat a la red 172.20.0.0/255.255.0.0.</p>
 <p>Ya con esta configuración ya se puede navegar y acceder remotamente a la máquina virtual.</p>
 <p>Para terminar las configuraciones se agrega una regla de iptables que borre las tablas de nat en el archivo /etc/kvm/kvm-ifdown:</p>
-<div class="highlight"><pre><span></span><span class="n">vim</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">kvm</span><span class="o">-</span><span class="n">ifdown</span>
+<div class="highlight"><pre><span></span><code><span class="n">vim</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">kvm</span><span class="o">-</span><span class="n">ifdown</span>
 
 <span class="k">exec</span> <span class="n">iptables</span> <span class="o">-</span><span class="n">t</span> <span class="n">nat</span> <span class="o">-</span><span class="n">F</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>La tabla de enrutamiento del equipo donde se levanta la máquina virtual es la siguiente:</p>
-<div class="highlight"><pre><span></span><span class="err">root@debian:~# route -n</span>
+<div class="highlight"><pre><span></span><code><span class="err">root@debian:~# route -n</span>
 <span class="err">Kernel IP routing table</span>
 <span class="err">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span>
 <span class="err">0.0.0.0         185.29.52.131   0.0.0.0         UG    0      0        0 wlan0</span>
 <span class="err">172.20.0.0      0.0.0.0         255.255.0.0     U     0      0        0 tap0</span>
 <span class="err">185.29.52.128   0.0.0.0         255.255.255.128 U     0      0        0 wlan0</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>En la siguiente captura de pantalla se muestra la página de este blog desde la máquina virtual y la consola donde se muestra la IP que está usando la máquina virtual, con esa IP se puede acceder desde el equipo que aloja la máquina virtual.</p>
 <p><img alt="" src="./images/maquinasvirtualesconkvmyqemu-4.png"></p>
@@ -878,87 +283,94 @@ usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
 <p>O Escaneando el código QR desde la billetera:</p>
 <p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
-      <a href="https://ecrespo.github.io/tag/general.html">General</a>
-      <a href="https://ecrespo.github.io/tag/kvm.html">KVM</a>
-      <a href="https://ecrespo.github.io/tag/qemu.html">qemu</a>
-    </p>
-  </div>
-  
-<section>
-  <p id="post-share-links">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=M%C3%A1quinas%20virtuales%20con%20kvm%20y%20qemu&url=https%3A//ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html&hashtags=debian,general,kvm,qemu" target="_blank" title="Share on Twitter">Twitter</a>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html" target="_blank" title="Share on Facebook">Facebook</a>
-    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html&title=M%C3%A1quinas%20virtuales%20con%20kvm%20y%20qemu&summary=Hace%20a%C3%B1os%20usaba%20qemu%20para%20probar%20los%20paquetes%20que%20empaquetaba%20para%20Debian%2C%20luego%20me%20pase%20a%20virtualbox.%0A%C3%9Altimamente%20me%20ha%20parecido%20que%20consume%20m%C3%A1s%20recursos%20virtualbox%2C%20as%C3%AD%20que%20por%20recomendaci%C3%B3n%20retom%C3%A9%20qemu%20con%20kvm.%20%0ALos%20paquetes%20necesario%20son%3A%20%20%0A%0Akvm%0Avirt-manager%3A%20Para%20manejar%20las%20m%C3%A1quians%20virtuales%20de%20forma%20gr%C3%A1fica%0Alibvirt-bin%0Aqemu-kvm%20%E2%80%A6&source=https%3A//ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
-    <a href="mailto:?subject=M%C3%A1quinas%20virtuales%20con%20kvm%20y%20qemu&amp;body=https%3A//ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html" target="_blank" title="Share via Email">Email</a>
-  </p>
-</section>
+            </div>
+            <div class="post_list">
+                <span>By </span>
+                <a href="https://ecrespo.github.io/author/ernesto-crespo.html">@Ernesto Crespo</a>
+                <span> in </span>
+                <span class="post_category"><a href="https://ecrespo.github.io/category/tutorial-linux.html" rel="bookmark"
+                                               title="Permalink to Tutorial Linux">[ Tutorial Linux ]</a></span>
+                <span class="post_date">dom 02 junio 2013</span>
+                <div><span>Tags : </span>
+                            <span><a href="https://ecrespo.github.io/tag/debian.html">#Debian, </a></span>
+                            <span><a href="https://ecrespo.github.io/tag/general.html">#General, </a></span>
+                            <span><a href="https://ecrespo.github.io/tag/kvm.html">#KVM, </a></span>
+                            <span><a href="https://ecrespo.github.io/tag/qemu.html">#qemu, </a></span>
+                </div>
 
+                <div class="entry-social">
+                    <span class="twitter"><a target="_blank" rel="nofollow"
+                                             onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;"
+                                             title="Twitter"
+                                             href="https://twitter.com/share?url=https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html&text=Máquinas virtuales con kvm y qemu&via="><img
+                            src="https://ecrespo.github.io/theme/images/icons/twitter-s.png"></a></span>
 
-  <div class="neighbors">
-    <a class="btn float-left" href="https://ecrespo.github.io/descubriendo-trending-topics-de-twitter-con-python-twitter.html" title="Descubriendo trending topics de twitter con python-twitter.">
-      <i class="fa fa-angle-left"></i>     Previous Post
+                    <span class="gplus"><a target="_blank" title="Google +"
+                                           href="https://plus.google.com/share?url=https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html&hl=fr"
+                                           rel="nofollow"
+                                           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="https://ecrespo.github.io/theme/images/icons/google-s.png"></a></span>
 
-    </a>
-    <a class="btn float-right" href="https://ecrespo.github.io/utilizando-el-api-de-stream-de-twitter-con-python-y-tweetstream-parte-1.html" title="Utilizando el API de Stream de Twitter con Python y tweetstream. Parte 1.">
-          Next Post
- <i class="fa fa-angle-right"></i>
-    </a>
-  </div>
+                    <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow"
+                                              onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;"
+                                              href="https://www.facebook.com/sharer.php?u=https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html&t=Máquinas virtuales con kvm y qemu"><img
+                            src="https://ecrespo.github.io/theme/images/icons/facebook-s.png"></a></span>
 
-  <div class="related-posts">
-    <h4>    You might enjoy
-</h4>
-    <ul class="related-posts">
-      <li><a href="https://ecrespo.github.io/arbol-de-decision-hecho-en-python.html">Árbol de decisión hecho en Python</a></li>
-      <li><a href="https://ecrespo.github.io/consultar-dns-por-medio-de-scapy.html">Consultar DNS por medio de Scapy</a></li>
-      <li><a href="https://ecrespo.github.io/extraccion-de-informacion-de-pdfs-con-python-parte-2.html">Extracción de información de PDFs con python (parte 2).</a></li>
-      <li><a href="https://ecrespo.github.io/extraccion-de-informacion-de-pdfs-con-python-parte-1.html">Extracción de información de PDFs con python (parte 1).</a></li>
-      <li><a href="https://ecrespo.github.io/habilitar-autenticacion-en-un-servidor-mongodb.html">Habilitar autenticación en un servidor mongodb</a></li>
-    </ul>
-  </div>
+                    <a target="_blank" title="Linkedin"
+                       href="https://www.linkedin.com/shareArticle?mini=true&url=https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html&title=Máquinas virtuales con kvm y qemu"
+                       rel="nofollow"
+                       onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img
+                            src="https://ecrespo.github.io/theme/images/icons/linkedin-s.png"></a>
 
-
-<!-- Disqus -->
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'https://seraphto.disqus.com';
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>
-        Please enable JavaScript to view comments.
-
-</noscript>
-<!-- End Disqus -->
+                    <span class="mail"><a
+                            href="mailto:?subject=Máquinas virtuales con kvm y qemu&amp;body=Viens découvrir un article à propos de [Máquinas virtuales con kvm y qemu] sur le site de Ernesto Crespo. https://ecrespo.github.io/maquinas-virtuales-con-kvm-y-qemu.html"
+                            title="Share by Email" target="_blank"><img
+                            src="https://ecrespo.github.io/theme/images/icons/mail-s.png"></a></span>
+                </div>
+            </div>
+                <div class="comments">
+                    <h2>Comments !</h2>
+                    <div id="disqus_thread"></div>
+                    <script type="text/javascript">
+                        var disqus_identifier = "maquinas-virtuales-con-kvm-y-qemu.html";
+                        (function () {
+                            var dsq = document.createElement('script');
+                            dsq.type = 'text/javascript';
+                            dsq.async = true;
+                            dsq.src = 'https://https://seraphto.disqus.com.disqus.com/embed.js';
+                            (document.getElementsByTagName('head')[0] ||
+                            document.getElementsByTagName('body')[0]).appendChild(dsq);
+                        })();
+                    </script>
+                </div>
+        </article>
+    </section>
 </article>
 
+<!-- Footer -->
     <footer>
-<p>&copy;  2006</p>
-<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
-</p>    </footer>
-  </main>
+        <p>
+            Blog powered by <a href="http://getpelican.com/">Pelican</a>,
+            which takes great advantage of <a href="http://python.org">Python</a>.
+            Theme <a href="https://github.com/parbhat/pelican-blue">Pelican-Blue</a> by <a
+                href="https://parbhatpuri.com/">@parbhat</a>.
+        </p>
+    </footer>
 
-
-
-
-<script type="application/ld+json">
-{
-  "@context" : "http://schema.org",
-  "@type" : "Blog",
-  "name": " Página de Seraph ",
-  "url" : "https://ecrespo.github.io",
-  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
-  "description": " Software Libre, Ciencia de Datos y Python"
-}
-</script>
+    <!-- Analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-131517246-1']);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
 
 </body>
 </html>

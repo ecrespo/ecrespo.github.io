@@ -1,0 +1,1061 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Se puede usar docker-machine para proveer un cluster con docker swarm. Este artículo se basa de los siguientes artículos en inglés: Provision a Swarm cluster with Docker Machine. How to Use Docker Machine to Create a Swarm Cluster. Los artículos anteriores sobre Docker son: Instalar Docker en Debian Jessie Uso …" />
+<meta name="keywords" content="Canaima, Debian, Linux, Ubuntu, Docker, docker-swarm, docker-machine">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Proveer un cluster con docker swarm y docker-machine."/>
+<meta property="og:description" content="Se puede usar docker-machine para proveer un cluster con docker swarm. Este artículo se basa de los siguientes artículos en inglés: Provision a Swarm cluster with Docker Machine. How to Use Docker Machine to Create a Swarm Cluster. Los artículos anteriores sobre Docker son: Instalar Docker en Debian Jessie Uso …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://localhost:8000/proveer-un-cluster-con-docker-swarm-y-docker-machine.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-05-09 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Docker"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="docker-swarm"/>
+<meta property="article:tag" content="docker-machine"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Proveer un cluster con docker swarm y docker-machine.</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://localhost:8000">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="http://localhost:8000">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="http://localhost:8000/pages/About.html#About">Acerca</a></li>
+          <li><a href="http://localhost:8000/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="http://localhost:8000/tag/python.html">
+            Python
+                    <span class="badge">290</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="http://localhost:8000">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="proveer-un-cluster-con-docker-swarm-y-docker-machine">Proveer un cluster con docker swarm y docker-machine.</h1>
+    <p>
+          Posted on lun 09 mayo 2016 in <a href="http://localhost:8000/category/tutorial-de-docker.html">Tutorial de Docker</a>
+
+
+        &#8226; 4 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Se puede usar docker-machine para proveer un cluster con docker swarm.</p>
+<p>Este artículo se basa de los siguientes artículos en inglés:</p>
+<ul>
+<li><a href="https://docs.docker.com/swarm/provision-with-machine/">Provision a Swarm cluster with Docker Machine.</a></li>
+<li><a href="https://www.linux.com/learn/how-use-docker-machine-create-swarm-cluster">How to Use Docker Machine to Create a Swarm Cluster.</a></li>
+</ul>
+<p>Los artículos anteriores sobre Docker son:  </p>
+<ol>
+<li>
+<p><a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html">Instalar Docker en Debian Jessie</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html">Uso de Docker en Debian Jessie (parte 1)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html">Uso de Docker en Debian Jessie (parte 2)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo Dockerfile</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-usando-docker.html">Iniciando Django usando Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">Instalar Gitlab por medio de Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando microservicios con docker usando docker-compose</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/docker-en-docker-dind.html">Docker en Docker (DinD)</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html">Iniciando Django con docker usando docker-compose con postgresql como microservicio.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/importar-un-contenedor-docker-en-python.html#importar-un-contenedor-docker-en-python">Importar un contenedor Docker en Python.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar">Compartir imagenes Docker por medio de archivos tar</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado">Crear un registro de imagenes Docker privado.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-anaconda-desde-un-contenedor-docker.html#usar-anaconda-desde-un-contenedor-docker">Usar Anaconda desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html#crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs">Crear un entorno de Integración y Despligue continue con Docker para node.js.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-jupyter-notebook-desde-un-contenedor-de-docker.html#usar-jupyter-notebook-desde-un-contenedor-de-docker">Usar Jupyter Notebook desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker">Ejecutar una prueba de doctest con un contenedor Docker</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html#ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker">Ejecutar una prueba de unittest en Python con un contenedor Docker.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/montar-una-plataforma-como-servicio-paas-con-dokku-docker.html#montar-una-plataforma-como-servicio-paas-con-dokku-docker">Montar una Plataforma como servicio (PaaS) con Dokku (docker)</a>.  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-machine.html#uso-de-docker-machine">Uso de docker-machine.  </a></p>
+</li>
+</ol>
+<p>Este artículo usará comandos ya explicados en el artículo sobre "<a href="https://www.seraph.to/uso-de-docker-machine.html#uso-de-docker-machine">Uso de docker-machine</a>".</p>
+<p>En el artículo anterior se usó virtualbox, se seguirá usando, pero también se pueden usar servicios en la nube o un host local (<a href="https://docs.docker.com/machine/drivers/">los drivers soportados</a>): amazon web services, Microsoft Azure, Digital Ocean, Exoscale, Google Compute Engine, Genérico, OpenStack entre otros. </p>
+<p>Se crea un host (virtualbox) para generar el token de <code>swarm</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker-machine create -d virtualbox local</span>
+</code></pre></div>
+
+<p>Para configurar el shell que acceda a local se ejecuta:</p>
+<div class="highlight"><pre><span></span><code><span class="err">eval &quot;$(docker-machine env local)&quot;</span>
+</code></pre></div>
+
+<p>Cada host <code>swarm</code> tiene un token instalado dentro de la configuración del motor. Para crear el token se crea la imagen de <code>swarm</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">docker</span> <span class="n">run</span> <span class="n">swarm</span> <span class="n">create</span>
+<span class="n">Unable</span> <span class="n">to</span> <span class="n">find</span> <span class="n">image</span> <span class="s1">&#39;swarm:latest&#39;</span> <span class="n">locally</span>
+<span class="n">latest</span><span class="p">:</span> <span class="n">Pulling</span> <span class="n">from</span> <span class="n">library</span><span class="o">/</span><span class="n">swarm</span>
+
+<span class="n">eada7ab697d2</span><span class="p">:</span> <span class="n">Pull</span> <span class="n">complete</span> 
+<span class="n">afaf40cb2366</span><span class="p">:</span> <span class="n">Pull</span> <span class="n">complete</span> 
+<span class="mi">7495</span><span class="n">da266907</span><span class="p">:</span> <span class="n">Pull</span> <span class="n">complete</span> 
+<span class="n">a3ed95caeb02</span><span class="p">:</span> <span class="n">Pull</span> <span class="n">complete</span> 
+<span class="n">Digest</span><span class="p">:</span> <span class="n">sha256</span><span class="p">:</span><span class="mf">12e3</span><span class="n">f7bdb86682733adf5351543487f581e1ccede5d85e1d5e0a7a62dcc88116</span>
+<span class="n">Status</span><span class="p">:</span> <span class="n">Downloaded</span> <span class="n">newer</span> <span class="n">image</span> <span class="k">for</span> <span class="n">swarm</span><span class="p">:</span><span class="n">latest</span>
+<span class="mi">99</span><span class="n">cd781ad7e0f3682747d94edff87f49</span>
+</code></pre></div>
+
+<p>El token es la salida que se muestra subrayada.</p>
+<p>Creando los nodos del cluster:</p>
+<p>Todos los nodos de un cluster deben tener el engine instalado, con el token del cluster se puede proveer un host con engine y configurarlo como un nodo <code>swarm</code>.</p>
+<p>Para crear un manejador de nodo swarm se ejecuta el siguiente comando:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker-machine create -d virtualbox --swarm --swarm-master --swarm-discovery token://99cd781ad7e0f3682747d94edff87f49 swarm-manager</span>
+</code></pre></div>
+
+<p>Para ver las variables y luego configurar el shell:</p>
+<div class="highlight"><pre><span></span><code><span class="n">docker</span><span class="o">-</span><span class="n">machine</span> <span class="n">env</span> <span class="n">swarm</span><span class="o">-</span><span class="n">manager</span>
+<span class="k">export</span> <span class="n">DOCKER_TLS_VERIFY</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+<span class="k">export</span> <span class="n">DOCKER_HOST</span><span class="o">=</span><span class="s2">&quot;tcp://192.168.99.101:2376&quot;</span>
+<span class="k">export</span> <span class="n">DOCKER_CERT_PATH</span><span class="o">=</span><span class="s2">&quot;/home/ernesto/.docker/machine/machines/swarm-manager&quot;</span>
+<span class="k">export</span> <span class="n">DOCKER_MACHINE_NAME</span><span class="o">=</span><span class="s2">&quot;swarm-manager&quot;</span>
+<span class="c1"># Run this command to configure your shell: </span>
+<span class="c1"># eval &quot;$(docker-machine env swarm-manager)&quot;</span>
+
+
+<span class="n">eval</span> <span class="s2">&quot;$(docker-machine env swarm-manager)&quot;</span>
+</code></pre></div>
+
+<p>Ahora se crea el primer nodo, el nodo-01, se le pasa también el token:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker-machine create -d virtualbox --swarm --swarm-discovery token://99cd781ad7e0f3682747d94edff87f49 nodo-01</span>
+</code></pre></div>
+
+<p>Y un nodo-02:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker-machine create -d virtualbox --swarm --swarm-discovery token://99cd781ad7e0f3682747d94edff87f49 nodo-02</span>
+</code></pre></div>
+
+<p>Conectar los nodos con la máquina:</p>
+<p>Para conectar el ambiente del host con la máquina se usa el comando eval con la opción a docker-machine de env, algo así: </p>
+<div class="highlight"><pre><span></span><code><span class="err">eval &quot;$(docker-machine env local)&quot;</span>
+</code></pre></div>
+
+<p>En este caso docker-machine provee una opción <code>--swarm</code> para conectar los nodos <code>swarm</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">docker</span><span class="o">-</span><span class="n">machine</span> <span class="n">env</span> <span class="o">--</span><span class="n">swarm</span> <span class="n">swarm</span><span class="o">-</span><span class="n">manager</span>
+<span class="k">export</span> <span class="n">DOCKER_TLS_VERIFY</span><span class="o">=</span><span class="s2">&quot;1&quot;</span>
+<span class="k">export</span> <span class="n">DOCKER_HOST</span><span class="o">=</span><span class="s2">&quot;tcp://192.168.99.101:3376&quot;</span>
+<span class="k">export</span> <span class="n">DOCKER_CERT_PATH</span><span class="o">=</span><span class="s2">&quot;/home/ernesto/.docker/machine/machines/swarm-manager&quot;</span>
+<span class="k">export</span> <span class="n">DOCKER_MACHINE_NAME</span><span class="o">=</span><span class="s2">&quot;swarm-manager&quot;</span>
+<span class="c1"># Run this command to configure your shell: </span>
+<span class="c1"># eval &quot;$(docker-machine env swarm-manager)&quot;</span>
+</code></pre></div>
+
+<p>Para conectarse el nodo <code>swarm</code> llamado <code>swarm-manager</code> se ejecuta:</p>
+<div class="highlight"><pre><span></span><code><span class="err">eval &quot;$(docker-machine env swarm-manager)&quot;</span>
+</code></pre></div>
+
+<p>Ahora se puede ejecutar <code>docker info</code> para interacturar con los nodos:</p>
+<div class="highlight"><pre><span></span><code><span class="o">$</span><span class="n">docker</span> <span class="n">info</span> 
+<span class="n">Containers</span><span class="p">:</span> <span class="mi">2</span>
+ <span class="n">Running</span><span class="p">:</span> <span class="mi">2</span>
+ <span class="n">Paused</span><span class="p">:</span> <span class="mi">0</span>
+ <span class="n">Stopped</span><span class="p">:</span> <span class="mi">0</span>
+<span class="n">Images</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Server</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">1.11</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">rc1</span>
+<span class="n">Storage</span> <span class="n">Driver</span><span class="p">:</span> <span class="n">aufs</span>
+ <span class="n">Root</span> <span class="n">Dir</span><span class="p">:</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">sda1</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">docker</span><span class="o">/</span><span class="n">aufs</span>
+ <span class="n">Backing</span> <span class="n">Filesystem</span><span class="p">:</span> <span class="n">extfs</span>
+ <span class="n">Dirs</span><span class="p">:</span> <span class="mi">12</span>
+ <span class="n">Dirperm1</span> <span class="n">Supported</span><span class="p">:</span> <span class="bp">true</span>
+<span class="n">Logging</span> <span class="n">Driver</span><span class="p">:</span> <span class="n">json</span><span class="o">-</span><span class="n">file</span>
+<span class="n">Cgroup</span> <span class="n">Driver</span><span class="p">:</span> <span class="n">cgroupfs</span>
+<span class="n">Plugins</span><span class="p">:</span> 
+ <span class="n">Volume</span><span class="p">:</span> <span class="n">local</span>
+ <span class="n">Network</span><span class="p">:</span> <span class="n">host</span> <span class="n">bridge</span> <span class="nb nb-Type">null</span>
+<span class="n">Kernel</span> <span class="n">Version</span><span class="p">:</span> <span class="mf">4.4</span><span class="o">.</span><span class="mi">8</span><span class="o">-</span><span class="n">boot2docker</span>
+<span class="n">Operating</span> <span class="n">System</span><span class="p">:</span> <span class="n">Boot2Docker</span> <span class="mf">1.11</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">rc1</span> <span class="p">(</span><span class="n">TCL</span> <span class="mf">7.0</span><span class="p">);</span> <span class="n">HEAD</span> <span class="p">:</span> <span class="mi">903</span><span class="n">a352</span> <span class="o">-</span> <span class="n">Tue</span> <span class="n">Apr</span> <span class="mi">26</span> <span class="mi">14</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">06</span> <span class="n">UTC</span> <span class="mi">2016</span>
+<span class="n">OSType</span><span class="p">:</span> <span class="n">linux</span>
+<span class="n">Architecture</span><span class="p">:</span> <span class="n">x86_64</span>
+<span class="n">CPUs</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Total</span> <span class="n">Memory</span><span class="p">:</span> <span class="mf">995.9</span> <span class="n">MiB</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">swarm</span><span class="o">-</span><span class="n">manager</span>
+<span class="n">ID</span><span class="p">:</span> <span class="mi">6</span><span class="n">LXP</span><span class="p">:</span><span class="n">RTPR</span><span class="p">:</span><span class="mi">4</span><span class="n">MRE</span><span class="p">:</span><span class="n">OGLK</span><span class="p">:</span><span class="n">EDED</span><span class="p">:</span><span class="n">EQBP</span><span class="p">:</span><span class="n">JQRH</span><span class="p">:</span><span class="n">RHLW</span><span class="p">:</span><span class="mi">5</span><span class="n">YUG</span><span class="p">:</span><span class="n">SELK</span><span class="p">:</span><span class="n">MUDN</span><span class="p">:</span><span class="n">YVSA</span>
+<span class="n">Docker</span> <span class="n">Root</span> <span class="n">Dir</span><span class="p">:</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">sda1</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">docker</span>
+<span class="n">Debug</span> <span class="n">mode</span> <span class="p">(</span><span class="n">client</span><span class="p">):</span> <span class="bp">false</span>
+<span class="n">Debug</span> <span class="n">mode</span> <span class="p">(</span><span class="n">server</span><span class="p">):</span> <span class="bp">true</span>
+ <span class="n">File</span> <span class="n">Descriptors</span><span class="p">:</span> <span class="mi">20</span>
+ <span class="n">Goroutines</span><span class="p">:</span> <span class="mi">45</span>
+ <span class="n">System</span> <span class="n">Time</span><span class="p">:</span> <span class="mi">2016</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">09</span><span class="n">T20</span><span class="p">:</span><span class="mi">36</span><span class="p">:</span><span class="mf">18.825810618</span><span class="n">Z</span>
+ <span class="n">EventsListeners</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">Username</span><span class="p">:</span> <span class="n">ecrespo</span>
+<span class="n">Registry</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">index</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span>
+<span class="n">Labels</span><span class="p">:</span>
+ <span class="n">provider</span><span class="o">=</span><span class="n">virtualbox</span>
+</code></pre></div>
+
+<p>O listar las máquinas con <code>docker-machine ls</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker-machine ls</span>
+<span class="err">NAME            ACTIVE   DRIVER       STATE     URL                         SWARM</span>
+<span class="err">local                    virtualbox   Running   tcp://192.168.99.100:2376   </span>
+<span class="err">nodo-01                  virtualbox   Running   tcp://192.168.99.102:2376   swarm-manager</span>
+<span class="err">nodo-02                  virtualbox   Running   tcp://192.168.99.103:2376   swarm-manager</span>
+<span class="err">swarm-manager   *        virtualbox   Running   tcp://192.168.99.101:2376   swarm-manager (master)</span>
+</code></pre></div>
+
+<p>Como pueden notar los nodos nodo-01 y nodo-02 están asociados a swarm-manager y este es el master.</p>
+<p>A continuación dejo captura de pantalla de swarm-manager, nodo-01 y nodo-02:</p>
+<p><img alt="" src="./images/proveerunclustercondockerswarmydockermachine-1.png"></p>
+<p><img alt="" src="./images/proveerunclustercondockerswarmydockermachine-2.png"></p>
+<p><img alt="" src="./images/proveerunclustercondockerswarmydockermachine-3.png"></p>
+<p>A continuación les dejo unos enlaces de referencia:</p>
+<ul>
+<li><a href="https://docs.docker.com/machine/get-started-cloud/">Use Docker Machine to provision hosts on cloud providers.</a></li>
+<li><a href="https://docs.docker.com/engine/installation/cloud/cloud-ex-machine-ocean/">Example: Use Docker Machine to provision cloud hosts.</a></li>
+</ul>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/tag/canaima.html">Canaima</a>
+      <a href="http://localhost:8000/tag/debian.html">Debian</a>
+      <a href="http://localhost:8000/tag/linux.html">Linux</a>
+      <a href="http://localhost:8000/tag/ubuntu.html">Ubuntu</a>
+      <a href="http://localhost:8000/tag/docker.html">Docker</a>
+      <a href="http://localhost:8000/tag/docker-swarm.html">docker-swarm</a>
+      <a href="http://localhost:8000/tag/docker-machine.html">docker-machine</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Proveer%20un%20cluster%20con%20docker%20swarm%20y%20docker-machine.&url=http%3A//localhost%3A8000/proveer-un-cluster-con-docker-swarm-y-docker-machine.html&hashtags=canaima,debian,linux,ubuntu,docker,docker-swarm,docker-machine" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//localhost%3A8000/proveer-un-cluster-con-docker-swarm-y-docker-machine.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//localhost%3A8000/proveer-un-cluster-con-docker-swarm-y-docker-machine.html&title=Proveer%20un%20cluster%20con%20docker%20swarm%20y%20docker-machine.&summary=Se%20puede%20usar%20docker-machine%20para%20proveer%20un%20cluster%20con%20docker%20swarm.%0AEste%20art%C3%ADculo%20se%20basa%20de%20los%20siguientes%20art%C3%ADculos%20en%20ingl%C3%A9s%3A%0A%0AProvision%20a%20Swarm%20cluster%20with%20Docker%20Machine.%0AHow%20to%20Use%20Docker%20Machine%20to%20Create%20a%20Swarm%20Cluster.%0A%0ALos%20art%C3%ADculos%20anteriores%20sobre%20Docker%20son%3A%20%20%0A%0A%0AInstalar%20Docker%20en%20Debian%20Jessie%20%0A%0A%0AUso%20%E2%80%A6&source=http%3A//localhost%3A8000/proveer-un-cluster-con-docker-swarm-y-docker-machine.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Proveer%20un%20cluster%20con%20docker%20swarm%20y%20docker-machine.&amp;body=http%3A//localhost%3A8000/proveer-un-cluster-con-docker-swarm-y-docker-machine.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="http://localhost:8000/uso-de-docker-machine.html" title="Uso de docker-machine.">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="http://localhost:8000/instalar-jenkins-por-medio-de-docker-y-crear-una-imagen-docker-de-jenkins.html" title="Instalar Jenkins por medio de Docker y crear una imagen Docker de Jenkins.">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/uso-de-docker-machine.html">Uso de docker-machine.</a></li>
+      <li><a href="http://localhost:8000/usar-dockerui-para-la-gestion-de-imagenes-y-contenedores-de-docker.html">Usar dockerui para la gestión de imágenes y contenedores de Docker</a></li>
+      <li><a href="http://localhost:8000/correr-aplicaciones-de-escritorio-desde-un-contenedor-docker.html">Correr aplicaciones de escritorio desde un contenedor Docker</a></li>
+      <li><a href="http://localhost:8000/crear-un-contenedor-docker-como-entorno-de-desarrollo-para-sailsjs.html">Crear un contenedor Docker como entorno de desarrollo para sails.js</a></li>
+      <li><a href="http://localhost:8000/crear-una-imagen-docker-para-mongodb-3.html">Crear una imagen Docker para MongoDB 3</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "http://localhost:8000",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,988 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Este artículo se basa en el artículo de HowtoForge sobre el mismo tema. La idea es cifrar el directorio home del usuario,se monte el directorio cifrado automáticamente al arrancar el equipo. Es necesario tener un respaldo de la carpeta del usuario para evitar perdida de datos si olvida la …" />
+<meta name="keywords" content="Linux, Debian, Ubuntu, Canaima, Seguridad, eCryptfs">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Como cifrar directorios/particiones con eCryptfs"/>
+<meta property="og:description" content="Este artículo se basa en el artículo de HowtoForge sobre el mismo tema. La idea es cifrar el directorio home del usuario,se monte el directorio cifrado automáticamente al arrancar el equipo. Es necesario tener un respaldo de la carpeta del usuario para evitar perdida de datos si olvida la …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://localhost:8000/como-cifrar-directoriosparticiones-con-ecryptfs.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2011-08-21 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Linux"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Seguridad"/>
+<meta property="article:tag" content="eCryptfs"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Como cifrar directorios/particiones con eCryptfs</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://localhost:8000">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="http://localhost:8000">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="http://localhost:8000/pages/About.html#About">Acerca</a></li>
+          <li><a href="http://localhost:8000/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="http://localhost:8000/tag/python.html">
+            Python
+                    <span class="badge">290</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="http://localhost:8000">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="como-cifrar-directoriosparticiones-con-ecryptfs">Como cifrar directorios/particiones con eCryptfs</h1>
+    <p>
+          Posted on dom 21 agosto 2011 in <a href="http://localhost:8000/category/tutorial-de-linux.html">Tutorial de Linux</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Este artículo se basa en el artículo de HowtoForge sobre el mismo <a href="http://www.howtoforge.net/how-to-encrypt-directories-partitions-with-ecryptfs-on-debian-squeeze">tema</a>.</p>
+<p>La idea es cifrar el directorio home del usuario,se monte el directorio cifrado automáticamente al arrancar el equipo.</p>
+<p>Es necesario tener un respaldo de la carpeta del usuario para evitar perdida de datos si olvida la clave.</p>
+<ol>
+<li>Instalar eCryptfs:</li>
+</ol>
+<p>Se ejecuta:</p>
+<div class="highlight"><pre><span></span><code><span class="err">aptitude install ecryptfs-utils</span>
+</code></pre></div>
+
+<ol>
+<li>Cifrar un directorio.</li>
+</ol>
+<p>Respaldar los archivos y directorios del home del usuario:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cp -pfr /home/ecrespo /tmp/</span>
+</code></pre></div>
+
+<p>Cifrar el directorio /home/ecrespo/ al montar el sistema de archivos ecryptfs:</p>
+<p>Se selecciona aes, 16, no se habilita frase plana, no se habilita cifrado del nombre del archivo, así que con estas opciones sólo hay que presionar enter a la información que solicite al montar la partición cifrada.</p>
+<div class="highlight"><pre><span></span><code><span class="n">mount</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="w"> </span><span class="n">ecryptfs</span><span class="w"> </span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ecrespo</span><span class="w"> </span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ecrespo</span><span class="w"></span>
+
+<span class="nl">Passphrase</span><span class="p">:</span><span class="w"></span>
+<span class="k">Select</span><span class="w"> </span><span class="nl">cipher</span><span class="p">:</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="nl">aes</span><span class="p">:</span><span class="w"> </span><span class="n">blocksize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="nf">min</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="nf">max</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="n">loaded</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="nl">blowfish</span><span class="p">:</span><span class="w"> </span><span class="n">blocksize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="nf">min</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="nf">max</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">56</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="n">loaded</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="nl">des3_ede</span><span class="p">:</span><span class="w"> </span><span class="n">blocksize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w"> </span><span class="nf">min</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">24</span><span class="p">;</span><span class="w"> </span><span class="nf">max</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="n">loaded</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="nl">twofish</span><span class="p">:</span><span class="w"> </span><span class="n">blocksize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="nf">min</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="nf">max</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="n">loaded</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="nl">cast6</span><span class="p">:</span><span class="w"> </span><span class="n">blocksize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="nf">min</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span><span class="w"> </span><span class="nf">max</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">32</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="n">loaded</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="nl">cast5</span><span class="p">:</span><span class="w"> </span><span class="n">blocksize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span><span class="w"> </span><span class="nf">min</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="nf">max</span><span class="w"> </span><span class="n">keysize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="p">(</span><span class="ow">not</span><span class="w"> </span><span class="n">loaded</span><span class="p">)</span><span class="w"></span>
+<span class="n">Selection</span><span class="w"> </span><span class="o">[</span><span class="n">aes</span><span class="o">]</span><span class="err">:</span><span class="w"></span>
+<span class="k">Select</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="nl">bytes</span><span class="p">:</span><span class="w"></span>
+<span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="mi">16</span><span class="w"></span>
+<span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="mi">32</span><span class="w"></span>
+<span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="mi">24</span><span class="w"></span>
+<span class="n">Selection</span><span class="w"> </span><span class="o">[</span><span class="n">16</span><span class="o">]</span><span class="err">:</span><span class="w"></span>
+<span class="n">Enable</span><span class="w"> </span><span class="n">plaintext</span><span class="w"> </span><span class="n">passthrough</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">n</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">Enter</span><span class="w"></span>
+<span class="n">Enable</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="n">encryption</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">[</span><span class="n">n</span><span class="o">]</span><span class="err">:</span><span class="w"> </span><span class="n">Enter</span><span class="w"></span>
+<span class="n">Attempting</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">mount</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="nl">options</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">ecryptfs_unlink_sigs</span><span class="w"></span>
+<span class="w">  </span><span class="n">ecryptfs_key_bytes</span><span class="o">=</span><span class="mi">16</span><span class="w"></span>
+<span class="w">  </span><span class="n">ecryptfs_cipher</span><span class="o">=</span><span class="n">aes</span><span class="w"></span>
+<span class="w">  </span><span class="n">ecryptfs_sig</span><span class="o">=</span><span class="mi">162827</span><span class="n">f20fdadf4e</span><span class="w"></span>
+<span class="n">Mounted</span><span class="w"> </span><span class="n">eCryptfs</span><span class="w"></span>
+</code></pre></div>
+
+<ol>
+<li>Verificar que la partición se ha montado.</li>
+</ol>
+<p>El comando mount sólo devuelve las particiones que se encuentran montadas en el Linux.</p>
+<div class="highlight"><pre><span></span><code><span class="err">mount /home/ecrespo on /home/ecrespo type ecryptfs (rw,ecryptfs_sig=162827f20fdadf4e,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_unlink_sigs)</span>
+</code></pre></div>
+
+<ol>
+<li>Recuperar el respaldo y borrar el respaldo del directorio /tmp/</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="err">cp -pfr /tmp/ecrespo /home/</span>
+<span class="err">rm -fr /tmp/ecrespo</span>
+</code></pre></div>
+
+<ol>
+<li>Verificar el funcionamiento del cifrado de archivos.</li>
+</ol>
+<p>Para propósitos de prueba se copia un archivo de /etc/ al home del usuario.
+Mostrar la información que contiene el archivo hostname en /etc/</p>
+<div class="highlight"><pre><span></span><code><span class="err">cat /etc/hostname </span>
+<span class="err">canaima-popular</span>
+</code></pre></div>
+
+<p>Copiar el archivo hostname al home del usuario:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cp /etc/hostname /home/ecrespo/</span>
+</code></pre></div>
+
+<p>Mientras la partición cifrada se encuentra montada se puede visualizar los archivos:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cat /home/ecrespo/hostname </span>
+<span class="err">canaima-popular</span>
+</code></pre></div>
+
+<p>Desmontar la partición.</p>
+<div class="highlight"><pre><span></span><code><span class="err">umount /home/ecrespo/</span>
+</code></pre></div>
+
+<p>Verificar que el archivo está cifrado:</p>
+<div class="highlight"><pre><span></span><code><span class="err">cat /home/ecrespo/hostname</span>
+<span class="err">4��ˉ�s|| � &quot;3DUfw`�6���D �̬�����{� _CONSOLE (&#39;��N�pD���-� \ٛn�Ś/��TD��xҝD[:�$] �wq�V��</span>
+<span class="err">�n /�k�a:�H.�{ USj�@u)�c ������T� �� �m�иや� � Z�&amp;��0�Q��B�� /��q�e��E��li�&quot;dx�tDs���k����h�J��20��&amp;T�?R�x� �W�$�</span>
+<span class="err">                                                                                                                   �$�@ �&amp;</span>
+<span class="err">                                                                                                                           ��� �G� /�.L���1d�� j����{cYRꄙZ`��t 8�4ԬZ~ ,)H</span>
+<span class="err">eb �� f ��?��</span>
+<span class="err">          �_&#39; ��K&amp;�d)����{y�z����ֆ�2x��h�� &amp;j���tuq��a�JeJ�� ���\&quot;~</span>
+<span class="err">                                                                   ��5`� V RCB`��������PU�&amp;������X�</span>
+<span class="err">                                                                                                    9Ԥ[� 4O.� �� ̔�;/ �����#j V`Sf^��&lt;�uB8 �ЭIx�4PR�� dml��`&amp;c �</span>
+<span class="err">! ҟ&amp;`�~�U?u�� �����쵮 @�)�8�Q U��杞M�e��=&quot;�}�V# ��&gt;������ �&gt;�F�� R�#ZgI���^J�� ,��0ݼR�rO�f��AxS��3�\�M���o�D �u�Av)�qq%�(F�/���%tL��w�U�k6~c��` “=�4N��E�= #� � a7�����v�(V�p�HlR�Y5����#^���K �~ :h��Z�Q�J�{�FC�N;*� 0Bő*���=�</span>
+<span class="err">�ՙ��R�mќet ���7B�_�Dz.[�6&gt;�ĸؓ�� �Nc��#��NR��@� 4 �/���M?Om �|;/�Oe9�6��&amp;6D*U�A�e��� �V</span>
+<span class="err">�ZM�&lt;ɝ��&quot;�0��0�WŸL�H�,r</span>
+<span class="err">                        �&gt;��f��4�$�wA�rѫ� �0H�����CP�i��&amp;���!b���-#</span>
+<span class="err">$ލ;�X!y�� ~� I5e��V|Y�\� �H^£�7�0�Z��{�}&quot;!��͡�� 6�M�!LNȆXvF         )� ��G�Nuɍ� � ӧ��s���t ���t��o&amp;� C������W�#��Cpk�&gt;&lt;„</span>
+</code></pre></div>
+
+<ol>
+<li>Montar automáticamente  la partición o directorio.</li>
+</ol>
+<p>Conecte un pendrive y ejecute el comando fdisk -l donde aparecerá la partición del pendrive:</p>
+<div class="highlight"><pre><span></span><code><span class="n">fdisk</span> <span class="o">-</span><span class="n">l</span>
+ <span class="n">Disk</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">sdb</span><span class="p">:</span> <span class="mi">16</span><span class="p">.</span><span class="mi">0</span> <span class="n">GB</span><span class="p">,</span> <span class="mi">16011542528</span> <span class="n">bytes</span>
+<span class="mi">32</span> <span class="n">heads</span><span class="p">,</span> <span class="mi">63</span> <span class="n">sectors</span><span class="o">/</span><span class="n">track</span><span class="p">,</span> <span class="mi">15512</span> <span class="n">cylinders</span><span class="p">,</span> <span class="mi">31272544</span> <span class="n">sectores</span> <span class="n">en</span> <span class="n">total</span>
+<span class="n">Units</span> <span class="o">=</span> <span class="n">sectores</span> <span class="k">of</span> <span class="mi">1</span> <span class="o">*</span> <span class="mi">512</span> <span class="o">=</span> <span class="mi">512</span> <span class="n">bytes</span>
+<span class="n">Sector</span> <span class="k">size</span> <span class="p">(</span><span class="n">logical</span><span class="o">/</span><span class="n">physical</span><span class="p">):</span> <span class="mi">512</span> <span class="n">bytes</span> <span class="o">/</span> <span class="mi">512</span> <span class="n">bytes</span>
+<span class="n">I</span><span class="o">/</span><span class="n">O</span> <span class="k">size</span> <span class="p">(</span><span class="n">minimum</span><span class="o">/</span><span class="n">optimal</span><span class="p">):</span> <span class="mi">512</span> <span class="n">bytes</span> <span class="o">/</span> <span class="mi">512</span> <span class="n">bytes</span>
+<span class="n">Identificador</span> <span class="n">del</span> <span class="n">disco</span><span class="p">:</span> <span class="mi">0</span><span class="n">x59a4123d</span>
+
+<span class="n">Disposit</span><span class="p">.</span> <span class="n">Inicio</span>    <span class="n">Comienzo</span>      <span class="n">Fin</span>      <span class="n">Bloques</span>  <span class="n">Id</span>  <span class="n">Sistema</span>
+<span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">sdb1</span>   <span class="o">*</span>          <span class="mi">63</span>    <span class="mi">31272191</span>    <span class="mi">15636064</span><span class="o">+</span>   <span class="n">b</span>  <span class="n">W95</span> <span class="n">FAT32</span>
+</code></pre></div>
+
+<p>Montar el pendrive:</p>
+<div class="highlight"><pre><span></span><code><span class="err">mkdir /mnt/usb</span>
+<span class="err">mount /dev/sdb1 /mnt/usb</span>
+</code></pre></div>
+
+<p>Al ejecutar mount sólo mostrará las particiones montadas en el equipo:</p>
+<div class="highlight"><pre><span></span><code><span class="err">mount /dev/sdb1 on /mnt/usb type vfat (rw)</span>
+</code></pre></div>
+
+<p>A diferencia del artículo original el pendrive y la partición cifrada no se monta automaticamente.</p>
+<p>===</p>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/tag/linux.html">Linux</a>
+      <a href="http://localhost:8000/tag/debian.html">Debian</a>
+      <a href="http://localhost:8000/tag/ubuntu.html">Ubuntu</a>
+      <a href="http://localhost:8000/tag/canaima.html">Canaima</a>
+      <a href="http://localhost:8000/tag/seguridad.html">Seguridad</a>
+      <a href="http://localhost:8000/tag/ecryptfs.html">eCryptfs</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Como%20cifrar%20directorios/particiones%20con%20eCryptfs&url=http%3A//localhost%3A8000/como-cifrar-directoriosparticiones-con-ecryptfs.html&hashtags=linux,debian,ubuntu,canaima,seguridad,ecryptfs" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//localhost%3A8000/como-cifrar-directoriosparticiones-con-ecryptfs.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//localhost%3A8000/como-cifrar-directoriosparticiones-con-ecryptfs.html&title=Como%20cifrar%20directorios/particiones%20con%20eCryptfs&summary=Este%20art%C3%ADculo%20se%20basa%20en%20el%20art%C3%ADculo%20de%20HowtoForge%20sobre%20el%20mismo%20tema.%0ALa%20idea%20es%20cifrar%20el%20directorio%20home%20del%20usuario%2Cse%20monte%20el%20directorio%20cifrado%20autom%C3%A1ticamente%20al%20arrancar%20el%20equipo.%0AEs%20necesario%20tener%20un%20respaldo%20de%20la%20carpeta%20del%20usuario%20para%20evitar%20perdida%20de%20datos%20si%20olvida%20la%20%E2%80%A6&source=http%3A//localhost%3A8000/como-cifrar-directoriosparticiones-con-ecryptfs.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Como%20cifrar%20directorios/particiones%20con%20eCryptfs&amp;body=http%3A//localhost%3A8000/como-cifrar-directoriosparticiones-con-ecryptfs.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="http://localhost:8000/compartir-repositorios-de-mercurial-con-mercurial-server.html" title="Compartir repositorios de Mercurial con mercurial-server">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="http://localhost:8000/dia-debian-en-merida.html" title="Día Debian en Mérida.">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/cifrar-el-trafico-de-dns-en-linux-con-dnscrypt-y-opendns.html">Cifrar el tráfico de DNS en Linux con DNSCrypt y OpenDNS</a></li>
+      <li><a href="http://localhost:8000/usar-dockerui-para-la-gestion-de-imagenes-y-contenedores-de-docker.html">Usar dockerui para la gestión de imágenes y contenedores de Docker</a></li>
+      <li><a href="http://localhost:8000/correr-aplicaciones-de-escritorio-desde-un-contenedor-docker.html">Correr aplicaciones de escritorio desde un contenedor Docker</a></li>
+      <li><a href="http://localhost:8000/crear-un-contenedor-docker-como-entorno-de-desarrollo-para-sailsjs.html">Crear un contenedor Docker como entorno de desarrollo para sails.js</a></li>
+      <li><a href="http://localhost:8000/crear-una-imagen-docker-para-mongodb-3.html">Crear una imagen Docker para MongoDB 3</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "http://localhost:8000",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

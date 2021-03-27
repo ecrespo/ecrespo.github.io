@@ -1,0 +1,1057 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Anteriormente se explicó como crear un metapaquete con equivs, se tiene también el paquete config-package-dev el cual permite crear paquetes de configuración donde se puede cambiar la configuración de otros archivos dentro del directorio /etc/ . Este artículo se basa en el tutorial del MIT sobre creación de paquetes de configuración …" />
+<meta name="keywords" content="Canaima, Debian, Empaquetado, General, ssh, Ubuntu">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Como crear un metapaquete de configuración con config-package-dev"/>
+<meta property="og:description" content="Anteriormente se explicó como crear un metapaquete con equivs, se tiene también el paquete config-package-dev el cual permite crear paquetes de configuración donde se puede cambiar la configuración de otros archivos dentro del directorio /etc/ . Este artículo se basa en el tutorial del MIT sobre creación de paquetes de configuración …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://localhost:8000/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2011-11-13 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/author/ernesto-crespo.html">
+<meta property="article:section" content="Linux,Empaquetado"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Empaquetado"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="ssh"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Como crear un metapaquete de configuración con config-package-dev</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://localhost:8000">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="http://localhost:8000">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="http://localhost:8000/pages/About.html#About">Acerca</a></li>
+          <li><a href="http://localhost:8000/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="http://localhost:8000/tag/python.html">
+            Python
+                    <span class="badge">290</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="http://localhost:8000">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="como-crear-un-metapaquete-de-configuracion-con-config-package-dev">Como crear un metapaquete de configuración con config-package-dev</h1>
+    <p>
+          Posted on dom 13 noviembre 2011 in <a href="http://localhost:8000/category/linuxempaquetado.html">Linux,Empaquetado</a>
+
+
+        &#8226; 5 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Anteriormente se explicó como crear un metapaquete con <code>equivs</code>, se tiene también el paquete <code>config-package-dev</code> el cual permite crear paquetes de configuración donde se puede cambiar la configuración de otros archivos dentro del directorio <code>/etc/</code> .</p>
+<p>Este artículo se basa en el <a href="https://debathena.mit.edu/config-package-dev/">tutorial del MIT sobre creación de paquetes de configuración para Debian y una guía en el wiki de Debian</a> y una guía en el <a href="https://wiki.debian.org/ConfigPackages">wiki de Debian</a>. El proceso de como adoptar un paquete y empaquetar se explica en una guía que se encuentra en el <a href="https://wiki.debian.org/AdoptarUnPaquete">wiki de Debian</a>.</p>
+<p>Como ejemplo se usará el paquete <code>openssh-server</code> que crea un archivo con el nombre  <code>/etc/ssh/sshd_config</code> . Este archivo contiene la configuración necesaria para arrancar un servidor <code>ssh</code>.</p>
+<p>Instalando <code>openssh-server</code>:  </p>
+<div class="highlight"><pre><span></span><code><span class="err">apt-get install openssh-server config-package-dev</span>
+</code></pre></div>
+
+<p>El contenido del archivo es el siguiente:  </p>
+<div class="highlight"><pre><span></span><code><span class="err">Port 22</span>
+<span class="err">Protocol 2</span>
+<span class="err">HostKey /etc/ssh/ssh_host_rsa_key</span>
+<span class="err">HostKey /etc/ssh/ssh_host_dsa_key</span>
+<span class="err">HostKey /etc/ssh/ssh_host_ecdsa_key</span>
+<span class="err">UsePrivilegeSeparation yes</span>
+<span class="err">KeyRegenerationInterval 3600</span>
+<span class="err">ServerKeyBits 768</span>
+<span class="err">SyslogFacility AUTH</span>
+<span class="err">LogLevel INFO</span>
+<span class="err">LoginGraceTime 120</span>
+<span class="err">PermitRootLogin yes</span>
+<span class="err">StrictModes yes</span>
+<span class="err">RSAAuthentication yes</span>
+<span class="err">PubkeyAuthentication yes</span>
+<span class="err">IgnoreRhosts yes</span>
+<span class="err">RhostsRSAAuthentication no</span>
+<span class="err">HostbasedAuthentication no</span>
+<span class="err">PermitEmptyPasswords no</span>
+<span class="err">ChallengeResponseAuthentication no</span>
+<span class="err">X11Forwarding yes</span>
+<span class="err">X11DisplayOffset 10</span>
+<span class="err">PrintMotd no</span>
+<span class="err">PrintLastLog yes</span>
+<span class="err">TCPKeepAlive yes</span>
+<span class="err">AcceptEnv LANG LC_*</span>
+<span class="err">Subsystem sftp /usr/lib/openssh/sftp-server</span>
+</code></pre></div>
+
+<p>Este archivo tiene el siguiente hash md5.  </p>
+<div class="highlight"><pre><span></span><code><span class="err">8caefdd9e251b7cc1baa37874149a870  /etc/ssh/sshd_config</span>
+</code></pre></div>
+
+<p>La idea es modificar este archivo para que no permita que el usuario <code>root</code> se conecte por <code>ssh</code> y no permitir reenvío de aplicaciones gráficas.</p>
+<h4>Procedimiento para crear paquete de configuración <code>sshd-config</code>:</h4>
+<h5>1.Crear el directorio de trabajo</h5>
+<div class="highlight"><pre><span></span><code><span class="err">mkdir canaima-sshd-config-0.1</span>
+</code></pre></div>
+
+<h5>2. Cambiarse a dicho directorio</h5>
+<div class="highlight"><pre><span></span><code><span class="err">cd canaima-sshd-config-0.1</span>
+</code></pre></div>
+
+<h5>3. Crear los directorios debian y files</h5>
+<div class="highlight"><pre><span></span><code><span class="err">mkdir -p debian files</span>
+</code></pre></div>
+
+<h5>4. En <code>files</code> crear el directorio <code>etc</code>, luego dentro de él, el directorio <code>ssh</code> y copiar el archivo <code>sshd_config</code> de <code>/etc/ssh/</code> al directorio creado.</h5>
+<div class="highlight"><pre><span></span><code><span class="err">mkdir -p files/etc</span>
+<span class="err">mkdir -p files/etc/ssh</span>
+<span class="err">cp /etc/ssh/sshd_config ./files/etc/ssh/sshd_config.canaima</span>
+</code></pre></div>
+
+<h5>5. Modificar el archivo para que el usuario root no pueda acceder al servidor <code>ssh</code> y que no se pueda reenviar paquetes de <code>X11</code>. Las líneas son:</h5>
+<div class="highlight"><pre><span></span><code><span class="err">PermitRootLogin no</span>
+<span class="err">X11Forwarding no</span>
+</code></pre></div>
+
+<h5>6. Dentro del directorio debian se creó el archivo <code>changelog</code> con el siguiente contenido:</h5>
+<div class="highlight"><pre><span></span><code><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span><span class="w"> </span><span class="n">unstable</span><span class="p">;</span><span class="w"> </span><span class="n">urgency</span><span class="o">=</span><span class="n">low</span><span class="w"></span>
+
+<span class="o">*</span><span class="w"> </span><span class="n">Initial</span><span class="w"> </span><span class="k">release</span><span class="p">.</span><span class="w"></span>
+
+<span class="c1">-- Ernesto Nadir Crespo Avila &lt;ecrespo@gmail.com&gt;  Sun, 13 Nov 2011 10:22:48 -0430</span>
+</code></pre></div>
+
+<h5>7. Se crea el archivo <code>debian/compat</code>  con el valor 7.</h5>
+<h5>8. Se crea el archivo <code>debian/control</code> y <code>debian/control.in</code> con la siguiente información:</h5>
+<div class="highlight"><pre><span></span><code><span class="n">Source</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span>
+<span class="n">Section</span><span class="o">:</span> <span class="n">config</span>
+<span class="n">Priority</span><span class="o">:</span> <span class="n">extra</span>
+<span class="n">Maintainer</span><span class="o">:</span> <span class="n">Ernesto</span> <span class="n">Nadir</span> <span class="n">Crespo</span> <span class="n">Avila</span> <span class="o">&lt;</span><span class="n">ecrespo</span><span class="err">@</span><span class="n">gmail</span><span class="o">.</span><span class="na">com</span><span class="o">&gt;</span>
+<span class="n">Build</span><span class="o">-</span><span class="n">Depends</span><span class="o">:</span> <span class="n">cdbs</span> <span class="o">(&gt;=</span> <span class="mf">0.4</span><span class="o">.</span><span class="mi">23</span><span class="o">-</span><span class="mf">1.1</span><span class="o">),</span> <span class="n">debhelper</span> <span class="o">(&gt;=</span> <span class="mf">4.2</span><span class="o">.</span><span class="mi">0</span><span class="o">),</span> <span class="n">config</span><span class="o">-</span><span class="kd">package</span><span class="o">-</span><span class="n">dev</span> <span class="o">(&gt;=</span> <span class="mf">4.5</span><span class="o">~)</span>
+<span class="n">Standards</span><span class="o">-</span><span class="n">Version</span><span class="o">:</span> <span class="mf">3.9</span><span class="o">.</span><span class="mi">2</span>
+
+<span class="n">Package</span><span class="o">:</span> <span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span>
+<span class="n">Architecture</span><span class="o">:</span> <span class="n">all</span>
+<span class="n">Pre</span><span class="o">-</span><span class="n">Depends</span><span class="o">:</span> <span class="n">openssh</span><span class="o">-</span><span class="n">server</span>
+<span class="n">Depends</span><span class="o">:</span> <span class="n">cdbs</span><span class="o">,</span> <span class="n">$</span><span class="o">{</span><span class="n">misc</span><span class="o">:</span><span class="n">Depends</span><span class="o">}</span>
+<span class="n">Provides</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">diverted</span><span class="o">-</span><span class="n">files</span><span class="o">}</span>
+<span class="n">Conflicts</span><span class="o">:</span> <span class="n">$</span><span class="o">{</span><span class="n">diverted</span><span class="o">-</span><span class="n">files</span><span class="o">}</span>
+<span class="n">Description</span><span class="o">:</span> <span class="n">Archivo</span> <span class="n">de</span> <span class="n">configuracion</span> <span class="n">de</span> <span class="n">ssh</span>
+<span class="n">Archivo</span> <span class="n">de</span> <span class="n">configuracion</span> <span class="n">del</span> <span class="n">servidor</span> <span class="n">ssh</span><span class="o">.</span>
+</code></pre></div>
+
+<p>En este caso se coloca el parámetro <code>Pre-Depends</code> ya que se necesita tener el servidor <code>openssh</code> instalado y bien configurado para poder agregarle cambios al archivo <code>/etc/ssh/sshd_config</code> .</p>
+<h5>9. Se crea el archivo <code>debian/copyright</code>, en este caso se está usando el mismo copyright de los archivos de ejemplo de <code>config-package-dev</code>:</h5>
+<div class="highlight"><pre><span></span><code><span class="n">canaima</span><span class="o">-</span><span class="n">ssh</span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="n">package</span><span class="p">.</span><span class="w"></span>
+
+<span class="nl">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Ernesto</span><span class="w"> </span><span class="n">Nadir</span><span class="w"> </span><span class="n">Crespo</span><span class="w"> </span><span class="n">Avila</span><span class="w"> </span><span class="o">&lt;</span><span class="n">ecrespo</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="n">Copyright</span><span class="w"> </span><span class="err">©</span><span class="w"> </span><span class="mi">2011</span><span class="w"> </span><span class="n">Ernesto</span><span class="w"> </span><span class="n">Nadir</span><span class="w"> </span><span class="n">Crespo</span><span class="w"> </span><span class="n">Avila</span><span class="w"> </span><span class="o">&lt;</span><span class="n">ecrespo</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span>
+
+<span class="n">Permission</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">hereby</span><span class="w"> </span><span class="n">granted</span><span class="p">,</span><span class="w"> </span><span class="k">free</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">charge</span><span class="p">,</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="ow">any</span><span class="w"> </span><span class="n">person</span><span class="w"> </span><span class="n">obtaining</span><span class="w"></span>
+<span class="n">a</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">software</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="n">documentation</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="p">(</span><span class="n">the</span><span class="w"></span>
+<span class="ss">&quot;Software&quot;</span><span class="p">),</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">deal</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="k">without</span><span class="w"> </span><span class="n">restriction</span><span class="p">,</span><span class="w"> </span><span class="n">including</span><span class="w"></span>
+<span class="k">without</span><span class="w"> </span><span class="n">limitation</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">rights</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="n">copy</span><span class="p">,</span><span class="w"> </span><span class="k">modify</span><span class="p">,</span><span class="w"> </span><span class="k">merge</span><span class="p">,</span><span class="w"> </span><span class="n">publish</span><span class="p">,</span><span class="w"></span>
+<span class="n">distribute</span><span class="p">,</span><span class="w"> </span><span class="n">sublicense</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="o">/</span><span class="ow">or</span><span class="w"> </span><span class="n">sell</span><span class="w"> </span><span class="n">copies</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Software</span><span class="p">,</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">to</span><span class="w"></span>
+<span class="n">permit</span><span class="w"> </span><span class="n">persons</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">whom</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">furnished</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">do</span><span class="w"> </span><span class="n">so</span><span class="p">,</span><span class="w"> </span><span class="n">subject</span><span class="w"> </span><span class="k">to</span><span class="w"></span>
+<span class="n">the</span><span class="w"> </span><span class="n">following</span><span class="w"> </span><span class="nl">conditions</span><span class="p">:</span><span class="w"></span>
+
+<span class="n">The</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">copyright</span><span class="w"> </span><span class="n">notice</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">permission</span><span class="w"> </span><span class="n">notice</span><span class="w"> </span><span class="n">shall</span><span class="w"> </span><span class="n">be</span><span class="w"></span>
+<span class="n">included</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">copies</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">substantial</span><span class="w"> </span><span class="n">portions</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Software</span><span class="p">.</span><span class="w"></span>
+<span class="n">THE</span><span class="w"> </span><span class="n">SOFTWARE</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="n">PROVIDED</span><span class="w"> </span><span class="ss">&quot;AS IS&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">WITHOUT</span><span class="w"> </span><span class="n">WARRANTY</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="ow">ANY</span><span class="w"> </span><span class="n">KIND</span><span class="p">,</span><span class="w"></span>
+<span class="n">EXPRESS</span><span class="w"> </span><span class="ow">OR</span><span class="w"> </span><span class="n">IMPLIED</span><span class="p">,</span><span class="w"> </span><span class="n">INCLUDING</span><span class="w"> </span><span class="n">BUT</span><span class="w"> </span><span class="ow">NOT</span><span class="w"> </span><span class="n">LIMITED</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">THE</span><span class="w"> </span><span class="n">WARRANTIES</span><span class="w"> </span><span class="k">OF</span><span class="w"></span>
+<span class="n">MERCHANTABILITY</span><span class="p">,</span><span class="w"> </span><span class="n">FITNESS</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="n">PARTICULAR</span><span class="w"> </span><span class="n">PURPOSE</span><span class="w"> </span><span class="ow">AND</span><span class="w"></span>
+<span class="n">NONINFRINGEMENT</span><span class="p">.</span><span class="w"> </span><span class="ow">IN</span><span class="w"> </span><span class="k">NO</span><span class="w"> </span><span class="n">EVENT</span><span class="w"> </span><span class="n">SHALL</span><span class="w"> </span><span class="n">THE</span><span class="w"> </span><span class="n">AUTHORS</span><span class="w"> </span><span class="ow">OR</span><span class="w"> </span><span class="n">COPYRIGHT</span><span class="w"> </span><span class="n">HOLDERS</span><span class="w"> </span><span class="n">BE</span><span class="w"></span>
+<span class="n">LIABLE</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="ow">ANY</span><span class="w"> </span><span class="n">CLAIM</span><span class="p">,</span><span class="w"> </span><span class="n">DAMAGES</span><span class="w"> </span><span class="ow">OR</span><span class="w"> </span><span class="n">OTHER</span><span class="w"> </span><span class="n">LIABILITY</span><span class="p">,</span><span class="w"> </span><span class="n">WHETHER</span><span class="w"> </span><span class="ow">IN</span><span class="w"> </span><span class="n">AN</span><span class="w"> </span><span class="k">ACTION</span><span class="w"></span>
+<span class="k">OF</span><span class="w"> </span><span class="n">CONTRACT</span><span class="p">,</span><span class="w"> </span><span class="n">TORT</span><span class="w"> </span><span class="ow">OR</span><span class="w"> </span><span class="n">OTHERWISE</span><span class="p">,</span><span class="w"> </span><span class="n">ARISING</span><span class="w"> </span><span class="k">FROM</span><span class="p">,</span><span class="w"> </span><span class="k">OUT</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="ow">OR</span><span class="w"> </span><span class="ow">IN</span><span class="w"> </span><span class="k">CONNECTION</span><span class="w"></span>
+<span class="k">WITH</span><span class="w"> </span><span class="n">THE</span><span class="w"> </span><span class="n">SOFTWARE</span><span class="w"> </span><span class="ow">OR</span><span class="w"> </span><span class="n">THE</span><span class="w"> </span><span class="k">USE</span><span class="w"> </span><span class="ow">OR</span><span class="w"> </span><span class="n">OTHER</span><span class="w"> </span><span class="n">DEALINGS</span><span class="w"> </span><span class="ow">IN</span><span class="w"> </span><span class="n">THE</span><span class="w"> </span><span class="n">SOFTWARE</span><span class="p">.</span><span class="w"></span>
+</code></pre></div>
+
+<h5>10. Se crea el archivo <code>debian/canaima-sshd-config.install</code> . Este archivo define donde se va a tomar los archivos de configuración y a donde se van a copiar.</h5>
+<div class="highlight"><pre><span></span><code><span class="err">files/* /</span>
+</code></pre></div>
+
+<h5>11. Se crea el archivo <code>debian/rules</code>. En este archivo se define la extensión <code>.canaima</code>, la cual permite diferenciar de los paquetes base de Debian de la meta distribución canaima, además se define el archivo a modificar y luego los include de los <code>cdbs</code>:</h5>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="o">#!/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">make</span> <span class="o">-</span><span class="n">f</span>
+
+<span class="n">DEB_DIVERT_EXTENSION</span> <span class="o">=</span> <span class="p">.</span><span class="n">canaima</span>
+<span class="o">#</span> <span class="k">Replace</span> <span class="k">some</span> <span class="n">base</span> <span class="n">files</span> <span class="k">with</span> <span class="k">simple</span> <span class="n">replacements</span><span class="p">.</span>
+<span class="n">DEB_DIVERT_FILES_canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span> <span class="o">+=</span> <span class="err">\</span>
+<span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="o">/</span><span class="n">sshd_config</span><span class="p">.</span><span class="n">canaima</span> 
+<span class="o">#</span> <span class="n">These</span> <span class="n">files</span> <span class="k">are</span> <span class="n">installed</span> <span class="n">via</span> <span class="n">dh_install</span> <span class="k">from</span> <span class="n">the</span> <span class="n">files</span><span class="o">/</span> <span class="n">directory</span>
+<span class="o">#</span> <span class="p">(</span><span class="n">see</span> <span class="n">debian</span><span class="o">/</span><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span><span class="p">.</span><span class="n">install</span><span class="p">)</span>
+
+<span class="n">include</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">share</span><span class="o">/</span><span class="n">cdbs</span><span class="o">/</span><span class="mi">1</span><span class="o">/</span><span class="n">rules</span><span class="o">/</span><span class="n">debhelper</span><span class="p">.</span><span class="n">mk</span>
+<span class="n">include</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="k">share</span><span class="o">/</span><span class="n">cdbs</span><span class="o">/</span><span class="mi">1</span><span class="o">/</span><span class="n">rules</span><span class="o">/</span><span class="n">config</span><span class="o">-</span><span class="n">package</span><span class="p">.</span><span class="n">mk</span>
+</code></pre></div>
+</td></tr></table>
+<h5>12. Crear el paquete debian y firmarlo con la llave <code>gpg</code>:</h5>
+<div class="highlight"><pre><span></span><code><span class="err">dpkg-buildpackage -rfakeroot -kC97E7015</span>
+</code></pre></div>
+
+<p>Al ejectuar un <code>ls</code>  se pueden ver los archivos creados:</p>
+<div class="highlight"><pre><span></span><code><span class="err">ls -l canaima-sshd*</span>
+<span class="err">-rw-r--r-- 1 ecrespo ecrespo 3948 nov 13 16:09 canaima-sshd-config_0.1_all.deb</span>
+<span class="err">-rw-r--r-- 1 ecrespo ecrespo  864 nov 13 16:09 canaima-sshd-config_0.1.dsc</span>
+<span class="err">-rw-r--r-- 1 ecrespo ecrespo 1521 nov 13 16:09 canaima-sshd-config_0.1_i386.changes</span>
+<span class="err">-rw-r--r-- 1 ecrespo ecrespo 2745 nov 13 16:09 canaima-sshd-config_0.1.tar.gz</span>
+</code></pre></div>
+
+<h5>13. Se verifica que el paquete Debian cumple con el policy de Debian:</h5>
+<div class="highlight"><pre><span></span><code><span class="err">lintian -i canaima-sshd-config_0.1.dsc</span>
+</code></pre></div>
+
+<h5>14. Verificar la instalación del paquete Debian.</h5>
+<div class="highlight"><pre><span></span><code><span class="n">sudo</span><span class="w"> </span><span class="n">dpkg</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config_0</span><span class="mf">.1</span><span class="n">_all</span><span class="p">.</span><span class="n">deb</span><span class="w"> </span>
+<span class="o">[</span><span class="n">sudo</span><span class="o">]</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nl">ecrespo</span><span class="p">:</span><span class="w"> </span>
+<span class="n">Selecting</span><span class="w"> </span><span class="n">previously</span><span class="w"> </span><span class="n">unselected</span><span class="w"> </span><span class="n">package</span><span class="w"> </span><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span><span class="p">.</span><span class="w"></span>
+<span class="p">(</span><span class="n">Leyendo</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">base</span><span class="w"> </span><span class="n">de</span><span class="w"> </span><span class="n">datos</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="mi">418546</span><span class="w"> </span><span class="n">ficheros</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="n">directorios</span><span class="w"> </span><span class="n">instalados</span><span class="w"> </span><span class="n">actualmente</span><span class="p">.)</span><span class="w"></span>
+<span class="n">Desempaquetando</span><span class="w"> </span><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="p">(</span><span class="n">de</span><span class="w"> </span><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config_0</span><span class="mf">.1</span><span class="n">_all</span><span class="p">.</span><span class="n">deb</span><span class="p">)</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<span class="n">Configurando</span><span class="w"> </span><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span><span class="w"> </span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<span class="n">Añadiendo</span><span class="w"> </span><span class="err">`</span><span class="n">desviación</span><span class="w"> </span><span class="n">de</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="o">/</span><span class="n">sshd_config</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="o">/</span><span class="n">sshd_config</span><span class="p">.</span><span class="n">canaima</span><span class="o">-</span><span class="n">orig</span><span class="w"> </span><span class="n">por</span><span class="w"> </span><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span><span class="err">&#39;</span><span class="w"></span>
+</code></pre></div>
+
+<h5>15. Al ejecutar un <code>ls -l</code> en el directorio <code>/etc/ssh/sshd_config*</code> se verá que se crea un enlace al archivo original y se muestra los archivos agregados de la extensión canaima:</h5>
+<div class="highlight"><pre><span></span><code><span class="err">root@jewel:/etc/ssh# ls -l sshd_config*</span>
+<span class="err">lrwxrwxrwx 1 root root   19 nov 13 16:16 sshd_config -&gt; sshd_config.canaima</span>
+<span class="err">-rw-r--r-- 1 root root 2487 nov 13 10:15 sshd_config.canaima</span>
+<span class="err">-rw-r--r-- 1 root root 2489 nov 13 13:20 sshd_config.canaima-orig</span>
+</code></pre></div>
+
+<h5>16. Al revisar el archivo se nota que el campo para permitir a root conectarse al servidor ssh se encuentra en no, igual caso para el parámetro de reenvío de <code>X11</code>. Se revisa el hash <code>md5</code> del archivo y se nota que del archivo original al actual son diferentes:</h5>
+<div class="highlight"><pre><span></span><code><span class="err">a358d423fa6b8bf640a7fd1e06731ea3  sshd_config</span>
+</code></pre></div>
+
+<p>Al crear paquetes de configuración de esta forma (una forma limpia de modificar archivos de configuración) y al eliminar el paquete de configuración los archivos originales se vuelven a usar:</p>
+<div class="highlight"><pre><span></span><code><span class="n">apt</span><span class="o">-</span><span class="k">get</span><span class="w"> </span><span class="n">remove</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">canaima</span><span class="o">-</span><span class="n">sshd</span><span class="o">-</span><span class="n">config</span><span class="w"></span>
+
+<span class="n">root</span><span class="nv">@jewel</span><span class="err">:</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="err">#</span><span class="w"> </span><span class="n">md5sum</span><span class="w"> </span><span class="n">sshd_config</span><span class="w"></span>
+<span class="mi">8</span><span class="n">caefdd9e251b7cc1baa37874149a870</span><span class="w">  </span><span class="n">sshd_config</span><span class="w"></span>
+</code></pre></div>
+
+<p>Se tienen varios ejemplos para usar <code>config-package-dev</code> como por ejemplo paquetes binarios, configuración de cron, etc.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/tag/canaima.html">Canaima</a>
+      <a href="http://localhost:8000/tag/debian.html">Debian</a>
+      <a href="http://localhost:8000/tag/empaquetado.html">Empaquetado</a>
+      <a href="http://localhost:8000/tag/general.html">General</a>
+      <a href="http://localhost:8000/tag/ssh.html">ssh</a>
+      <a href="http://localhost:8000/tag/ubuntu.html">Ubuntu</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Como%20crear%20un%20metapaquete%20de%20configuraci%C3%B3n%20con%20config-package-dev&url=http%3A//localhost%3A8000/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html&hashtags=canaima,debian,empaquetado,general,ssh,ubuntu" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//localhost%3A8000/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//localhost%3A8000/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html&title=Como%20crear%20un%20metapaquete%20de%20configuraci%C3%B3n%20con%20config-package-dev&summary=Anteriormente%20se%20explic%C3%B3%20como%20crear%20un%20metapaquete%20con%20equivs%2C%20se%20tiene%20tambi%C3%A9n%20el%20paquete%20config-package-dev%20el%20cual%20permite%20crear%20paquetes%20de%20configuraci%C3%B3n%20donde%20se%20puede%20cambiar%20la%20configuraci%C3%B3n%20de%20otros%20archivos%20dentro%20del%20directorio%20/etc/%20.%0AEste%20art%C3%ADculo%20se%20basa%20en%20el%20tutorial%20del%20MIT%20sobre%20creaci%C3%B3n%20de%20paquetes%20de%20configuraci%C3%B3n%20%E2%80%A6&source=http%3A//localhost%3A8000/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Como%20crear%20un%20metapaquete%20de%20configuraci%C3%B3n%20con%20config-package-dev&amp;body=http%3A//localhost%3A8000/como-crear-un-metapaquete-de-configuracion-con-config-package-dev.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="http://localhost:8000/como-crear-un-metapaquete-metapaquete-con-archivos-de-configuracion.html" title="Como crear un metapaquete (metapaquete con archivos de configuración)">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="http://localhost:8000/creacion-de-paquete-debian-que-contiene-un-archivo-cron-con-config-package-dev.html" title="Creación de paquete Debian que contiene un archivo cron con config-package-dev">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/creacion-de-paquete-debian-que-contiene-un-archivo-cron-con-config-package-dev.html">Creación de paquete Debian que contiene un archivo cron con config-package-dev</a></li>
+      <li><a href="http://localhost:8000/corrigiendo-los-reportes-generados-por-lintian-de-un-metapaquete.html">Corrigiendo los reportes generados por lintian de un metapaquete</a></li>
+      <li><a href="http://localhost:8000/como-crear-un-metapaquete-version-2.html">Como crear un metapaquete (versión 2)</a></li>
+      <li><a href="http://localhost:8000/habilitar-autenticacion-en-un-servidor-mongodb.html">Habilitar autenticación en un servidor mongodb</a></li>
+      <li><a href="http://localhost:8000/geometria-analitica-con-sympy-triangulos.html">Geometría Analítica con Sympy (triángulos)</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "http://localhost:8000",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

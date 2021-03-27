@@ -1,0 +1,977 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Este artículo es la continuación de los artículos de extracción de datos de un PDF, enfocado al reporte de Cencoex del área de salud. La siguiente figura muestra el pdf antes mencionado: Los artículos anteriores de extracción de pdf son: 1. Extracción de información de PDFs con Python (parte 1 …" />
+<meta name="keywords" content="Python, Mongodb, Api restfull, Eve">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Extracción de Datos del PDF de reporte de salud de Cencoex"/>
+<meta property="og:description" content="Este artículo es la continuación de los artículos de extracción de datos de un PDF, enfocado al reporte de Cencoex del área de salud. La siguiente figura muestra el pdf antes mencionado: Los artículos anteriores de extracción de pdf son: 1. Extracción de información de PDFs con Python (parte 1 …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://localhost:8000/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-02-08 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Mongodb"/>
+<meta property="article:tag" content="Api restfull"/>
+<meta property="article:tag" content="Eve"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Extracción de Datos del PDF de reporte de salud de Cencoex</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://localhost:8000">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="http://localhost:8000">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="http://localhost:8000/pages/About.html#About">Acerca</a></li>
+          <li><a href="http://localhost:8000/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="http://localhost:8000/tag/python.html">
+            Python
+                    <span class="badge">290</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="http://localhost:8000">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex">Extracción de Datos del PDF de reporte de salud de Cencoex</h1>
+    <p>
+          Posted on lun 08 febrero 2016 in <a href="http://localhost:8000/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Este artículo es la continuación de los artículos de extracción de datos de un PDF, enfocado al reporte de Cencoex del área de <a href="http://www.cencoex.gob.ve/images/stories/pdfs/estadisticas/Salud.pdf">salud</a>.</p>
+<p>La siguiente figura muestra el pdf antes mencionado:</p>
+<p><img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-1.png"></p>
+<p>Los artículos anteriores de extracción de pdf son:<br>
+1. <a href="https://www.seraph.to/extraccion-de-informacion-de-pdfs-con-python-parte-1.html">Extracción de información de PDFs con Python (parte 1).</a><br>
+2. <a href="https://www.seraph.to/extraccion-de-informacion-de-pdfs-con-python-parte-2.html">Extracción de información de PDFs con Python (parte 2).</a><br>
+3. <a href="https://www.seraph.to/extraccion-de-informacion-de-pdfs-con-python-parte-3.html">Extracción de Información de PDFs con Python (parte 3).</a>  </p>
+<p>En el caso del Pdf del reporte de Cencoex se tiene el script ya explicado anteriormente que guarda la información en una base de datos mongodb llamada <code>cencoex</code> en una colección llamada salud. </p>
+<p>La siguiente figura muestra los documentos de la colección:</p>
+<p><img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-2.png"></p>
+<p>Con está información almacenada en mongodb se creará un API Restful con Eve como se explico en los <a href="https://www.seraph.to/tag/eve.html">artículos anteriores</a>.</p>
+<p>La imagen anterior muestra que los documentos tienen los siguientes campos:  </p>
+<ul>
+<li><code>_id</code>: En el identificador del objeto  </li>
+<li><code>rif</code>: Es el RIF de la empresa a la cual se le asignaron los dolares, el campo es un string.  </li>
+<li><code>monto</code>: Monto en Dolares de la asignación de divisas a dicha empresa, el campo es un string.  </li>
+<li><code>empresa</code>: Es el nombre de la empresa a la cual se le asignaron los dolares, el campo es un string.   </li>
+<li><code>numero</code>: es el número asignado que aparece en el pdf, es un entero.   </li>
+</ul>
+<p>Con esta información es que se construirá el esquema para acceder por medio de Eve.</p>
+<p>A continuación el archivo <code>settings.py</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#Configuracion de mongodb</span>
+<span class="n">MONGO_HOST</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span>
+<span class="n">MONGO_PORT</span> <span class="o">=</span> <span class="mi">27017</span>
+<span class="c1">#MONGO_USERNAME = &#39;user&#39;</span>
+<span class="c1">#MONGO_PASSWORD = &#39;user&#39;</span>
+<span class="n">MONGO_DBNAME</span> <span class="o">=</span> <span class="s1">&#39;cencoex&#39;</span>
+
+
+
+<span class="n">RESOURCE_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">]</span>
+
+<span class="n">ITEM_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;PATCH&#39;</span><span class="p">,</span> <span class="s1">&#39;PUT&#39;</span><span class="p">,</span> <span class="s1">&#39;DELETE&#39;</span><span class="p">]</span>
+<span class="c1">#Esquema</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;numero&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;integer&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;rif&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;maxlength&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;empresa&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;monto&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+
+
+<span class="n">empresa</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;titulo&#39;</span><span class="p">:</span> <span class="s1">&#39;numero&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;additional_lookup&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;regex(&quot;[\w]+&quot;)&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="s1">&#39;numero&#39;</span>
+    <span class="p">},</span>
+
+    <span class="s1">&#39;cache_control&#39;</span><span class="p">:</span> <span class="s1">&#39;max-age=10,must-revalidate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;cache_expires&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+
+    <span class="s1">&#39;resource_methods&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">],</span>
+
+    <span class="s1">&#39;schema&#39;</span><span class="p">:</span> <span class="n">schema</span>
+<span class="p">}</span>
+
+<span class="n">DOMAIN</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;salud&#39;</span><span class="p">:</span> <span class="n">empresa</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Como se ve, el dominio es salud que toma la información de la empresa donde el campo a manejar es el número. Se definió el esquema que maneja los mismos campos de la colección. </p>
+<p>El archivo <code>run.py</code> es el cual permite iniciar el API RestFul:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">eve</span> <span class="kn">import</span> <span class="n">Eve</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Eve</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div>
+
+<p>Para iniciar el API RestFul se ejecuta el <code>run.py</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="err">python run.py</span>
+</code></pre></div>
+
+<p>Al acceder a http://127.0.0.1:5000/ por medio del cliente restclient se tiene lo siguiente:</p>
+<p><img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-3.png"></p>
+<p>Para acceder a la lista de elementos del API RestFul se coloca en el cliente http://127.0.0.1:5000/salud/, la siguientes figuras muestran el resultado:</p>
+<p><img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-4.png"></p>
+<p><img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-5.png"></p>
+<p>Como se ve en la figura se trae un JSON con los documentos de la base de datos mongodb.</p>
+<p>Ahora se quiere acceder al primer número del reporte de la siguiente forma:</p>
+<div class="highlight"><pre><span></span><code><span class="c">http://127.0.0.1:5000/salud/1</span>
+</code></pre></div>
+
+<p>El resultado se muestra en las siguientes dos figuras:</p>
+<p><img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-6.png"></p>
+<p><img alt="" src="./images/extracciondedatosdelpdfdereportedesaluddecencoex-7.png"></p>
+<p>Claro, esto es una demostración, pero se puede buscar realizar busquedas con otros campos. </p>
+<p>Se puede usar Django con el framework de API RestFul a fin  de mejorar la forma de consultar dichos documentos de la base de datos mongodb.</p>
+<p>La idea era mostrar lo fácil que es publicar los datos de un Reporte de Cencoex, en realidad lo más complicado es extraer los datos de un PDF, incluso se pierde información dependiendo del formato de documento utilizado, como se mostró en artículo anterior el documento es una hoja de cálculo en Excel y si se perdió información en la extracción. </p>
+<p>Las instituciones que tienen dicha información en base de datos pueden hacer públicos los campos que se requieran de sólo lectura en un API RestFul, así se elimina el proceso de buscar información de PDFs. </p>
+<p>A continuación dejo la propuesta que está trabajando la comunidad de software libre en <a href="https://github.com/cslve/gobiernoabierto">github por parte de la comunidad de Software Libre de Venezuela</a>.</p>
+<p>A continuación unos  vídeos de youtube:
+Gobierno Abierto:</p>
+<p><a href="https://youtu.be/wcao6i1yDQ4" title="https://youtu.be/wcao6i1yDQ4">https://youtu.be/wcao6i1yDQ4</a></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wcao6i1yDQ4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>Alianza para el Gobierno Abierto:</p>
+<p><a href="https://youtu.be/QbGDoV_HoFY" title="https://youtu.be/QbGDoV_HoFY">https://youtu.be/QbGDoV_HoFY</a>  </p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QbGDoV_HoFY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p><a href="https://youtu.be/Mj7NvmFr5i0" title="https://youtu.be/Mj7NvmFr5i0">https://youtu.be/Mj7NvmFr5i0</a></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Mj7NvmFr5i0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/tag/python.html">Python</a>
+      <a href="http://localhost:8000/tag/mongodb.html">Mongodb</a>
+      <a href="http://localhost:8000/tag/api-restfull.html">Api restfull</a>
+      <a href="http://localhost:8000/tag/eve.html">Eve</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Extracci%C3%B3n%20de%20Datos%20del%20PDF%20de%20reporte%20de%20salud%20de%20Cencoex&url=http%3A//localhost%3A8000/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html&hashtags=python,mongodb,api-restfull,eve" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//localhost%3A8000/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//localhost%3A8000/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html&title=Extracci%C3%B3n%20de%20Datos%20del%20PDF%20de%20reporte%20de%20salud%20de%20Cencoex&summary=Este%20art%C3%ADculo%20es%20la%20continuaci%C3%B3n%20de%20los%20art%C3%ADculos%20de%20extracci%C3%B3n%20de%20datos%20de%20un%20PDF%2C%20enfocado%20al%20reporte%20de%20Cencoex%20del%20%C3%A1rea%20de%20salud.%0ALa%20siguiente%20figura%20muestra%20el%20pdf%20antes%20mencionado%3A%0A%0ALos%20art%C3%ADculos%20anteriores%20de%20extracci%C3%B3n%20de%20pdf%20son%3A%0A1.%20Extracci%C3%B3n%20de%20informaci%C3%B3n%20de%20PDFs%20con%20Python%20%28parte%201%20%E2%80%A6&source=http%3A//localhost%3A8000/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Extracci%C3%B3n%20de%20Datos%20del%20PDF%20de%20reporte%20de%20salud%20de%20Cencoex&amp;body=http%3A//localhost%3A8000/extraccion-de-datos-del-pdf-de-reporte-de-salud-de-cencoex.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="http://localhost:8000/api-rest-ful-con-eve-parte-2.html" title="API rest ful con Eve (parte 2)">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="http://localhost:8000/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html" title="Iniciando Django con docker usando docker-compose con postgresql como microservicio.">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/api-rest-ful-con-eve-parte-2.html">API rest ful con Eve (parte 2)</a></li>
+      <li><a href="http://localhost:8000/api-rest-full-para-python-con-eve-parte-1.html">API rest Full para Python con Eve (parte 1).</a></li>
+      <li><a href="http://localhost:8000/almacenar-los-datos-de-los-eventos-sismologicos-de-funvisis-con-python3.html">Almacenar los datos de los eventos sismológicos de Funvisis con Python3</a></li>
+      <li><a href="http://localhost:8000/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy-y-flask-restful.html">API Rest Ful con Flask y MongoDB (Flask-MongoAlchemy y Flask-restful)</a></li>
+      <li><a href="http://localhost:8000/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy.html">API Rest Ful con Flask y MongoDB (Flask-MongoAlchemy)</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "http://localhost:8000",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

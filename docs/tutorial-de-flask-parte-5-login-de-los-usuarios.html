@@ -1,0 +1,1672 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con la serie de tutoriales sobre flask, en este caso se usará lo visto en la parte de base de datos para usarlo para iniciar sesión por parte de los usuarios. Los artículos anteriores son: Tutorial de Flask parte 1. Tutorial de Flask parte 2 (plantilla html). Tutorial de …" />
+<meta name="keywords" content="Python, Flask, Docker, Sqlite3, SQLAlchemy">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Tutorial de Flask parte 5 (login de los usuarios)"/>
+<meta property="og:description" content="Continuando con la serie de tutoriales sobre flask, en este caso se usará lo visto en la parte de base de datos para usarlo para iniciar sesión por parte de los usuarios. Los artículos anteriores son: Tutorial de Flask parte 1. Tutorial de Flask parte 2 (plantilla html). Tutorial de …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://localhost:8000/tutorial-de-flask-parte-5-login-de-los-usuarios.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-09-24 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Flask"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="Sqlite3"/>
+<meta property="article:tag" content="SQLAlchemy"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Tutorial de Flask parte 5 (login de los usuarios)</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://localhost:8000">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="http://localhost:8000">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="http://localhost:8000/pages/About.html#About">Acerca</a></li>
+          <li><a href="http://localhost:8000/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="http://localhost:8000/tag/python.html">
+            Python
+                    <span class="badge">290</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="http://localhost:8000">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="tutorial-de-flask-parte-5-login-de-los-usuarios">Tutorial de Flask parte 5 (login de los usuarios)</h1>
+    <p>
+          Posted on sáb 24 septiembre 2016 in <a href="http://localhost:8000/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 7 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Continuando con la serie de tutoriales sobre flask, en este caso se usará lo visto en la parte de base de datos para usarlo para iniciar sesión por parte de los usuarios.</p>
+<p>Los artículos anteriores son:</p>
+<ol>
+<li>
+<p><a href="https://www.seraph.to/tutorial-de-flask-parte-1.html#tutorial-de-flask-parte-1">Tutorial de Flask parte 1.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/tutorial-de-flask-parte-2-plantillas-html.html#tutorial-de-flask-parte-2-plantillas-html">Tutorial de Flask parte 2 (plantilla html).</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/tutorial-de-flask-parte-3-formulario-web.html#tutorial-de-flask-parte-3-formulario-web">Tutorial de Flask parte 3 (formulario web).</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/tutorial-de-flask-parte-4-base-de-datos-sqlite3.html">Tutorial de Flask parte 4 (Base de datos).</a></p>
+</li>
+</ol>
+<p>Este artículo se basa en el artículo en Inglés de <a href="https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins">The Flask Mega tutorial, Part V: User Logins</a>.</p>
+<h4>Compatibilidad con python3</h4>
+<p>Para que <code>openid</code> tenga soporte para python3 se hizo una actualización al archivo Dockerfile donde en vez de usar el <code>openid</code> de pip se baja la versión del repositorio github:</p>
+<div class="highlight"><pre><span></span><code><span class="n">FROM</span> <span class="n">python</span>
+
+
+<span class="n">WORKDIR</span> <span class="o">/</span><span class="n">code</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">flask</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">flask</span><span class="o">-</span><span class="n">login</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">git</span><span class="o">+</span><span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mitsuhiko</span><span class="o">/</span><span class="n">flask</span><span class="o">-</span><span class="n">openid</span><span class="o">.</span><span class="n">git</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">flask</span><span class="o">-</span><span class="n">mail</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">flask</span><span class="o">-</span><span class="n">sqlalchemy</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">sqlalchemy</span><span class="o">-</span><span class="n">migrate</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">flask</span><span class="o">-</span><span class="n">whooshalchemy</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">flask</span><span class="o">-</span><span class="n">wtf</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">flask</span><span class="o">-</span><span class="n">babel</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">guess_language</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">flipflop</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">coverage</span>
+
+
+<span class="n">RUN</span> <span class="n">pip</span> <span class="n">install</span>  <span class="n">redis</span>
+
+
+<span class="n">EXPOSE</span> <span class="mi">5000</span>
+
+
+
+
+
+<span class="n">ADD</span> <span class="o">.</span> <span class="o">/</span><span class="n">code</span>
+
+
+<span class="n">CMD</span> <span class="n">python</span> <span class="n">run</span><span class="o">.</span><span class="n">py</span>
+</code></pre></div>
+
+<p>La estructura de archivos y directorios del proyecto para este artículo es la siguiente:</p>
+<div class="highlight"><pre><span></span><code><span class="err">tutorial-flask</span>
+<span class="err">├── app</span>
+<span class="err">│   ├── forms.py</span>
+<span class="err">│   ├── __init__.py</span>
+<span class="err">│   ├── models.py</span>
+<span class="err">│   ├── __pycache__</span>
+<span class="err">│   ├── templates</span>
+<span class="err">│   │   ├── base.html</span>
+<span class="err">│   │   ├── edit.html</span>
+<span class="err">│   │   ├── index.html</span>
+<span class="err">│   │   ├── login.html</span>
+<span class="err">│   │   ├── post.html</span>
+<span class="err">│   │   └── user.html</span>
+<span class="err">│   └── views.py</span>
+<span class="err">├── app.db</span>
+<span class="err">├── config.py</span>
+<span class="err">├── db_create.py</span>
+<span class="err">├── db_downgrade.py</span>
+<span class="err">├── db_migrate.py</span>
+<span class="err">├── db_repository</span>
+<span class="err">│   ├── __init__.py</span>
+<span class="err">│   ├── manage.py</span>
+<span class="err">│   ├── migrate.cfg</span>
+<span class="err">│   ├── __pycache__</span>
+<span class="err">│   ├── README</span>
+<span class="err">│   └── versions</span>
+<span class="err">│       ├── 001_migration.py</span>
+<span class="err">│       ├── 002_migration.py</span>
+<span class="err">│       ├── __init__.py</span>
+<span class="err">│       └── __pycache__</span>
+<span class="err">├── db_upgrade.py</span>
+<span class="err">├── docker-compose.yml</span>
+<span class="err">├── Dockerfile</span>
+<span class="err">├── __pycache__</span>
+<span class="err">├── README.md</span>
+<span class="err">├── run.py</span>
+<span class="err">└── tmp</span>
+</code></pre></div>
+
+<h4>Revisión de usuario en models.py</h4>
+<p>El archivo <code>models.py</code> contiene cambios en la clase User, esta actualización hace que sea amigable para usar <code>flask-login</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#de app se importa db</span>
+
+
+
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">db</span>
+
+
+
+<span class="c1">#Se crea la tabla User que hereda de db.Model</span>
+
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+
+    <span class="c1">#Se crea la columna id como clave primaria e integer</span>
+
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+    <span class="c1">#Se crea la columna nickname como string de tamagn 64, como unico.</span>
+
+
+    <span class="n">usuario</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+    <span class="c1">#Columna correo, de 120 de tamagno del string y unico.</span>
+
+
+    <span class="n">correo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">120</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+    <span class="c1">#Posts. que tiene relacion con la clase Post (tabla post),</span>
+
+
+    <span class="n">posts</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">relationship</span><span class="p">(</span><span class="s1">&#39;Post&#39;</span><span class="p">,</span> <span class="n">backref</span><span class="o">=</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="s1">&#39;dynamic&#39;</span><span class="p">)</span>
+
+
+
+
+
+<span class="c1">#Se usa el decorador property, se consulta si esta atenticado</span>
+
+
+    <span class="nd">@property</span>
+
+
+    <span class="k">def</span> <span class="nf">is_authenticated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+
+
+
+<span class="c1">#Se usa el decorador property y se consulta si esta activo</span>
+
+
+    <span class="nd">@property</span>
+
+
+    <span class="k">def</span> <span class="nf">is_active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+
+
+
+<span class="c1">#Se usa el decorador property, se consulta si es anonimo el usuario</span>
+
+
+    <span class="nd">@property</span>
+
+
+    <span class="k">def</span> <span class="nf">is_anonymous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+
+
+
+<span class="c1">#Se tra el id del usuario</span>
+
+
+    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+
+        <span class="k">try</span><span class="p">:</span>
+
+
+            <span class="k">return</span> <span class="n">unicode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># python 2</span>
+
+
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+
+
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># python 3</span>
+
+
+
+
+
+
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+
+        <span class="k">return</span> <span class="s1">&#39;&lt;User </span><span class="si">%r</span><span class="s1">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">usuario</span><span class="p">)</span>
+
+
+
+
+
+<span class="c1">#Tabla Post que hereda de model</span>
+
+
+<span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+
+    <span class="c1">#Se crea el id del post como entero y clave primaria</span>
+
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+    <span class="c1">#Se crea la columna body como string de 140 caracteres</span>
+
+
+    <span class="n">cuerpo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">140</span><span class="p">))</span>
+
+
+    <span class="c1">#Se define la marca de tiempo.</span>
+
+
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span>
+
+
+    <span class="c1">#Se define el id del usuario, es una clave foranea de la tabla usuario</span>
+
+
+    <span class="c1">#Columna id.</span>
+
+
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;user.id&#39;</span><span class="p">))</span>
+
+
+
+
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+
+        <span class="k">return</span> <span class="s1">&#39;&lt;Post </span><span class="si">%r</span><span class="s1">&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cuerpo</span><span class="p">)</span>
+</code></pre></div>
+
+<h4>Archivo views.py</h4>
+<p>El archivo views.py maneja ahora el inicio de sesión y el fin del mismo. A continuación el contenido del archivo:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#Se importa render_template, flash,redirect, session,url_for, request y g</span>
+
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">flash</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">url_for</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">g</span>
+
+
+<span class="c1">#Se importa login_user,logout_user,current_user y login_required</span>
+
+
+<span class="kn">from</span> <span class="nn">flask.ext.login</span> <span class="kn">import</span> <span class="n">login_user</span><span class="p">,</span> <span class="n">logout_user</span><span class="p">,</span> <span class="n">current_user</span><span class="p">,</span> \
+
+
+    <span class="n">login_required</span>
+
+
+
+
+
+<span class="c1">#Se importa la aplicacion app, db, lm y oid</span>
+
+
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">app</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">lm</span><span class="p">,</span> <span class="n">oid</span>
+
+
+<span class="c1">#De forms.py se importa LoginForm</span>
+
+
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">LoginForm</span>
+
+
+<span class="c1">#Se importa User de models</span>
+
+
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+
+
+
+
+<span class="c1">#Se retorna  el usuario a partir el id de la base de datos</span>
+
+
+<span class="c1">#la funcion se usara por parte de flask-login</span>
+
+
+<span class="nd">@lm</span><span class="o">.</span><span class="n">user_loader</span>
+
+
+<span class="k">def</span> <span class="nf">load_user</span><span class="p">(</span><span class="nb">id</span><span class="p">):</span>
+
+
+    <span class="k">return</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+
+
+
+
+
+<span class="c1">#Se define g.user a partir del usuario actual.</span>
+
+
+<span class="c1">#Esta funcion corre cada vez que una solicitud se realiza a</span>
+
+
+<span class="c1">#fin de saber si el usuario hizo login y es el usuario actual</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">before_request</span>
+
+
+<span class="k">def</span> <span class="nf">before_request</span><span class="p">():</span>
+
+
+    <span class="n">g</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">current_user</span>
+
+
+
+
+
+
+
+
+<span class="c1">#Se define la pagina index por defecto y se requiere que haga login el usuario</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/index&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@login_required</span>
+
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+
+
+    <span class="c1">#Ahora no se usa un usuario por defecto, se comenta esa linea</span>
+
+
+    <span class="c1">#Ahora se toma el usuario g.user el cual es el usuario actual</span>
+
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">user</span>
+
+
+    <span class="c1">#user = {&#39;usuario&#39;: &#39;Ernesto&#39;}</span>
+
+
+    <span class="n">posts</span> <span class="o">=</span> <span class="p">[</span>
+
+
+      <span class="p">{</span>
+
+
+          <span class="s1">&#39;autor&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;usuario&#39;</span><span class="p">:</span> <span class="s1">&#39;John&#39;</span><span class="p">},</span>
+
+
+          <span class="s1">&#39;asunto&#39;</span><span class="p">:</span> <span class="s1">&#39;Un gran dia en Edimburgo!&#39;</span>
+
+
+      <span class="p">},</span>
+
+
+      <span class="p">{</span>
+
+
+          <span class="s1">&#39;autor&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;usuario&#39;</span><span class="p">:</span> <span class="s1">&#39;Jane&#39;</span><span class="p">},</span>
+
+
+          <span class="s1">&#39;asunto&#39;</span><span class="p">:</span> <span class="s1">&#39;Civil War, una gran pelicula!&#39;</span>
+
+
+      <span class="p">}</span>
+
+
+   <span class="p">]</span>
+
+
+   <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span>
+
+
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Inicio&#39;</span><span class="p">,</span>
+
+
+                         <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+
+
+                         <span class="n">posts</span><span class="o">=</span><span class="n">posts</span><span class="p">)</span>
+
+
+
+
+
+
+
+
+<span class="c1">#Se define login con url /login con metodos GET y POST</span>
+
+
+<span class="c1">#Se define el manejador de login.</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+
+
+<span class="nd">@oid</span><span class="o">.</span><span class="n">loginhandler</span>
+
+
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+
+
+    <span class="c1">#Se consulta si el usuario existe, y si esta autenticado</span>
+
+
+    <span class="c1">#Se redrcciona a la pagina index</span>
+
+
+    <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">g</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+
+
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+
+
+    <span class="c1">#Se crea una instancia de LoginForm</span>
+
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">LoginForm</span><span class="p">()</span>
+
+
+    <span class="c1">#Se consulta si validate existe</span>
+
+
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+
+
+        <span class="c1">#Se maneja la sesion a partir del formulario con la variable recuerdame</span>
+
+
+        <span class="n">session</span><span class="p">[</span><span class="s1">&#39;recuerdame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">recuerdame</span><span class="o">.</span><span class="n">data</span>
+
+
+        <span class="c1">#Se returna el inicio de login y correo.</span>
+
+
+        <span class="k">return</span> <span class="n">oid</span><span class="o">.</span><span class="n">try_login</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">openid</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ask_for</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;usuario&#39;</span><span class="p">,</span> <span class="s1">&#39;correo&#39;</span><span class="p">])</span>
+
+
+    <span class="c1">#Se renderiza la plantilla de login.</span>
+
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;login.html&#39;</span><span class="p">,</span>
+
+
+                         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Inicio sesion&#39;</span><span class="p">,</span>
+
+
+                         <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span>
+
+
+                         <span class="n">providers</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;PROVEEDORES_OPENID&#39;</span><span class="p">])</span>
+
+
+
+
+
+<span class="c1">#Se define after_login para la llamada de flask-login</span>
+
+
+<span class="nd">@oid</span><span class="o">.</span><span class="n">after_login</span>
+
+
+<span class="k">def</span> <span class="nf">after_login</span><span class="p">(</span><span class="n">resp</span><span class="p">):</span>
+
+
+    <span class="c1">#Si no existe el campo correo o esta vacio</span>
+
+
+    <span class="c1">#Se devuelve un mensaje de login invalido y se redirecciona</span>
+
+
+    <span class="c1">#a la pagina de login</span>
+
+
+    <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">correo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">resp</span><span class="o">.</span><span class="n">correo</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+
+
+        <span class="n">flash</span><span class="p">(</span><span class="s1">&#39;Login invalido, intente de nuevo.&#39;</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">))</span>
+
+
+    <span class="c1">#Se trae los datos del usuario de la base de datos</span>
+
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">correo</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+
+    <span class="c1">#SI el usuario no existe</span>
+
+
+    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+
+        <span class="c1">#Se trae el usuario de la resp</span>
+
+
+        <span class="n">usuario</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">usuario</span>
+
+
+        <span class="c1">#si usuario no existe o esta en blanco</span>
+
+
+        <span class="c1">#Se toma el nombre del usuario del correo</span>
+
+
+        <span class="k">if</span> <span class="n">usuario</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">usuario</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+
+
+            <span class="n">usuario</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">correo</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+
+        <span class="c1">#Se agrega el usuario y correo a la base de datos.</span>
+
+
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">usuario</span><span class="o">=</span><span class="n">usuario</span><span class="p">,</span> <span class="n">correo</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">correo</span><span class="p">)</span>
+
+
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+
+
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+    <span class="c1">#Se define la variable recuerdame como falsa</span>
+
+
+    <span class="n">recuerdame</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+    <span class="c1">#Si la variable recuerdame esta en el manejo de session</span>
+
+
+    <span class="k">if</span> <span class="s1">&#39;recuerdame&#39;</span> <span class="ow">in</span> <span class="n">session</span><span class="p">:</span>
+
+
+        <span class="c1">#Se asigna el valor que maneja recuerdame en la sesion</span>
+
+
+        <span class="n">recuerdame</span> <span class="o">=</span> <span class="n">session</span><span class="p">[</span><span class="s1">&#39;recuerdame&#39;</span><span class="p">]</span>
+
+
+        <span class="n">session</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;recuerdame&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+    <span class="c1">#Se inicia login, pasando el usuario y la variable recuerdame</span>
+
+
+    <span class="c1">#Se redirecciona de pagina</span>
+
+
+    <span class="n">login_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">remember</span><span class="o">=</span><span class="n">recuerdame</span><span class="p">)</span>
+
+
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;next&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+
+
+
+
+
+<span class="c1">#Se define el fin de la sesion cuando se ve la pagina logout</span>
+
+
+<span class="c1">#Se redirecciona a la pagina index pero primero se finaliza la session</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">logout</span><span class="p">():</span>
+
+
+    <span class="n">logout_user</span><span class="p">()</span>
+
+
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">))</span>
+</code></pre></div>
+
+<p>A continuación se muestra el archivo <code>__init__.py</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">#Se impostan os, Flask, sqlalchemy,  LoginManager, OpenID y basedir.</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+
+<span class="kn">from</span> <span class="nn">flask.ext.sqlalchemy</span> <span class="kn">import</span> <span class="n">SQLAlchemy</span>
+
+<span class="kn">from</span> <span class="nn">flask.ext.login</span> <span class="kn">import</span> <span class="n">LoginManager</span>
+
+<span class="kn">from</span> <span class="nn">flask.ext.openid</span> <span class="kn">import</span> <span class="n">OpenID</span>
+
+<span class="kn">from</span> <span class="nn">config</span> <span class="kn">import</span> <span class="n">basedir</span>
+
+
+
+<span class="c1">#Se crea la instancia de Flask</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1">#Se carga la configuracion de config.py</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="s1">&#39;config&#39;</span><span class="p">)</span>
+
+<span class="c1">#Se carga la info de la base de datos</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">SQLAlchemy</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="c1">#Se maneja login. con la app.</span>
+
+<span class="n">lm</span> <span class="o">=</span> <span class="n">LoginManager</span><span class="p">()</span>
+
+<span class="n">lm</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="n">lm</span><span class="o">.</span><span class="n">login_view</span> <span class="o">=</span> <span class="s1">&#39;login&#39;</span>
+
+<span class="c1">#Se define la carga de la info de OPenID</span>
+
+<span class="n">oid</span> <span class="o">=</span> <span class="n">OpenID</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="s1">&#39;tmp&#39;</span><span class="p">))</span>
+
+
+
+<span class="c1">#Se importa views y models de app</span>
+
+<span class="kn">from</span> <span class="nn">app</span> <span class="kn">import</span> <span class="n">views</span><span class="p">,</span> <span class="n">models</span>
+</code></pre></div>
+
+<h4>Archivo base.html</h4>
+<p>Este archivo ahora maneja el manejo de sesión que se hizo en <code>views.py</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;html&gt;</span>
+
+
+  <span class="nt">&lt;head&gt;</span>
+
+
+    <span class="cp">{%</span> <span class="k">if</span> <span class="nv">title</span> <span class="cp">%}</span>
+
+
+    <span class="nt">&lt;title&gt;</span><span class="cp">{{</span> <span class="nv">title</span> <span class="cp">}}</span> - microblog<span class="nt">&lt;/title&gt;</span>
+
+
+    <span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+
+
+    <span class="nt">&lt;title&gt;</span>microblog<span class="nt">&lt;/title&gt;</span>
+
+
+    <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+
+
+  <span class="nt">&lt;/head&gt;</span>
+
+
+  <span class="nt">&lt;body&gt;</span>
+
+
+    <span class="nt">&lt;div&gt;</span>Microblog:
+
+
+        <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">url_for</span><span class="o">(</span><span class="s1">&#39;index&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;</span>
+
+
+        <span class="cp">{%</span> <span class="k">if</span> <span class="nv">g.user.is_authenticated</span> <span class="cp">%}</span>
+
+
+        | <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">url_for</span><span class="o">(</span><span class="s1">&#39;logout&#39;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span>Logout<span class="nt">&lt;/a&gt;</span>
+
+
+        <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+
+
+    <span class="nt">&lt;/div&gt;</span>
+
+
+    <span class="nt">&lt;hr&gt;</span>
+
+
+    <span class="cp">{%</span> <span class="k">with</span> <span class="nv">messages</span> <span class="o">=</span> <span class="nv">get_flashed_messages</span><span class="o">()</span> <span class="cp">%}</span>
+
+
+    <span class="cp">{%</span> <span class="k">if</span> <span class="nv">messages</span> <span class="cp">%}</span>
+
+
+    <span class="nt">&lt;ul&gt;</span>
+
+
+    <span class="cp">{%</span> <span class="k">for</span> <span class="nv">message</span> <span class="k">in</span> <span class="nv">messages</span> <span class="cp">%}</span>
+
+
+        <span class="nt">&lt;li&gt;</span><span class="cp">{{</span> <span class="nv">message</span> <span class="cp">}}</span> <span class="nt">&lt;/li&gt;</span>
+
+
+    <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+
+
+    <span class="nt">&lt;/ul&gt;</span>
+
+
+    <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+
+
+    <span class="cp">{%</span> <span class="k">endwith</span> <span class="cp">%}</span>
+
+
+    <span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}{%</span> <span class="k">endblock</span> <span class="cp">%}</span>
+
+
+  <span class="nt">&lt;/body&gt;</span>
+
+
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>
+
+<p>Se construye la imagen Docker:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker-compose build</span>
+<span class="err">docker-compose up</span>
+</code></pre></div>
+
+<p>Al iniciar la aplicación se tiene la siguiente salida:</p>
+<div class="highlight"><pre><span></span><code><span class="err">Recreating tutorialflask_tutorial_1</span>
+<span class="err">Attaching to tutorialflask_tutorial_1</span>
+<span class="err">tutorial_1 |  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)</span>
+<span class="err">tutorial_1 |  * Restarting with stat</span>
+<span class="err">tutorial_1 |  * Debugger is active!</span>
+<span class="err">tutorial_1 |  * Debugger pin code: 733-227-386</span>
+</code></pre></div>
+
+<p>El código fuente en gitlab tiene los siguientes cambios:</p>
+<ul>
+<li>Manejo del código y la página en Inglés (ya que en artículo futuro se usará internacionalización).  </li>
+<li>Es necesario deshabilitar las notificaiones de track de sqlalchemy en el archivo config.py:
+SQLALCHEMY_TRACK_MODIFICATIONS = False</li>
+<li>Se cambian módulos deprecados por otros actualizados, los módulos atualizados son:  <ul>
+<li>flask_login</li>
+<li>flask_openid</li>
+<li>flask_sqlalchemy</li>
+</ul>
+</li>
+</ul>
+<p>El repositorio lo pueden ver <a href="https://gitlab.com/ecrespo/tutorial-flask/tree/articulo5">acá</a>.</p>
+<p>Al abrir el navegador en http://localhost:5000 se tiene la siguiente figura:</p>
+<p><img alt="" src="./images/tutorialdeflask5-1.png"></p>
+<p>Al llenar el formulario se tiene la siguiente figura (el mensaje que pide iniciar sesión para acceder a la página se eliminó):</p>
+<p><img alt="" src="./images/tutorialdeflask5-2.png"></p>
+<p>Para hacer logout se abre el siguiente enlace http://localhost:5000/logout , lo cual cierra la sesión regresa a la página de inicio.</p>
+<p>Los mensajes de la aplicación son los siguientes:</p>
+<div class="highlight"><pre><span></span><code><span class="err">tutorial_1 | 172.17.0.1 - - [25/Sep/2016 01:13:39] &quot;GET / HTTP/1.1&quot; 302 -</span>
+<span class="err">tutorial_1 | 172.17.0.1 - - [25/Sep/2016 01:13:39] &quot;GET /login?next=%2F HTTP/1.1&quot; 200 -</span>
+<span class="err">tutorial_1 | 172.17.0.1 - - [25/Sep/2016 01:15:48] &quot;POST /login?next=%2F HTTP/1.1&quot; 302 -</span>
+<span class="err">tutorial_1 | 172.17.0.1 - - [25/Sep/2016 01:15:48] &quot;GET /login?next=/ HTTP/1.1&quot; 200 -</span>
+<span class="err">tutorial_1 | 172.17.0.1 - - [25/Sep/2016 01:18:23] &quot;GET /logout HTTP/1.1&quot; 302 -</span>
+<span class="err">tutorial_1 | 172.17.0.1 - - [25/Sep/2016 01:18:23] &quot;GET /index HTTP/1.1&quot; 302 -</span>
+<span class="err">tutorial_1 | 172.17.0.1 - - [25/Sep/2016 01:18:23] &quot;GET /login?next=%2Findex HTTP/1.1&quot; 200 -</span>
+</code></pre></div>
+
+<p>Se nota los redireccionamientos de la página index a la de login y la de logout a la index y luego a login.</p>
+<p>Para seguir correctamente el tutorial se recomienda bajar el código fuente del repositorio.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/tag/python.html">Python</a>
+      <a href="http://localhost:8000/tag/flask.html">Flask</a>
+      <a href="http://localhost:8000/tag/docker.html">Docker</a>
+      <a href="http://localhost:8000/tag/sqlite3.html">Sqlite3</a>
+      <a href="http://localhost:8000/tag/sqlalchemy.html">SQLAlchemy</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Tutorial%20de%20Flask%20parte%205%20%28login%20de%20los%20usuarios%29&url=http%3A//localhost%3A8000/tutorial-de-flask-parte-5-login-de-los-usuarios.html&hashtags=python,flask,docker,sqlite3,sqlalchemy" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//localhost%3A8000/tutorial-de-flask-parte-5-login-de-los-usuarios.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//localhost%3A8000/tutorial-de-flask-parte-5-login-de-los-usuarios.html&title=Tutorial%20de%20Flask%20parte%205%20%28login%20de%20los%20usuarios%29&summary=Continuando%20con%20la%20serie%20de%20tutoriales%20sobre%20flask%2C%20en%20este%20caso%20se%20usar%C3%A1%20lo%20visto%20en%20la%20parte%20de%20base%20de%20datos%20para%20usarlo%20para%20iniciar%20sesi%C3%B3n%20por%20parte%20de%20los%20usuarios.%0ALos%20art%C3%ADculos%20anteriores%20son%3A%0A%0A%0ATutorial%20de%20Flask%20parte%201.%0A%0A%0ATutorial%20de%20Flask%20parte%202%20%28plantilla%20html%29.%0A%0A%0ATutorial%20de%20%E2%80%A6&source=http%3A//localhost%3A8000/tutorial-de-flask-parte-5-login-de-los-usuarios.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Tutorial%20de%20Flask%20parte%205%20%28login%20de%20los%20usuarios%29&amp;body=http%3A//localhost%3A8000/tutorial-de-flask-parte-5-login-de-los-usuarios.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="http://localhost:8000/instalacion-de-open365io-en-un-servidor-debian-jessie-local.html" title="Instalación de open365.io en un servidor Debian Jessie local">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="http://localhost:8000/crear-datos-json-a-partir-de-un-diccionario-en-flask-parte-1-actualizacion-docker.html" title="Crear datos JSON a partir de un diccionario en Flask (parte 1) (actualización- Docker)">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/tutorial-de-flask-parte-4-base-de-datos-sqlite3.html">Tutorial de Flask parte 4 (base de datos sqlite3)</a></li>
+      <li><a href="http://localhost:8000/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy-y-flask-restful.html">API Rest Ful con Flask y MongoDB (Flask-MongoAlchemy y Flask-restful)</a></li>
+      <li><a href="http://localhost:8000/api-rest-ful-con-flask-y-mongodb-flask-mongoalchemy.html">API Rest Ful con Flask y MongoDB (Flask-MongoAlchemy)</a></li>
+      <li><a href="http://localhost:8000/crud-usando-flask-y-mongodb-con-orm-flask-mongoalchemy-parte-4.html">CRUD usando Flask y MongoDB con ORM Flask-MongoAlchemy (parte 4)</a></li>
+      <li><a href="http://localhost:8000/crud-usando-flask-para-mongodb-parte-3.html">CRUD usando Flask para MongoDB (parte 3).</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "http://localhost:8000",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1321 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Hace un tiempo escribí un artículo sobre analizar código python con pylint. En este caso se tomará el artículo de pruebas unitarias con Docker y el de pylint para mostrar como se ejecuta el análisis de código python con Docker. Los artículos anteriores sobre Docker son: Instalar Docker en Debian …" />
+<meta name="keywords" content="Canaima, Linux, Python, Ubuntu, pylint, Docker">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Analizar código python con pylint desde Docker"/>
+<meta property="og:description" content="Hace un tiempo escribí un artículo sobre analizar código python con pylint. En este caso se tomará el artículo de pruebas unitarias con Docker y el de pylint para mostrar como se ejecuta el análisis de código python con Docker. Los artículos anteriores sobre Docker son: Instalar Docker en Debian …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://localhost:8000/analizar-codigo-python-con-pylint-desde-docker.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-06-12 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Docker"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="pylint"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Analizar código python con pylint desde Docker</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://localhost:8000">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="http://localhost:8000">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="http://localhost:8000/pages/About.html#About">Acerca</a></li>
+          <li><a href="http://localhost:8000/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="http://localhost:8000/tag/python.html">
+            Python
+                    <span class="badge">290</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="http://localhost:8000">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="analizar-codigo-python-con-pylint-desde-docker">Analizar código python con pylint desde Docker</h1>
+    <p>
+          Posted on dom 12 junio 2016 in <a href="http://localhost:8000/category/tutorial-de-docker.html">Tutorial de Docker</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Hace un tiempo escribí un artículo sobre <a href="https://www.seraph.to/analizando-codigo-python-con-pylint.html">analizar código python con pylint</a>.</p>
+<p>En este caso se tomará el artículo de <a href="https://www.seraph.to/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html#ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker">pruebas unitarias con Docker</a> y el de pylint para mostrar como se ejecuta el análisis de código python con Docker.</p>
+<p>Los artículos anteriores sobre Docker son:</p>
+<ol>
+<li>
+<p><a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html">Instalar Docker en Debian Jessie</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html">Uso de Docker en Debian Jessie (parte 1)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html">Uso de Docker en Debian Jessie (parte 2)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo Dockerfile</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-usando-docker.html">Iniciando Django usando Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">Instalar Gitlab por medio de Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando microservicios con docker usando docker-compose</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/docker-en-docker-dind.html">Docker en Docker (DinD)</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html">Iniciando Django con docker usando docker-compose con postgresql como microservicio.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/importar-un-contenedor-docker-en-python.html#importar-un-contenedor-docker-en-python">Importar un contenedor Docker en Python.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar">Compartir imagenes Docker por medio de archivos tar</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado">Crear un registro de imagenes Docker privado.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-anaconda-desde-un-contenedor-docker.html#usar-anaconda-desde-un-contenedor-docker">Usar Anaconda desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html#crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs">Crear un entorno de Integración y Despligue continue con Docker para node.js.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-jupyter-notebook-desde-un-contenedor-de-docker.html#usar-jupyter-notebook-desde-un-contenedor-de-docker">Usar Jupyter Notebook desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker">Ejecutar una prueba de doctest con un contenedor Docker</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html#ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker">Ejecutar una prueba de unittest en Python con un contenedor Docker.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/montar-una-plataforma-como-servicio-paas-con-dokku-docker.html#montar-una-plataforma-como-servicio-paas-con-dokku-docker">Montar una Plataforma como servicio (PaaS) con Dokku (docker)</a>.  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-machine.html#uso-de-docker-machine">Uso de docker-machine.  </a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/proveer-un-cluster-con-docker-swarm-y-docker-machine.html#proveer-un-cluster-con-docker-swarm-y-docker-machine">Proveer un cluster con docker swarm y docker-machine.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/instalar-jenkins-por-medio-de-docker-y-crear-una-imagen-docker-de-jenkins.html#instalar-jenkins-por-medio-de-docker-y-crear-una-imagen-docker-de-jenkins">Instalar Jenkins por medio de Docker y crear una imagen Docker de Jenkins</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/automatizar-la-construccion-de-imagenes-docker-con-github.html#automatizar-la-construccion-de-imagenes-docker-con-github">Automatizar la construcción de imágenes Docker con github.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-para-mongodb-3.html#crear-una-imagen-docker-para-mongodb-3">Crear una imagen Docker para MongoDB3.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-contenedor-docker-como-entorno-de-desarrollo-para-sailsjs.html#crear-un-contenedor-docker-como-entorno-de-desarrollo-para-sailsjs">Crear un contenedor Docker como entorno de desarrollo para Sails.js.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/correr-aplicaciones-de-escritorio-desde-un-contenedor-docker.html#correr-aplicaciones-de-escritorio-desde-un-contenedor-docker">Correr aplicaciones de escritorio desde un contenedor Docker.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-dockerui-para-la-gestion-de-imagenes-y-contenedores-de-docker.html#usar-dockerui-para-la-gestion-de-imagenes-y-contenedores-de-docker">Usar dockerui para la gestión de imágenes y contenedores de Docker</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-de-rethinkdb.html#crear-una-imagen-docker-de-rethinkdb">Crear una imagen Docker de RethinkDB</a></p>
+</li>
+</ol>
+<p>El archivo <code>Dockerfile</code> cambió un poco con respecto al usado con las pruebas unitarias, ahora se usará como base a Debian, se instalará pylint por medio de apt-get y lo demás queda igual que en el artículo de pruebas unitarias. </p>
+<p>A continuación el archivo <code>Dockerfile</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">FROM</span> <span class="n">debian</span>
+<span class="n">MAINTAINER</span> <span class="n">Ernesto</span> <span class="n">Crespo</span>
+
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="k">update</span> 
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">pylint</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="n">clean</span> 
+
+<span class="n">WORKDIR</span> <span class="o">/</span><span class="n">app</span>
+<span class="k">COPY</span> <span class="p">.</span> <span class="o">/</span><span class="n">app</span>
+</code></pre></div>
+
+<p>Los archivos que se usarán son los mismos utilizados en el de pruebas unitarias que se encuentra en el repositorio de <a href="https://github.com/ecrespo/raizcuadrada">github</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="err">raizcuadrada</span>
+<span class="err">├── Dockerfile</span>
+<span class="err">├── LICENSE</span>
+<span class="err">├── raizcuadrada.py</span>
+<span class="err">├── raizcuadrada_test.py</span>
+<span class="err">└── README.md</span>
+</code></pre></div>
+
+<p>El módulo <code>raizcuadrada.py</code> tiene lo siguiente:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env python3</span>
+
+
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">Se importa el módulo math para calcular la raiz cuadrada.</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<span class="c1">#Función raiz cuadrada.</span>
+
+
+<span class="k">def</span> <span class="nf">Raiz</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+
+
+    <span class="sd">&quot;&quot;&quot;Si a es mayor o igual a cero se calcula la raiz cuadrada&quot;&quot;&quot;</span>
+
+
+    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+
+
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+
+    <span class="c1">#Si es menor a cero se genera una excepción donde se informa que a debe ser mayor o igual a cero.</span>
+
+
+    <span class="k">else</span><span class="p">:</span>
+
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;a debe ser &gt;= 0&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+
+    <span class="c1">#Se importa el módulo doctest</span>
+
+
+    <span class="kn">import</span> <span class="nn">doctest</span>
+
+
+    <span class="c1">#Se realiza la prueba al archivo raizcuadra.txt</span>
+
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testfile</span><span class="p">(</span><span class="s2">&quot;raizcuadrada.txt&quot;</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+<p>La construcción de la imagen Docker se hace con el siguiente comando:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker build -t prueba-python .</span>
+</code></pre></div>
+
+<p>Para ejecutar el análisis desde docker se ejecuta:</p>
+<div class="highlight"><pre><span></span><code><span class="err">docker run  -v &quot;$PWD:/app&quot; -ti prueba-python  pylint raizcuadrada.py</span>
+</code></pre></div>
+
+<p>Y el resultado es el siguiente:</p>
+<div class="highlight"><pre><span></span><code><span class="c">docker run  </span><span class="nb">-</span><span class="c">v &quot;$PWD:/app&quot; </span><span class="nb">-</span><span class="c">ti prueba</span><span class="nb">-</span><span class="c">python  pylint raizcuadrada</span><span class="nt">.</span><span class="c">py</span>
+
+
+
+<span class="c">No config file found</span><span class="nt">,</span><span class="c"> using default configuration</span>
+
+
+
+<span class="c">************* Module raizcuadrada</span>
+
+
+<span class="c">C: 16</span><span class="nt">,</span><span class="c"> 0: Line too long (101/80) (line</span><span class="nb">-</span><span class="c">too</span><span class="nb">-</span><span class="c">long)</span>
+
+
+<span class="c">C: 12</span><span class="nt">,</span><span class="c"> 0: Invalid function name &quot;Raiz&quot; (invalid</span><span class="nb">-</span><span class="c">name)</span>
+
+
+<span class="c">C: 12</span><span class="nt">,</span><span class="c"> 0: Invalid argument name &quot;a&quot; (invalid</span><span class="nb">-</span><span class="c">name)</span>
+
+
+<span class="c">Report</span>
+
+
+<span class="c">======</span>
+
+
+<span class="c">9 statements analysed</span><span class="nt">.</span><span class="c"></span>
+
+
+
+
+
+<span class="c">Messages by category</span>
+
+
+<span class="nb">--------------------</span><span class="c"></span>
+
+
+
+
+
+<span class="nb">+-----------+-------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|type       |number |previous |difference |</span>
+
+
+<span class="nb">+</span><span class="c">===========</span><span class="nb">+</span><span class="c">=======</span><span class="nb">+</span><span class="c">=========</span><span class="nb">+</span><span class="c">===========</span><span class="nb">+</span><span class="c"></span>
+
+
+<span class="c">|convention |3      |NC       |NC         |</span>
+
+
+<span class="nb">+-----------+-------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|refactor   |0      |NC       |NC         |</span>
+
+
+<span class="nb">+-----------+-------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|warning    |0      |NC       |NC         |</span>
+
+
+<span class="nb">+-----------+-------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|error      |0      |NC       |NC         |</span>
+
+
+<span class="nb">+-----------+-------+---------+-----------+</span><span class="c"></span>
+
+
+
+<span class="c">Messages</span>
+
+
+<span class="nb">--------</span><span class="c"></span>
+
+
+
+
+
+<span class="nb">+--------------+------------+</span><span class="c"></span>
+
+
+<span class="c">|message id    |occurrences |</span>
+
+
+<span class="nb">+</span><span class="c">==============</span><span class="nb">+</span><span class="c">============</span><span class="nb">+</span><span class="c"></span>
+
+
+<span class="c">|invalid</span><span class="nb">-</span><span class="c">name  |2           |</span>
+
+
+<span class="nb">+--------------+------------+</span><span class="c"></span>
+
+
+<span class="c">|line</span><span class="nb">-</span><span class="c">too</span><span class="nb">-</span><span class="c">long |1           |</span>
+
+
+<span class="nb">+--------------+------------+</span><span class="c"></span>
+
+
+
+<span class="c">Global evaluation</span>
+
+
+<span class="nb">-----------------</span><span class="c"></span>
+
+
+<span class="c">Your code has been rated at 6</span><span class="nt">.</span><span class="c">67/10</span>
+
+
+
+
+
+<span class="c">Raw metrics</span>
+
+
+<span class="nb">-----------</span><span class="c"></span>
+
+
+
+
+
+<span class="nb">+----------+-------+------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|type      |number |%     |previous |difference |</span>
+
+
+<span class="nb">+</span><span class="c">==========</span><span class="nb">+</span><span class="c">=======</span><span class="nb">+</span><span class="c">======</span><span class="nb">+</span><span class="c">=========</span><span class="nb">+</span><span class="c">===========</span><span class="nb">+</span><span class="c"></span>
+
+
+<span class="c">|code      |9      |36</span><span class="nt">.</span><span class="c">00 |NC       |NC         |</span>
+
+
+<span class="nb">+----------+-------+------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|docstring |4      |16</span><span class="nt">.</span><span class="c">00 |NC       |NC         |</span>
+
+
+<span class="nb">+----------+-------+------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|comment   |3      |12</span><span class="nt">.</span><span class="c">00 |NC       |NC         |</span>
+
+
+<span class="nb">+----------+-------+------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|empty     |9      |36</span><span class="nt">.</span><span class="c">00 |NC       |NC         |</span>
+
+
+<span class="nb">+----------+-------+------+---------+-----------+</span><span class="c"></span>
+
+<span class="c">Statistics by type</span>
+
+
+<span class="nb">------------------</span><span class="c"></span>
+
+
+
+<span class="nb">+---------+-------+-----------+-----------+------------+---------+</span><span class="c"></span>
+
+
+<span class="c">|type     |number |old number |difference |%documented |%badname |</span>
+
+
+<span class="nb">+</span><span class="c">=========</span><span class="nb">+</span><span class="c">=======</span><span class="nb">+</span><span class="c">===========</span><span class="nb">+</span><span class="c">===========</span><span class="nb">+</span><span class="c">============</span><span class="nb">+</span><span class="c">=========</span><span class="nb">+</span><span class="c"></span>
+
+
+<span class="c">|module   |1      |NC         |NC         |100</span><span class="nt">.</span><span class="c">00      |0</span><span class="nt">.</span><span class="c">00     |</span>
+
+
+<span class="nb">+---------+-------+-----------+-----------+------------+---------+</span><span class="c"></span>
+
+
+<span class="c">|class    |0      |NC         |NC         |0           |0        |</span>
+
+
+<span class="nb">+---------+-------+-----------+-----------+------------+---------+</span><span class="c"></span>
+
+
+<span class="c">|method   |0      |NC         |NC         |0           |0        |</span>
+
+
+<span class="nb">+---------+-------+-----------+-----------+------------+---------+</span><span class="c"></span>
+
+
+<span class="c">|function |1      |NC         |NC         |100</span><span class="nt">.</span><span class="c">00      |100</span><span class="nt">.</span><span class="c">00   |</span>
+
+
+<span class="nb">+---------+-------+-----------+-----------+------------+---------+</span><span class="c"></span>
+
+
+<span class="c">Duplication</span>
+
+
+<span class="nb">-----------</span><span class="c"></span>
+
+
+
+<span class="nb">+-------------------------+------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|                         |now   |previous |difference |</span>
+
+
+<span class="nb">+</span><span class="c">=========================</span><span class="nb">+</span><span class="c">======</span><span class="nb">+</span><span class="c">=========</span><span class="nb">+</span><span class="c">===========</span><span class="nb">+</span><span class="c"></span>
+
+
+<span class="c">|nb duplicated lines      |0     |NC       |NC         |</span>
+
+
+<span class="nb">+-------------------------+------+---------+-----------+</span><span class="c"></span>
+
+
+<span class="c">|percent duplicated lines |0</span><span class="nt">.</span><span class="c">000 |NC       |NC         |</span>
+
+
+<span class="nb">+-------------------------+------+---------+-----------</span><span class="c"></span>
+</code></pre></div>
+
+<p>De esta forma se puede ejecutar el análisis del código python con pylint usando Docker.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/tag/canaima.html">Canaima</a>
+      <a href="http://localhost:8000/tag/linux.html">Linux</a>
+      <a href="http://localhost:8000/tag/python.html">Python</a>
+      <a href="http://localhost:8000/tag/ubuntu.html">Ubuntu</a>
+      <a href="http://localhost:8000/tag/pylint.html">pylint</a>
+      <a href="http://localhost:8000/tag/docker.html">Docker</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Analizar%20c%C3%B3digo%20python%20con%20pylint%20desde%20Docker&url=http%3A//localhost%3A8000/analizar-codigo-python-con-pylint-desde-docker.html&hashtags=canaima,linux,python,ubuntu,pylint,docker" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//localhost%3A8000/analizar-codigo-python-con-pylint-desde-docker.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//localhost%3A8000/analizar-codigo-python-con-pylint-desde-docker.html&title=Analizar%20c%C3%B3digo%20python%20con%20pylint%20desde%20Docker&summary=Hace%20un%20tiempo%20escrib%C3%AD%20un%20art%C3%ADculo%20sobre%20analizar%20c%C3%B3digo%20python%20con%20pylint.%0AEn%20este%20caso%20se%20tomar%C3%A1%20el%20art%C3%ADculo%20de%20pruebas%20unitarias%20con%20Docker%20y%20el%20de%20pylint%20para%20mostrar%20como%20se%20ejecuta%20el%20an%C3%A1lisis%20de%20c%C3%B3digo%20python%20con%20Docker.%0ALos%20art%C3%ADculos%20anteriores%20sobre%20Docker%20son%3A%0A%0A%0AInstalar%20Docker%20en%20Debian%20%E2%80%A6&source=http%3A//localhost%3A8000/analizar-codigo-python-con-pylint-desde-docker.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Analizar%20c%C3%B3digo%20python%20con%20pylint%20desde%20Docker&amp;body=http%3A//localhost%3A8000/analizar-codigo-python-con-pylint-desde-docker.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="http://localhost:8000/crear-una-imagen-docker-de-rethinkdb.html" title="Crear una imagen Docker de RethinkDB">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="http://localhost:8000/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html" title="Instalar gitlab-runner de gitlab-ci por medio de Docker">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html">Instalar gitlab-runner de gitlab-ci por medio de Docker</a></li>
+      <li><a href="http://localhost:8000/crear-una-imagen-docker-de-rethinkdb.html">Crear una imagen Docker de RethinkDB</a></li>
+      <li><a href="http://localhost:8000/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando micros servicios con docker usando docker-compose</a></li>
+      <li><a href="http://localhost:8000/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo dockerfile.</a></li>
+      <li><a href="http://localhost:8000/usar-dockerui-para-la-gestion-de-imagenes-y-contenedores-de-docker.html">Usar dockerui para la gestión de imágenes y contenedores de Docker</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "http://localhost:8000",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

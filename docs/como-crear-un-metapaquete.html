@@ -1,0 +1,955 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Los metapaquetes nos facilitan el trabajo en la selección de programas, por ejemplo, en Debian existe una lista de programas educativos y para instalarlos todos seleccionando un sólo programa se usa el paquete debianedu que es un metapaquete que tiene como dependencias todos los paquetes educativos. Esa es la forma …" />
+<meta name="keywords" content="Debian, paquetes">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Como crear un metapaquete"/>
+<meta property="og:description" content="Los metapaquetes nos facilitan el trabajo en la selección de programas, por ejemplo, en Debian existe una lista de programas educativos y para instalarlos todos seleccionando un sólo programa se usa el paquete debianedu que es un metapaquete que tiene como dependencias todos los paquetes educativos. Esa es la forma …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="http://localhost:8000/como-crear-un-metapaquete.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2009-03-29 11:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/author/ernesto-crespo.html">
+<meta property="article:section" content="Linux"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="paquetes"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Como crear un metapaquete</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="http://localhost:8000">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="http://localhost:8000">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="http://localhost:8000/pages/About.html#About">Acerca</a></li>
+          <li><a href="http://localhost:8000/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/linux.html">
+            Linux
+                    <span class="badge">186</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/qt.html">
+            qt
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="http://localhost:8000/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="http://localhost:8000/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="http://localhost:8000/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-0">
+            <a href="http://localhost:8000/tag/python.html">
+            Python
+                    <span class="badge">290</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="http://localhost:8000/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="http://localhost:8000">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="como-crear-un-metapaquete">Como crear un metapaquete</h1>
+    <p>
+          Posted on dom 29 marzo 2009 in <a href="http://localhost:8000/category/linux.html">Linux</a>
+
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Los metapaquetes nos facilitan el trabajo en la selección de programas, por
+ejemplo, en Debian existe una lista de programas educativos y para instalarlos
+todos seleccionando un sólo programa se usa el paquete debianedu que es un
+metapaquete que tiene como dependencias todos los paquetes educativos.</p>
+<p>Esa es la forma como trabaja ubuntu con kubuntu, xubuntu y sus otros sabores,
+simplemente un metapaquete que maneja cada versión de ubuntu.</p>
+<p>El programa en Debian para la creación de metapaquetes se llama equivs.</p>
+<p>Para instalarlo se ejecuta aptitude install equivs.</p>
+<p>Este paquete maneja dos programas:</p>
+<ul>
+<li>equivs-control: Crea un archivo como el archivo control de los paquetes de debian
+donde se maneja la información del mantenedor, versión del paquete, dependencias entre
+otras cosas.</li>
+<li>equivs-build: Crea el metapaquete del archivo que crea equivs-control.</li>
+</ul>
+<p>Para crear la plantilla se ejecuta el comando con el nombre del paquete: equivs-control accesibilidad.
+Esto crea la siguiente plantilla:</p>
+<div class="highlight"><pre><span></span><code><span class="o">###</span> <span class="n">Commented</span> <span class="n">entries</span> <span class="n">have</span> <span class="n">reasonable</span> <span class="k">defaults</span><span class="p">.</span>
+<span class="o">###</span> <span class="n">Uncomment</span> <span class="k">to</span> <span class="n">edit</span> <span class="n">them</span><span class="p">.</span>
+<span class="n">Section</span><span class="p">:</span> <span class="n">misc</span>
+<span class="n">Priority</span><span class="p">:</span> <span class="n">optional</span>
+<span class="n">Standards</span><span class="o">-</span><span class="k">Version</span><span class="p">:</span> <span class="mi">3</span><span class="p">.</span><span class="mi">6</span><span class="p">.</span><span class="mi">2</span>
+
+<span class="n">Package</span><span class="p">:</span>
+<span class="o">#</span> <span class="k">Version</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Maintainer</span><span class="p">:</span> <span class="n">Your</span> <span class="n">Name</span>
+<span class="o">#</span> <span class="n">Pre</span><span class="o">-</span><span class="n">Depends</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Depends</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Recommends</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Suggests</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Provides</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Replaces</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Architecture</span><span class="p">:</span> <span class="k">all</span>
+<span class="o">#</span> <span class="n">Copyright</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Changelog</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Readme</span><span class="p">:</span>
+<span class="o">#</span> <span class="n">Extra</span><span class="o">-</span><span class="n">Files</span><span class="p">:</span>
+<span class="n">Description</span><span class="p">:</span>
+<span class="n">long</span> <span class="n">description</span> <span class="k">and</span> <span class="n">info</span>
+<span class="p">.</span>
+<span class="k">second</span> <span class="n">paragraph</span>
+</code></pre></div>
+
+<p>Este archivo maneja la sección del paquete, la prioridad, la versión del Debian policy
+(actualmente 3.8.0), el nombre del paquete, la versión, el nombre del mantenedor,las
+dependencias (pre, dependencias, recomendaciones,provee y reemplaza), derechos, changelog,
+readme, archivos adicionales y por último la descripción del paquete separado en 2 partes,
+una descripción corta y una larga.</p>
+<p>A continuación mostraré el archivo para accesibilidad, este manejará las dependencias
+de los siguientes paquetes:</p>
+<ul>
+<li>brltty: Braille</li>
+<li>brltty-x11: Braille</li>
+<li>libcolorblind-dev: Daltonismo</li>
+<li>libcolorblind0: Daltonismo</li>
+<li>gnome-orca: Lector de pantalla orca</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">Section</span><span class="o">:</span> <span class="n">misc</span>
+<span class="n">Priority</span><span class="o">:</span> <span class="n">optional</span>
+<span class="n">Standards</span><span class="o">-</span><span class="n">Version</span><span class="o">:</span> <span class="mf">3.8</span><span class="o">.</span><span class="mi">0</span>
+
+<span class="n">Package</span><span class="o">:</span> <span class="n">accesibilidad</span>
+<span class="n">Version</span><span class="o">:</span> <span class="mf">1.0</span>
+<span class="n">Maintainer</span><span class="o">:</span> <span class="n">Ernesto</span> <span class="n">Nadir</span> <span class="n">Crespo</span> <span class="n">Avila</span>
+<span class="n">Depends</span><span class="o">:</span> <span class="n">brltty</span><span class="o">,</span> <span class="n">brltty</span><span class="o">-</span><span class="n">x11</span><span class="o">,</span> <span class="n">libcolorblind</span><span class="o">-</span><span class="n">dev</span><span class="o">,</span> <span class="n">libcolorblind0</span><span class="o">,</span> <span class="n">gnome</span><span class="o">-</span><span class="n">orca</span>
+<span class="n">Architecture</span><span class="o">:</span> <span class="n">all</span>
+<span class="n">Description</span><span class="o">:</span> <span class="n">Metapaquete</span> <span class="n">para</span> <span class="n">la</span> <span class="n">instalacion</span> <span class="n">de</span> <span class="n">aplicaciones</span> <span class="n">de</span> <span class="n">accesibilidad</span>
+<span class="n">Metapaquete</span> <span class="n">para</span> <span class="n">la</span> <span class="n">instalacion</span> <span class="n">de</span> <span class="n">aplicaciones</span> <span class="n">de</span> <span class="n">accesibilidad</span> <span class="n">para</span> <span class="n">personas</span> <span class="n">invidentes</span>
+</code></pre></div>
+
+<p>Para crear el paquete se ejecuta el comando equivs-build accesibilidad:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ecrespo</span><span class="err">@</span><span class="n">canaima</span><span class="p">:</span><span class="o">~/</span><span class="n">canaima2</span><span class="o">/</span><span class="n">accesibilidad</span><span class="o">$</span> <span class="n">equivs</span><span class="o">-</span><span class="n">build</span> <span class="n">accesibilidad</span>
+<span class="n">dh_testdir</span>
+<span class="n">dh_testroot</span>
+<span class="n">dh_clean</span> <span class="o">-</span><span class="n">k</span>
+<span class="n">dh_testdir</span>
+<span class="n">dh_testroot</span>
+<span class="n">dh_install</span>
+<span class="n">dh_installdocs</span>
+<span class="n">dh_installchangelogs</span>
+<span class="n">dh_compress</span>
+<span class="n">dh_fixperms</span>
+<span class="n">dh_installdeb</span>
+<span class="n">dh_gencontrol</span>
+<span class="n">dh_md5sums</span>
+<span class="n">dh_builddeb</span>
+<span class="n">dpkg</span><span class="o">-</span><span class="n">deb</span><span class="p">:</span> <span class="n">construyendo</span> <span class="n">el</span> <span class="n">paquete</span> <span class="err">`</span><span class="n">accesibilidad</span><span class="s1">&#39; en `../accesibilidad_1.0_all.deb&#39;</span><span class="o">.</span>
+
+<span class="n">The</span> <span class="n">package</span> <span class="n">has</span> <span class="n">been</span> <span class="n">created</span><span class="o">.</span>
+<span class="n">Attention</span><span class="p">,</span> <span class="n">the</span> <span class="n">package</span> <span class="n">has</span> <span class="n">been</span> <span class="n">created</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">current</span> <span class="n">directory</span><span class="p">,</span>
+<span class="ow">not</span> <span class="ow">in</span> <span class="s2">&quot;..&quot;</span> <span class="k">as</span> <span class="n">indicated</span> <span class="n">by</span> <span class="n">the</span> <span class="n">message</span> <span class="n">above</span><span class="o">!</span>
+</code></pre></div>
+
+<p>Luego al ejecutar un ls se tiene el paquete accesibilidad_1.0_all.deb.</p>
+<p>Este paquete no se puede instalar con dpkg ya que dará error por que dpkg no
+maneja las dependencias, para ello es más útil usar apt-get o aptitude, pero
+para lograrlo es necesario subir el paquete a un repositorio local para que se
+pueda instalar por apt-get o aptitude (como crear un repositorio local en
+el próximo post).</p>
+<p>===</p>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/tag/debian.html">Debian</a>
+      <a href="http://localhost:8000/tag/paquetes.html">paquetes</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Como%20crear%20un%20metapaquete&url=http%3A//localhost%3A8000/como-crear-un-metapaquete.html&hashtags=debian,paquetes" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A//localhost%3A8000/como-crear-un-metapaquete.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A//localhost%3A8000/como-crear-un-metapaquete.html&title=Como%20crear%20un%20metapaquete&summary=Los%20metapaquetes%20nos%20facilitan%20el%20trabajo%20en%20la%20selecci%C3%B3n%20de%20programas%2C%20por%0Aejemplo%2C%20en%20Debian%20existe%20una%20lista%20de%20programas%20educativos%20y%20para%20instalarlos%0Atodos%20seleccionando%20un%20s%C3%B3lo%20programa%20se%20usa%20el%20paquete%20debianedu%20que%20es%20un%0Ametapaquete%20que%20tiene%20como%20dependencias%20todos%20los%20paquetes%20educativos.%0AEsa%20es%20la%20forma%20%E2%80%A6&source=http%3A//localhost%3A8000/como-crear-un-metapaquete.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Como%20crear%20un%20metapaquete&amp;body=http%3A//localhost%3A8000/como-crear-un-metapaquete.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="http://localhost:8000/como-hacer-un-live-usb-o-live-cd.html" title="Como hacer un live-usb o live-cd">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="http://localhost:8000/creacion-de-un-repositorio-personal-de-debian.html" title="Creación de un repositorio personal de Debian">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/subir-un-paquete-debian-pyching-al-repositorio.html">Subir un paquete Debian (pyching) al repositorio</a></li>
+      <li><a href="http://localhost:8000/memcached_2019.html">Usar memcached para tener datos a la mano</a></li>
+      <li><a href="http://localhost:8000/entorno_desarrollo_datascience.html">Crear entorno de desarrollo para Ciencia de Datos con Anaconda, Jupyter, git y cookiecutter</a></li>
+      <li><a href="http://localhost:8000/apirest-aiohttp-cerberus-2019.html">Validando un API rest asíncrono con Cerberus</a></li>
+      <li><a href="http://localhost:8000/python-wikipedia-2019.html">Cómo usar el API de wikipedia con Python</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2006</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "http://localhost:8000",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

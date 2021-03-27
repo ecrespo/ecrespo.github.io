@@ -12,7 +12,7 @@ SITEDESCRIPTION = ' Software Libre, Ciencia de Datos y Python'
 SITELOGO = '//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120'
 PATH = 'content'
 BROWSER_COLOR = '#333333'
-#BROWSER_COLOR = '#e5e5ff'
+# BROWSER_COLOR = '#e5e5ff'
 
 TIMEZONE = 'America/Caracas'
 
@@ -38,13 +38,11 @@ AUTHOR_FEED_RSS = None
 MARKUP = ('md', 'ipynb')
 
 
-#MARKDOWN = {
+# MARKDOWN = {
 #  'extension_configs': {
 #    'pyembed.markdown': {}
 #  }
-#}
-
-
+# }
 
 
 COMPILERS = {
@@ -67,13 +65,13 @@ COMPILERS = {
 }
 
 # Blogroll
-#LINKS = (('Pelican', 'http://getpelican.com/'),
+# LINKS = (('Pelican', 'http://getpelican.com/'),
 #         ('Python.org', 'http://python.org/'),
 #         ('Jinja2', 'http://jinja.pocoo.org/'),
 #         )
 
 # Social widget
-#SOCIAL = (('You can add links in your config file', '#'),
+# SOCIAL = (('You can add links in your config file', '#'),
 #          ('Another social link', '#'),)
 
 SOCIAL = (('medium', 'https://medium.com/@_seraph1'),
@@ -83,7 +81,7 @@ SOCIAL = (('medium', 'https://medium.com/@_seraph1'),
           ('twitter', 'https://twitter.com/_seraph1'),
           ('facebook', 'https://www.facebook.com/ernesto.crespo'),
           ('gitlab', 'https://gitlab.com/ecrespo'),
-          ('soundcloud','https://soundcloud.com/ernesto-crespo'),
+          ('soundcloud', 'https://soundcloud.com/ernesto-crespo'),
           ('rss', '//www.seraph.to/feeds/all.atom.xml'))
 
 
@@ -92,9 +90,7 @@ MENUITEMS = (('Archives', '/archives.html'),
              ('Tags', '/tags.html'),)
 
 
-
 DISPLAY_PAGES_ON_MENU = True
-
 
 
 DEFAULT_PAGINATION = 10
@@ -103,7 +99,7 @@ DEFAULT_PAGINATION = 10
 #RELATIVE_URLS = True
 
 
-THEME='/home/ernesto/proyectos/ecrespo.github.io/themes/Flex'
+THEME = '/home/ernesto/proyectos/ecrespo.github.io/themes/pelican-blue'
 PYGMENTS_STYLE = 'monokai'
 
 GOOGLE_ANALYTICS = 'UA-131517246-1'
@@ -111,26 +107,28 @@ GOOGLE_ANALYTICS = 'UA-131517246-1'
 DISQUS_SITENAME = "https://seraphto.disqus.com"
 #DISQUS_SECRET_KEY= u"XoJR8Iy6JjOCBK1aBdjyPZ49pRVByB1laHszIDtb3gVU7dajxDAhevzkSZQQxrUj"
 #DISQUS_PUBLIC_KEY= u""
-PLUGIN_PATHS = ['./plugins','/home/ernesto/proyectos/pelican-plugins']
+PLUGIN_PATHS = ['./plugins', '/home/ernesto/proyectos/pelican-plugins']
 PLUGINS = ['i18n_subsites',
+           # 'sitemap',
            'related_posts',
            'tag_cloud',
-           #'pelican_youtube',
+           # 'pelican_youtube',
            'share_post',
            'neighbors',
-           #'pelican-ert',
+           # 'pelican-ert',
            'github_activity',
-           #'disqus_static',
-           #'pelican-gist',
-           #'pelican-githubprojects',
-           #'ipynb.markup',
-           #'pelican-toc',
-           #'ipynb.liquid',
-           'post_stats'] # You may have more plugins
+           # 'pelican-ipynb.markup',
+           # 'disqus_static',
+           # 'pelican-gist',
+           # 'pelican-githubprojects',
+           # 'ipynb.markup',
+           # 'pelican-toc',
+           # 'ipynb.liquid',
+           'post_stats']  # You may have more plugins
 IGNORE_FILES = [".ipynb_checkpoints"]
 # Show my last activity on GitHub
 GITHUB_USER = 'ecrespo@gmail.com'
-COPYRIGHT_YEAR = 2006
+COPYRIGHT_YEAR = 2021
 GITHUB_ACTIVITY_FEED = ''
 GITHUB_ACTIVITY_MAX_ENTRIES = 10
 GITHUB_USER_TYPE = "owner"
@@ -149,7 +147,7 @@ GOOGLE_FONTS = [
     'Nunito Sans:300,700',
     'Source Code Pro',
 ]
-#https://github.com/getpelican/pelican-plugins/tree/master/tag_cloud
+# https://github.com/getpelican/pelican-plugins/tree/master/tag_cloud
 TAG_CLOUD_STEPS = 4
 TAG_CLOUD_MAX_ITEMS = 100
 TAG_CLOUD_SORTING = 'random'
@@ -159,13 +157,13 @@ ERT_WPM = 200
 ERT_FORMAT = '{time} read'
 
 TOC = {
-    'TOC_HEADERS'       : '^h[1-6]', # What headers should be included in
-                                     # the generated toc
-                                     # Expected format is a regular expression
+    'TOC_HEADERS': '^h[1-6]',  # What headers should be included in
+    # the generated toc
+    # Expected format is a regular expression
 
-    'TOC_RUN'           : 'true',    # Default value for toc generation,
-                                     # if it does not evaluate
-                                     # to 'true' no toc will be generated
+    'TOC_RUN': 'true',    # Default value for toc generation,
+    # if it does not evaluate
+    # to 'true' no toc will be generated
 
     'TOC_INCLUDE_TITLE': 'true',     # If 'true' include title in toc
 }

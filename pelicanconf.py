@@ -99,7 +99,7 @@ DEFAULT_PAGINATION = 10
 #RELATIVE_URLS = True
 
 
-THEME = '/home/ernesto/proyectos/ecrespo.github.io/themes/pelican-blue'
+THEME = '/home/ernesto/proyectos/ecrespo.github.io/themes/Flex'
 PYGMENTS_STYLE = 'monokai'
 
 GOOGLE_ANALYTICS = 'UA-131517246-1'

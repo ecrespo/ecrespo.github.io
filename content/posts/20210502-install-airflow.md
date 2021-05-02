@@ -108,7 +108,7 @@ SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, co
 sudo vim /etc/postgresql/12/main/pg_hba.conf
 ```
 
-![pg_hba.conf](./images/pg_hba.png)
+![pg_hba.conf](./images/ph_hba.png)
 
 Cambiar a 0.0.0.0/0 y el método IPv4 a trust: 
 ```

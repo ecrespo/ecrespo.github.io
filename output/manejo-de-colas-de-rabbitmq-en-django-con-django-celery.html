@@ -1,0 +1,1129 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Hace un tiempo escribí unos 3 artículos sobre Django, ahora se tocará un tema algo más complejo pero útil cuando se requiere rendimiento en procesos. A continuación paso a explicar un proceso sencillo de manejo de colas de RabbitMQ por medio de Django-Celery. La idea es realizar una instalación y …" />
+<meta name="keywords" content="Canaima, Debian, Python, Ubuntu, Django, Django-Celery">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Manejo de colas de RabbitMQ en Django con Django-Celery"/>
+<meta property="og:description" content="Hace un tiempo escribí unos 3 artículos sobre Django, ahora se tocará un tema algo más complejo pero útil cuando se requiere rendimiento en procesos. A continuación paso a explicar un proceso sencillo de manejo de colas de RabbitMQ por medio de Django-Celery. La idea es realizar una instalación y …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2014-04-29 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Django"/>
+<meta property="article:tag" content="Django-Celery"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Manejo de colas de RabbitMQ en Django con Django-Celery</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/sqlalchemy.html">
+            SqlAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">292</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">187</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="manejo-de-colas-de-rabbitmq-en-django-con-django-celery">Manejo de colas de RabbitMQ en Django con Django-Celery</h1>
+    <p>
+          Posted on Tue 29 April 2014 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 5 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p><a href="https://www.seraph.to/tag/django.html">Hace un tiempo escribí unos 3 artículos sobre Django</a>, ahora se tocará un tema algo más complejo pero útil cuando se requiere rendimiento en procesos.</p>
+<p>A continuación paso a explicar un proceso sencillo de manejo de colas de <code>RabbitMQ</code> por medio de <code>Django-Celery</code>.</p>
+<p>La idea es realizar una instalación y configuración básica, nada de tener <code>RabbitMQ</code> en varias máquinas virtuales y que se maneje la autenticación de las diferentes colas de las diferentes máquinas.</p>
+<p>La documentación la pueden encontrar en el siguiente <a href="https://celery.readthedocs.io/en/latest/getting-started/first-steps-with-celery.html">enlace</a>.</p>
+<p>Lo primero que se necesita es tener <code>rabbitMQ</code> instalado en Debian Wheezy.</p>
+<div class="highlight"><pre><span></span>#aptitude install rabbitmq-server
+</pre></div>
+
+
+<p>Luego de la instalación se verifica que se inicie el servicio:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">~</span><span class="err">#</span><span class="w"> </span><span class="n">invoke</span><span class="o">-</span><span class="n">rc</span><span class="p">.</span><span class="n">d</span><span class="w"> </span><span class="n">rabbitmq</span><span class="o">-</span><span class="n">server</span><span class="w"> </span><span class="n">status</span><span class="w"> </span>
+<span class="n">Status</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="n">rabbit</span><span class="nv">@pruebas</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<span class="o">[</span><span class="n">{pid,3595},</span>
+<span class="n"> {running_applications,[{rabbit,&quot;RabbitMQ&quot;,&quot;2.8.4&quot;},</span>
+<span class="n">                        {mnesia,&quot;MNESIA  CXC 138 12&quot;,&quot;4.7&quot;},</span>
+<span class="n">                        {os_mon,&quot;CPO  CXC 138 46&quot;,&quot;2.2.9&quot;},</span>
+<span class="n">                        {sasl,&quot;SASL  CXC 138 11&quot;,&quot;2.2.1&quot;},</span>
+<span class="n">                        {stdlib,&quot;ERTS  CXC 138 10&quot;,&quot;1.18.1&quot;},</span>
+<span class="n">                        {kernel,&quot;ERTS  CXC 138 10&quot;,&quot;2.15.1&quot;}</span><span class="o">]</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">os</span><span class="p">,</span><span class="err">{</span><span class="n">unix</span><span class="p">,</span><span class="n">linux</span><span class="err">}}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">erlang_version</span><span class="p">,</span><span class="ss">&quot;Erlang R15B01 (erts-5.9.1) [source] [64-bit] [async-threads:30] [kernel-poll:true]\n&quot;</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">memory</span><span class="p">,</span><span class="o">[</span><span class="n">{total,26213352},</span>
+<span class="n">          {processes,10386936},</span>
+<span class="n">          {processes_used,10386922},</span>
+<span class="n">          {system,15826416},</span>
+<span class="n">          {atom,504409},</span>
+<span class="n">          {atom_used,473948},</span>
+<span class="n">          {binary,263704},</span>
+<span class="n">          {code,11874771},</span>
+<span class="n">          {ets,771120}</span><span class="o">]</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">vm_memory_high_watermark</span><span class="p">,</span><span class="mf">0.39999999862767177</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">vm_memory_limit</span><span class="p">,</span><span class="mi">233180364</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">disk_free_limit</span><span class="p">,</span><span class="mi">1000000000</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">disk_free</span><span class="p">,</span><span class="mi">6221991936</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">file_descriptors</span><span class="p">,</span><span class="o">[</span><span class="n">{total_limit,924},</span>
+<span class="n">                    {total_used,8},</span>
+<span class="n">                    {sockets_limit,829},</span>
+<span class="n">                    {sockets_used,5}</span><span class="o">]</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">processes</span><span class="p">,</span><span class="o">[</span><span class="n">{limit,1048576},{used,167}</span><span class="o">]</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">run_queue</span><span class="p">,</span><span class="mi">0</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">uptime</span><span class="p">,</span><span class="mi">5808</span><span class="err">}]</span><span class="w"></span>
+<span class="p">...</span><span class="n">done</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>También se puede verificar desde el comando <code>rabbitctl</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">~</span><span class="err">#</span><span class="w"> </span><span class="n">rabbitmqctl</span><span class="w"> </span><span class="n">status</span><span class="w"> </span>
+<span class="n">Status</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="n">rabbit</span><span class="nv">@pruebas</span><span class="w"> </span><span class="p">...</span><span class="w"></span>
+<span class="o">[</span><span class="n">{pid,3595},</span>
+<span class="n"> {running_applications,[{rabbit,&quot;RabbitMQ&quot;,&quot;2.8.4&quot;},</span>
+<span class="n">                        {mnesia,&quot;MNESIA  CXC 138 12&quot;,&quot;4.7&quot;},</span>
+<span class="n">                        {os_mon,&quot;CPO  CXC 138 46&quot;,&quot;2.2.9&quot;},</span>
+<span class="n">                        {sasl,&quot;SASL  CXC 138 11&quot;,&quot;2.2.1&quot;},</span>
+<span class="n">                        {stdlib,&quot;ERTS  CXC 138 10&quot;,&quot;1.18.1&quot;},</span>
+<span class="n">                        {kernel,&quot;ERTS  CXC 138 10&quot;,&quot;2.15.1&quot;}</span><span class="o">]</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">os</span><span class="p">,</span><span class="err">{</span><span class="n">unix</span><span class="p">,</span><span class="n">linux</span><span class="err">}}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">erlang_version</span><span class="p">,</span><span class="ss">&quot;Erlang R15B01 (erts-5.9.1) [source] [64-bit] [async-threads:30] [kernel-poll:true]\n&quot;</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">memory</span><span class="p">,</span><span class="o">[</span><span class="n">{total,26211600},</span>
+<span class="n">          {processes,10386952},</span>
+<span class="n">          {processes_used,10386938},</span>
+<span class="n">          {system,15824648},</span>
+<span class="n">          {atom,504409},</span>
+<span class="n">          {atom_used,473972},</span>
+<span class="n">          {binary,262176},</span>
+<span class="n">          {code,11874771},</span>
+<span class="n">          {ets,771120}</span><span class="o">]</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">vm_memory_high_watermark</span><span class="p">,</span><span class="mf">0.39999999862767177</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">vm_memory_limit</span><span class="p">,</span><span class="mi">233180364</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">disk_free_limit</span><span class="p">,</span><span class="mi">1000000000</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">disk_free</span><span class="p">,</span><span class="mi">6221991936</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">file_descriptors</span><span class="p">,</span><span class="o">[</span><span class="n">{total_limit,924},</span>
+<span class="n">                    {total_used,8},</span>
+<span class="n">                    {sockets_limit,829},</span>
+<span class="n">                    {sockets_used,5}</span><span class="o">]</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">processes</span><span class="p">,</span><span class="o">[</span><span class="n">{limit,1048576},{used,167}</span><span class="o">]</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">run_queue</span><span class="p">,</span><span class="mi">0</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w"> </span><span class="err">{</span><span class="n">uptime</span><span class="p">,</span><span class="mi">5848</span><span class="err">}]</span><span class="w"></span>
+<span class="p">...</span><span class="n">done</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>Como la conexión de Django es con una sóla máquina no se requiere autenticación del <code>rabbitMQ</code> así que ese paso lo pueden ver en el siguiente <a href="https://celery.readthedocs.io/en/latest/getting-started/brokers/rabbitmq.html">enlace</a>.</p>
+<p>Ahora se instalará <code>python</code>, <code>celery</code> y <code>django-celery</code>:</p>
+<div class="highlight"><pre><span></span>#aptitude install python2.7 python2.7-dev python-django python-django-celery python-celery
+</pre></div>
+
+
+<p>Al terminar de instalar la aplicación ahora se va a crear un proyecto django:
+Se crea el directorio django en <code>/srv/</code></p>
+<div class="highlight"><pre><span></span>#mkdir -p /srv/django 
+</pre></div>
+
+
+<p>Luego se crea el proyecto pasarela con el comando <code>django-admin</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="err">#</span><span class="w"> </span><span class="n">django</span><span class="o">-</span><span class="k">admin</span><span class="w"> </span><span class="n">startproject</span><span class="w"> </span><span class="n">pasarela</span><span class="w"></span>
+</pre></div>
+
+
+<p>Dentro del directorio pasarela se encontrará la estructura de archivos que maneja django:</p>
+<div class="highlight"><pre><span></span>-rwxr-xr-x 1 pasarela pasarela   251 abr 29 15:32 manage.py
+drwxr-xr-x 3 pasarela pasarela  4096 abr 29 16:49 pasarela
+-rw-rw-rw- 1 pasarela pasarela 69632 abr 29 16:59 pasarela.db
+</pre></div>
+
+
+<p>Luego dentro del directorio pasarela se tiene lo siguiente:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="o">/</span><span class="n">pasarela</span><span class="err">#</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"></span>
+<span class="n">total</span><span class="w"> </span><span class="mi">32</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">pasarela</span><span class="w"> </span><span class="n">pasarela</span><span class="w">    </span><span class="mi">0</span><span class="w"> </span><span class="n">abr</span><span class="w"> </span><span class="mi">29</span><span class="w"> </span><span class="mi">15</span><span class="err">:</span><span class="mi">32</span><span class="w"> </span><span class="n">__init__</span><span class="p">.</span><span class="n">py</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">pasarela</span><span class="w"> </span><span class="n">pasarela</span><span class="w"> </span><span class="mi">5464</span><span class="w"> </span><span class="n">abr</span><span class="w"> </span><span class="mi">29</span><span class="w"> </span><span class="mi">16</span><span class="err">:</span><span class="mi">46</span><span class="w"> </span><span class="n">settings</span><span class="p">.</span><span class="n">py</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">pasarela</span><span class="w"> </span><span class="n">pasarela</span><span class="w">  </span><span class="mi">562</span><span class="w"> </span><span class="n">abr</span><span class="w"> </span><span class="mi">29</span><span class="w"> </span><span class="mi">15</span><span class="err">:</span><span class="mi">32</span><span class="w"> </span><span class="n">urls</span><span class="p">.</span><span class="n">py</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="c1">--r-- 1 pasarela pasarela 1138 abr 29 15:32 wsgi.py</span>
+</pre></div>
+
+
+<p>Se crea el directorio <code>apps</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="o">/</span><span class="n">pasarela#mkdir</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="n">apps</span><span class="w"></span>
+</pre></div>
+
+
+<p>Dentro del directorio se crea el archivo <code>__init__.py</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="o">/</span><span class="n">pasarela</span><span class="o">/</span><span class="n">apps</span><span class="err">#</span><span class="w"> </span><span class="n">touch</span><span class="w"> </span><span class="n">__init__</span><span class="p">,</span><span class="n">py</span><span class="w"></span>
+</pre></div>
+
+
+<p>Ahora se crea la aplicación <code>sms</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="o">/</span><span class="n">pasarela</span><span class="o">/</span><span class="n">apps</span><span class="err">#</span><span class="w"> </span><span class="n">django</span><span class="o">-</span><span class="k">admin</span><span class="w"> </span><span class="n">startapp</span><span class="w"> </span><span class="n">sms</span><span class="w"></span>
+</pre></div>
+
+
+<p>El directorio <code>sms</code> contiene lo siguiente:</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="o">/</span><span class="n">pasarela</span><span class="o">/</span><span class="n">apps</span><span class="o">/</span><span class="n">sms</span><span class="err">#</span><span class="w"> </span><span class="n">ls</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"></span>
+<span class="n">total</span><span class="w"> </span><span class="mi">24</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">pasarela</span><span class="w"> </span><span class="n">pasarela</span><span class="w">   </span><span class="mi">0</span><span class="w"> </span><span class="n">abr</span><span class="w"> </span><span class="mi">29</span><span class="w"> </span><span class="mi">15</span><span class="err">:</span><span class="mi">46</span><span class="w"> </span><span class="n">__init__</span><span class="p">.</span><span class="n">py</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">pasarela</span><span class="w"> </span><span class="n">pasarela</span><span class="w">  </span><span class="mi">57</span><span class="w"> </span><span class="n">abr</span><span class="w"> </span><span class="mi">29</span><span class="w"> </span><span class="mi">15</span><span class="err">:</span><span class="mi">46</span><span class="w"> </span><span class="n">models</span><span class="p">.</span><span class="n">py</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">pasarela</span><span class="w"> </span><span class="n">pasarela</span><span class="w"> </span><span class="mi">383</span><span class="w"> </span><span class="n">abr</span><span class="w"> </span><span class="mi">29</span><span class="w"> </span><span class="mi">15</span><span class="err">:</span><span class="mi">46</span><span class="w"> </span><span class="n">tests</span><span class="p">.</span><span class="n">py</span><span class="w"></span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="c1">--r-- 1 pasarela pasarela  26 abr 29 15:46 views.py</span>
+</pre></div>
+
+
+<p>En este directorio se crea el archivo <code>tasks.py</code> con el siguiente contenido: </p>
+<div class="highlight"><pre><span></span><span class="c1">#Se importa Celery</span>
+<span class="kn">from</span> <span class="nn">celery</span> <span class="kn">import</span> <span class="n">Celery</span>
+<span class="c1">#Se instancia Celery importando tasks, se define el broker (quien recibe los procesos en este </span>
+<span class="c1">#caso rabbitMQ con el protocolo amgp) y se define el backend (quien recibe los resultado</span>
+<span class="c1">#del proceso encolado en este caso con rabbitMQ y el protocolo amgp) </span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Celery</span><span class="p">(</span><span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="n">broker</span><span class="o">=</span><span class="s1">&#39;amqp://&#39;</span><span class="p">,</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;amqp&#39;</span><span class="p">)</span>
+
+<span class="c1">#Se usa el decorador task de app y se define la suma.</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">task</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+</pre></div>
+
+
+<p>Lo que se va a hacer es manejar la suma por medio de la cola de <code>rabbitMQ</code>.</p>
+<p>Ahora se revisa el contenido del archivo <code>settings.py</code> (lo más relevante): </p>
+<p>Se va a trabajar por los momentos con la base de datos <code>sqlite</code>:</p>
+<div class="highlight"><pre><span></span><span class="nv">DATABASES</span> <span class="o">=</span> {
+    <span class="s1">&#39;</span><span class="s">default</span><span class="s1">&#39;</span>: {
+        <span class="s1">&#39;</span><span class="s">ENGINE</span><span class="s1">&#39;</span>: <span class="s1">&#39;</span><span class="s">django.db.backends.sqlite3</span><span class="s1">&#39;</span>, # <span class="nv">Add</span> <span class="s1">&#39;</span><span class="s">postgresql_psycopg2</span><span class="s1">&#39;</span>, <span class="s1">&#39;</span><span class="s">mysql</span><span class="s1">&#39;</span>, <span class="s1">&#39;</span><span class="s">sqlite3</span><span class="s1">&#39;</span> <span class="nv">or</span> <span class="s1">&#39;</span><span class="s">oracle</span><span class="s1">&#39;</span>.
+        <span class="s1">&#39;</span><span class="s">NAME</span><span class="s1">&#39;</span>: <span class="s1">&#39;</span><span class="s">pasarela.db</span><span class="s1">&#39;</span>,                      # <span class="nv">Or</span> <span class="nv">path</span> <span class="nv">to</span> <span class="nv">database</span> <span class="nv">file</span> <span class="k">if</span> <span class="nv">using</span> <span class="nv">sqlite3</span>.
+        <span class="s1">&#39;</span><span class="s">USER</span><span class="s1">&#39;</span>: <span class="s1">&#39;&#39;</span>,                      # <span class="nv">Not</span> <span class="nv">used</span> <span class="nv">with</span> <span class="nv">sqlite3</span>.
+        <span class="s1">&#39;</span><span class="s">PASSWORD</span><span class="s1">&#39;</span>: <span class="s1">&#39;&#39;</span>,                  # <span class="nv">Not</span> <span class="nv">used</span> <span class="nv">with</span> <span class="nv">sqlite3</span>.
+        <span class="s1">&#39;</span><span class="s">HOST</span><span class="s1">&#39;</span>: <span class="s1">&#39;&#39;</span>,                      # <span class="nv">Set</span> <span class="nv">to</span> <span class="nv">empty</span> <span class="nv">string</span> <span class="k">for</span> <span class="nv">localhost</span>. <span class="nv">Not</span> <span class="nv">used</span> <span class="nv">with</span> <span class="nv">sqlite3</span>.
+        <span class="s1">&#39;</span><span class="s">PORT</span><span class="s1">&#39;</span>: <span class="s1">&#39;&#39;</span>,                      # <span class="nv">Set</span> <span class="nv">to</span> <span class="nv">empty</span> <span class="nv">string</span> <span class="k">for</span> <span class="nv">default</span>. <span class="nv">Not</span> <span class="nv">used</span> <span class="nv">with</span> <span class="nv">sqlite3</span>.
+    }
+}
+</pre></div>
+
+
+<p>Se define el uso horario de la aplicación: </p>
+<div class="highlight"><pre><span></span>TIME_ZONE = &#39;America/Caracas&#39;
+</pre></div>
+
+
+<p>Se define el idioma:</p>
+<div class="highlight"><pre><span></span>LANGUAGE_CODE = &#39;es-ve&#39;
+</pre></div>
+
+
+<p>Se agrega la aplicación <code>djcelery</code> y <code>sms</code>:</p>
+<div class="highlight"><pre><span></span><span class="nv">INSTALLED_APPS</span> <span class="o">=</span> <span class="ss">(</span>
+    <span class="s1">&#39;</span><span class="s">django.contrib.auth</span><span class="s1">&#39;</span>,
+    <span class="s1">&#39;</span><span class="s">django.contrib.contenttypes</span><span class="s1">&#39;</span>,
+    <span class="s1">&#39;</span><span class="s">django.contrib.sessions</span><span class="s1">&#39;</span>,
+    <span class="s1">&#39;</span><span class="s">django.contrib.sites</span><span class="s1">&#39;</span>,
+    <span class="s1">&#39;</span><span class="s">django.contrib.messages</span><span class="s1">&#39;</span>,
+    <span class="s1">&#39;</span><span class="s">django.contrib.staticfiles</span><span class="s1">&#39;</span>,
+    # <span class="nv">Uncomment</span> <span class="nv">the</span> <span class="k">next</span> <span class="nv">line</span> <span class="nv">to</span> <span class="nv">enable</span> <span class="nv">the</span> <span class="nv">admin</span>:
+    <span class="s1">&#39;</span><span class="s">django.contrib.admin</span><span class="s1">&#39;</span>,
+    <span class="s1">&#39;</span><span class="s">djcelery</span><span class="s1">&#39;</span>,
+    <span class="s1">&#39;</span><span class="s">pasarela.apps.sms</span><span class="s1">&#39;</span>,
+    # <span class="nv">Uncomment</span> <span class="nv">the</span> <span class="k">next</span> <span class="nv">line</span> <span class="nv">to</span> <span class="nv">enable</span> <span class="nv">admin</span> <span class="nv">documentation</span>:
+    # <span class="s1">&#39;</span><span class="s">django.contrib.admindocs</span><span class="s1">&#39;</span>,
+<span class="ss">)</span>
+</pre></div>
+
+
+<p>Ahora queda sincronizar la base de datos (acá se crea la base de datos para django, lo necesario para django celery y la cuenta del administrador de la aplicación):</p>
+<div class="highlight"><pre><span></span><span class="n">root</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="err">#</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="n">manage</span><span class="p">.</span><span class="n">py</span><span class="w"> </span><span class="n">syncdb</span><span class="w"></span>
+</pre></div>
+
+
+<p>Ahora lo que queda es iniciar <code>celery</code>: 
+Se inicia <code>manage.py</code> de django diciéndole que va a iniciar celery en nivel de información y con dos procesos concurrentes.</p>
+<div class="highlight"><pre><span></span><span class="n">ernesto</span><span class="nv">@pruebas</span><span class="err">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="err">$</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="n">manage</span><span class="p">.</span><span class="n">py</span><span class="w"> </span><span class="n">celeryd</span><span class="w"> </span><span class="o">-</span><span class="n">E</span><span class="w"> </span><span class="o">-</span><span class="n">l</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">dist</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">djcelery</span><span class="o">/</span><span class="n">loaders</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">108</span><span class="err">:</span><span class="w"> </span><span class="nl">UserWarning</span><span class="p">:</span><span class="w"> </span><span class="k">Using</span><span class="w"> </span><span class="n">settings</span><span class="p">.</span><span class="n">DEBUG</span><span class="w"> </span><span class="n">leads</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">memory</span><span class="w"> </span><span class="n">leak</span><span class="p">,</span><span class="w"> </span><span class="n">never</span><span class="w"> </span><span class="k">use</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">setting</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">production</span><span class="w"> </span><span class="n">environments</span><span class="err">!</span><span class="w"></span>
+<span class="w">  </span><span class="n">warnings</span><span class="p">.</span><span class="n">warn</span><span class="p">(</span><span class="ss">&quot;Using settings.DEBUG leads to a memory leak, never &quot;</span><span class="w"></span>
+<span class="o">[</span><span class="n">2014-04-29 17:22:37,272: WARNING/MainProcess</span><span class="o">]</span><span class="w">  </span>
+
+<span class="w"> </span><span class="o">--------------</span><span class="w"> </span><span class="n">celery</span><span class="nv">@pruebas</span><span class="w"> </span><span class="n">v2</span><span class="mf">.5.3</span><span class="w"></span>
+<span class="o">----</span><span class="w"> </span><span class="o">****</span><span class="w"> </span><span class="o">-----</span><span class="w"></span>
+<span class="o">---</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">***</span><span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="o">--</span><span class="w"> </span><span class="o">[</span><span class="n">Configuration</span><span class="o">]</span><span class="w"></span>
+<span class="o">--</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">****</span><span class="w"> </span><span class="o">---</span><span class="w">   </span><span class="p">.</span><span class="w"> </span><span class="nl">broker</span><span class="p">:</span><span class="w">      </span><span class="nl">amqp</span><span class="p">:</span><span class="o">//</span><span class="n">guest</span><span class="nv">@localhost</span><span class="err">:</span><span class="mi">5672</span><span class="o">//</span><span class="w"></span>
+<span class="o">-</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="o">----------</span><span class="w">   </span><span class="p">.</span><span class="w"> </span><span class="nl">loader</span><span class="p">:</span><span class="w">      </span><span class="n">djcelery</span><span class="p">.</span><span class="n">loaders</span><span class="p">.</span><span class="n">DjangoLoader</span><span class="w"></span>
+<span class="o">-</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="o">----------</span><span class="w">   </span><span class="p">.</span><span class="w"> </span><span class="nl">logfile</span><span class="p">:</span><span class="w">     </span><span class="o">[</span><span class="n">stderr</span><span class="o">]</span><span class="nv">@INFO</span><span class="w"></span>
+<span class="o">-</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="o">----------</span><span class="w">   </span><span class="p">.</span><span class="w"> </span><span class="nl">concurrency</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="o">-</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="o">----------</span><span class="w">   </span><span class="p">.</span><span class="w"> </span><span class="nl">events</span><span class="p">:</span><span class="w">      </span><span class="k">ON</span><span class="w"></span>
+<span class="o">-</span><span class="w"> </span><span class="o">***</span><span class="w"> </span><span class="o">---</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">---</span><span class="w">   </span><span class="p">.</span><span class="w"> </span><span class="nl">beat</span><span class="p">:</span><span class="w">        </span><span class="k">OFF</span><span class="w"></span>
+<span class="o">--</span><span class="w"> </span><span class="o">*******</span><span class="w"> </span><span class="o">----</span><span class="w"></span>
+<span class="o">---</span><span class="w"> </span><span class="o">*****</span><span class="w"> </span><span class="o">-----</span><span class="w"> </span><span class="o">[</span><span class="n">Queues</span><span class="o">]</span><span class="w"></span>
+<span class="w"> </span><span class="o">--------------</span><span class="w">   </span><span class="p">.</span><span class="w"> </span><span class="nl">celery</span><span class="p">:</span><span class="w">      </span><span class="nl">exchange</span><span class="p">:</span><span class="n">celery</span><span class="w"> </span><span class="p">(</span><span class="n">direct</span><span class="p">)</span><span class="w"> </span><span class="nl">binding</span><span class="p">:</span><span class="n">celery</span><span class="w"></span>
+
+
+<span class="o">[</span><span class="n">Tasks</span><span class="o">]</span><span class="w"></span>
+<span class="w">  </span><span class="p">.</span><span class="w"> </span><span class="n">pasarela</span><span class="p">.</span><span class="n">apps</span><span class="p">.</span><span class="n">sms</span><span class="p">.</span><span class="n">tasks</span><span class="p">.</span><span class="k">add</span><span class="w"></span>
+
+<span class="o">[</span><span class="n">2014-04-29 17:22:37,293: INFO/PoolWorker-1</span><span class="o">]</span><span class="w"> </span><span class="n">child</span><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">calling</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">run</span><span class="p">()</span><span class="w"></span>
+<span class="o">[</span><span class="n">2014-04-29 17:22:37,297: INFO/PoolWorker-2</span><span class="o">]</span><span class="w"> </span><span class="n">child</span><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">calling</span><span class="w"> </span><span class="n">self</span><span class="p">.</span><span class="n">run</span><span class="p">()</span><span class="w"></span>
+<span class="o">[</span><span class="n">2014-04-29 17:22:37,307: WARNING/MainProcess</span><span class="o">]</span><span class="w"> </span><span class="n">celery</span><span class="nv">@pruebas</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">started</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+
+
+<p>En otra consola se inicia el shell del <code>manage.py</code> de django: 
+Se importa la función add que se definió en el archivo <code>tasks.py</code>.</p>
+<div class="highlight"><pre><span></span><span class="n">ernesto</span><span class="nd">@pruebas</span><span class="p">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="err">$</span> <span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">shell</span>
+<span class="n">Python</span> <span class="mf">2.7.3</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Mar</span> <span class="mi">13</span> <span class="mi">2014</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">55</span><span class="p">)</span> 
+<span class="p">[</span><span class="n">GCC</span> <span class="mf">4.7.2</span><span class="p">]</span> <span class="n">on</span> <span class="n">linux2</span>
+<span class="n">Type</span> <span class="s2">&quot;help&quot;</span><span class="p">,</span> <span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;credits&quot;</span> <span class="ow">or</span> <span class="s2">&quot;license&quot;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span>
+<span class="p">(</span><span class="n">InteractiveConsole</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pasarela.apps.sms.tasks</span> <span class="kn">import</span> <span class="n">add</span>
+<span class="c1">#Se realiza la suma de 11+19</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">add</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span>
+<span class="c1">#Se obtiene el resultado:</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="mi">30</span>
+<span class="c1">#Se verifica si ya celery está listo para recibir más procesos:</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">ready</span><span class="p">()</span>
+<span class="kc">True</span>
+<span class="c1">#Se verifica si ya el proceso termino.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">successful</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+
+
+<p>En la salida de celery se tiene lo siguiente:</p>
+<div class="highlight"><pre><span></span><span class="k">[2014-04-29 17:25:36,200: INFO/MainProcess] Got task from broker: pasarela.apps.sms.tasks.add[64275874-545b-4ab9-bfc8-ea38904d2320]</span><span class="w"></span>
+<span class="na">[2014-04-29 17:25:36,228: INFO/MainProcess] Task pasarela.apps.sms.tasks.add[64275874-545b-4ab9-bfc8-ea38904d2320] succeeded in 0.0155239105225s: 30</span><span class="w"></span>
+</pre></div>
+
+
+<p>Como se muestra el <code>celery</code> recibe y devuelve el resultado de la suma con su tiempo de ejecución, si se tienen varios equipos con <code>rabbitMQ</code> se puede mejorar significativamente los procesos de ejecución de funciones en django.</p>
+<p>Pueden revisar la siguiente <a href="https://es.scribd.com/document/57279486/Celery-An-A-Synchronous-Task-Queue-Not-Only-for-Django">presentación</a>.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/tag/django.html">Django</a>
+      <a href="https://ecrespo.github.io/tag/django-celery.html">Django-Celery</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery&url=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html&hashtags=canaima,debian,python,ubuntu,django,django-celery" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html&title=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery&summary=Hace%20un%20tiempo%20escrib%C3%AD%20unos%203%20art%C3%ADculos%20sobre%20Django%2C%20ahora%20se%20tocar%C3%A1%20un%20tema%20algo%20m%C3%A1s%20complejo%20pero%20%C3%BAtil%20cuando%20se%20requiere%20rendimiento%20en%20procesos.%0AA%20continuaci%C3%B3n%20paso%20a%20explicar%20un%20proceso%20sencillo%20de%20manejo%20de%20colas%20de%20RabbitMQ%20por%20medio%20de%20Django-Celery.%0ALa%20idea%20es%20realizar%20una%20instalaci%C3%B3n%20y%20%E2%80%A6&source=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery&amp;body=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/reproductor-de-video-con-python-y-kivy.html" title="Reproductor de vídeo con python y kivy">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/restful-api-con-django-tastypie.html" title="Restful API con Django-tastypie">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/iniciando-django-usando-docker.html">Iniciando Django usando Docker</a></li>
+      <li><a href="https://ecrespo.github.io/usar-mongodb-en-django.html">Usar mongodb en Django</a></li>
+      <li><a href="https://ecrespo.github.io/darle-estilo-material-design-a-django-parte-1-el-admin.html">Darle estilo material design a Django (parte 1, el admin)</a></li>
+      <li><a href="https://ecrespo.github.io/restful-api-con-django-tastypie-y-django-celery.html">Restful API con Django-tastypie y Django-Celery</a></li>
+      <li><a href="https://ecrespo.github.io/restful-api-con-django-tastypie.html">Restful API con Django-tastypie</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2021</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

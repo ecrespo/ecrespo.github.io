@@ -1,0 +1,1017 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con los artículos sobre profiling, otra herramienta para llevar adelante el profiling se llama cProfile, esta es una extensión en C que se introdujo en Python 2.5. Se usa para determinar Profiling deterministico (se mide el tiempo de manera precisa en vez de muestreo). El ejemplo que se …" />
+<meta name="keywords" content="General, Linux, numpy, python, cProfile, Profiling">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Profiling de un script python con cProfile"/>
+<meta property="og:description" content="Continuando con los artículos sobre profiling, otra herramienta para llevar adelante el profiling se llama cProfile, esta es una extensión en C que se introdujo en Python 2.5. Se usa para determinar Profiling deterministico (se mide el tiempo de manera precisa en vez de muestreo). El ejemplo que se …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/profiling-de-un-script-python-con-cprofile.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2012-12-05 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="numpy"/>
+<meta property="article:tag" content="python"/>
+<meta property="article:tag" content="cProfile"/>
+<meta property="article:tag" content="Profiling"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Profiling de un script python con cProfile</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/sqlalchemy.html">
+            SqlAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">292</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">187</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="profiling-de-un-script-python-con-cprofile">Profiling de un script python con cProfile</h1>
+    <p>
+          Posted on Wed 05 December 2012 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>Continuando con los artículos sobre profiling, otra herramienta para llevar adelante el profiling se llama <code>cProfile</code>, esta es una extensión en C que se introdujo en Python 2.5. Se usa para determinar Profiling deterministico (se mide el tiempo de manera precisa en vez de muestreo).</p>
+<p>El ejemplo que se desarrollará es el mismo de la generación de la matriz inversa, la diferencia será que la definición del valor de n de la matriz y su generación estará en una función llamada main. Está función luego se llamará desde <code>cProfile</code>.</p>
+<p>A continuación el código:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+
+
+<span class="c1">#Se importa numpy como np</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">cProfile</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1">#funcion que genera matrices inversas.</span>
+
+<span class="k">def</span> <span class="nf">Inversa</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">I</span>
+
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+
+    <span class="c1">#Se define una lista de  tamaños de la matriz</span>
+
+    <span class="n">tamagno</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span>
+
+    <span class="c1">#Se recorre la lista de tamaños y se invierte cada matriz con la</span>
+
+    <span class="c1">#funcion.</span>
+
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tamagno</span><span class="p">:</span>
+
+        <span class="n">Inversa</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+
+
+<span class="c1">#Se ejecuta la función main desde la llamada run de cProfile.    </span>
+
+<span class="n">cProfile</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;main()&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Al ejecutar el script se tiene como resultado el profiling de la generación de la matriz inversa:</p>
+<div class="highlight"><pre><span></span><span class="n">ecrespo</span><span class="nv">@jewel</span><span class="err">:</span><span class="o">~/</span><span class="n">proyectos</span><span class="o">/</span><span class="n">ernesto</span><span class="o">-</span><span class="n">ecrespo</span><span class="p">.</span><span class="n">blogspot</span><span class="o">/</span><span class="n">cprofile</span><span class="err">$</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="n">matrizinversa</span><span class="p">.</span><span class="n">py</span><span class="w"> </span>
+
+<span class="w">         </span><span class="mi">809</span><span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="n">calls</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="mf">5.764</span><span class="w"> </span><span class="n">seconds</span><span class="w"></span>
+
+
+
+<span class="w">   </span><span class="n">Ordered</span><span class="w"> </span><span class="k">by</span><span class="err">:</span><span class="w"> </span><span class="n">standard</span><span class="w"> </span><span class="n">name</span><span class="w"></span>
+
+
+
+<span class="w">   </span><span class="n">ncalls</span><span class="w">  </span><span class="n">tottime</span><span class="w">  </span><span class="n">percall</span><span class="w">  </span><span class="n">cumtime</span><span class="w">  </span><span class="n">percall</span><span class="w"> </span><span class="nl">filename</span><span class="p">:</span><span class="k">lineno</span><span class="p">(</span><span class="k">function</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">5.764</span><span class="w">    </span><span class="mf">5.764</span><span class="w"> </span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="err">:</span><span class="mi">1</span><span class="p">(</span><span class="o">&lt;</span><span class="k">module</span><span class="o">&gt;</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">24</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.058</span><span class="w">    </span><span class="mf">0.002</span><span class="w"> </span><span class="n">defmatrix</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">233</span><span class="p">(</span><span class="n">__new__</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">36</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">defmatrix</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">279</span><span class="p">(</span><span class="n">__array_finalize__</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">defmatrix</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">55</span><span class="p">(</span><span class="n">asmatrix</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.015</span><span class="w">    </span><span class="mf">0.001</span><span class="w">    </span><span class="mf">5.467</span><span class="w">    </span><span class="mf">0.456</span><span class="w"> </span><span class="n">defmatrix</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">808</span><span class="p">(</span><span class="n">getI</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">dual</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">12</span><span class="p">(</span><span class="o">&lt;</span><span class="k">module</span><span class="o">&gt;</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">127</span><span class="p">(</span><span class="n">_to_native_byte_order</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.257</span><span class="w">    </span><span class="mf">0.021</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">139</span><span class="p">(</span><span class="n">_fastCopyAndTranspose</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">151</span><span class="p">(</span><span class="n">_assertRank2</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">157</span><span class="p">(</span><span class="n">_assertSquareness</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">5.396</span><span class="w">    </span><span class="mf">0.450</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">244</span><span class="p">(</span><span class="n">solve</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.020</span><span class="w">    </span><span class="mf">0.002</span><span class="w">    </span><span class="mf">5.452</span><span class="w">    </span><span class="mf">0.454</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">404</span><span class="p">(</span><span class="n">inv</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">36</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">66</span><span class="p">(</span><span class="n">_makearray</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">36</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">71</span><span class="p">(</span><span class="n">isComplexType</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">24</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">84</span><span class="p">(</span><span class="n">_realType</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="n">linalg</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">99</span><span class="p">(</span><span class="n">_commonType</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.007</span><span class="w">    </span><span class="mf">0.001</span><span class="w">    </span><span class="mf">5.751</span><span class="w">    </span><span class="mf">0.479</span><span class="w"> </span><span class="n">matrizinversa</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">12</span><span class="p">(</span><span class="n">Inversa</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.013</span><span class="w">    </span><span class="mf">0.013</span><span class="w">    </span><span class="mf">5.764</span><span class="w">    </span><span class="mf">5.764</span><span class="w"> </span><span class="n">matrizinversa</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">17</span><span class="p">(</span><span class="n">main</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">36</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="nc">numeric</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">167</span><span class="p">(</span><span class="n">asarray</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.035</span><span class="w">    </span><span class="mf">0.003</span><span class="w"> </span><span class="nc">numeric</span><span class="p">.</span><span class="nl">py</span><span class="p">:</span><span class="mi">1830</span><span class="p">(</span><span class="k">identity</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">36</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="n">getattr</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">72</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="n">isinstance</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">60</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="n">issubclass</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">60</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="nf">len</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="nf">max</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">24</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;__array_prepare__&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;numpy.ndarray&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">24</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;append&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;list&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.059</span><span class="w">    </span><span class="mf">0.005</span><span class="w">    </span><span class="mf">0.059</span><span class="w">    </span><span class="mf">0.005</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;astype&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;numpy.ndarray&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.058</span><span class="w">    </span><span class="mf">0.005</span><span class="w">    </span><span class="mf">0.058</span><span class="w">    </span><span class="mf">0.005</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;copy&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;numpy.ndarray&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;disable&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;_lsprof.Profiler&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">24</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;get&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;dict&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.220</span><span class="w">    </span><span class="mf">0.018</span><span class="w">    </span><span class="mf">0.220</span><span class="w">    </span><span class="mf">0.018</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;rand&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;mtrand.RandomState&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;transpose&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;numpy.ndarray&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="k">method</span><span class="w"> </span><span class="s1">&#39;view&#39;</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="s1">&#39;numpy.ndarray&#39;</span><span class="w"> </span><span class="n">objects</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="nf">min</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">24</span><span class="w">    </span><span class="mf">0.257</span><span class="w">    </span><span class="mf">0.011</span><span class="w">    </span><span class="mf">0.257</span><span class="w">    </span><span class="mf">0.011</span><span class="w"> </span><span class="err">{</span><span class="n">numpy</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">multiarray</span><span class="p">.</span><span class="n">_fastCopyAndTranspose</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="mi">1</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="n">numpy</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">multiarray</span><span class="p">.</span><span class="n">arange</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">36</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w">    </span><span class="mf">0.000</span><span class="w"> </span><span class="err">{</span><span class="n">numpy</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">multiarray</span><span class="p">.</span><span class="k">array</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">24</span><span class="w">    </span><span class="mf">0.035</span><span class="w">    </span><span class="mf">0.001</span><span class="w">    </span><span class="mf">0.035</span><span class="w">    </span><span class="mf">0.001</span><span class="w"> </span><span class="err">{</span><span class="n">numpy</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">multiarray</span><span class="p">.</span><span class="n">zeros</span><span class="err">}</span><span class="w"></span>
+
+<span class="w">       </span><span class="mi">12</span><span class="w">    </span><span class="mf">5.078</span><span class="w">    </span><span class="mf">0.423</span><span class="w">    </span><span class="mf">5.078</span><span class="w">    </span><span class="mf">0.423</span><span class="w"> </span><span class="err">{</span><span class="n">numpy</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">lapack_lite</span><span class="p">.</span><span class="n">dgesv</span><span class="err">}</span><span class="w"></span>
+</pre></div>
+
+
+<p>La salida es la misma que se mostró en el artículo de timeit con ipython.  Como adicional al <a href="http://blog.crespo.org.ve/2012/12/profiling-de-un-script-python-con-timeit.html">artículo de timeit</a> se muestra a continuación el significado de cada columna:</p>
+<ul>
+<li><code>ncalls</code>: Número de llamadas.</li>
+<li><code>tottime</code>: Tiempo total gastado en una función.</li>
+<li><code>percall</code>: Tiempo por llamada, calculado el tiempo total la cantidad de llamadas.</li>
+<li><code>cumtime</code>: Tiempo acumulado gastado en una función y llamadas a funciones por la función, incluyendo llamadas recursivas.  </li>
+</ul>
+<p>El código del script lo pueden bajar desde <a href="https://bitbucket.org/ecrespo/ernesto-ecrespo.blogspot/src/a3294957f9a7a41932385d064d7799ad1dd80b60/cprofile/matrizinversa.py?at=default">bitbucket</a>.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/tag/numpy.html">numpy</a>
+      <a href="https://ecrespo.github.io/tag/python.html">python</a>
+      <a href="https://ecrespo.github.io/tag/cprofile.html">cProfile</a>
+      <a href="https://ecrespo.github.io/tag/profiling.html">Profiling</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Profiling%20de%20un%20script%20python%20con%20cProfile&url=https%3A//ecrespo.github.io/profiling-de-un-script-python-con-cprofile.html&hashtags=general,linux,numpy,python,cprofile,profiling" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/profiling-de-un-script-python-con-cprofile.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/profiling-de-un-script-python-con-cprofile.html&title=Profiling%20de%20un%20script%20python%20con%20cProfile&summary=Continuando%20con%20los%20art%C3%ADculos%20sobre%20profiling%2C%20otra%20herramienta%20para%20llevar%20adelante%20el%20profiling%20se%20llama%20cProfile%2C%20esta%20es%20una%20extensi%C3%B3n%20en%20C%20que%20se%20introdujo%20en%20Python%202.5.%20Se%20usa%20para%20determinar%20Profiling%20deterministico%20%28se%20mide%20el%20tiempo%20de%20manera%20precisa%20en%20vez%20de%20muestreo%29.%0AEl%20ejemplo%20que%20se%20%E2%80%A6&source=https%3A//ecrespo.github.io/profiling-de-un-script-python-con-cprofile.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Profiling%20de%20un%20script%20python%20con%20cProfile&amp;body=https%3A//ecrespo.github.io/profiling-de-un-script-python-con-cprofile.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/profiling-de-un-script-python-con-line_profiler.html" title="Profiling de un script python con line_profiler">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/depurar-codigo-python-con-ipython.html" title="Depurar código python con ipython.">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/profiling-de-un-script-python-con-line_profiler.html">Profiling de un script python con line_profiler</a></li>
+      <li><a href="https://ecrespo.github.io/graficar-la-tangente-de-una-curva-con-python-numpy-y-pylab.html">Graficar la tangente de una curva con python, numpy y pylab.</a></li>
+      <li><a href="https://ecrespo.github.io/encontrar-la-raiz-de-una-funcion-con-fsolve.html">Encontrar la raíz de una función con fsolve</a></li>
+      <li><a href="https://ecrespo.github.io/graficar-una-funcion-de-2-variables-con-matplotlib.html">Graficar una función de 2 variables con matplotlib</a></li>
+      <li><a href="https://ecrespo.github.io/graficar-el-espectro-de-frecuencia-con-numpy.html">Graficar el espectro de frecuencia con Numpy</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2021</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

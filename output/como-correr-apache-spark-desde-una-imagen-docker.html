@@ -1,0 +1,1090 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/pygments/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Página de Seraph Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#333333">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#333333">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#333333">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En este artículo se explicará la ejecución de Apache Spark usando un contenedor Docker, en vez de usar el procedimiento de instalación de Spark (instalar java, scala y spark). Apache Spark proporciona una interfaz para la programación de clusters completos con paralelismos de Datos implicito y tolerancia a fallos. Tiene …" />
+<meta name="keywords" content="Python, Spark, Docker, Big Data, Data Science, Ciencia de Datos">
+
+<meta property="og:site_name" content="Página de Seraph"/>
+<meta property="og:title" content="Como correr Apache Spark desde una imagen Docker"/>
+<meta property="og:description" content="En este artículo se explicará la ejecución de Apache Spark usando un contenedor Docker, en vez de usar el procedimiento de instalación de Spark (instalar java, scala y spark). Apache Spark proporciona una interfaz para la programación de clusters completos con paralelismos de Datos implicito y tolerancia a fallos. Tiene …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ecrespo.github.io/como-correr-apache-spark-desde-una-imagen-docker.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-07-02 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Spark"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="Big Data"/>
+<meta property="article:tag" content="Data Science"/>
+<meta property="article:tag" content="Ciencia de Datos"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Página de Seraph &ndash; Como correr Apache Spark desde una imagen Docker</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+      <h1><a href="https://ecrespo.github.io">Ernesto Crespo</a></h1>
+
+<p>Data Scientist </p>
+      <nav>
+        <ul class="list">
+          <li><a href="https://ecrespo.github.io/pages/About.html#About">Acerca</a></li>
+          <li><a href="https://ecrespo.github.io/pages/Contacto.html#Contacto">Contacto</a></li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+            <i class="fab fa-medium">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+            <i class="fab fa-linkedin">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+            <i class="fab fa-github">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+            <i class="fab fa-google">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+            <i class="fab fa-twitter">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+            <i class="fab fa-facebook">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+            <i class="fab fa-gitlab">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+            <i class="fab fa-soundcloud">
+            </i>
+          </a></li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+            <i class="fas fa-rss">
+            </i>
+          </a></li>
+      </ul>
+    </div>
+    
+    <ul class="tagcloud">
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gitlab.html">
+            gitlab
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/cprofile.html">
+            cProfile
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/coinmarketcap.html">
+            Coinmarketcap
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/request.html">
+            Request
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pyqt.html">
+            PyQt
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mechanize.html">
+            Mechanize
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/mypy.html">
+            mypy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylab.html">
+            Pylab
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/reproductor-musica.html">
+            Reproductor Música
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/docker-compose.html">
+            Docker-compose
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/general.html">
+            General
+                    <span class="badge">113</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sms.html">
+            SMS
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">
+            Ciencia de datos
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/arbol-de-decision.html">
+            Árbol de decisión
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/django.html">
+            Django
+                    <span class="badge">11</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sympy.html">
+            Sympy
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/api-restful.html">
+            API restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/doctest.html">
+            Doctest
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mercurial.html">
+            Mercurial
+                    <span class="badge">8</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautiful-soup.html">
+            Beautiful Soup
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/json.html">
+            json
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/csv.html">
+            CSV
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/kaggle.html">
+            Kaggle
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/gconf.html">
+            gconf
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/streamlit.html">
+            streamlit
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pdf-scraping.html">
+            pdf scraping
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/sqlite3.html">
+            Sqlite3
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/black.html">
+            Black
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/simplecv.html">
+            SimpleCV
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/paramiko.html">
+            Paramiko
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/twitter.html">
+            Twitter
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/data-science.html">
+            Data Science
+                    <span class="badge">7</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/devops.html">
+            DevOps
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/sqlalchemy.html">
+            SqlAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/arduino.html">
+            Arduino
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/flask.html">
+            Flask
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/redes.html">
+            Redes
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/kivy.html">
+            kivy
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pruebas-unitarias.html">
+            Pruebas unitarias
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/eve.html">
+            Eve
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/mongodb.html">
+            MongoDB
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/profiling.html">
+            Profiling
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/empaquetado.html">
+            Empaquetado
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/flask-mongoalchemy.html">
+            Flask-MongoAlchemy
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/redis.html">
+            Redis
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/ubuntu.html">
+            Ubuntu
+                    <span class="badge">135</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/inteligencia-artificial.html">
+            Inteligencia Artificial
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/python.html">
+            Python
+                    <span class="badge">292</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/api-restfull.html">
+            Api restfull
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dns.html">
+            DNS
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/docker-machine.html">
+            docker-machine
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/zeromq.html">
+            ZeroMQ
+                    <span class="badge">9</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/numpy.html">
+            Numpy
+                    <span class="badge">33</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/visualizacion.html">
+            Visualización
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/scikit-learn.html">
+            Scikit-Learn
+                    <span class="badge">5</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/glade.html">
+            glade
+                    <span class="badge">14</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/requests.html">
+            requests
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/estructura-de-datos.html">
+            Estructura de datos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/beautifulsoup.html">
+            BeautifulSoup
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/blockchain.html">
+            Blockchain
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pyautogui.html">
+            PyAutoGUI
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/dnsmasq.html">
+            Dnsmasq
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gps.html">
+            GPS
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/matplotlib.html">
+            Matplotlib
+                    <span class="badge">30</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/android.html">
+            Android
+                    <span class="badge">41</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/wikipedia.html">
+            Wikipedia
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tiflotecnologia.html">
+            tiflotecnologia
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/bandit.html">
+            bandit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/networkx.html">
+            Networkx
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/linux.html">
+            Linux
+                    <span class="badge">187</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/ssh.html">
+            SSH
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/red-neuronal.html">
+            Red Neuronal
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/tensorflow.html">
+            TensorFlow
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/jupyter-notebook.html">
+            Jupyter Notebook
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/unittest.html">
+            unittest
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/poo.html">
+            POO
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/pypdf.html">
+            pypdf
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/bitcoin.html">
+            Bitcoin
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/canaima.html">
+            Canaima
+                    <span class="badge">111</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/docker.html">
+            Docker
+                    <span class="badge">52</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/webkit.html">
+            webkit
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/tor.html">
+            Tor
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/gitlab-ci.html">
+            Gitlab-ci
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-1">
+            <a href="https://ecrespo.github.io/tag/debian.html">
+            Debian
+                    <span class="badge">180</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/webscraping.html">
+            Webscraping
+                    <span class="badge">13</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/seguridad.html">
+            Seguridad
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/cicd.html">
+            CI/CD
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/accesibilidad.html">
+            Accesibilidad
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gnome.html">
+            gnome
+                    <span class="badge">19</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/fedora.html">
+            Fedora
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/gtk.html">
+            gtk
+                    <span class="badge">15</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/pylint.html">
+            pylint
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/control-de-versiones.html">
+            Control de versiones
+                    <span class="badge">6</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/machine-learning.html">
+            Machine Learning
+                    <span class="badge">3</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/videos.html">
+            Videos
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/crud.html">
+            CRUD
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-2">
+            <a href="https://ecrespo.github.io/tag/pandas.html">
+            Pandas
+                    <span class="badge">10</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/flask-restful.html">
+            Flask-restful
+                    <span class="badge">2</span>
+            </a>
+        </li>
+        <li class="tag-3">
+            <a href="https://ecrespo.github.io/tag/camara.html">
+            Camara
+                    <span class="badge">4</span>
+            </a>
+        </li>
+        <li class="tag-4">
+            <a href="https://ecrespo.github.io/tag/spark.html">
+            Spark
+                    <span class="badge">2</span>
+            </a>
+        </li>
+   </ul>
+
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://ecrespo.github.io">    Home
+</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="como-correr-apache-spark-desde-una-imagen-docker">Como correr Apache Spark desde una imagen Docker</h1>
+    <p>
+          Posted on Mon 02 July 2018 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+
+  <div>
+    <p>En este artículo se explicará la ejecución de Apache Spark usando un contenedor <a href="https://blog.crespo.org.ve/search/label/Docker">Docker</a>, en vez de usar el procedimiento de <a href="https://spark.apache.org/downloads.html">instalación de Spark</a> (instalar java, scala y spark).</p>
+<p>Apache Spark proporciona una interfaz para la programación de clusters completos con paralelismos de Datos implicito y tolerancia a fallos. Tiene la base de su arquitectura en el llamado RDD (Resilient Distributed Dataset, set de sólo lectura de datos distribuídos a lo largo de un cluster de máquinas que se mantiene en un entorno tolerante a fallos).</p>
+<p>Se puede considerar un sistema de computación en clúster de propósito general y orientado a la velocidad, proporciona APIs en Java, Scala, Python y R. También proporciona un motor optimizado que soporta la ejecución de grafos.</p>
+<p>También soporta una serie de herramientas de alto nivel como lo son:</p>
+<ul>
+<li>Spark SQL (  para el procesamiento de datos estructurados basada en SQL).  </li>
+<li>MLlib para implementar machine learning.  </li>
+<li>GraphX para el procesamirnto de grafos.  </li>
+<li>Spark Streaming.  </li>
+</ul>
+<p>Más información en <a href="https://es.wikipedia.org/wiki/Apache_Spark">wikipedia</a>.</p>
+<p>La imagen docker que se va a usar es la de <a href="https://hub.docker.com/r/gettyimages/spark/">gettyimages/spark</a> y de <a href="https://github.com/gettyimages/docker-spark">github</a>.</p>
+<ol>
+<li>Bajar la imagen docker: </li>
+</ol>
+<div class="highlight"><pre><span></span>docker pull gettyimages/spark
+</pre></div>
+
+
+<ol>
+<li>Bajar del repositorio github el repositorio de <code>gettyimages/spark</code> para usar <code>docker-compose</code>:</li>
+</ol>
+<div class="highlight"><pre><span></span>git clone https://github.com/gettyimages/docker-spark.git
+</pre></div>
+
+
+<ol>
+<li>Se cambia al directorio <code>docker-sparck</code>:</li>
+</ol>
+<div class="highlight"><pre><span></span>cd docker-spark 
+</pre></div>
+
+
+<p>4 Archivo <code>Dockerfile</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">FROM</span> <span class="n">debian</span><span class="p">:</span><span class="n">stretch</span>
+<span class="n">MAINTAINER</span> <span class="n">Getty</span> <span class="n">Images</span> <span class="s2">&quot;https://github.com/gettyimages&quot;</span>
+
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">locales</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">dpkg</span><span class="o">-</span><span class="n">reconfigure</span> <span class="o">-</span><span class="n">f</span> <span class="n">noninteractive</span> <span class="n">locales</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">locale</span><span class="o">-</span><span class="n">gen</span> <span class="n">C</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span> \
+ <span class="o">&amp;&amp;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">update</span><span class="o">-</span><span class="n">locale</span> <span class="n">LANG</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">echo</span> <span class="s2">&quot;en_US.UTF-8 UTF-8&quot;</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">locale</span><span class="o">.</span><span class="n">gen</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">locale</span><span class="o">-</span><span class="n">gen</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">clean</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">lists</span><span class="o">/*</span>
+
+<span class="c1"># Users with other locales should set this in their derivative image</span>
+<span class="n">ENV</span> <span class="n">LANG</span> <span class="n">en_US</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">ENV</span> <span class="n">LANGUAGE</span> <span class="n">en_US</span><span class="p">:</span><span class="n">en</span>
+<span class="n">ENV</span> <span class="n">LC_ALL</span> <span class="n">en_US</span><span class="o">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">curl</span> <span class="n">unzip</span> \
+    <span class="n">python3</span> <span class="n">python3</span><span class="o">-</span><span class="n">setuptools</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">easy_install3</span> <span class="n">pip</span> <span class="n">py4j</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">clean</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">lists</span><span class="o">/*</span>
+
+<span class="c1"># http://blog.stuart.axelbrooke.com/python-3-on-spark-return-of-the-pythonhashseed</span>
+<span class="n">ENV</span> <span class="n">PYTHONHASHSEED</span> <span class="mi">0</span>
+<span class="n">ENV</span> <span class="n">PYTHONIOENCODING</span> <span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">ENV</span> <span class="n">PIP_DISABLE_PIP_VERSION_CHECK</span> <span class="mi">1</span>
+
+<span class="c1"># JAVA</span>
+<span class="n">ARG</span> <span class="n">JAVA_MAJOR_VERSION</span><span class="o">=</span><span class="mi">8</span>
+<span class="n">ARG</span> <span class="n">JAVA_UPDATE_VERSION</span><span class="o">=</span><span class="mi">131</span>
+<span class="n">ARG</span> <span class="n">JAVA_BUILD_NUMBER</span><span class="o">=</span><span class="mi">11</span>
+<span class="n">ENV</span> <span class="n">JAVA_HOME</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">jdk1</span><span class="o">.</span><span class="err">$</span><span class="p">{</span><span class="n">JAVA_MAJOR_VERSION</span><span class="p">}</span><span class="mf">.0</span><span class="n">_</span><span class="err">$</span><span class="p">{</span><span class="n">JAVA_UPDATE_VERSION</span><span class="p">}</span>
+
+<span class="n">ENV</span> <span class="n">PATH</span> <span class="err">$</span><span class="n">PATH</span><span class="p">:</span><span class="err">$</span><span class="n">JAVA_HOME</span><span class="o">/</span><span class="nb">bin</span>
+<span class="n">RUN</span> <span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="o">--</span><span class="n">retry</span> <span class="mi">3</span> <span class="o">--</span><span class="n">insecure</span> \
+  <span class="o">--</span><span class="n">header</span> <span class="s2">&quot;Cookie: oraclelicense=accept-securebackup-cookie;&quot;</span> \
+  <span class="s2">&quot;http://download.oracle.com/otn-pub/java/jdk/$</span><span class="si">{JAVA_MAJOR_VERSION}</span><span class="s2">u$</span><span class="si">{JAVA_UPDATE_VERSION}</span><span class="s2">-b$</span><span class="si">{JAVA_BUILD_NUMBER}</span><span class="s2">/d54c1d3a095b4ff2b6607d096fa80163/server-jre-$</span><span class="si">{JAVA_MAJOR_VERSION}</span><span class="s2">u$</span><span class="si">{JAVA_UPDATE_VERSION}</span><span class="s2">-linux-x64.tar.gz&quot;</span> \
+  <span class="o">|</span> <span class="n">gunzip</span> \
+  <span class="o">|</span> <span class="n">tar</span> <span class="n">x</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span> \
+  <span class="o">&amp;&amp;</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="err">$</span><span class="n">JAVA_HOME</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">java</span> \
+  <span class="o">&amp;&amp;</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="err">$</span><span class="n">JAVA_HOME</span><span class="o">/</span><span class="n">man</span>
+
+<span class="c1"># HADOOP</span>
+<span class="n">ENV</span> <span class="n">HADOOP_VERSION</span> <span class="mf">3.0.0</span>
+<span class="n">ENV</span> <span class="n">HADOOP_HOME</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">hadoop</span><span class="o">-</span><span class="err">$</span><span class="n">HADOOP_VERSION</span>
+<span class="n">ENV</span> <span class="n">HADOOP_CONF_DIR</span><span class="o">=</span><span class="err">$</span><span class="n">HADOOP_HOME</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">hadoop</span>
+<span class="n">ENV</span> <span class="n">PATH</span> <span class="err">$</span><span class="n">PATH</span><span class="p">:</span><span class="err">$</span><span class="n">HADOOP_HOME</span><span class="o">/</span><span class="nb">bin</span>
+<span class="n">RUN</span> <span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="o">--</span><span class="n">retry</span> <span class="mi">3</span> \
+  <span class="s2">&quot;http://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz&quot;</span> \
+  <span class="o">|</span> <span class="n">gunzip</span> \
+  <span class="o">|</span> <span class="n">tar</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="err">$</span><span class="n">HADOOP_HOME</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">doc</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">root</span><span class="p">:</span><span class="n">root</span> <span class="err">$</span><span class="n">HADOOP_HOME</span>
+
+<span class="c1"># SPARK</span>
+<span class="n">ENV</span> <span class="n">SPARK_VERSION</span> <span class="mf">2.3.0</span>
+<span class="n">ENV</span> <span class="n">SPARK_PACKAGE</span> <span class="n">spark</span><span class="o">-</span><span class="err">$</span><span class="p">{</span><span class="n">SPARK_VERSION</span><span class="p">}</span><span class="o">-</span><span class="nb">bin</span><span class="o">-</span><span class="n">without</span><span class="o">-</span><span class="n">hadoop</span>
+<span class="n">ENV</span> <span class="n">SPARK_HOME</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">spark</span><span class="o">-</span><span class="err">$</span><span class="p">{</span><span class="n">SPARK_VERSION</span><span class="p">}</span>
+<span class="n">ENV</span> <span class="n">SPARK_DIST_CLASSPATH</span><span class="o">=</span><span class="s2">&quot;$HADOOP_HOME/etc/hadoop/*:$HADOOP_HOME/share/hadoop/common/lib/*:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/hdfs/lib/*:$HADOOP_HOME/share/hadoop/hdfs/*:$HADOOP_HOME/share/hadoop/yarn/lib/*:$HADOOP_HOME/share/hadoop/yarn/*:$HADOOP_HOME/share/hadoop/mapreduce/lib/*:$HADOOP_HOME/share/hadoop/mapreduce/*:$HADOOP_HOME/share/hadoop/tools/lib/*&quot;</span>
+<span class="n">ENV</span> <span class="n">PATH</span> <span class="err">$</span><span class="n">PATH</span><span class="p">:</span><span class="err">$</span><span class="p">{</span><span class="n">SPARK_HOME</span><span class="p">}</span><span class="o">/</span><span class="nb">bin</span>
+<span class="n">RUN</span> <span class="n">curl</span> <span class="o">-</span><span class="n">sL</span> <span class="o">--</span><span class="n">retry</span> <span class="mi">3</span> \
+  <span class="s2">&quot;https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&amp;filename=spark/spark-$</span><span class="si">{SPARK_VERSION}</span><span class="s2">/$</span><span class="si">{SPARK_PACKAGE}</span><span class="s2">.tgz&quot;</span> \
+  <span class="o">|</span> <span class="n">gunzip</span> \
+  <span class="o">|</span> <span class="n">tar</span> <span class="n">x</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">mv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="err">$</span><span class="n">SPARK_PACKAGE</span> <span class="err">$</span><span class="n">SPARK_HOME</span> \
+ <span class="o">&amp;&amp;</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">root</span><span class="p">:</span><span class="n">root</span> <span class="err">$</span><span class="n">SPARK_HOME</span>
+
+<span class="n">WORKDIR</span> <span class="err">$</span><span class="n">SPARK_HOME</span>
+<span class="n">CMD</span> <span class="p">[</span><span class="s2">&quot;bin/spark-class&quot;</span><span class="p">,</span> <span class="s2">&quot;org.apache.spark.deploy.master.Master&quot;</span><span class="p">]</span>
+</pre></div>
+
+
+<ol>
+<li>El archivo <a href="https://github.com/gettyimages/docker-spark/blob/master/docker-compose.yml">docker-compose.yml</a>:</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">master</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">image</span><span class="o">:</span><span class="w"> </span><span class="n">gettyimages</span><span class="o">/</span><span class="n">spark</span><span class="w"></span>
+<span class="w">  </span><span class="n">command</span><span class="o">:</span><span class="w"> </span><span class="n">bin</span><span class="o">/</span><span class="n">spark</span><span class="o">-</span><span class="kd">class</span><span class="w"> </span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">spark</span><span class="o">.</span><span class="na">deploy</span><span class="o">.</span><span class="na">master</span><span class="o">.</span><span class="na">Master</span><span class="w"> </span><span class="o">-</span><span class="n">h</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="w">  </span><span class="n">hostname</span><span class="o">:</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="w">  </span><span class="n">environment</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">MASTER</span><span class="o">:</span><span class="w"> </span><span class="n">spark</span><span class="o">://</span><span class="n">master</span><span class="o">:</span><span class="mi">7077</span><span class="w"></span>
+<span class="w">    </span><span class="n">SPARK_CONF_DIR</span><span class="o">:</span><span class="w"> </span><span class="o">/</span><span class="n">conf</span><span class="w"></span>
+<span class="w">    </span><span class="n">SPARK_PUBLIC_DNS</span><span class="o">:</span><span class="w"> </span><span class="n">localhost</span><span class="w"></span>
+<span class="w">  </span><span class="n">expose</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7001</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7002</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7003</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7004</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7005</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7006</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7077</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">6066</span><span class="w"></span>
+<span class="w">  </span><span class="n">ports</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">4040</span><span class="o">:</span><span class="mi">4040</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">6066</span><span class="o">:</span><span class="mi">6066</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7077</span><span class="o">:</span><span class="mi">7077</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">9080</span><span class="o">:</span><span class="mi">8080</span><span class="w"></span>
+<span class="w">  </span><span class="n">volumes</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="o">./</span><span class="n">conf</span><span class="sr">/master:/</span><span class="n">conf</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="o">./</span><span class="n">data</span><span class="o">:/</span><span class="n">tmp</span><span class="o">/</span><span class="n">data</span><span class="w"></span>
+
+<span class="n">worker</span><span class="o">:</span><span class="w"></span>
+<span class="w">  </span><span class="n">image</span><span class="o">:</span><span class="w"> </span><span class="n">gettyimages</span><span class="o">/</span><span class="n">spark</span><span class="w"></span>
+<span class="w">  </span><span class="n">command</span><span class="o">:</span><span class="w"> </span><span class="n">bin</span><span class="sr">/spark-class org.apache.spark.deploy.worker.Worker spark://</span><span class="n">master</span><span class="o">:</span><span class="mi">7077</span><span class="w"></span>
+<span class="w">  </span><span class="n">hostname</span><span class="o">:</span><span class="w"> </span><span class="n">worker</span><span class="w"></span>
+<span class="w">  </span><span class="n">environment</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">SPARK_CONF_DIR</span><span class="o">:</span><span class="w"> </span><span class="o">/</span><span class="n">conf</span><span class="w"></span>
+<span class="w">    </span><span class="n">SPARK_WORKER_CORES</span><span class="o">:</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="w">    </span><span class="n">SPARK_WORKER_MEMORY</span><span class="o">:</span><span class="w"> </span><span class="mi">1</span><span class="n">g</span><span class="w"></span>
+<span class="w">    </span><span class="n">SPARK_WORKER_PORT</span><span class="o">:</span><span class="w"> </span><span class="mi">8881</span><span class="w"></span>
+<span class="w">    </span><span class="n">SPARK_WORKER_WEBUI_PORT</span><span class="o">:</span><span class="w"> </span><span class="mi">8081</span><span class="w"></span>
+<span class="w">    </span><span class="n">SPARK_PUBLIC_DNS</span><span class="o">:</span><span class="w"> </span><span class="n">localhost</span><span class="w"></span>
+<span class="w">  </span><span class="n">links</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">master</span><span class="w"></span>
+<span class="w">  </span><span class="n">expose</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7012</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7013</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7014</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7015</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">7016</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">8881</span><span class="w"></span>
+<span class="w">  </span><span class="n">ports</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="mi">8081</span><span class="o">:</span><span class="mi">8081</span><span class="w"></span>
+<span class="w">  </span><span class="n">volumes</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="o">./</span><span class="n">conf</span><span class="sr">/worker:/</span><span class="n">conf</span><span class="w"></span>
+<span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="o">./</span><span class="n">data</span><span class="o">:/</span><span class="n">tmp</span><span class="o">/</span><span class="n">data</span><span class="w"></span>
+</pre></div>
+
+
+<ol>
+<li>Se ejecuta <code>docker-compose up</code>:  </li>
+</ol>
+<div class="highlight"><pre><span></span>docker-compose up
+</pre></div>
+
+
+<ol>
+<li>A continuación se muestra la ejecución del contenedor:</li>
+</ol>
+<p><img alt="" src="./images/comocorrerapachesparkdesdeunaimagendocker-1.png"></p>
+<ol>
+<li>Ver los procesos:</li>
+</ol>
+<div class="highlight"><pre><span></span>docker-compose ps 
+</pre></div>
+
+
+<ol>
+<li>A continuación el resultado:</li>
+</ol>
+<p><img alt="" src="./images/comocorrerapachesparkdesdeunaimagendocker-2.png"></p>
+<p>Se tiene dos contenedores ejecutandose, uno es el master, que tiene el puerto 4040 abierto, entre otros puertos, y el otro contenedor es el worker.</p>
+<ol>
+<li>Se abre el navegador en http://localhost:9080, a continuación una captura del navegador:</li>
+</ol>
+<p><img alt="" src="./images/comocorrerapachesparkdesdeunaimagendocker-3.png"></p>
+<ol>
+<li>Ejecutar <code>pyspark</code> ejecuando dentro el contenedor master:</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="nv">docker</span> <span class="k">exec</span> <span class="o">-</span><span class="nv">it</span> <span class="nv">dockerspark_master_1</span> <span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">bash</span>
+</pre></div>
+
+
+<p>11.1 Dentro del contenedor ejecutar <code>pyspark</code>:</p>
+<div class="highlight"><pre><span></span>bin/pyspark
+</pre></div>
+
+
+<p>A continuación se muestra la ejecución: </p>
+<p><img alt="" src="./images/comocorrerapachesparkdesdeunaimagendocker-4.png"></p>
+<p>11.2 Al abrir el navegador se tiene una aplicación corriendo en el <code>spark</code>:</p>
+<p><img alt="" src="./images/comocorrerapachesparkdesdeunaimagendocker-5.png"></p>
+<ol>
+<li>Para terminar se ejecuta <code>SparkPi</code> desde el contenedor master:</li>
+</ol>
+<p>12.1 Se ingresa al contenedor de master:</p>
+<div class="highlight"><pre><span></span><span class="nv">docker</span> <span class="k">exec</span> <span class="o">-</span><span class="nv">it</span> <span class="nv">dockerspark_master_1</span> <span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">bash</span>
+</pre></div>
+
+
+<p>12.2 Se ejecuta <code>SparkPi</code></p>
+<div class="highlight"><pre><span></span>bin/run-example SparkPi 10
+</pre></div>
+
+
+<p>12.3 Se muestra la ejecución de la aplicación de <code>SparkPi</code>:</p>
+<p><img alt="" src="./images/comocorrerapachesparkdesdeunaimagendocker-6.png"></p>
+<p>En próximo artículo se usará el <code>spark</code> por medio de <code>pyspark</code>.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/tag/spark.html">Spark</a>
+      <a href="https://ecrespo.github.io/tag/docker.html">Docker</a>
+      <a href="https://ecrespo.github.io/tag/big-data.html">Big Data</a>
+      <a href="https://ecrespo.github.io/tag/data-science.html">Data Science</a>
+      <a href="https://ecrespo.github.io/tag/ciencia-de-datos.html">Ciencia de Datos</a>
+    </p>
+  </div>
+  
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="https://twitter.com/intent/tweet?text=Como%20correr%20Apache%20Spark%20desde%20una%20imagen%20Docker&url=https%3A//ecrespo.github.io/como-correr-apache-spark-desde-una-imagen-docker.html&hashtags=python,spark,docker,big-data,data-science,ciencia-de-datos" target="_blank" title="Share on Twitter">Twitter</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/como-correr-apache-spark-desde-una-imagen-docker.html" target="_blank" title="Share on Facebook">Facebook</a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/como-correr-apache-spark-desde-una-imagen-docker.html&title=Como%20correr%20Apache%20Spark%20desde%20una%20imagen%20Docker&summary=En%20este%20art%C3%ADculo%20se%20explicar%C3%A1%20la%20ejecuci%C3%B3n%20de%20Apache%20Spark%20usando%20un%20contenedor%20Docker%2C%20en%20vez%20de%20usar%20el%20procedimiento%20de%20instalaci%C3%B3n%20de%20Spark%20%28instalar%20java%2C%20scala%20y%20spark%29.%0AApache%20Spark%20proporciona%20una%20interfaz%20para%20la%20programaci%C3%B3n%20de%20clusters%20completos%20con%20paralelismos%20de%20Datos%20implicito%20y%20tolerancia%20a%20fallos.%20Tiene%20%E2%80%A6&source=https%3A//ecrespo.github.io/como-correr-apache-spark-desde-una-imagen-docker.html" target="_blank" title="Share on LinkedIn">LinkedIn</a>
+    <a href="mailto:?subject=Como%20correr%20Apache%20Spark%20desde%20una%20imagen%20Docker&amp;body=https%3A//ecrespo.github.io/como-correr-apache-spark-desde-una-imagen-docker.html" target="_blank" title="Share via Email">Email</a>
+  </p>
+</section>
+
+
+  <div class="neighbors">
+    <a class="btn float-left" href="https://ecrespo.github.io/visualizacion-de-arbol-de-decision.html" title="Visualización de Árbol de decisión">
+      <i class="fa fa-angle-left"></i>     Previous Post
+
+    </a>
+    <a class="btn float-right" href="https://ecrespo.github.io/contar-palabras-de-un-texto-usando-spark-con-pyspark.html" title="Contar palabras de un texto usando Spark con PySpark">
+          Next Post
+ <i class="fa fa-angle-right"></i>
+    </a>
+  </div>
+
+  <div class="related-posts">
+    <h4>    You might enjoy
+</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/python-request-wget-springer-1.html">Descargar libros de Data Science de la editorial Springer usando Python.</a></li>
+      <li><a href="https://ecrespo.github.io/entorno_desarrollo_datascience.html">Crear entorno de desarrollo para Ciencia de Datos con Anaconda, Jupyter, git y cookiecutter</a></li>
+      <li><a href="https://ecrespo.github.io/visualizando-estadisticas-de-pokemon-usando-plotly-grafica-de-radar.html">Visualizando estadisticas de pokemon usando plotly ( gráfica de radar)</a></li>
+      <li><a href="https://ecrespo.github.io/analizando-datos-del-cambio-climatico-y-niveles-de-co2-en-la-atmosfera-con-python-y-pandas.html">Analizando datos del cambio climático y niveles de CO2 en la atmosfera con Python y pandas.</a></li>
+      <li><a href="https://ecrespo.github.io/generar-graficos-animados-de-burbuja-a-lo-gapminer-con-python.html">Generar gráficos animados de burbuja a lo Gapminer con Python</a></li>
+    </ul>
+  </div>
+
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy;  2021</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Página de Seraph ",
+  "url" : "https://ecrespo.github.io",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+</body>
+</html>

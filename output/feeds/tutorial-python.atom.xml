@@ -1,5 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2022-01-16T15:45:00-04:00</updated><subtitle>Data Scientist </subtitle><entry><title>Dataclases en Python</title><link href="https://ecrespo.github.io/python_dataclass.html" rel="alternate"></link><published>2022-01-16T15:45:00-04:00</published><updated>2022-01-16T15:45:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2022-01-16:/python_dataclass.html</id><summary type="html">&lt;p&gt;Este artículo como crear dataclases y su utilidad&lt;/p&gt;</summary><content type="html">&lt;p&gt;Los artículos en que se basa este artículo son: &lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Página de Seraph - Tutorial Python</title><link href="https://ecrespo.github.io/" rel="alternate"></link><link href="https://ecrespo.github.io/feeds/tutorial-python.atom.xml" rel="self"></link><id>https://ecrespo.github.io/</id><updated>2022-01-18T21:03:00-04:00</updated><subtitle>Data Scientist </subtitle><entry><title>Validación de datos con Pydantic</title><link href="https://ecrespo.github.io/python_pydantic.html" rel="alternate"></link><published>2022-01-18T21:03:00-04:00</published><updated>2022-01-18T21:03:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2022-01-18:/python_pydantic.html</id><summary type="html">&lt;p&gt;Este artículo explica la validación de datos usando pydantic y compararlo a usar dataclass&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el &lt;a href="https://www.seraph.to/python_dataclass.html#python_dataclass"&gt;artículo anterior&lt;/a&gt; se explico como validar datos usando una clase de python normal, luego usando dataclass, y el beneficio de usarlo.&lt;/p&gt;
+&lt;p&gt;Ahora se explicará la validación usando pydantic, su documentación la pueden encontrar en el siguiente &lt;a href="https://pydantic-docs.helpmanual.io/"&gt;enlace&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Pydantic es una herramienta de validación de datos y gestión de configuración usando notación de tipos en Python. Se puede usar en Python a partir de la versión 3.6. &lt;/p&gt;
+&lt;p&gt;Para instalar pydantic se usa pip:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install pydantic 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Pydantic vs Dataclasses vs clase regular de python&lt;/h2&gt;
+&lt;h3&gt;Clase regular de python&lt;/h3&gt;
+&lt;p&gt;Como se explico en el artículo anterior, se define los atributos de la clase en este caso producto:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Producto&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;titulo&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;descripcion&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;precio&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;publicado&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;titulo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;titulo&lt;/span&gt;
+    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;descripcion&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;descripcion&lt;/span&gt;
+    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;precio&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;precio&lt;/span&gt;
+    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;publicado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;publicado&lt;/span&gt; 
+    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Python dataclase&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dataclasses&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;dataclass&lt;/span&gt; 
+&lt;span class="nd"&gt;@dataclass&lt;/span&gt; 
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Producto&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;titulo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
+  &lt;span class="n"&gt;descripcion&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
+  &lt;span class="n"&gt;precio&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;
+  &lt;span class="n"&gt;publicado&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;bool&lt;/span&gt;
+  &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Pydantic&lt;/h3&gt;
+&lt;p&gt;Para el caso de pydantic se importa BaseModel de pydantic y Optional de typing. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pydantic&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BaseModel&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;typing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Optional&lt;/span&gt; 
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;random&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt;  &lt;span class="n"&gt;randrange&lt;/span&gt; 
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Producto&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BaseModel&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;titulo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
+    &lt;span class="n"&gt;descripcion&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
+    &lt;span class="n"&gt;precio&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;
+    &lt;span class="n"&gt;publicado&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Optional&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;bool&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt; 
+    &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Optional&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A diferencia de dataclass, con pydantic se puede definir si un dato es opcional o no, y su valor por defecto.  En el caso del campo publicado es boleano, opcional y valor True por defecto, en el caso del id es un entero opcional, con valor por defecto None. &lt;/p&gt;
+&lt;p&gt;Se define dato de ejemplo: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;dato&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;titulo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Xiaomi Mi 10T&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;descripcion&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Xiaomi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;precio&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+    &lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;randrange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Se valida el dato con la clase Producto y se imprime el contenido:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;producto&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Producto&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;dato&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;producto&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;titulo&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Xiaomi Mi 10T&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;descripcion&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Xiaomi&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;precio&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;300&lt;/span&gt; &lt;span class="n"&gt;publicado&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;59872935&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Pydantic da más versatilidad en la validación de los datos, gracias a Pydantic se podrá validar las entradas de datos de un endpoint de un API, en próximo artículo se explicará como usando FastAPI.&lt;/p&gt;
+&lt;p&gt;Este artículo se basa en los siguientes artículos: &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://medium.com/codex/getting-started-with-pydantic-as-a-data-validation-tool-in-api-development-2155deef37c4"&gt;Getting started with Pydantic, a Python data validation library&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://medium.com/short-bits/pydantic-better-data-validation-for-python-f4d2c07a7c"&gt;Pydantic — Better Data Validation for Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://pydantic-docs.helpmanual.io/"&gt;Documentación de Pydantic&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;p&gt;¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
+&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="dataclass"></category><category term="pydantic"></category></entry><entry><title>Dataclases en Python</title><link href="https://ecrespo.github.io/python_dataclass.html" rel="alternate"></link><published>2022-01-16T15:45:00-04:00</published><updated>2022-01-16T15:45:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2022-01-16:/python_dataclass.html</id><summary type="html">&lt;p&gt;Este artículo como crear dataclases y su utilidad&lt;/p&gt;</summary><content type="html">&lt;p&gt;Los artículos en que se basa este artículo son: &lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://justgiveacar.medium.com/data-classes-in-python-991a3f68ddf9"&gt;Data Classes in Python&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://towardsdatascience.com/9-reasons-why-you-should-start-using-python-dataclasses-98271adadc66"&gt;9 Reasons Why You Should Start Using Python Dataclasses&lt;/a&gt;&lt;/li&gt;
@@ -247,88 +328,7 @@ Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
 usando la billetera digital de tu preferencia a la siguiente
 dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
 &lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="dataclass"></category></entry><entry><title>Validación de datos con Pydantic</title><link href="https://ecrespo.github.io/python_pydantic.html" rel="alternate"></link><published>2022-01-16T15:45:00-04:00</published><updated>2022-01-16T15:45:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2022-01-16:/python_pydantic.html</id><summary type="html">&lt;p&gt;Este artículo explica la validación de datos usando pydantic y compararlo a usar dataclass&lt;/p&gt;</summary><content type="html">&lt;p&gt;En el artículo anterior se explico como validar datos usando una clase de python normal, luego usando dataclass, y el beneficio de usarlo.&lt;/p&gt;
-&lt;p&gt;Ahora se explicará la validación usando pydantic, su documentación la pueden encontrar en el siguiente &lt;a href="https://pydantic-docs.helpmanual.io/"&gt;enlace&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Pydantic es una herramienta de validación de datos y gestión de configuración usando notación de tipos en Python. Se puede usar en Python a partir de la versión 3.6. &lt;/p&gt;
-&lt;p&gt;Para instalar pydantic se usa pip:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install pydantic 
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h2&gt;Pydantic vs Dataclasses vs clase regular de python&lt;/h2&gt;
-&lt;h3&gt;Clase regular de python&lt;/h3&gt;
-&lt;p&gt;Como se explico en el artículo anterior, se define los atributos de la clase en este caso producto:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Producto&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
-  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;titulo&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;descripcion&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;precio&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;publicado&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;titulo&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;titulo&lt;/span&gt;
-    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;descripcion&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;descripcion&lt;/span&gt;
-    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;precio&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;precio&lt;/span&gt;
-    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;publicado&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;publicado&lt;/span&gt; 
-    &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h3&gt;Python dataclase&lt;/h3&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;dataclasses&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;dataclass&lt;/span&gt; 
-&lt;span class="nd"&gt;@dataclass&lt;/span&gt; 
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Producto&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
-  &lt;span class="n"&gt;titulo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
-  &lt;span class="n"&gt;descripcion&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
-  &lt;span class="n"&gt;precio&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;
-  &lt;span class="n"&gt;publicado&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;bool&lt;/span&gt;
-  &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h3&gt;Pydantic&lt;/h3&gt;
-&lt;p&gt;Para el caso de pydantic se importa BaseModel de pydantic y Optional de typing. &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pydantic&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BaseModel&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;typing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Optional&lt;/span&gt; 
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;random&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt;  &lt;span class="n"&gt;randrange&lt;/span&gt; 
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Producto&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BaseModel&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="n"&gt;titulo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
-    &lt;span class="n"&gt;descripcion&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
-    &lt;span class="n"&gt;precio&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;
-    &lt;span class="n"&gt;publicado&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Optional&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;bool&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;True&lt;/span&gt; 
-    &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;Optional&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt; 
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;A diferencia de dataclass, con pydantic se puede definir si un dato es opcional o no, y su valor por defecto.  En el caso del campo publicado es boleano, opcional y valor True por defecto, en el caso del id es un entero opcional, con valor por defecto None. &lt;/p&gt;
-&lt;p&gt;Se define dato de ejemplo: &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;dato&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;titulo&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Xiaomi Mi 10T&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;descripcion&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Xiaomi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;precio&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-    &lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;randrange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Se valida el dato con la clase Producto y se imprime el contenido:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;producto&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Producto&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;dato&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;producto&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-
-&lt;span class="n"&gt;titulo&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Xiaomi Mi 10T&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;descripcion&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Xiaomi&amp;#39;&lt;/span&gt; &lt;span class="n"&gt;precio&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;300&lt;/span&gt; &lt;span class="n"&gt;publicado&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt; &lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;59872935&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Pydantic da más versatilidad en la validación de los datos, gracias a Pydantic se podrá validar las entradas de datos de un endpoint de un API, en próximo artículo se explicará como usando FastAPI.&lt;/p&gt;
-&lt;p&gt;Este artículo se basa en los siguientes artículos: &lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;a href="https://medium.com/codex/getting-started-with-pydantic-as-a-data-validation-tool-in-api-development-2155deef37c4"&gt;Getting started with Pydantic, a Python data validation library&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://medium.com/short-bits/pydantic-better-data-validation-for-python-f4d2c07a7c"&gt;Pydantic — Better Data Validation for Python&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://pydantic-docs.helpmanual.io/"&gt;Documentación de Pydantic&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;hr&gt;
-&lt;p&gt;¡Haz tu donativo!
-Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
-usando la billetera digital de tu preferencia a la siguiente
-dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV&lt;/p&gt;
-&lt;p&gt;O Escaneando el código QR desde la billetera:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="dataclass"></category><category term="pydantic"></category></entry><entry><title>Crear entorno de desarrollo con pyenv y poetry</title><link href="https://ecrespo.github.io/pyenv_poetry.html" rel="alternate"></link><published>2022-01-16T09:49:00-04:00</published><updated>2022-01-16T09:49:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2022-01-16:/pyenv_poetry.html</id><summary type="html">&lt;p&gt;Este artículo muestra el procedimiento de instalación de pyenv, de la instalación de una versión de Python distinta al que trae su SO y el uso de poetry.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="“Python Environment” by xkcd" src="./images/xkcd-python-enviroment.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"&gt;&lt;/p&gt;</content><category term="dataclass"></category></entry><entry><title>Crear entorno de desarrollo con pyenv y poetry</title><link href="https://ecrespo.github.io/pyenv_poetry.html" rel="alternate"></link><published>2022-01-16T09:49:00-04:00</published><updated>2022-01-16T09:49:00-04:00</updated><author><name>Ernesto Crespo</name></author><id>tag:ecrespo.github.io,2022-01-16:/pyenv_poetry.html</id><summary type="html">&lt;p&gt;Este artículo muestra el procedimiento de instalación de pyenv, de la instalación de una versión de Python distinta al que trae su SO y el uso de poetry.&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="“Python Environment” by xkcd" src="./images/xkcd-python-enviroment.png"&gt;&lt;/p&gt;
 &lt;h1&gt;¿Qué es Pyenv?&lt;/h1&gt;
 &lt;p&gt;Es una herramienta para instalar y manejar multiples versiones de Python. Permite a los desarrolladores ganar acceso rápido a nuevas versiones de Python y  mantener su sistema limpio y libre de paquetes innecesarios.  &lt;/p&gt;
 &lt;h2&gt;Actualización e instalación de dependencias.&lt;/h2&gt;

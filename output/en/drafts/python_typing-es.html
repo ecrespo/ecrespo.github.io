@@ -1,0 +1,487 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Conozca como usar la verificación del tipado estático y las mejores prácticas" />
+<meta name="keywords" content="python, typing, pydantic, mypy">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Introducción a typing en Python"/>
+<meta property="og:description" content="Conozca como usar la verificación del tipado estático y las mejores prácticas"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/python_typing-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2022-01-22 12:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="python"/>
+<meta property="article:tag" content="typing"/>
+<meta property="article:tag" content="pydantic"/>
+<meta property="article:tag" content="mypy"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Introducción a typing en Python</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="python_typing">Introducción a typing en Python</h1>
+    <p>
+      Posted on sáb 22 enero 2022 in <a href="https://ecrespo.github.io/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 4 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Artículos anteriores se tocó el tema de uso de dataclass, pydantic y orjson y como usar el tipado, en este artículo se explicará las mejores prácticas:</p>
+<ul>
+<li><a href="https://www.seraph.to/python_dataclass.html#python_dataclass">Dataclases en Python</a></li>
+<li><a href="https://www.seraph.to/python_pydantic.html#python_pydantic">Validación de datos con Pydantic</a></li>
+<li><a href="https://www.seraph.to/python_orjson.html#python_orjson">Introducción a orjson</a></li>
+</ul>
+<p>La verificación de tipos aparte de ayudar a entender mejor el código facilita la detección de errores rapidamente y automáticamente usando por ejemplo mypy. La verificación de tipos se incorporó en Python desde la versión 3.5. </p>
+<p>Este artículo se basa en el artículo en inglés: <a href="https://betterprogramming.pub/improving-your-python-projects-with-type-hints-63cbdb16d97c">Improving Your Python Projects With Type Hints</a></p>
+<h2>Sintaxis de tipado</h2>
+<p>Python soporta anotaciones de tipos para variables básicas soportadas por el lenguaje str, int, float, bool y None. Viene incorporada en la librería typing.</p>
+<h3>Anotación de variables</h3>
+<p>Se puede indicar el tipo de una variable al usar los dos puntos ":". Por ejemplo: </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Pedro&#39;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">edad</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">24</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">altura_mts</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.7</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">colegas</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Jane&#39;</span><span class="p">,</span> <span class="s1">&#39;John&#39;</span><span class="p">]</span></span></span>
+</pre></div>
+
+
+<p>Se define el tipo y el valor que tendrá esa variable. </p>
+<h3>Anotación en las funciones</h3>
+<p>En el caso de las funciones se puede colocar anotaciones en las variables de los argumentos, así como en la salida de la función. </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">math</span> </span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">calc_area_circulo</span><span class="p">(</span><span class="n">radio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">radio</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">send_email</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">recipients</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1"># .... </span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1"># Devuelve True o False el envío de un correo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">return</span> <span class="kc">True</span> </span></span>
+</pre></div>
+
+
+<p>En la primera función se pasa como argumento el radio de tipo flotante y devuelve el resultado del área del circulo que es flotante también. </p>
+<p>EN el siguiente ejemplo se define una función que recibe subject (string), body (string),recipients (lista de string), cache (diccionario que tiene llaves de string y valores de string) y la función devuelve boleano. </p>
+<h3>Usar tipos especiales</h3>
+<p>Existe una serie de tipos que complementan a los básicos: </p>
+<ul>
+<li>Any: </li>
+<li>Literal: </li>
+<li>Union</li>
+<li>TypeDict</li>
+<li>NoReturn</li>
+<li>Final</li>
+</ul>
+<h4>Any</h4>
+<p>Una variable tipo Any es compatible con todas los tipos básicos. </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">resultado</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;Procesado&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">resultado</span> <span class="o">=</span> <span class="mi">10</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">estatus</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Pendiente&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">estatus</span> <span class="o">=</span> <span class="n">resultado</span></span></span>
+</pre></div>
+
+
+<p>En el primer caso se define la variable resultado tipo Any que se le asigna un string, luego se le asigna un entero, el cual no es problema por que el tipo Any lo soporta. Luego se define la variable estatus de tipo string y asignando un string, luego sin problemas se asigna resultado a la variable estatus; esto tampoco es problema por que resultado es tipo any.</p>
+<h4>Literal</h4>
+<p>El tipo literal se usa para indicar que tiene un valor igual a los valores indicados (tipos). </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">GENERO</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;hombre&quot;</span><span class="p">,</span> <span class="s2">&quot;mujer&quot;</span><span class="p">,</span> <span class="s2">&quot;no especificado&quot;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">crear_usuario</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">apellido</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">genero</span><span class="p">:</span> <span class="n">GENERO</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">return</span> <span class="p">{</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="s2">&quot;nombre&quot;</span><span class="p">:</span> <span class="n">nombre</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="s2">&quot;apellido&quot;</span><span class="p">:</span> <span class="n">apellido</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="s2">&quot;genero&quot;</span><span class="p">:</span> <span class="n">genero</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="p">}</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">crear_usuario</span><span class="p">(</span><span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="s2">&quot;Doe&quot;</span><span class="p">,</span> <span class="s2">&quot;hombre&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="p">{</span><span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="s1">&#39;John&#39;</span><span class="p">,</span> <span class="s1">&#39;apellido&#39;</span><span class="p">:</span> <span class="s1">&#39;Doe&#39;</span><span class="p">,</span> <span class="s1">&#39;genero&#39;</span><span class="p">:</span> <span class="s1">&#39;hombre&#39;</span><span class="p">}</span></span></span>
+</pre></div>
+
+
+<p>Se define una lista para el genero de tipo literal, y el tipo es uno de los definidos (hombre, mujer, no especificado). </p>
+<h4>Union</h4>
+<p>Algunas variables a veces necesitan dos tipos básicos. </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">get_temperatura</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">return</span> <span class="mf">20.8</span>  <span class="c1"># funciona también con 20.</span></span></span>
+</pre></div>
+
+
+<p>Se define una función que devuelve  entero o flotante, esto se logra usando Union. </p>
+<h4>TypedDict</h4>
+<p>TypedDict permite definir un tipo de dato diccionario. </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">Union</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">Card</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">rank</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">suit</span><span class="p">:</span> <span class="nb">str</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># The Card class now has behaviours of both TypedDict and dict classes</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># Card can be used to annotate a variable</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ace_of_spade</span><span class="p">:</span> <span class="n">Card</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rank&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;suit&#39;</span><span class="p">:</span> <span class="s1">&#39;♤&#39;</span><span class="p">}</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># or can be instantiated</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ace_of_spade</span> <span class="o">=</span> <span class="n">Card</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="s1">&#39;♤&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nb">print</span><span class="p">(</span><span class="n">ace_of_spade</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="p">{</span><span class="s1">&#39;rank&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;suit&#39;</span><span class="p">:</span> <span class="s1">&#39;♤&#39;</span><span class="p">}</span></span></span>
+</pre></div>
+
+
+<h4>NoReturn</h4>
+<p>NoReturn es similar to void en otros lenguajes de programación, en mi caso antes usaba None cuando una función no devuelve nada. </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NoReturn</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">hola1</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hola Mundo!&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">hola2</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hola Mundo!&quot;</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>Se definen dos funciones hola, la primera como None y la segunda como NoReturn, que es como debe definirse una función que no devuelve un valor. </p>
+<h4>Final</h4>
+<p>Este tipo de dato se define para no redefinir un valor. </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Final</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">MIN_NOMBRE_LONG</span><span class="p">:</span> <span class="n">Final</span> <span class="o">=</span> <span class="mi">2</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># mypy reporta error por que se le está asignando un nuevo valor a la</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># variable</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">MIN_NOMBRE_LONG</span> <span class="o">+=</span> <span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">Validador</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">MIN_NOMBRE_LONG</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">UserValidador</span><span class="p">(</span><span class="n">Validador</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1"># El interprete marca una bandera en esta línea</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">MIN_NOMBRE_LONG</span> <span class="o">=</span> <span class="mi">3</span></span></span>
+</pre></div>
+
+
+<h3>Uso de verificadores de tipo</h3>
+<p>Uno de los más usados verificadores de tipos es mypy. Se puede instalar usando pip:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>pip install mypy </span></span>
+</pre></div>
+
+
+<p>Para usarlo simplemente se llama a mypy y se le pasa el archivo a verificar. </p>
+<p>El código a validar se muestra a continuación: </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python3</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Dict</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">GENERO</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;hombre&quot;</span><span class="p">,</span> <span class="s2">&quot;mujer&quot;</span><span class="p">,</span> <span class="s2">&quot;no especificado&quot;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">crear_usuario</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">apellido</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">genero</span><span class="p">:</span> <span class="n">GENERO</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">return</span> <span class="p">{</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="s2">&quot;nombre&quot;</span><span class="p">:</span> <span class="n">nombre</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="s2">&quot;apellido&quot;</span><span class="p">:</span> <span class="n">apellido</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="s2">&quot;genero&quot;</span><span class="p">:</span> <span class="n">genero</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="p">}</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">crear_usuario</span><span class="p">(</span><span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="s2">&quot;Doe&quot;</span><span class="p">,</span> <span class="s2">&quot;hombre&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">crear_usuario</span><span class="p">(</span><span class="s2">&quot;Jane&quot;</span><span class="p">,</span> <span class="s2">&quot;Doe&quot;</span><span class="p">,</span> <span class="s2">&quot;mujer&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">crear_usuario</span><span class="p">(</span><span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="s2">&quot;Doe&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>Este código devolverá error al intentar crear un usuario con genero x.</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>mypy   pruebas_typing.py</span></span>
+<span class="code-line"><span class="code-line">content/code/pruebas_typing.py:23: error: Argument <span class="m">3</span> to <span class="s2">&quot;crear_usuario&quot;</span> has incompatible <span class="nb">type</span> <span class="s2">&quot;Literal[&#39;x&#39;]&quot;</span><span class="p">;</span> expected <span class="s2">&quot;Union[Literal[&#39;hombre&#39;], Literal[&#39;mujer&#39;], Literal[&#39;no especificado&#39;]]&quot;</span></span></span>
+<span class="code-line"><span class="code-line">Found <span class="m">1</span> error <span class="k">in</span> <span class="m">1</span> file <span class="o">(</span>checked <span class="m">1</span> <span class="nb">source</span> file<span class="o">)</span></span></span>
+</pre></div>
+
+
+<p>Este es el mensaje de error que devuelve al intentar colocar un valor x en el genero. </p>
+<p>La notación de tipo y la verificación nos facilita validar que una variable tenga un tipo de datos siempre y no cambie, a mí me paso hace poco que hice una función que devolvía una lista, tiempo después un desarrollador cambio la lista por un diccionario, y la función funcionaba, pero al pasarle mypy. </p>
+<hr>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/python.html">python</a>
+      <a href="https://ecrespo.github.io/en/tag/typing.html">typing</a>
+      <a href="https://ecrespo.github.io/en/tag/pydantic.html">pydantic</a>
+      <a href="https://ecrespo.github.io/en/tag/mypy.html">mypy</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,572 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con la serie de artículos sobre acceso a mongodb desde Flask. Los artículos anteriores son: Consulta a MongoDB desde Flask (parte 1) Consulta a MongoDB desde Flask (parte 2 - paginación) CRUD usando Flask para MongoDB (parte 3) Para revisar los artículos relacionados a este artículo pueden ver: Artículos sobre …" />
+<meta name="keywords" content="Python, MongoDB, Flask, Docker, CRUD">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="CRUD usando Flask y MongoDB con ORM Flask-MongoAlchemy (parte 4)"/>
+<meta property="og:description" content="Continuando con la serie de artículos sobre acceso a mongodb desde Flask. Los artículos anteriores son: Consulta a MongoDB desde Flask (parte 1) Consulta a MongoDB desde Flask (parte 2 - paginación) CRUD usando Flask para MongoDB (parte 3) Para revisar los artículos relacionados a este artículo pueden ver: Artículos sobre …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/crud-usando-flask-y-mongodb-con-orm-flask-mongoalchemy-parte-4-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-09-29 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="MongoDB"/>
+<meta property="article:tag" content="Flask"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="CRUD"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; CRUD usando Flask y MongoDB con ORM Flask-MongoAlchemy (parte 4)</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="crud-usando-flask-y-mongodb-con-orm-flask-mongoalchemy-parte-4">CRUD usando Flask y MongoDB con ORM Flask-MongoAlchemy (parte 4)</h1>
+    <p>
+      Posted on jue 29 septiembre 2016 in <a href="https://ecrespo.github.io/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Continuando con la serie de artículos sobre acceso a mongodb desde Flask. </p>
+<p>Los artículos anteriores son:  </p>
+<ul>
+<li><a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-1.html">Consulta a MongoDB desde Flask (parte 1)</a> </li>
+<li><a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-2-paginacion.html">Consulta a MongoDB desde Flask (parte 2 - paginación)</a></li>
+<li><a href="https://www.seraph.to/crud-usando-flask-para-mongodb-parte-3.html">CRUD usando Flask para MongoDB  (parte 3)</a> </li>
+</ul>
+<p>Para revisar los artículos relacionados a este artículo pueden ver:</p>
+<ul>
+<li><a href="https://www.seraph.to/tag/docker.html">Artículos sobre Docker</a></li>
+<li><a href="https://www.seraph.to/tag/mongodb.html">Artículos sobre MongoDB</a></li>
+<li><a href="https://www.seraph.to/tag/flask.html">Artículos sobre Flask</a></li>
+</ul>
+<p>La base de datos sigue manteniendo el formato de los artículos anteriores.</p>
+<p>En este caso se va a ingresar el empleado "Ernesto" , luego se busca en la base de datos, se actualizará su información y se eliminará de la base de datos.</p>
+<h3>Archivo Dockerfile</h3>
+<p>Este archivo tiene pequeños cambios, se eliminó pymongo y Flask-PyMongo, aunque mongoalchemy al final lo usa. </p>
+<p>A continuación el archivo Dockerfile:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">FROM</span> <span class="n">python</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">WORKDIR</span> <span class="o">/</span><span class="n">code</span><span class="o">/</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">Flask</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">Flask</span><span class="o">-</span><span class="n">MongoAlchemy</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">EXPOSE</span> <span class="mi">5000</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ADD</span> <span class="o">./</span><span class="n">app</span><span class="o">/*</span> <span class="o">/</span><span class="n">code</span><span class="o">/</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">COPY</span> <span class="o">./</span><span class="n">app</span><span class="o">/*</span> <span class="o">/</span><span class="n">code</span><span class="o">/</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">CMD</span> <span class="n">python</span> <span class="n">run</span><span class="o">.</span><span class="n">py</span> </span></span>
+</pre></div>
+
+
+<p>El archivo <code>docker-compose.yml</code> se mantiene igual que en los artículos anteriores.</p>
+<h3>Archivo app/run.py</h3>
+<p>En este caso el crud se hace con <code>mongoalchemy</code>. </p>
+<p>A continuación se muestra el código de <code>run.py</code> : </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa Flask, reqest y jsonify</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span><span class="n">jsonify</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa MongoAlchemy</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">flask_mongoalchemy</span> <span class="kn">import</span> <span class="n">MongoAlchemy</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa dumps</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">bson.json_util</span> <span class="kn">import</span> <span class="n">dumps</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se instancia la clase de Flask, se configura el acceso</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#a la base de datos mongodb a empleados</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MONGOALCHEMY_DATABASE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;empleados&#39;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MONGOALCHEMY_CONNECTION_STRING&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;mongodb://mongo:27017/empleados&#39;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se instancia mongoalchemy pasando la app.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">db</span> <span class="o">=</span> <span class="n">MongoAlchemy</span><span class="p">(</span><span class="n">app</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea la clase empleados la cual manejara los documentos.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">empleados</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Document</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">nombre</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">sexo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">StringField</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">edad</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">dni</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">IntField</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se define la funcion add con metodo get</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/add&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">add</span><span class="p">():</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se crea la instancia empleado de la clase empleados donde se</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#logra hacer la inserción de un empleado con el metodo save.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">empleado</span> <span class="o">=</span> <span class="n">empleados</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]),</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                            <span class="n">sexo</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;sexo&#39;</span><span class="p">]),</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                            <span class="n">edad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;edad&#39;</span><span class="p">]),</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                            <span class="n">dni</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;dni&#39;</span><span class="p">]))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">empleado</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se retorna que el usuario fue agregado.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:</span> <span class="s1">&#39;Usuario agregado&#39;</span> <span class="p">})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea la funcion find con metodo get.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/find&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">find</span><span class="p">():</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se realiza la busqueda y se devuelve el resultado, si existe un error de atributo (que el empleado no existe)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se devuelve empleado no encontrado.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">try</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">resultado</span> <span class="o">=</span> <span class="n">empleados</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">empleados</span><span class="o">.</span><span class="n">nombre</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:{</span><span class="s1">&#39;nombre&#39;</span><span class="p">:</span><span class="n">resultado</span><span class="o">.</span><span class="n">nombre</span><span class="p">,</span><span class="s1">&#39;sexo&#39;</span><span class="p">:</span><span class="n">resultado</span><span class="o">.</span><span class="n">sexo</span><span class="p">,</span><span class="s1">&#39;edad&#39;</span><span class="p">:</span><span class="n">resultado</span><span class="o">.</span><span class="n">edad</span><span class="p">,</span><span class="s1">&#39;dni&#39;</span><span class="p">:</span><span class="n">resultado</span><span class="o">.</span><span class="n">dni</span><span class="p">}})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:</span> <span class="s1">&#39;Empleado no encontrado&#39;</span><span class="p">})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">update</span><span class="p">():</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se intenta buscar al empleado, si existe se toma los argumentos para actualizar sus</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#datos y devolver que se actualizo, si no devuelve usuario no encontrado.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">try</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">resultado</span> <span class="o">=</span> <span class="n">empleados</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">empleados</span><span class="o">.</span><span class="n">nombre</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">resultado</span><span class="o">.</span><span class="n">sexo</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;sexo&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">resultado</span><span class="o">.</span><span class="n">edad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;edad&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">resultado</span><span class="o">.</span><span class="n">dni</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;dni&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">resultado</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:</span><span class="s1">&#39;Empleado actualizado&#39;</span><span class="p">})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:</span> <span class="s1">&#39;Empleado no encontrado&#39;</span><span class="p">})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/delete/&lt;nombre&gt;&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="n">nombre</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se busca el empleado, si existe se borra de la base de datos y se devuelve</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#mensaje de empleado borrado, si no, se devuelve el mensaje de empleado no</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#encontrado.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">try</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">resultado</span> <span class="o">=</span> <span class="n">empleados</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">empleados</span><span class="o">.</span><span class="n">nombre</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">nombre</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">resultado</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:</span><span class="s1">&#39;empleado borrado&#39;</span><span class="p">})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:</span><span class="s1">&#39;Empleado no encontrado&#39;</span><span class="p">})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se corre la aplicacion en modo debug</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<h3>Construir la imagen Docker y ejecutar los contenedores</h3>
+<p>Para construir la imagen se ejecuta:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>docker-compose build</span></span>
+</pre></div>
+
+
+<p>Para ejecutar los contenedores docker se ejecuta:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>docker-compose up</span></span>
+</pre></div>
+
+
+<p>Probar el CRUD</p>
+<h4>Crear un empleado:</h4>
+<p>Al abrir el navegador en el siguiente URL se inserta el empleado:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/add?nombre=Ernesto&amp;dni=33&amp;edad=11&amp;sexo=Masculino</span></span>
+</pre></div>
+
+
+<p>El resultado se muestra en un JSON:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="p">{</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="s">&quot;resultado&quot;</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;Usuario agregado&quot;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">}</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<h4>Buscar un empleado</h4>
+<p>Al abrir el navegador con el siguiente URL se busca el empleado:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/find?nombre=Ernesto</span></span>
+</pre></div>
+
+
+<p>El resultado de la busqueda se muestra en un JSON:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>{&quot;resultado&quot;: {&quot;nombre&quot;: &quot;Ernesto&quot;, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;dni&quot;: 33, &quot;edad&quot;: 11}}</span></span>
+</pre></div>
+
+
+<h4>Actualizar un empleado</h4>
+<p>Al abrir el navegador con el siguiente URL se actualiza la información de un usuario:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/update?nombre=Ernesto&amp;edad=45&amp;dni=50&amp;sexo=Masculino</span></span>
+</pre></div>
+
+
+<p>El resultado se muestra en un JSON:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>{&quot;resultado&quot;: &quot;Empleado actualizado&quot;}</span></span>
+</pre></div>
+
+
+<h4>Borrar un empleado</h4>
+<p>Ahora queda eliminar un documento de la base de datos, se abre el siguiente URL:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/delete/Ernesto</span></span>
+</pre></div>
+
+
+<p>El resultado se muestra en un JSON:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>{&quot;resultado&quot;: &quot;empleado borrado&quot;}</span></span>
+</pre></div>
+
+
+<p>Si se vuelve a consultar por el usuario el JSON que se devuelve dirá usuario no encontrado:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/find?nombre=Ernesto</span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">{&quot;resultado&quot;: &quot;Empleado no encontrado&quot;}</span></span>
+</pre></div>
+
+
+<p>Esto indica que ha sido borrado de la base de datos el documento del empleado.</p>
+<p>Ya con esto se probó todo el proceso del CRUD en documentos de una colección de la base de datos MongoDB.</p>
+<p>El código fuente de la aplicación de este artículo se encuentra en el <a href="https://gitlab.com/ecrespo/tutorial-flask/tree/mongo4">repositorio tutorial-flask en la rama mongo4 en gitlab.</a></p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/en/tag/mongodb.html">MongoDB</a>
+      <a href="https://ecrespo.github.io/en/tag/flask.html">Flask</a>
+      <a href="https://ecrespo.github.io/en/tag/docker.html">Docker</a>
+      <a href="https://ecrespo.github.io/en/tag/crud.html">CRUD</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

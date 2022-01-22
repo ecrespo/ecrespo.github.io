@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Este artículo mostrará dos formas de obtener la cotización en tiempo real de Bitcoin del sitio coinmarketcap, la primera forma es usando la librería request, la segunda es utilizando una librería de python para acceder al API de Coinmarketcap. Coinmarketcap es un sitio que muestra la capitalización de las distintas …" />
+<meta name="keywords" content="Numpy, Python, Coinmarketcap, Request, Blockchain, Bitcoin">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Obtener cotización de bitcoin de coinmarketcap con Python"/>
+<meta property="og:description" content="Este artículo mostrará dos formas de obtener la cotización en tiempo real de Bitcoin del sitio coinmarketcap, la primera forma es usando la librería request, la segunda es utilizando una librería de python para acceder al API de Coinmarketcap. Coinmarketcap es un sitio que muestra la capitalización de las distintas …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/obtener-cotizacion-de-bitcoin-de-coinmarketcap-con-python-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-03-11 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Numpy"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Coinmarketcap"/>
+<meta property="article:tag" content="Request"/>
+<meta property="article:tag" content="Blockchain"/>
+<meta property="article:tag" content="Bitcoin"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Obtener cotización de bitcoin de coinmarketcap con Python</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="obtener-cotizacion-de-bitcoin-de-coinmarketcap-con-python">Obtener cotización de bitcoin de coinmarketcap con Python</h1>
+    <p>
+      Posted on dom 11 marzo 2018 in <a href="https://ecrespo.github.io/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Este artículo mostrará dos formas de obtener la cotización en tiempo real de Bitcoin del sitio <a href="https://coinmarketcap.com/">coinmarketcap</a>, la primera forma es usando la librería request, la segunda es utilizando una librería de python para acceder al API de Coinmarketcap.</p>
+<p>Coinmarketcap es un sitio que muestra la capitalización de las distintas criptomonedas existentes en tiempo real, a continuación se muestra una captura de pantalla del sitio:</p>
+<p><img alt="" src="./images/obtenercotizaciondebitcoindecoinmarketcapconpython-1.png"></p>
+<p>Este artículo se basa del artículo en Real Python "<a href="https://realpython.com/blog/python/python-bitcoin-ifttt/">Python Project for Beginners: Bitcoin Price Notifications</a>" y de la documentación de la librería <a href="https://pypi.python.org/pypi/coinmarketcap/2.0">coinmarketcap</a>.</p>
+<p>Para usar la librería de coinmarketcap primero se instalará vía pip3:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">coinmarketcap</span></span></span>
+</pre></div>
+
+
+<p>A continuación se muestra el ejercicio de acceder a la API de coinmarketcap desde request y desde la librería que accede al API:</p>
+<p>In [1]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#Se importa la librería request</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">requests</span></span></span>
+</pre></div>
+
+
+<p>In [2]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#Se guarda el url del api para bitcoin</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">bitcoin_api_url</span> <span class="o">=</span> <span class="s1">&#39;https://api.coinmarketcap.com/v1/ticker/bitcoin/&#39;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se guarda la consulta al url de bitcoin</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">respuesta</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bitcoin_api_url</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se obtiene el json de la respuesta</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">resp_json</span> <span class="o">=</span> <span class="n">respuesta</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></span></span>
+</pre></div>
+
+
+<p>In [3]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#cual es el tipo de dato de resp_json</span></span></span>
+<span class="code-line"><span class="code-line"><span class="nb">type</span><span class="p">(</span><span class="n">resp_json</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>Out[3]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="nb">list</span></span></span>
+</pre></div>
+
+
+<p>In [4]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#El tipo de datos de resp_json es una lista, se muestra el primer elemento de la lista</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">resp_json</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></span></span>
+</pre></div>
+
+
+<p>Out[4]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="p">{</span><span class="s1">&#39;24h_volume_usd&#39;</span><span class="p">:</span> <span class="s1">&#39;6324610000.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;available_supply&#39;</span><span class="p">:</span> <span class="s1">&#39;16913212.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;bitcoin&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;last_updated&#39;</span><span class="p">:</span> <span class="s1">&#39;1520799265&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;market_cap_usd&#39;</span><span class="p">:</span> <span class="s1">&#39;162063750441&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;max_supply&#39;</span><span class="p">:</span> <span class="s1">&#39;21000000.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Bitcoin&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;percent_change_1h&#39;</span><span class="p">:</span> <span class="s1">&#39;-0.64&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;percent_change_24h&#39;</span><span class="p">:</span> <span class="s1">&#39;5.74&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;percent_change_7d&#39;</span><span class="p">:</span> <span class="s1">&#39;-15.57&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;price_btc&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;price_usd&#39;</span><span class="p">:</span> <span class="s1">&#39;9582.08&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;rank&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;BTC&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="s1">&#39;total_supply&#39;</span><span class="p">:</span> <span class="s1">&#39;16913212.0&#39;</span><span class="p">}</span></span></span>
+</pre></div>
+
+
+<p>In [5]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#Se tiene un json con los datos de la cotización actual de Bitcoin BTC.</span></span></span>
+</pre></div>
+
+
+<p>In [6]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#Ahora se usa la libreria coinmarketcap y la clase Market.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">coinmarketcap</span> <span class="kn">import</span> <span class="n">Market</span></span></span>
+</pre></div>
+
+
+<p>In [7]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#Se crea la instancia de la clase</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">coinmarketcap</span> <span class="o">=</span> <span class="n">Market</span><span class="p">()</span></span></span>
+</pre></div>
+
+
+<p>In [8]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#Se obtiene la cotizacion de bitcoin</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">coinmarketcap</span><span class="o">.</span><span class="n">ticker</span><span class="p">(</span><span class="s2">&quot;bitcoin&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Out</span><span class="p">[</span><span class="mi">8</span><span class="p">]:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[{</span><span class="s1">&#39;24h_volume_usd&#39;</span><span class="p">:</span> <span class="s1">&#39;6323720000.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;available_supply&#39;</span><span class="p">:</span> <span class="s1">&#39;16913337.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;cached&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;bitcoin&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;last_updated&#39;</span><span class="p">:</span> <span class="s1">&#39;1520799866&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;market_cap_usd&#39;</span><span class="p">:</span> <span class="s1">&#39;161323467507&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;max_supply&#39;</span><span class="p">:</span> <span class="s1">&#39;21000000.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Bitcoin&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;percent_change_1h&#39;</span><span class="p">:</span> <span class="s1">&#39;-1.11&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;percent_change_24h&#39;</span><span class="p">:</span> <span class="s1">&#39;5.47&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;percent_change_7d&#39;</span><span class="p">:</span> <span class="s1">&#39;-16.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;price_btc&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;price_usd&#39;</span><span class="p">:</span> <span class="s1">&#39;9538.24&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;rank&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;symbol&#39;</span><span class="p">:</span> <span class="s1">&#39;BTC&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;total_supply&#39;</span><span class="p">:</span> <span class="s1">&#39;16913337.0&#39;</span><span class="p">}]</span></span></span>
+</pre></div>
+
+
+<p>Se tienen dos formas de obtener la información del sitio coinmarketcap, una es usando request y otra la librería que accede directamente al API, queda de parte de uno cual es la mejor opción a usar.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/numpy.html">Numpy</a>
+      <a href="https://ecrespo.github.io/en/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/en/tag/coinmarketcap.html">Coinmarketcap</a>
+      <a href="https://ecrespo.github.io/en/tag/request.html">Request</a>
+      <a href="https://ecrespo.github.io/en/tag/blockchain.html">Blockchain</a>
+      <a href="https://ecrespo.github.io/en/tag/bitcoin.html">Bitcoin</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

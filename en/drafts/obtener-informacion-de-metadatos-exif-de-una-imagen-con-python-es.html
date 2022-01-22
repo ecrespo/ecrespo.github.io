@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Se probará con un simple script como obtener metadatos EXIF de dos imágenes, son dos fotos, la primera directamente del dispositivo móvil con que se tomó la foto, la segunda imagen se bajó desde Google+. La idea es notar la diferencia de información que se obtiene de los metadatos de …" />
+<meta name="keywords" content="Canaima, Debian, General, Linux, Python, Ubuntu, exif">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Obtener información de metadatos EXIF de una imagen con Python"/>
+<meta property="og:description" content="Se probará con un simple script como obtener metadatos EXIF de dos imágenes, son dos fotos, la primera directamente del dispositivo móvil con que se tomó la foto, la segunda imagen se bajó desde Google+. La idea es notar la diferencia de información que se obtiene de los metadatos de …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/obtener-informacion-de-metadatos-exif-de-una-imagen-con-python-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2013-10-14 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="exif"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Obtener información de metadatos EXIF de una imagen con Python</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="obtener-informacion-de-metadatos-exif-de-una-imagen-con-python">Obtener información de metadatos EXIF de una imagen con Python</h1>
+    <p>
+      Posted on lun 14 octubre 2013 in <a href="https://ecrespo.github.io/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Se probará con un simple script como obtener metadatos EXIF de dos imágenes, son dos fotos, la primera directamente del dispositivo móvil con que se tomó la foto, la segunda imagen se bajó desde Google+.</p>
+<p>La idea es notar la diferencia de información que se obtiene de los metadatos de dos fotos idénticas para obtenidas de dos formas diferentes.</p>
+<p>Lo primero que se tiene que hacer es instalar el módulo python llamado <code>pyexiv2</code>. Su documentación la pueden encontrar <a href="tilloy.net/dev/pyexiv2/index.html">aquí</a>.
+Se puede instalar en Debian wheezy de la siguiente forma:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>#apt-get install python-pyexiv2 python-pyexiv2-doc</span></span>
+</pre></div>
+
+
+<p>La imagen original fue tomada desde un celular Motorola Razr XT910 y la segunda imagen se bajo desde Google+.
+Imagen original con md5:
+md5sum ecrespo-orig.jpg
+a74977dbbd40d228658435b03db9a4c3  ecrespo-orig.jpg</p>
+<p>El tamaño de la imagen es de 248k:
+du  ecrespo-orig.jpg
+248 ecrespo-orig.jpg</p>
+<p><img alt="" src="./images/obtenerinformaciondemetadatosexifdeunaimagenconpython-1.jpg"> 
+ecrespo-orig.jpg</p>
+<p>Imagen bajada de Google+ con md5:
+md5sum ecrespo.jpg
+d1d41f5865bbb8360e6a748e38ae5ee1  ecrespo.jpg
+El tamaño de la imagen es de 32k:
+du ecrespo.jpg
+32  ecrespo.jpg</p>
+<p><img alt="" src="./images/obtenerinformaciondemetadatosexifdeunaimagenconpython-2.jpg"> </p>
+<p>ecrespo.jpg</p>
+<p>El código que muestra los metadatos de exif de cada imagen es el siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa el modulo para analisis de metadatos de exif</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">pyexiv2</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea una funcion que devuelve en pantalla la informacion exif</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">Meta</span><span class="p">(</span><span class="n">archivo</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se crea la instancia metadata al pasarle el archivo que se quiere analizar</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">metadata</span> <span class="o">=</span> <span class="n">pyexiv2</span><span class="o">.</span><span class="n">ImageMetadata</span><span class="p">(</span><span class="n">archivo</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se lee el metadato</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">metadata</span><span class="o">.</span><span class="n">read</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se muestra en pantalla un mensaje</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span> <span class="s2">&quot;Se muestra la informacion exif del archivo </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="n">archivo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span>  <span class="s2">&quot;---------------------------------------------&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se despliega la informacion de metadatos exif que contiene la imagen</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">for</span> <span class="n">metadato</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">exif_keys</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">texto</span> <span class="o">=</span> <span class="n">metadato</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="n">metadata</span><span class="p">[</span><span class="n">metadato</span><span class="p">]</span><span class="o">.</span><span class="n">raw_value</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="nb">print</span> <span class="n">texto</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Meta</span><span class="p">(</span><span class="s2">&quot;ecrespo-orig.jpg&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span> <span class="s2">&quot;********************************************&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Meta</span><span class="p">(</span><span class="s2">&quot;ecrespo.jpg&quot;</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>La salida del script es la siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">Se</span> <span class="n">muestra</span> <span class="n">la</span> <span class="n">informacion</span> <span class="n">exif</span> <span class="k">del</span> <span class="n">archivo</span> <span class="n">ecrespo</span><span class="o">-</span><span class="n">orig</span><span class="o">.</span><span class="n">jpg</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">---------------------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">YCbCrPositioning</span><span class="p">:</span> <span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">XResolution</span><span class="p">:</span> <span class="mi">72</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">YResolution</span><span class="p">:</span> <span class="mi">72</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">ResolutionUnit</span><span class="p">:</span> <span class="mi">2</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">DateTime</span><span class="p">:</span> <span class="mi">2013</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">08</span> <span class="mi">13</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="mi">00</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Make</span><span class="p">:</span> <span class="n">Motorola</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Model</span><span class="p">:</span> <span class="n">XT910</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">ExifTag</span><span class="p">:</span> <span class="mi">449</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ExifVersion</span><span class="p">:</span> <span class="mi">48</span> <span class="mi">50</span> <span class="mi">50</span> <span class="mi">48</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">FlashpixVersion</span><span class="p">:</span> <span class="mi">48</span> <span class="mi">48</span> <span class="mi">48</span> <span class="mi">48</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ColorSpace</span><span class="p">:</span> <span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ComponentsConfiguration</span><span class="p">:</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">CompressedBitsPerPixel</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ExposureTime</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">1000000</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">FNumber</span><span class="p">:</span> <span class="mi">24</span><span class="o">/</span><span class="mi">10</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ExposureProgram</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ISOSpeedRatings</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ShutterSpeedValue</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ApertureValue</span><span class="p">:</span> <span class="mi">3</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">BrightnessValue</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ExposureBiasValue</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">10</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">MaxApertureValue</span><span class="p">:</span> <span class="mi">3</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">SubjectDistance</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">MeteringMode</span><span class="p">:</span> <span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">LightSource</span><span class="p">:</span> <span class="mi">3</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">Flash</span><span class="p">:</span> <span class="mi">24</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">FocalLength</span><span class="p">:</span> <span class="mi">460</span><span class="o">/</span><span class="mi">100</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">FlashEnergy</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ExposureIndex</span><span class="p">:</span> <span class="mi">0</span><span class="o">/</span><span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">SceneType</span><span class="p">:</span> <span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">CustomRendered</span><span class="p">:</span> <span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ExposureMode</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">WhiteBalance</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">DigitalZoomRatio</span><span class="p">:</span> <span class="mi">65536</span><span class="o">/</span><span class="mi">65535</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">SceneCaptureType</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">GainControl</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">Contrast</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">Saturation</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">Sharpness</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">SubjectDistanceRange</span><span class="p">:</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">GPSTag</span><span class="p">:</span> <span class="mi">1243</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Thumbnail</span><span class="o">.</span><span class="n">ImageWidth</span><span class="p">:</span> <span class="mi">200</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Thumbnail</span><span class="o">.</span><span class="n">ImageLength</span><span class="p">:</span> <span class="mi">120</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Thumbnail</span><span class="o">.</span><span class="n">Compression</span><span class="p">:</span> <span class="mi">6</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Thumbnail</span><span class="o">.</span><span class="n">XResolution</span><span class="p">:</span> <span class="mi">72</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Thumbnail</span><span class="o">.</span><span class="n">YResolution</span><span class="p">:</span> <span class="mi">72</span><span class="o">/</span><span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Thumbnail</span><span class="o">.</span><span class="n">ResolutionUnit</span><span class="p">:</span> <span class="mi">2</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Thumbnail</span><span class="o">.</span><span class="n">JPEGInterchangeFormat</span><span class="p">:</span> <span class="mi">2027</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Thumbnail</span><span class="o">.</span><span class="n">JPEGInterchangeFormatLength</span><span class="p">:</span> <span class="mi">8033</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">********************************************</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Se</span> <span class="n">muestra</span> <span class="n">la</span> <span class="n">informacion</span> <span class="n">exif</span> <span class="k">del</span> <span class="n">archivo</span> <span class="n">ecrespo</span><span class="o">.</span><span class="n">jpg</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">---------------------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">Software</span><span class="p">:</span> <span class="n">Google</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">ExifTag</span><span class="p">:</span> <span class="mi">46</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="o">.</span><span class="n">ExifVersion</span><span class="p">:</span> <span class="mi">48</span> <span class="mi">50</span> <span class="mi">50</span> <span class="mi">48</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Exif</span><span class="o">.</span><span class="n">Photo</span><span class="mf">.0</span><span class="n">x9009</span><span class="p">:</span> <span class="mi">10</span> <span class="mi">39</span> <span class="mi">8</span> <span class="mi">1</span> <span class="mi">16</span> <span class="mi">1</span> <span class="mi">24</span> <span class="mi">0</span> <span class="mi">32</span> <span class="mi">0</span> <span class="mi">40</span> <span class="mi">0</span> <span class="mi">48</span> <span class="mi">0</span> <span class="mi">56</span> <span class="mi">0</span> <span class="mi">64</span> <span class="mi">0</span> <span class="mi">72</span> <span class="mi">1</span> <span class="mi">80</span> <span class="mi">0</span> <span class="mi">88</span> <span class="mi">0</span> <span class="mi">96</span> <span class="mi">1</span> <span class="mi">104</span> <span class="mi">1</span> <span class="mi">112</span> <span class="mi">0</span> <span class="mi">120</span> <span class="mi">1</span> <span class="mi">128</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">136</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">144</span> <span class="mi">1</span> <span class="mi">1</span></span></span>
+</pre></div>
+
+
+<p>Como se puede observar la imagen original bajada del dispositivo con Android tiene más información de metadatos exif que la imagen bajada de Google+, la primera foto tiene información del dispositivo, modelo entre otras cosas mientras que la segunda foto maneja información del software que proceso la imagen que es de Google.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/en/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/en/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/en/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/en/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/en/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/en/tag/exif.html">exif</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+  <div class="related-posts">
+    <h4>You might enjoy</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/en/internet-de-las-cosas-es  ernet de las cosas.html">Internet de las Cosas</a></li>
+    </ul>
+  </div>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

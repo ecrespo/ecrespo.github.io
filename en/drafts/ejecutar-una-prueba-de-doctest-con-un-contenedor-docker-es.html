@@ -1,0 +1,648 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Ahora se mostrará como usar un contenedor de Docker para hacer pruebas doctest, este artículo se basa en un post anterior del blog llamado Separar código de pruebas de la documentación (doctest,2da parte). Los artículos anteriores sobre docker son: 1. Instalar Docker en Debian Jessie Uso de Docker en …" />
+<meta name="keywords" content="Python, Docker, Jupyter Notebook, DevOps, Doctest">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Ejecutar una prueba de doctest con un contenedor Docker."/>
+<meta property="og:description" content="Ahora se mostrará como usar un contenedor de Docker para hacer pruebas doctest, este artículo se basa en un post anterior del blog llamado Separar código de pruebas de la documentación (doctest,2da parte). Los artículos anteriores sobre docker son: 1. Instalar Docker en Debian Jessie Uso de Docker en …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-03-27 10:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="Jupyter Notebook"/>
+<meta property="article:tag" content="DevOps"/>
+<meta property="article:tag" content="Doctest"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Ejecutar una prueba de doctest con un contenedor Docker.</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="ejecutar-una-prueba-de-doctest-con-un-contenedor-docker">Ejecutar una prueba de doctest con un contenedor Docker.</h1>
+    <p>
+      Posted on dom 27 marzo 2016 in <a href="https://ecrespo.github.io/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 4 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Ahora se mostrará como usar un contenedor de Docker para hacer pruebas doctest, este artículo se basa en un post anterior del blog llamado <a href="https://www.seraph.to/separar-codigo-de-pruebas-de-la-documentacion-doctest-2da-parte.html">Separar código de pruebas de la documentación (doctest,2da parte)</a>.</p>
+<p>Los artículos anteriores sobre docker son:<br>
+1. <a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html">Instalar Docker en Debian Jessie</a>  </p>
+<ol>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html">Uso de Docker en Debian Jessie (parte 1)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html">Uso de Docker en Debian Jessie (parte 2)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo Dockerfile</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-usando-docker.html">Iniciando Django usando Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">Instalar Gitlab por medio de Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando microservicios con docker usando docker-compose</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/docker-en-docker-dind.html">Docker en Docker (DinD)</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html">Iniciando Django con docker usando docker-compose con postgresql como microservicio.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/importar-un-contenedor-docker-en-python.html#importar-un-contenedor-docker-en-python">Importar un contenedor Docker en Python.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar">Compartir imagenes Docker por medio de archivos tar</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado">Crear un registro de imagenes Docker privado.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-anaconda-desde-un-contenedor-docker.html#usar-anaconda-desde-un-contenedor-docker">Usar Anaconda desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html#crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs">Crear un entorno de Integración y Despligue continue con Docker para node.js.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-jupyter-notebook-desde-un-contenedor-de-docker.html#usar-jupyter-notebook-desde-un-contenedor-de-docker">Usar Jupyter Notebook desde un contenedor Docker.</a>  </p>
+</li>
+</ol>
+<p>Se tendrán 3 archivos en un directorio que se llamará <code>pruebas-doctest</code> con lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>pruebas-doctest</span></span>
+<span class="code-line"><span class="code-line">├── Dockerfile</span></span>
+<span class="code-line"><span class="code-line">├── raizcuadrada.py</span></span>
+<span class="code-line"><span class="code-line">└── raizcuadrada.txt</span></span>
+</pre></div>
+
+
+<p>El archivo <code>Dockerfile</code> contendrá lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>FROM python:3.4</span></span>
+<span class="code-line"><span class="code-line">MAINTAINER Ernesto Crespo</span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">WORKDIR /app</span></span>
+<span class="code-line"><span class="code-line">COPY . /app</span></span>
+</pre></div>
+
+
+<p>Se usará python 3.4, el mantenedor es Ernesto Crespo, el directorio de trabajo será app y se copiará todo lo que está en el directorio al directorio de trabajo.</p>
+<p>Se tiene el archivo <code>raizcuadrada.py</code> con lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python3</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># -*- coding: utf-8 -*-</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="sd">&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="sd">Se importa el módulo math para calcular la raiz cuadrada.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="sd">&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">math</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Función raiz cuadrada.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">Raiz</span><span class="p">(</span><span class="n">a</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="sd">&quot;&quot;&quot;Si a es mayor o igual a cero se calcula la raiz cuadrada&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Si es menor a cero se genera una excepción donde se informa que a debe ser mayor o igual a cero.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">else</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;a debe ser &gt;= 0&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se importa el módulo doctest</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="kn">import</span> <span class="nn">doctest</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se realiza la prueba al archivo raizcuadra.txt</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">doctest</span><span class="o">.</span><span class="n">testfile</span><span class="p">(</span><span class="s2">&quot;raizcuadrada.txt&quot;</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>Y el último de los archivos es <code>raizcuadrada.txt</code> el cual tendrá las pruebas de doctest:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">Modulo</span> <span class="n">raiz</span> <span class="n">cuadrada</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">=====================</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Usando</span>  <span class="s1">&#39;raizcuadrada&#39;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Primero</span> <span class="n">se</span> <span class="n">importa</span> <span class="n">la</span> <span class="n">función</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">raizcuadrada</span> <span class="kn">import</span> <span class="n">Raiz</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Ejemplos</span> <span class="n">de</span> <span class="n">calculo</span> <span class="n">de</span> <span class="n">raiz</span> <span class="n">cuadrada</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">Raiz</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="mf">2.0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">Raiz</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="mf">3.0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">Raiz</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="mf">5.0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">Raiz</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="mf">0.0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">Raiz</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="mf">5.0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">Raiz</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">...</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="ne">ValueError</span><span class="p">:</span> <span class="n">a</span> <span class="n">debe</span> <span class="n">ser</span> <span class="o">&gt;=</span> <span class="mi">0</span></span></span>
+</pre></div>
+
+
+<p>El archivo tiene un error intencional en el cálculo de la raíz cuadrada de 16 que debe dar 4 y se coloco que da 5.</p>
+<p>Ahora se construye la imagen con nombre <code>pruebas-doctest</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">docker</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="w"> </span><span class="n">pruebas</span><span class="o">-</span><span class="n">doctest</span><span class="w"> </span><span class="o">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Sending</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Docker</span><span class="w"> </span><span class="n">daemon</span><span class="w">  </span><span class="mf">5.12</span><span class="w"> </span><span class="n">kB</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">FROM</span><span class="w"> </span><span class="n">python</span><span class="p">:</span><span class="mf">3.4</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="mf">3.4</span><span class="p">:</span><span class="w"> </span><span class="n">Pulling</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">library</span><span class="o">/</span><span class="n">python</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">fdd5d7827f33</span><span class="p">:</span><span class="w"> </span><span class="n">Downloading</span><span class="w"> </span><span class="mf">11.35</span><span class="w"> </span><span class="n">MB</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">fdd5d7827f33</span><span class="p">:</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">a3ed95caeb02</span><span class="p">:</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">0</span><span class="n">f35d0fe50cc</span><span class="p">:</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">7</span><span class="n">b40647e93b7</span><span class="p">:</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ce5207842c4c</span><span class="p">:</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">da7994e536a7</span><span class="p">:</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">09482</span><span class="n">b8dda8a</span><span class="p">:</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">5</span><span class="n">ba79222c836</span><span class="p">:</span><span class="w"> </span><span class="n">Pull</span><span class="w"> </span><span class="n">complete</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Digest</span><span class="p">:</span><span class="w"> </span><span class="n">sha256</span><span class="p">:</span><span class="mi">8</span><span class="n">bcba46a3dbf4803c80074c0e543d98eeb3cb4f9cc35ff52f88c53cc0a1c30c3</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Status</span><span class="p">:</span><span class="w"> </span><span class="n">Downloaded</span><span class="w"> </span><span class="n">newer</span><span class="w"> </span><span class="n">image</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">python</span><span class="p">:</span><span class="mf">3.4</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">c40d327867e9</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MAINTAINER</span><span class="w"> </span><span class="n">Ernesto</span><span class="w"> </span><span class="n">Crespo</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">Running</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">de81df2565f3</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">3</span><span class="n">b1aced33b5e</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Removing</span><span class="w"> </span><span class="n">intermediate</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="n">de81df2565f3</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">WORKDIR</span><span class="w"> </span><span class="o">/</span><span class="n">app</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">Running</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">f1901c2490d7</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">7</span><span class="n">dd09842cf61</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Removing</span><span class="w"> </span><span class="n">intermediate</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="n">f1901c2490d7</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">COPY</span><span class="w"> </span><span class="o">.</span><span class="w"> </span><span class="o">/</span><span class="n">app</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">788</span><span class="n">ad6d153ed</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Removing</span><span class="w"> </span><span class="n">intermediate</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="n">b32ba65862d9</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Successfully</span><span class="w"> </span><span class="n">built</span><span class="w"> </span><span class="mi">788</span><span class="n">ad6d153ed</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Ahora se ejecuta la prueba pasando <code>python -m doctest -v raizcuadrada.txt</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">docker</span> <span class="n">run</span> <span class="n">pruebas</span><span class="o">-</span><span class="n">doctest</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">doctest</span> <span class="o">-</span><span class="n">v</span> <span class="n">raizcuadrada</span><span class="o">.</span><span class="n">txt</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="kn">from</span> <span class="nn">raizcuadrada</span> <span class="kn">import</span> <span class="n">Raiz</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span> <span class="n">nothing</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">2.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">3.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">5.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">0.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">5.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">**********************************************************************</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">File</span> <span class="s2">&quot;raizcuadrada.txt&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">23</span><span class="p">,</span> <span class="ow">in</span> <span class="n">raizcuadrada</span><span class="o">.</span><span class="n">txt</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Failed</span> <span class="n">example</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expected</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">5.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Got</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">4.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="o">...</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="ne">ValueError</span><span class="p">:</span> <span class="n">a</span> <span class="n">debe</span> <span class="n">ser</span> <span class="o">&gt;=</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">**********************************************************************</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">1</span> <span class="n">items</span> <span class="n">had</span> <span class="n">failures</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="mi">1</span> <span class="n">of</span>   <span class="mi">7</span> <span class="ow">in</span> <span class="n">raizcuadrada</span><span class="o">.</span><span class="n">txt</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">7</span> <span class="n">tests</span> <span class="ow">in</span> <span class="mi">1</span> <span class="n">items</span><span class="o">.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">6</span> <span class="n">passed</span> <span class="ow">and</span> <span class="mi">1</span> <span class="n">failed</span><span class="o">.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">***</span><span class="n">Test</span> <span class="n">Failed</span><span class="o">***</span> <span class="mi">1</span> <span class="n">failures</span><span class="o">.</span></span></span>
+</pre></div>
+
+
+<p>El resultado es que se logró pasar 6 pruebas y una no paso, se arregla el valor que debe devolver en el archivo <code>raizcuadrada.txt</code> y se vuelve a ejecutar la construcción y ejecución :</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">pruebas</span><span class="o">-</span><span class="n">doctest</span> <span class="o">.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Sending</span> <span class="n">build</span> <span class="n">context</span> <span class="n">to</span> <span class="n">Docker</span> <span class="n">daemon</span> <span class="mf">4.608</span> <span class="n">kB</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">FROM</span> <span class="n">python</span><span class="p">:</span><span class="mf">3.4</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="o">---&gt;</span> <span class="n">c40d327867e9</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span> <span class="mi">2</span> <span class="p">:</span> <span class="n">MAINTAINER</span> <span class="n">Ernesto</span> <span class="n">Crespo</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="o">---&gt;</span> <span class="n">Using</span> <span class="n">cache</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="o">---&gt;</span> <span class="mi">3</span><span class="n">b1aced33b5e</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span> <span class="mi">3</span> <span class="p">:</span> <span class="n">WORKDIR</span> <span class="o">/</span><span class="n">app</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="o">---&gt;</span> <span class="n">Using</span> <span class="n">cache</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="o">---&gt;</span> <span class="mi">7</span><span class="n">dd09842cf61</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span> <span class="mi">4</span> <span class="p">:</span> <span class="n">COPY</span> <span class="o">.</span> <span class="o">/</span><span class="n">app</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="o">---&gt;</span> <span class="mi">47</span><span class="n">a9b0467413</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Removing</span> <span class="n">intermediate</span> <span class="n">container</span> <span class="mi">8</span><span class="n">a375d3abc0c</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Successfully</span> <span class="n">built</span> <span class="mi">47</span><span class="n">a9b0467413</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">docker</span> <span class="n">run</span> <span class="n">pruebas</span><span class="o">-</span><span class="n">doctest</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">doctest</span> <span class="o">-</span><span class="n">v</span> <span class="n">raizcuadrada</span><span class="o">.</span><span class="n">txt</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="kn">from</span> <span class="nn">raizcuadrada</span> <span class="kn">import</span> <span class="n">Raiz</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span> <span class="n">nothing</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">2.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">3.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">5.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">0.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="mf">4.0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Trying</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Raiz</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Expecting</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="o">...</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="ne">ValueError</span><span class="p">:</span> <span class="n">a</span> <span class="n">debe</span> <span class="n">ser</span> <span class="o">&gt;=</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ok</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">1</span> <span class="n">items</span> <span class="n">passed</span> <span class="nb">all</span> <span class="n">tests</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="mi">7</span> <span class="n">tests</span> <span class="ow">in</span> <span class="n">raizcuadrada</span><span class="o">.</span><span class="n">txt</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">7</span> <span class="n">tests</span> <span class="ow">in</span> <span class="mi">1</span> <span class="n">items</span><span class="o">.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">7</span> <span class="n">passed</span> <span class="ow">and</span> <span class="mi">0</span> <span class="n">failed</span><span class="o">.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Test</span> <span class="n">passed</span><span class="o">.</span></span></span>
+</pre></div>
+
+
+<p>Ahora si se logró pasar todas las pruebas de doctest.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/en/tag/docker.html">Docker</a>
+      <a href="https://ecrespo.github.io/en/tag/jupyter-notebook.html">Jupyter Notebook</a>
+      <a href="https://ecrespo.github.io/en/tag/devops.html">DevOps</a>
+      <a href="https://ecrespo.github.io/en/tag/doctest.html">Doctest</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

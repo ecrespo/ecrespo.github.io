@@ -1,0 +1,563 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Luego de un tiempo sin escribir, retomo los artículos sobre Ciencia de Datos, ahora con visualización de datos. Para ello se usará la estadística de un repositorio de datos sobre los pokemon. El gráfico radar es un gráfico que consiste en una secuencia de radios equi-angulares, llamados radios, y cada …" />
+<meta name="keywords" content="Python, Matplotlib, Visualización, Plotly, Data Science, Ciencia de Datos, Kaggle, Pandas, Numpy">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Visualizando estadisticas de pokemon usando plotly ( gráfica de radar)"/>
+<meta property="og:description" content="Luego de un tiempo sin escribir, retomo los artículos sobre Ciencia de Datos, ahora con visualización de datos. Para ello se usará la estadística de un repositorio de datos sobre los pokemon. El gráfico radar es un gráfico que consiste en una secuencia de radios equi-angulares, llamados radios, y cada …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/visualizando-estadisticas-de-pokemon-usando-plotly-grafica-de-radar-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-12-01 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Matplotlib"/>
+<meta property="article:tag" content="Visualización"/>
+<meta property="article:tag" content="Plotly"/>
+<meta property="article:tag" content="Data Science"/>
+<meta property="article:tag" content="Ciencia de Datos"/>
+<meta property="article:tag" content="Kaggle"/>
+<meta property="article:tag" content="Pandas"/>
+<meta property="article:tag" content="Numpy"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Visualizando estadisticas de pokemon usando plotly ( gráfica de radar)</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="visualizando-estadisticas-de-pokemon-usando-plotly-grafica-de-radar">Visualizando estadisticas de pokemon usando plotly ( gráfica de radar)</h1>
+    <p>
+      Posted on sáb 01 diciembre 2018 in <a href="https://ecrespo.github.io/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 4 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Luego de un tiempo sin escribir, retomo los artículos sobre Ciencia de Datos, ahora con visualización de datos. Para ello se usará la estadística de un repositorio de datos sobre los pokemon.</p>
+<p>El gráfico radar es un gráfico que consiste en una secuencia de radios equi-angulares, llamados radios, y cada radio representa una de las variables. La longitud de los datos de un radio es proporcional a la magnitud de la variable para el punto de datos en relación con la longitud máxima de la variable en todos los puntos de datos. Se dibuja una línea que conecta con los valores de los datos para cada radio. Esto le da a la trama una apariencia de estrella (<a href="https://en.wikipedia.org/wiki/Radar_chart">wikipedia</a>).  Pueden ver un ejemplo en la siguiente figura:</p>
+<p><img alt="" src="./images/visualizandoestadisticasdepokemonusandoplotlygraficaderadar-1.png"></p>
+<p>La idea es mostrar múltiples variables sobre la información que se tiene de los pokemons. El repositorio de datos de donde se obtienen los datos para trabajar es el sitio de <a href="https://www.kaggle.com/abcsds/pokemon/data">kaggle</a>.</p>
+<p>La librería de Python que se usará en este artículo para visualizar los datos usando la gráfica radar se llama plotly, en el <a href="https://plot.ly/python/">siguiente enlace</a> podrán ver una galería de gráficas usando python, ya que dicha librería se puede usar también en el Lenguaje R y en Javascript. Lo bueno de plotly es que maneja más interactividad o dinamismo a las gráficas, no son simples gráficas estáticas.  Plotly se puede usar en línea o desconectado.</p>
+<p>La idea de hacer este artículo sobre visualizando estadísticas de pokemon usando plotly fue de un <a href="https://typewind.github.io/2017/09/29/radar-chart/">artículo</a> donde usan la gráfica radar pero con matplotlib.</p>
+<p>El tutoral básico de como usar la gráfica radar en plotly lo pueden ver en el siguiente enlace.</p>
+<p>Este artículo se basa en un notebook que se encuentra en <a href="https://www.kaggle.com/thebrownviking20/intermediate-visualization-tutorial-using-plotly">kaggle</a>.</p>
+<p>La información que contiene el repositorio es la siguiente:</p>
+<ul>
+<li>
+<h1>: ID de cada pokemon.</h1>
+</li>
+<li>Name: Nombre de cada pokemon.</li>
+<li>Type 1: Cada pokemon tiene un tipo, esto determina su debilidad/resistencia a ataques.</li>
+<li>Type 2: Algunos pokemon tienen dos tipos.</li>
+<li>Total: Suma de todas las estadísticas.</li>
+<li>HP: Hit point, o health.</li>
+<li>Defense:  Nivel de resistencia a los ataques.</li>
+<li>SP Atk: ataque especial.</li>
+<li>SP Def:  Resistencia contra ataques especiales.</li>
+<li>Speed: Velocidad en el ataque.</li>
+</ul>
+<h3>Visualización de estadística de pokemon usando gráfica de radar</h3>
+<h4>Enlaces de interés</h4>
+<ul>
+<li><a href="https://typewind.github.io/2017/09/29/radar-chart/">https://typewind.github.io/2017/09/29/radar-chart/</a>  </li>
+<li><a href="https://www.kaggle.com/abcsds/pokemon/data">https://www.kaggle.com/abcsds/pokemon/data</a>  </li>
+<li><a href="https://plot.ly/python/radar-chart/">https://plot.ly/python/radar-chart/</a></li>
+<li><a href="https://www.kaggle.com/thebrownviking20/intermediate-visualization-tutorial-using-plotly">https://www.kaggle.com/thebrownviking20/intermediate-visualization-tutorial-using-plotly</a>  </li>
+</ul>
+<h4>Se importan las librerías necesarias</h4>
+<p>In [1]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">plotly.plotly</span> <span class="k">as</span> <span class="nn">py</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">plotly.graph_objs</span> <span class="k">as</span> <span class="nn">go</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">plotly</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">plotly</span> <span class="kn">import</span> <span class="n">tools</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">plotly.offline</span> <span class="kn">import</span> <span class="n">init_notebook_mode</span><span class="p">,</span> <span class="n">iplot</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">init_notebook_mode</span><span class="p">(</span><span class="n">connected</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">plotly.figure_factory</span> <span class="k">as</span> <span class="nn">ff</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">Image</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Se</span> <span class="n">lee</span> <span class="n">y</span> <span class="n">convierte</span> <span class="n">el</span> <span class="n">archivo</span> <span class="n">csv</span> <span class="n">de</span> <span class="n">los</span> <span class="n">datos</span> <span class="n">de</span> <span class="n">pokemon</span> <span class="n">en</span> <span class="n">un</span> <span class="n">dataframe</span></span></span>
+</pre></div>
+
+
+<p>In [2]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./datos/Pokemon.csv&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Se</span> <span class="n">muestra</span> <span class="n">las</span> <span class="mi">5</span> <span class="n">primeras</span> <span class="n">filas</span> <span class="n">de</span> <span class="n">datos</span></span></span>
+</pre></div>
+
+
+<p>In [3]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span></span></span>
+</pre></div>
+
+
+<p>Out[3]:</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">#</th>
+<th align="center">Name</th>
+<th align="left">Type 1</th>
+<th align="center">Type 2</th>
+<th align="center">Total</th>
+<th align="left">HP</th>
+<th align="center">Attack</th>
+<th align="center">Defense</th>
+<th align="center">Sp. Atk</th>
+<th align="center">Sp. Def</th>
+<th align="center">Speed</th>
+<th align="center">Generation</th>
+<th align="center">Legendary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">Bulbasaur</td>
+<td align="left">Grass</td>
+<td align="center">Poison</td>
+<td align="center">318</td>
+<td align="left">45</td>
+<td align="center">49</td>
+<td align="center">49</td>
+<td align="center">65</td>
+<td align="center">65</td>
+<td align="center">45</td>
+<td align="center">1</td>
+<td align="center">False</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">Ivysaur</td>
+<td align="left">Grass</td>
+<td align="center">Poison</td>
+<td align="center">405</td>
+<td align="left">60</td>
+<td align="center">62</td>
+<td align="center">63</td>
+<td align="center">80</td>
+<td align="center">80</td>
+<td align="center">60</td>
+<td align="center">1</td>
+<td align="center">False</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">3</td>
+<td align="center">Venusaur</td>
+<td align="left">Grass</td>
+<td align="center">Poison</td>
+<td align="center">525</td>
+<td align="left">80</td>
+<td align="center">82</td>
+<td align="center">83</td>
+<td align="center">100</td>
+<td align="center">100</td>
+<td align="center">80</td>
+<td align="center">1</td>
+<td align="center">False</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">VenusaurMega Venusaur</td>
+<td align="left">Grass</td>
+<td align="center">Poison</td>
+<td align="center">625</td>
+<td align="left">80</td>
+<td align="center">100</td>
+<td align="center">123</td>
+<td align="center">122</td>
+<td align="center">120</td>
+<td align="center">80</td>
+<td align="center">1</td>
+<td align="center">False</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">4</td>
+<td align="center">Charmander</td>
+<td align="left">Fire</td>
+<td align="center">NaN</td>
+<td align="center">309</td>
+<td align="left">39</td>
+<td align="center">52</td>
+<td align="center">43</td>
+<td align="center">60</td>
+<td align="center">50</td>
+<td align="center">65</td>
+<td align="center">1</td>
+<td align="center">False</td>
+</tr>
+</tbody>
+</table>
+<h4>Se muestra el tipo de dato de cada columna que maneja el dataframe.</h4>
+<p>In [4]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span><span class="s1">&#39;&gt;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RangeIndex</span><span class="p">:</span> <span class="mi">800</span> <span class="n">entries</span><span class="p">,</span> <span class="mi">0</span> <span class="n">to</span> <span class="mi">799</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Data</span> <span class="n">columns</span> <span class="p">(</span><span class="n">total</span> <span class="mi">13</span> <span class="n">columns</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#             800 non-null int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Name</span>          <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="nb">object</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Type</span> <span class="mi">1</span>        <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="nb">object</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Type</span> <span class="mi">2</span>        <span class="mi">414</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="nb">object</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Total</span>         <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="n">int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">HP</span>            <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="n">int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Attack</span>        <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="n">int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Defense</span>       <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="n">int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Sp</span><span class="o">.</span> <span class="n">Atk</span>       <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="n">int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Sp</span><span class="o">.</span> <span class="n">Def</span>       <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="n">int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Speed</span>         <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="n">int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Generation</span>    <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="n">int64</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Legendary</span>     <span class="mi">800</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span> <span class="nb">bool</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">dtypes</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">int64</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span> <span class="nb">object</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">memory</span> <span class="n">usage</span><span class="p">:</span> <span class="mf">75.9</span><span class="o">+</span> <span class="n">KB</span></span></span>
+</pre></div>
+
+
+<p>Se visualiza los datos de un sólo pokemon
+In [5]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">#Se busca los datos del pokemon Charizard</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Charizard&quot;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea la grafica scatterpolar donde se le pasa  las variables que se quiere graficar. HP, Ataque, defensa, SP atk, </span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Sp def, velocidad y se define los nombres de los ejes.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Scatterpolar</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;HP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Attack&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Defense&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Sp. Def&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Speed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;HP&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;HP&#39;</span><span class="p">,</span><span class="s1">&#39;Attack&#39;</span><span class="p">,</span><span class="s1">&#39;Defense&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Def&#39;</span><span class="p">,</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span><span class="s1">&#39;HP&#39;</span><span class="p">],</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="n">fill</span> <span class="o">=</span> <span class="s1">&#39;toself&#39;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">)]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># se crea el layout, donde se le pasa un diccionario  donde se define los ejes de los radios, que son visibles y</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#su rango en este caso desde 0 a 250, no se muestra legenda, y el título de la gráfica.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="n">polar</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">radialaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="nb">range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">250</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="p">),</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="n">showlegend</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Stats of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">Name</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea la instancia fig donde se pasa los datos y el layout.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se gràfica la gráfica</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;Single Pokemon stats&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="err">!</span><span class="p">[](</span><span class="o">./</span><span class="n">images</span><span class="o">/</span><span class="n">visualizandoestadisticasdepokemonusandoplotlygraficaderadar</span><span class="o">-</span><span class="mf">2.</span><span class="n">png</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>Comparación de 2 pokemons
+In [6]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1"># Se crea una función donde se hace la comparación vía gráfica de la estadística de dos pokemons.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">compare2pokemon</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se  captura los datos de los dos pokemons</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">x</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">x</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">y</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define lo que se quiere gráficar del primer y segundo pokemon.</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">trace0</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatterpolar</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;HP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Attack&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Defense&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Sp. Def&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;Speed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;HP&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;HP&#39;</span><span class="p">,</span><span class="s1">&#39;Attack&#39;</span><span class="p">,</span><span class="s1">&#39;Defense&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Def&#39;</span><span class="p">,</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span><span class="s1">&#39;HP&#39;</span><span class="p">],</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">fill</span> <span class="o">=</span> <span class="s1">&#39;toself&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">name</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">Name</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">trace1</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Scatterpolar</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;HP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;Attack&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;Defense&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;Sp. Def&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="p">[</span><span class="s1">&#39;Speed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="p">[</span><span class="s2">&quot;HP&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">theta</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;HP&#39;</span><span class="p">,</span><span class="s1">&#39;Attack&#39;</span><span class="p">,</span><span class="s1">&#39;Defense&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Atk&#39;</span><span class="p">,</span><span class="s1">&#39;Sp. Def&#39;</span><span class="p">,</span><span class="s1">&#39;Speed&#39;</span><span class="p">,</span><span class="s1">&#39;HP&#39;</span><span class="p">],</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">fill</span> <span class="o">=</span> <span class="s1">&#39;toself&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">name</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">Name</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#se define data como una lista que contiene los datos de los dos pokemon</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace0</span><span class="p">,</span> <span class="n">trace1</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define el layout como en la gráfica anterior.</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">layout</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">polar</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">radialaxis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span></span></span>
+<span class="code-line"><span class="code-line">          <span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">          <span class="nb">range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="p">),</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">showlegend</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">      <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> vs </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">Name</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">y</span><span class="o">.</span><span class="n">Name</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se crea la instancia donde se pasa los datos y el layout</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se crea la grafica.</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;Two Pokemon stats&quot;</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>In [7]:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1"># Se compara primeape y muk</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">compare2pokemon</span><span class="p">(</span><span class="s2">&quot;Primeape&quot;</span><span class="p">,</span> <span class="s2">&quot;Muk&quot;</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p><img alt="" src="./images/visualizandoestadisticasdepokemonusandoplotlygraficaderadar-3.png"></p>
+<p>En siguientes artículos se seguirá mostrando ejemplos de usos de la galería de gráficas de plotly.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/en/tag/matplotlib.html">Matplotlib</a>
+      <a href="https://ecrespo.github.io/en/tag/visualizacion.html">Visualización</a>
+      <a href="https://ecrespo.github.io/en/tag/plotly.html">Plotly</a>
+      <a href="https://ecrespo.github.io/en/tag/data-science.html">Data Science</a>
+      <a href="https://ecrespo.github.io/en/tag/ciencia-de-datos.html">Ciencia de Datos</a>
+      <a href="https://ecrespo.github.io/en/tag/kaggle.html">Kaggle</a>
+      <a href="https://ecrespo.github.io/en/tag/pandas.html">Pandas</a>
+      <a href="https://ecrespo.github.io/en/tag/numpy.html">Numpy</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

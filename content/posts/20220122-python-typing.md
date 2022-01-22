@@ -1,4 +1,4 @@
-Title: Introducción a typing en Python
+Title: Introducción a anotación y tipos en Python
 Date:  2022-01-22 12:00
 Category: Tutorial Python
 Tags: python,typing,pydantic,mypy

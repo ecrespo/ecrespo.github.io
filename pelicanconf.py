@@ -11,13 +11,13 @@ EMAIL = 'ecrespo@gmail.com'
 SITEDESCRIPTION = ' Software Libre, Ciencia de Datos y Python'
 SITELOGO = '//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120'
 PATH = 'content'
-#BROWSER_COLOR = '#333333'
+# BROWSER_COLOR = '#333333'
 BROWSER_COLOR = '#e5e5ff'
 
 TIMEZONE = 'America/Caracas'
 
 DEFAULT_LANG = 'es'
-I18N_TEMPLATES_LANG = 'en'
+I18N_TEMPLATES_LANG = 'es'
 DEFAULT_LANG = 'es'
 OG_LOCALE = 'es_VE'
 LOCALE = ("es_VE", "es_VE.utf8")
@@ -111,7 +111,7 @@ PLUGINS = ['i18n_subsites',
            'share_post',
            'neighbors',
            # 'pelican-ert',
-#           'github_activity',
+           #           'github_activity',
            # 'pelican-ipynb.markup',
            # 'disqus_static',
            # 'pelican-gist',
@@ -178,8 +178,8 @@ TOC = {
 I18N_SUBSITES = {
     'en': {
         'SITENAME': 'Seraph\'s Blog',
-        }
     }
+}
 
 GOOGLE_ADSENSE = {
     'ca_id': 'pub-0261001661746989',    # Your AdSense ID
@@ -189,9 +189,11 @@ GOOGLE_ADSENSE = {
         'main_menu': '1234562',      # Banner before main menu (all pages)
         'index_top': '1234563',      # Banner after main menu (index only)
         'index_bottom': '1234564',   # Banner before footer (index only)
-        'article_top': '1234565',    # Banner after article title (article only)
-        'article_bottom': '1234566', # Banner after article content (article only)
+        # Banner after article title (article only)
+        'article_top': '1234565',
+        # Banner after article content (article only)
+        'article_bottom': '1234566',
     }
 }
 
-GOOGLE_GLOBAL_SITE_TAG = 'G-300366206' 
+GOOGLE_GLOBAL_SITE_TAG = 'G-300366206'

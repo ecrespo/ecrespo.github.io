@@ -1,0 +1,598 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En el artículo sobre la captura de datos de eventos sismológicos de funvisis solamente se trabajó el orenamiento de los datos, pero hace falta almacenar la información en una base de datos, este es el tema del artículo. Ahora se tienen varios módulos: sismux_getdata.py: Es el módulo que hace …" />
+<meta name="keywords" content="Python, Webscraping, BeautifulSoup, Request, MongoDB, Pymongo">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Almacenar los datos de los eventos sismológicos de Funvisis con Python3"/>
+<meta property="og:description" content="En el artículo sobre la captura de datos de eventos sismológicos de funvisis solamente se trabajó el orenamiento de los datos, pero hace falta almacenar la información en una base de datos, este es el tema del artículo. Ahora se tienen varios módulos: sismux_getdata.py: Es el módulo que hace …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/almacenar-los-datos-de-los-eventos-sismologicos-de-funvisis-con-python3-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-07-24 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Webscraping"/>
+<meta property="article:tag" content="BeautifulSoup"/>
+<meta property="article:tag" content="Request"/>
+<meta property="article:tag" content="MongoDB"/>
+<meta property="article:tag" content="Pymongo"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Almacenar los datos de los eventos sismológicos de Funvisis con Python3</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="almacenar-los-datos-de-los-eventos-sismologicos-de-funvisis-con-python3">Almacenar los datos de los eventos sismológicos de Funvisis con Python3</h1>
+    <p>
+      Posted on lun 24 julio 2017 in <a href="http://localhost:8000/en/category/tutorial-de-python.html">Tutorial de Python</a>
+
+        &#8226; 4 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>En el artículo sobre la <a href="https://www.seraph.to/obtener-datos-de-eventos-sismologicos-de-funvisis-con-python3-segunda-version.html">captura de datos de eventos sismológicos de funvisis</a>  solamente se trabajó el orenamiento de los datos, pero hace falta almacenar la información en una base de datos, este es el tema del artículo.</p>
+<p>Ahora se tienen varios módulos:</p>
+<ul>
+<li><code>sismux_getdata.py</code>: Es el módulo que hace el webscraping de la página de funvisis.  </li>
+<li><code>sismux_mongo.py</code>: Es el módulo que implementa un CRUD para mongoDB a MongoLab.  </li>
+<li><code>sismux_main.py</code>: Es el módulo principal que consulta cada 5 min la página de Funvisis para guardar la información en la base de datos si no existe.  </li>
+<li><code>sismux_apirest.py</code>: Es el módulo que implementa un API rest(próximo artículo).  </li>
+<li><code>sismux_graphql.py</code>: Es el módulo que implementa un API con GraphQL (próximo artículo).  </li>
+</ul>
+<p>Del artículo anterior <a href="https://www.seraph.to/obtener-datos-de-eventos-sismologicos-de-funvisis-con-python3-segunda-version.html">artículo anterior</a> se muestra el código de <code>sismux_getdata.py</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python3</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa beautifulSoup</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa la fecha</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">datetime</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">requests</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">sys</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">json</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">Sismo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://www.funvisis.gob.ve/&quot;</span><span class="p">,</span><span class="n">home</span><span class="o">=</span><span class="s2">&quot;index.php&quot;</span><span class="p">,</span><span class="n">referer</span><span class="o">=</span><span class="s1">&#39;http://www.cantv.com.ve&#39;</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;User-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0&#39;</span><span class="p">,</span>\</span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="s1">&#39;SSL_VERIFYHOST&#39;</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span>\</span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="s1">&#39;FRESH_CONNECT&#39;</span><span class="p">:</span><span class="s1">&#39;True&#39;</span><span class="p">,</span>\</span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="s1">&#39;RETURNTRANSFER&#39;</span><span class="p">:</span><span class="s1">&#39;True&#39;</span><span class="p">,</span>\</span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="s1">&#39;SSL_VERIFYPEER&#39;</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span>\</span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="s1">&#39;Referer&#39;</span><span class="p">:</span> <span class="n">referer</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="p">}</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__url</span> <span class="o">=</span> <span class="n">url</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__home</span> <span class="o">=</span> <span class="n">home</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__urlhome</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__url</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__home</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">GetData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se  obtiene la pagina por medio de session.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">try</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__urlhome</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__r</span><span class="o">.</span><span class="n">content</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">except</span> <span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">SSLError</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SSL Error&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">except</span> <span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connection Error&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se le pasa la pagina a beautifulsoup usando lxml de parser.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__page</span><span class="p">,</span><span class="s2">&quot;lxml&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se crea el diccionario que almacena los datos</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span> <span class="o">=</span> <span class="p">{}</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#SE obtiene el primer  div que tengan class module</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__soup</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;module&#39;</span><span class="p">})[</span><span class="mi">0</span><span class="p">]:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="c1">#Se obtiene el tag a para luego obtener el href y tener el url</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="c1">#del gif del sitio de funvisis que tiene la imagen del sitio donde</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="c1">#fue el sismo.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">trs</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">if</span> <span class="n">trs</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="k">continue</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;urlref&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__url</span>  <span class="o">+</span> <span class="n">trs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">trs</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;tr&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">if</span> <span class="n">trs</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="k">continue</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="c1">#Obtiene los datos del sismo del sitio de funvisis</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">datos</span> <span class="o">=</span> <span class="n">trs</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">getText</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&amp;nbsp;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;fecha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\xa0</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;fecha&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;hora&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">time</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;hora&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">date</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;magnitud&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datos</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">mag</span> <span class="o">=</span> <span class="n">datos</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\xa0</span><span class="s1">&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;profundidad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mag</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">+</span> <span class="n">mag</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">lat</span> <span class="o">=</span> <span class="n">datos</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s2">&quot;latitud&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">lat</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">lon</span> <span class="o">=</span>  <span class="n">datos</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;longitud&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">+</span> <span class="n">lon</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;epicentro&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datos</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\xa0</span><span class="s1">&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span><span class="p">[</span><span class="s1">&#39;loc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;Point&#39;</span><span class="p">,</span><span class="s1">&#39;coordinates&#39;</span> <span class="p">:</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="p">]}</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sismo</span></span></span>
+</pre></div>
+
+
+<p>El código del módulos <code>sismux_mongo.py</code> se muestra a continuación: </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python3</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">pymongo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se define el uri de la conexion a mongolab</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">uri</span> <span class="o">=</span> <span class="s1">&#39;mongodb://usuario:clave@ds045064.mlab.com:45064/basedatos&#39;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se define la base de datos y la cole</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#ccion</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">basedatos</span> <span class="o">=</span> <span class="s2">&quot;sismux&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">coleccion</span> <span class="o">=</span> <span class="s2">&quot;sismos&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea la clase BaseDatos que simplemente implemente un crud.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">BaseDatos</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define la intancia de mongoclient, se define la base de datos y</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#la coleccion</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span><span class="n">basedatos</span><span class="o">=</span><span class="n">basedatos</span><span class="p">,</span><span class="n">coleccion</span><span class="o">=</span><span class="n">coleccion</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="p">[</span><span class="n">basedatos</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__coleccion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__db</span><span class="p">[</span><span class="n">coleccion</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">  <span class="k">def</span> <span class="nf">ConsultarTodos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Traer todos los elementos de la consulta.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">elementos</span> <span class="o">=</span> <span class="p">[]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__coleccion</span><span class="o">.</span><span class="n">find</span><span class="p">():</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">elementos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">i</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">  <span class="k">def</span> <span class="nf">Consultar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">patron</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se devuelve la consulta de un elemento</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__coleccion</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span><span class="n">patron</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">  <span class="k">def</span> <span class="nf">Insertar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">documento</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se inserta un documento</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__coleccion</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">documento</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">  <span class="k">def</span> <span class="nf">Finalizar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se cierra la conexion con la base de datos</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></span></span>
+</pre></div>
+
+
+<p>A continuación se muestra <code>sismux_main.py</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python3</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">sismux_getdata</span> <span class="kn">import</span> <span class="n">Sismo</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">json</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">time</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">sys</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">sismux_mongo</span> <span class="kn">import</span> <span class="n">BaseDatos</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">datetime</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">logging</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">bd</span> <span class="o">=</span> <span class="n">BaseDatos</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">sismo</span>  <span class="o">=</span> <span class="n">Sismo</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">datos</span> <span class="o">=</span> <span class="n">sismo</span><span class="o">.</span><span class="n">GetData</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#bd.Insertar(datos)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#datos[&#39;datetime&#39;]</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">datime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2017</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">51</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#print(bd.Consultar({&#39;datetime&#39;: datie}m))</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">main</span><span class="p">():</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">   <span class="c1">#Se crea la instancia a la base de datos</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="n">bd</span> <span class="o">=</span> <span class="n">BaseDatos</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="c1">#Se crea la instancia del webscraping</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="n">sismo</span> <span class="o">=</span> <span class="n">Sismo</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="c1">#Se optiene los datos de la pagina de funvisis</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="n">datos</span> <span class="o">=</span> <span class="n">sismo</span><span class="o">.</span><span class="n">GetData</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="c1">#Se consulta si ya existe el dato guardado en la base de datos</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="n">query1</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">Consultar</span><span class="p">({</span><span class="s1">&#39;datetime&#39;</span><span class="p">:</span> <span class="n">datos</span><span class="p">[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]})</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="n">query2</span> <span class="o">=</span> <span class="n">bd</span><span class="o">.</span><span class="n">Consultar</span><span class="p">({</span><span class="s1">&#39;loc&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="n">datos</span><span class="p">[</span><span class="s1">&#39;loc&#39;</span><span class="p">][</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]}})</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="k">if</span> <span class="p">(</span><span class="n">query1</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="kc">False</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="k">else</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">       <span class="c1">#Si no existe se inserta en la base de datos.</span></span></span>
+<span class="code-line"><span class="code-line">       <span class="n">bd</span><span class="o">.</span><span class="n">Insertar</span><span class="p">(</span><span class="n">datos</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line">       <span class="k">return</span> <span class="kc">True</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea un ciclo para consultar cada 5 min</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">ciclo</span><span class="p">(</span><span class="n">tim</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define el log</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;sismux.log&quot;</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">while</span> <span class="kc">True</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se ejecuta main.</span></span></span>
+<span class="code-line"><span class="code-line">       <span class="n">result</span> <span class="o">=</span> <span class="n">main</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">       <span class="c1">#Se guarda el resultado de main en el log</span></span></span>
+<span class="code-line"><span class="code-line">       <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line">       <span class="c1">#Se espera 5 min (por defecto)</span></span></span>
+<span class="code-line"><span class="code-line">       <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">tim</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="c1">#Se ejecuta la funcion ciclo</span></span></span>
+<span class="code-line"><span class="code-line">   <span class="n">ciclo</span><span class="p">()</span></span></span>
+</pre></div>
+
+
+<p>Para ejecutar el programa se corre:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">python3</span> <span class="n">sismux_main</span><span class="o">.</span><span class="n">py</span> </span></span>
+</pre></div>
+
+
+<p>Al ejecutarlo se crea un archivo <code>log</code> y en el se tiene lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>tail -f sismux.log </span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:42:43,149 Starting new HTTP connection (1): www.funvisis.gob.ve</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:42:43,821 http://www.funvisis.gob.ve:80 &quot;GET /index.php HTTP/1.1&quot; 200 14319</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:42:56,560 False</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:47:56,637 Starting new HTTP connection (1): www.funvisis.gob.ve</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:47:57,466 http://www.funvisis.gob.ve:80 &quot;GET /index.php HTTP/1.1&quot; 200 14319</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:48:12,086 False</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:53:12,209 Starting new HTTP connection (1): www.funvisis.gob.ve</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:53:12,976 http://www.funvisis.gob.ve:80 &quot;GET /index.php HTTP/1.1&quot; 200 14319</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:53:18,516 False</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:58:18,605 Starting new HTTP connection (1): www.funvisis.gob.ve</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:58:30,984 http://www.funvisis.gob.ve:80 &quot;GET /index.php HTTP/1.1&quot; 200 14319</span></span>
+<span class="code-line"><span class="code-line">2017-07-24 11:58:57,034 False</span></span>
+</pre></div>
+
+
+<p>Como muestra el <code>log</code> ya se tiene el último sismo en la base de datos.</p>
+<p>En la siguiente figura se muestra un documento almacenado en la base de datos:</p>
+<p><img alt="" src="./images/almacenarlosdatosdeloseventossismologicosdefunvisisconpython3-1.png"></p>
+<p>Para el siguiente artículo se desarrollará el API. </p>
+<p>Nota: En un futuro artículo se muestra la creación de un demonio y como ponerlo a funcionar con <code>SystemD</code> y el empaquetado de todo los módulos desarrollados. </p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/python.html">Python</a>
+      <a href="http://localhost:8000/en/tag/webscraping.html">Webscraping</a>
+      <a href="http://localhost:8000/en/tag/beautifulsoup.html">BeautifulSoup</a>
+      <a href="http://localhost:8000/en/tag/request.html">Request</a>
+      <a href="http://localhost:8000/en/tag/mongodb.html">MongoDB</a>
+      <a href="http://localhost:8000/en/tag/pymongo.html">Pymongo</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

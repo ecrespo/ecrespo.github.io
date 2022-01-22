@@ -1,0 +1,574 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En artículos anteriores se ha tocado el tema de webscraping, ahora se usará el framework scrapy que permite automatizar la extracción de los datos. Scrapy es un framework para el rastreo y extraccion de datos estructurados de páginas web. Los datos pueden ser usados para data mining, procesamiento de datos …" />
+<meta name="keywords" content="Debian, Linux, Python, Ubuntu, Webscraping">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Extracción de datos de páginas web con scrapy"/>
+<meta property="og:description" content="En artículos anteriores se ha tocado el tema de webscraping, ahora se usará el framework scrapy que permite automatizar la extracción de los datos. Scrapy es un framework para el rastreo y extraccion de datos estructurados de páginas web. Los datos pueden ser usados para data mining, procesamiento de datos …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/extraccion-de-datos-de-paginas-web-con-scrapy-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2015-01-01 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Webscraping"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Extracción de datos de páginas web con scrapy</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="extraccion-de-datos-de-paginas-web-con-scrapy">Extracción de datos de páginas web con scrapy</h1>
+    <p>
+      Posted on jue 01 enero 2015 in <a href="http://localhost:8000/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 6 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>En artículos <a href="https://www.seraph.to/tag/webscraping.html">anteriores</a> se ha tocado el tema de webscraping, ahora se usará el framework scrapy que permite automatizar la extracción de los datos.</p>
+<p>Scrapy es un framework para el rastreo y extraccion de datos estructurados  de páginas web. Los datos pueden ser usados para data mining, procesamiento de datos o historicos de información.</p>
+<p>Este artículo se basa del tutorial en inglés de la <a href="http://doc.scrapy.org/en/latest/intro/tutorial.html">página del proyecto</a>.</p>
+<p>Para la instalación de scrapy se tiene un paquete <code>deb</code> a lo Debian:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>#apt-get install python-scrapy</span></span>
+</pre></div>
+
+
+<p>O usando pip:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>#pip install scrapy</span></span>
+</pre></div>
+
+
+<p>La idea es extraer datos de la página de <a href="http://www.dmoz.org/">dmoz</a>.</p>
+<p>Este tutorial sigue el siguiente procedimiento:</p>
+<ol>
+<li>Crear el proyecto.</li>
+<li>Definir los items que se van a extraer de la página.</li>
+<li>Escriibr el spider para navegar por un sitio y extraer los items.</li>
+<li>Escribir el pineline para almacenar los datos extraídos.</li>
+</ol>
+<p>A continuación se muestra una captura de pantalla del sitio:</p>
+<p><img alt="" src="./images/extracciondedatosdepaginaswebconscrapy-1.png"></p>
+<p>Lo primero que se hace es crear un proyecto:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="err">$</span><span class="n">scrapy</span> <span class="n">startproject</span> <span class="n">dmoz</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">New</span> <span class="n">Scrapy</span> <span class="n">project</span> <span class="s1">&#39;dmoz&#39;</span> <span class="n">created</span> <span class="ow">in</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ernesto</span><span class="o">/</span><span class="n">proyectos</span><span class="o">/</span><span class="n">scrapy</span><span class="o">/</span><span class="n">dmoz</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">You</span> <span class="n">can</span> <span class="n">start</span> <span class="n">your</span> <span class="n">first</span> <span class="n">spider</span> <span class="k">with</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">cd</span> <span class="n">dmoz</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">scrapy</span> <span class="n">genspider</span> <span class="n">example</span> <span class="n">example</span><span class="o">.</span><span class="n">com</span></span></span>
+</pre></div>
+
+
+<p>Esto crea un directorio <code>dmoz</code> con el siguiente contenido:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>dmoz/</span></span>
+<span class="code-line"><span class="code-line">├── dmoz</span></span>
+<span class="code-line"><span class="code-line">│   ├── __init__.py</span></span>
+<span class="code-line"><span class="code-line">│   ├── items.py</span></span>
+<span class="code-line"><span class="code-line">│   ├── pipelines.py</span></span>
+<span class="code-line"><span class="code-line">│   ├── settings.py</span></span>
+<span class="code-line"><span class="code-line">│   └── spiders</span></span>
+<span class="code-line"><span class="code-line">│       └── __init__.py</span></span>
+<span class="code-line"><span class="code-line">└── scrapy.cfg</span></span>
+</pre></div>
+
+
+<p>Descripción de los archivos:
+- <code>scrapy.cfg</code>: Configuración del proyecto
+- <code>dmoz/</code> : módulo python de nuestro proyecto, ahí se incluirá el código del proyecto.
+- <code>dmoz/items.py</code>: Archivo donde se definen los items que se quiere extraer.
+- <code>dmoz/settings.py</code>:  Archivo de ajustes del proyecto.
+- <code>dmoz/pipelines.py</code>: Se definen los flujos del proyecto.
+- <code>dmoz/spider/</code> : Directorio donde se colocara el código de la araña para extraer datos.
+Definir el Item (<code>dmoz/items.py</code>):</p>
+<p>Este archivo debe contener lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1"># -*- coding: utf-8 -*-</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">scrapy</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">scrapy</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span><span class="n">Field</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">DmozItem</span><span class="p">(</span><span class="n">Item</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">title</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">link</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">desc</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span></span></span>
+</pre></div>
+
+
+<p>Se define la clase <code>DmozItem</code> que hereda de Item, se tiene title, link y desc instancias de Field que son los items a extraer de la página web.</p>
+<p>Creación del spider.
+Las arañas son clases escritas por el usuario para extraer datos de una página web o dominio o grupos de dominios.</p>
+<p>Antes de crear el archivo <code>dmoz_spider.py</code> se hablara de los selectores.</p>
+<p>Hay varias maneras de extraer datos de páginas web, scrapy usa XPath o expresiones CSS llamadas scrapy selectors. La documentación la pueden encontrar en el siguiente <a href="http://doc.scrapy.org/en/latest/topics/selectors.html#topics-selectors">enlace</a>.</p>
+<p>A continuación una lista de expresiones XPath y su significado:</p>
+<ul>
+<li><code>/html/head/title</code>: Selecciona el elemento title de head.</li>
+<li><code>/html/head/title/text()</code>: Selecciona el texto del elemento title.</li>
+<li><code>//td</code>: Selecciona todos los elementos de td.</li>
+<li><code>//div[@class="mine"]</code>: Selecciona todos los elementos div que contengan el atributo class="mine".  </li>
+</ul>
+<p>Los selectores tienen 4 métodos:</p>
+<ul>
+<li><a href="http://doc.scrapy.org/en/latest/topics/selectors.html#scrapy.selector.Selector.xpath">xpath()</a>: Retorna una lista de selectores, cada uno de ellos representa los nodos por la expresión de  xpath pasada como argumento.</li>
+<li><a href="http://doc.scrapy.org/en/latest/topics/selectors.html#scrapy.selector.Selector.css">css()</a>: Retorna una lista de selectores, cada uno representa los nodos seleccionados por  la expresión de css() pasada como argumento.</li>
+<li><a href="http://doc.scrapy.org/en/latest/topics/selectors.html#scrapy.selector.Selector.extract">extract()</a>: Retorna un string (unicode) con el dato seleccionado.</li>
+<li><a href="http://doc.scrapy.org/en/latest/topics/selectors.html#scrapy.selector.Selector.re">re()</a>: Retorna una lista de string extraídos al aplicar una expresión regular pasada como argumento.</li>
+</ul>
+<p>Probar selectores desde el shell de scrapy:
+Está es una forma de evaluar los selectores XPath, lo que se le pasará al shell de scrapy es el url de la página que se quiere evaluar.</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">scrapy</span> <span class="n">shell</span> <span class="s2">&quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Books/&quot;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">43</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Scrapy</span> <span class="mf">0.24.2</span> <span class="n">started</span> <span class="p">(</span><span class="n">bot</span><span class="p">:</span> <span class="n">scrapybot</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">43</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Optional</span> <span class="n">features</span> <span class="n">available</span><span class="p">:</span> <span class="n">ssl</span><span class="p">,</span> <span class="n">http11</span><span class="p">,</span> <span class="n">boto</span><span class="p">,</span> <span class="n">django</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">43</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Overridden</span> <span class="n">settings</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;LOGSTATS_INTERVAL&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">43</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Enabled</span> <span class="n">extensions</span><span class="p">:</span> <span class="n">TelnetConsole</span><span class="p">,</span> <span class="n">CloseSpider</span><span class="p">,</span> <span class="n">WebService</span><span class="p">,</span> <span class="n">CoreStats</span><span class="p">,</span> <span class="n">SpiderState</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">45</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Enabled</span> <span class="n">downloader</span> <span class="n">middlewares</span><span class="p">:</span> <span class="n">HttpAuthMiddleware</span><span class="p">,</span> <span class="n">DownloadTimeoutMiddleware</span><span class="p">,</span> <span class="n">UserAgentMiddleware</span><span class="p">,</span> <span class="n">RetryMiddleware</span><span class="p">,</span> <span class="n">DefaultHeadersMiddleware</span><span class="p">,</span> <span class="n">MetaRefreshMiddleware</span><span class="p">,</span> <span class="n">HttpCompressionMiddleware</span><span class="p">,</span> <span class="n">RedirectMiddleware</span><span class="p">,</span> <span class="n">CookiesMiddleware</span><span class="p">,</span> <span class="n">ChunkedTransferMiddleware</span><span class="p">,</span> <span class="n">DownloaderStats</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">45</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Enabled</span> <span class="n">spider</span> <span class="n">middlewares</span><span class="p">:</span> <span class="n">HttpErrorMiddleware</span><span class="p">,</span> <span class="n">OffsiteMiddleware</span><span class="p">,</span> <span class="n">RefererMiddleware</span><span class="p">,</span> <span class="n">UrlLengthMiddleware</span><span class="p">,</span> <span class="n">DepthMiddleware</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">45</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Enabled</span> <span class="n">item</span> <span class="n">pipelines</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">45</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="n">Telnet</span> <span class="n">console</span> <span class="n">listening</span> <span class="n">on</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">6024</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">45</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="n">Web</span> <span class="n">service</span> <span class="n">listening</span> <span class="n">on</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">6081</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">45</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">default</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Spider</span> <span class="n">opened</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">07</span><span class="p">:</span><span class="mi">45</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">default</span><span class="p">]</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="n">Crawled</span> <span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">GET</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">dmoz</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">Computers</span><span class="o">/</span><span class="n">Programming</span><span class="o">/</span><span class="n">Languages</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="n">Books</span><span class="o">/&gt;</span> <span class="p">(</span><span class="n">referer</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="n">Available</span> <span class="n">Scrapy</span> <span class="n">objects</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">crawler</span>    <span class="o">&lt;</span><span class="n">scrapy</span><span class="o">.</span><span class="n">crawler</span><span class="o">.</span><span class="n">Crawler</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f5e0a286250</span><span class="o">&gt;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">item</span>       <span class="p">{}</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">request</span>    <span class="o">&lt;</span><span class="n">GET</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">dmoz</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">Computers</span><span class="o">/</span><span class="n">Programming</span><span class="o">/</span><span class="n">Languages</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="n">Books</span><span class="o">/&gt;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">response</span>   <span class="o">&lt;</span><span class="mi">200</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">dmoz</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">Computers</span><span class="o">/</span><span class="n">Programming</span><span class="o">/</span><span class="n">Languages</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="n">Books</span><span class="o">/&gt;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">settings</span>   <span class="o">&lt;</span><span class="n">scrapy</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">Settings</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f5e0aaa0f50</span><span class="o">&gt;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">spider</span>     <span class="o">&lt;</span><span class="n">Spider</span> <span class="s1">&#39;default&#39;</span> <span class="n">at</span> <span class="mh">0x7f5e09c94690</span><span class="o">&gt;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="n">Useful</span> <span class="n">shortcuts</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">shelp</span><span class="p">()</span>           <span class="n">Shell</span> <span class="n">help</span> <span class="p">(</span><span class="nb">print</span> <span class="n">this</span> <span class="n">help</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">fetch</span><span class="p">(</span><span class="n">req_or_url</span><span class="p">)</span> <span class="n">Fetch</span> <span class="n">request</span> <span class="p">(</span><span class="ow">or</span> <span class="n">URL</span><span class="p">)</span> <span class="ow">and</span> <span class="n">update</span> <span class="n">local</span> <span class="n">objects</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="n">s</span><span class="p">]</span>   <span class="n">view</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>    <span class="n">View</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">browser</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span></span></span>
+</pre></div>
+
+
+<p>Ya acá se puede iniciar la evaluación:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//title&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">Selector</span> <span class="n">xpath</span><span class="o">=</span><span class="s1">&#39;//title&#39;</span> <span class="n">data</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;&lt;title&gt;DMOZ - Computers: Programming: La&#39;</span><span class="o">&gt;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//title&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;&lt;title&gt;DMOZ - Computers: Programming: Languages: Python: Books&lt;/title&gt;&#39;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//title/text()&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">Selector</span> <span class="n">xpath</span><span class="o">=</span><span class="s1">&#39;//title/text()&#39;</span> <span class="n">data</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;DMOZ - Computers: Programming: Languages&#39;</span><span class="o">&gt;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//title/text()&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Out</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;DMOZ - Computers: Programming: Languages: Python: Books&#39;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//title/text()&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">re</span><span class="p">(</span><span class="s1">&#39;(\w+):&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Out</span><span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Computers&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;Programming&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;Languages&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;Python&#39;</span><span class="p">]</span></span></span>
+</pre></div>
+
+
+<p>Ahora a probar un caso real, la extracción de información de la página en elementos ul, li , se extrae su texto.</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">sel</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//ul/li/a/text()&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Out</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;Top&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Computers&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Programming&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Languages&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Python&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Computers: Programming: Languages: Python: Resources&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Computers: Programming: Languages: Ruby: Books&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Deutsch&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;</span><span class="se">\u0420\u0443\u0441\u0441\u043a\u0438\u0439</span><span class="s1">&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Core Python Programming&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Data Structures and Algorithms with Object-Oriented Design Patterns in Python&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Dive Into Python 3&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Foundations of Python Network Programming&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Free Python books&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;FreeTechBooks: Python Scripting Language&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;How to Think Like a Computer Scientist: Learning with Python&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;An Introduction to Python&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Learn to Program Using Python&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Making Use of Python&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Practical Python&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Pro Python System Administration&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Programming in Python 3 (Second Edition)&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Python 2.1 Bible&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Python 3 Object Oriented Programming&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Python Language Reference Manual&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Python Programming Patterns&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Python Programming with the Java Class Libraries: A Tutorial for Building Web and Enterprise Applications with Jython&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Python: Visual QuickStart Guide&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Sams Teach Yourself Python in 24 Hours&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;Text Processing in Python&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;XML Processing with Python&#39;</span><span class="p">]</span></span></span>
+</pre></div>
+
+
+<p>Y ahora se extraen los enlaces:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">11</span><span class="p">]:</span> <span class="n">sel</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//ul/li/a/@href&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Out</span><span class="p">[</span><span class="mi">11</span><span class="p">]:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">[</span><span class="sa">u</span><span class="s1">&#39;/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;/Computers/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;/Computers/Programming/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;/Computers/Programming/Languages/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;/Computers/Programming/Languages/Python/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;/Computers/Programming/Languages/Python/Resources/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;/Computers/Programming/Languages/Ruby/Books/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;/World/Deutsch/Computer/Programmieren/Sprachen/Python/B%C3%BCcher&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;/World/Russian/%D0%9A%D0%BE%D0%BC%D0%BF%D1%8C%D1</span><span class="si">%8E</span><span class="s1">%D1</span><span class="si">%82%</span><span class="s1">D0%B5%D1</span><span class="si">%80%</span><span class="s1">D1%8B/%D0</span><span class="si">%9F</span><span class="s1">%D1</span><span class="si">%80%</span><span class="s1">D0%BE%D0%B3%D1</span><span class="si">%80%</span><span class="s1">D0%B0%D0%BC%D0%BC%D0%B8%D1</span><span class="si">%80%</span><span class="s1">D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5/%D0%AF%D0%B7%D1%8B%D0%BA%D0%B8/Python/%D0%9A%D0%BD%D0%B8%D0%B3%D0%B8&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.pearsonhighered.com/educator/academic/product/0,,0130260363,00%2Ben-USS_01DBC.html&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.brpreiss.com/books/opus7/html/book.html&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.diveintopython.net/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://rhodesmill.org/brandon/2011/foundations-of-python-network-programming/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.techbooksforfree.com/perlpython.shtml&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.freetechbooks.com/python-f6.html&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://greenteapress.com/thinkpython/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.network-theory.co.uk/python/intro/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.freenetpages.co.uk/hp/alan.gauld/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.wiley.com/WileyCDA/WileyTitle/productCd-0471219754.html&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://hetland.org/writing/practical-python/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://sysadminpy.com/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.qtrac.eu/py3book.html&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.wiley.com/WileyCDA/WileyTitle/productCd-0764548077.html&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;https://www.packtpub.com/python-3-object-oriented-programming/book&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.network-theory.co.uk/python/language/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.pearsonhighered.com/educator/academic/product/0,,0130409561,00%2Ben-USS_01DBC.html&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.informit.com/store/product.aspx?isbn=0201616165&amp;redir=1&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.pearsonhighered.com/educator/academic/product/0,,0201748843,00%2Ben-USS_01DBC.html&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.informit.com/store/product.aspx?isbn=0672317354&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://gnosis.cx/TPiP/&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="sa">u</span><span class="s1">&#39;http://www.informit.com/store/product.aspx?isbn=0130211192&#39;</span><span class="p">]</span></span></span>
+</pre></div>
+
+
+<p>Modificar el archivo <code>dmoz_spider.py</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1"># -*- coding: utf-8 -*-</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">scrapy</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa la clase DmozItem</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">dmoz.items</span> <span class="kn">import</span> <span class="n">DmozItem</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea la clase DmozSpider que hereda de scapySpider .</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">DmozSpider</span><span class="p">(</span><span class="n">scrapy</span><span class="o">.</span><span class="n">Spider</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define el nombre del proyecto</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;dmoz&#39;</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#El proyecto al cual está permitido</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">allowed_domains</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dmoz.org&#39;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define las urls a extraer datos</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">start_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Books/&quot;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="s2">&quot;http://www.dmoz.org/Computers/Programming/Languages/Python/Resources/&quot;</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line">     <span class="c1">#Se crea el método parse_item el cual define la extracción de los datos por medio de los</span></span></span>
+<span class="code-line"><span class="code-line">     <span class="c1">#items usando los selectores que se evaluaron.</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">parse_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;//ul/li&#39;</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">item</span> <span class="o">=</span> <span class="n">DmozItem</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">item</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;a/text()&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">item</span><span class="p">[</span><span class="s1">&#39;link&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;a/@href&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">item</span><span class="p">[</span><span class="s1">&#39;desc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s1">&#39;text()&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">yield</span> <span class="n">item</span></span></span>
+</pre></div>
+
+
+<p>Ahora se ejecuta la extracción de datos:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">scrapy</span> <span class="n">crawl</span> <span class="n">dmoz</span> <span class="o">-</span><span class="n">o</span> <span class="n">items</span><span class="o">.</span><span class="n">json</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">54</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Scrapy</span> <span class="mf">0.24.2</span> <span class="n">started</span> <span class="p">(</span><span class="n">bot</span><span class="p">:</span> <span class="n">dmoz</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">54</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Optional</span> <span class="n">features</span> <span class="n">available</span><span class="p">:</span> <span class="n">ssl</span><span class="p">,</span> <span class="n">http11</span><span class="p">,</span> <span class="n">boto</span><span class="p">,</span> <span class="n">django</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">54</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Overridden</span> <span class="n">settings</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;NEWSPIDER_MODULE&#39;</span><span class="p">:</span> <span class="s1">&#39;dmoz.spiders&#39;</span><span class="p">,</span> <span class="s1">&#39;FEED_FORMAT&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="s1">&#39;SPIDER_MODULES&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;dmoz.spiders&#39;</span><span class="p">],</span> <span class="s1">&#39;FEED_URI&#39;</span><span class="p">:</span> <span class="s1">&#39;items.json&#39;</span><span class="p">,</span> <span class="s1">&#39;BOT_NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;dmoz&#39;</span><span class="p">}</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">54</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Enabled</span> <span class="n">extensions</span><span class="p">:</span> <span class="n">FeedExporter</span><span class="p">,</span> <span class="n">LogStats</span><span class="p">,</span> <span class="n">TelnetConsole</span><span class="p">,</span> <span class="n">CloseSpider</span><span class="p">,</span> <span class="n">WebService</span><span class="p">,</span> <span class="n">CoreStats</span><span class="p">,</span> <span class="n">SpiderState</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">55</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Enabled</span> <span class="n">downloader</span> <span class="n">middlewares</span><span class="p">:</span> <span class="n">HttpAuthMiddleware</span><span class="p">,</span> <span class="n">DownloadTimeoutMiddleware</span><span class="p">,</span> <span class="n">UserAgentMiddleware</span><span class="p">,</span> <span class="n">RetryMiddleware</span><span class="p">,</span> <span class="n">DefaultHeadersMiddleware</span><span class="p">,</span> <span class="n">MetaRefreshMiddleware</span><span class="p">,</span> <span class="n">HttpCompressionMiddleware</span><span class="p">,</span> <span class="n">RedirectMiddleware</span><span class="p">,</span> <span class="n">CookiesMiddleware</span><span class="p">,</span> <span class="n">ChunkedTransferMiddleware</span><span class="p">,</span> <span class="n">DownloaderStats</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">55</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Enabled</span> <span class="n">spider</span> <span class="n">middlewares</span><span class="p">:</span> <span class="n">HttpErrorMiddleware</span><span class="p">,</span> <span class="n">OffsiteMiddleware</span><span class="p">,</span> <span class="n">RefererMiddleware</span><span class="p">,</span> <span class="n">UrlLengthMiddleware</span><span class="p">,</span> <span class="n">DepthMiddleware</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">55</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Enabled</span> <span class="n">item</span> <span class="n">pipelines</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">55</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">dmoz</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Spider</span> <span class="n">opened</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">55</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">dmoz</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Crawled</span> <span class="mi">0</span> <span class="n">pages</span> <span class="p">(</span><span class="n">at</span> <span class="mi">0</span> <span class="n">pages</span><span class="o">/</span><span class="nb">min</span><span class="p">),</span> <span class="n">scraped</span> <span class="mi">0</span> <span class="n">items</span> <span class="p">(</span><span class="n">at</span> <span class="mi">0</span> <span class="n">items</span><span class="o">/</span><span class="nb">min</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">55</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="n">Telnet</span> <span class="n">console</span> <span class="n">listening</span> <span class="n">on</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">6024</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">55</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">scrapy</span><span class="p">]</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="n">Web</span> <span class="n">service</span> <span class="n">listening</span> <span class="n">on</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">6081</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">56</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">dmoz</span><span class="p">]</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="n">Crawled</span> <span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">GET</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">dmoz</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">Computers</span><span class="o">/</span><span class="n">Programming</span><span class="o">/</span><span class="n">Languages</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="n">Resources</span><span class="o">/&gt;</span> <span class="p">(</span><span class="n">referer</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">56</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">dmoz</span><span class="p">]</span> <span class="n">DEBUG</span><span class="p">:</span> <span class="n">Crawled</span> <span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">GET</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">dmoz</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">Computers</span><span class="o">/</span><span class="n">Programming</span><span class="o">/</span><span class="n">Languages</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="n">Books</span><span class="o">/&gt;</span> <span class="p">(</span><span class="n">referer</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">56</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">dmoz</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Closing</span> <span class="n">spider</span> <span class="p">(</span><span class="n">finished</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">56</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">dmoz</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Dumping</span> <span class="n">Scrapy</span> <span class="n">stats</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"> <span class="p">{</span><span class="s1">&#39;downloader/request_bytes&#39;</span><span class="p">:</span> <span class="mi">516</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;downloader/request_count&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;downloader/request_method_count/GET&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;downloader/response_bytes&#39;</span><span class="p">:</span> <span class="mi">16342</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;downloader/response_count&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;downloader/response_status_count/200&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;finish_reason&#39;</span><span class="p">:</span> <span class="s1">&#39;finished&#39;</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;finish_time&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">398479</span><span class="p">),</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;log_count/DEBUG&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;log_count/INFO&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;response_received_count&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;scheduler/dequeued&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;scheduler/dequeued/memory&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;scheduler/enqueued&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;scheduler/enqueued/memory&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="s1">&#39;start_time&#39;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">814884</span><span class="p">)}</span></span></span>
+<span class="code-line"><span class="code-line"><span class="mi">2015</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span> <span class="mi">21</span><span class="p">:</span><span class="mi">35</span><span class="p">:</span><span class="mi">56</span><span class="o">-</span><span class="mi">0430</span> <span class="p">[</span><span class="n">dmoz</span><span class="p">]</span> <span class="n">INFO</span><span class="p">:</span> <span class="n">Spider</span> <span class="n">closed</span> <span class="p">(</span><span class="n">finished</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>El archivo items.json contiene algo como lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>[{&quot;desc&quot;: [&quot;\r\n\r\n                    &quot;], &quot;link&quot;: [&quot;/&quot;], &quot;title&quot;: [&quot;Top&quot;]},</span></span>
+<span class="code-line"><span class="code-line">{&quot;desc&quot;: [], &quot;link&quot;: [&quot;/Computers/&quot;], &quot;title&quot;: [&quot;Computers&quot;]},</span></span>
+<span class="code-line"><span class="code-line">{&quot;desc&quot;: [], &quot;link&quot;: [&quot;/Computers/Programming/&quot;], &quot;title&quot;: [&quot;Programming&quot;]},</span></span>
+<span class="code-line"><span class="code-line">{&quot;desc&quot;: [], &quot;link&quot;: [&quot;/Computers/Programming/Languages/&quot;], &quot;title&quot;: [&quot;Languages&quot;]},</span></span>
+<span class="code-line"><span class="code-line">{&quot;desc&quot;: [], &quot;link&quot;: [&quot;/Computers/Programming/Languages/Python/&quot;], &quot;title&quot;: [&quot;Python&quot;]},</span></span>
+</pre></div>
+
+
+<h4></h4>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/debian.html">Debian</a>
+      <a href="http://localhost:8000/en/tag/linux.html">Linux</a>
+      <a href="http://localhost:8000/en/tag/python.html">Python</a>
+      <a href="http://localhost:8000/en/tag/ubuntu.html">Ubuntu</a>
+      <a href="http://localhost:8000/en/tag/webscraping.html">Webscraping</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+  <div class="related-posts">
+    <h4>You might enjoy</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/en/internet-de-las-cosas-es  ernet de las cosas.html">Internet de las Cosas</a></li>
+    </ul>
+  </div>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

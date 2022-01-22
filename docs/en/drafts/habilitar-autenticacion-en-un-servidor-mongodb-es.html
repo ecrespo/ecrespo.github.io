@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En el artículo sobre la instalación de un servidor mongodb faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor. En este caso se habilitará dicha autenticación para el acceso al servidor. Lo primero es deshabilitar la autenticación en el archivo /etc/mongodb.conf: # Turn on/off security …" />
+<meta name="keywords" content="Canaima, Debian, General, Linux, Ubuntu, Mongodb">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Habilitar autenticación en un servidor mongodb"/>
+<meta property="og:description" content="En el artículo sobre la instalación de un servidor mongodb faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor. En este caso se habilitará dicha autenticación para el acceso al servidor. Lo primero es deshabilitar la autenticación en el archivo /etc/mongodb.conf: # Turn on/off security …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/habilitar-autenticacion-en-un-servidor-mongodb-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2015-05-08 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Linux"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Mongodb"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Habilitar autenticación en un servidor mongodb</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="habilitar-autenticacion-en-un-servidor-mongodb">Habilitar autenticación en un servidor mongodb</h1>
+    <p>
+      Posted on vie 08 mayo 2015 in <a href="http://localhost:8000/en/category/tutorial-linux.html">Tutorial Linux</a>
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>En el artículo sobre la instalación de un <a href="https://www.seraph.to/instalar-un-servidor-mongodb-en-debian.html#instalar-un-servidor-mongodb-en-debian">servidor mongodb</a> faltó definir la autentcación de usuarios que puedan conectarse a dicho servidor.</p>
+<p>En este caso se habilitará dicha autenticación para el acceso al servidor.</p>
+<p>Lo primero es deshabilitar la autenticación en el archivo <code>/etc/mongodb.conf</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span># Turn on/off security.  Off is currently the default</span></span>
+<span class="code-line"><span class="code-line">#noauth = true</span></span>
+<span class="code-line"><span class="code-line">#auth = true</span></span>
+</pre></div>
+
+
+<p>Se inicia el servicio de <code>mongodb</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span> systemctl start  mongodb.service</span></span>
+</pre></div>
+
+
+<p>Se revisa si levanto:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">systemctl</span><span class="w"> </span><span class="n">status</span><span class="w">  </span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="err">●</span><span class="w"> </span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">An</span><span class="w"> </span><span class="n">object</span><span class="o">/</span><span class="n">document</span><span class="o">-</span><span class="n">oriented</span><span class="w"> </span><span class="n">database</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">   </span><span class="n">Loaded</span><span class="p">:</span><span class="w"> </span><span class="n">loaded</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="p">;</span><span class="w"> </span><span class="n">enabled</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">   </span><span class="n">Active</span><span class="p">:</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="p">(</span><span class="n">running</span><span class="p">)</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">vie</span><span class="w"> </span><span class="mi">2015</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">08</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">26</span><span class="w"> </span><span class="n">VET</span><span class="p">;</span><span class="w"> </span><span class="mi">5</span><span class="n">s</span><span class="w"> </span><span class="n">ago</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">     </span><span class="n">Docs</span><span class="p">:</span><span class="w"> </span><span class="n">man</span><span class="p">:</span><span class="n">mongod</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="n">Main</span><span class="w"> </span><span class="n">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">3405</span><span class="w"> </span><span class="p">(</span><span class="n">mongod</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">   </span><span class="n">CGroup</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="n">system</span><span class="o">.</span><span class="n">slice</span><span class="o">/</span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">           </span><span class="err">└─</span><span class="mi">3405</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">mongod</span><span class="w"> </span><span class="o">--</span><span class="n">config</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">mongodb</span><span class="o">.</span><span class="n">conf</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">may</span><span class="w"> </span><span class="mi">08</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">44</span><span class="p">:</span><span class="mi">26</span><span class="w"> </span><span class="n">grievous</span><span class="w"> </span><span class="n">mongod</span><span class="p">[</span><span class="mi">3405</span><span class="p">]:</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">going</span><span class="w"> </span><span class="n">to</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="nb">log</span><span class="o">/</span><span class="n">mongodb</span><span class="o">/</span><span class="n">mongodb</span><span class="o">.</span><span class="n">log</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Se accede al shell de <code>mongodb</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>mongo</span></span>
+<span class="code-line"><span class="code-line">MongoDB shell version: 2.4.10</span></span>
+<span class="code-line"><span class="code-line">connecting to: test</span></span>
+<span class="code-line"><span class="code-line">&gt;</span></span>
+</pre></div>
+
+
+<p>Se cambia a la base de datos <code>admin</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>&gt; use admin</span></span>
+<span class="code-line"><span class="code-line">switched to db admin</span></span>
+</pre></div>
+
+
+<p>Se crea el usuario admin con clave 123456 (sólo de manera didactica) y rol lectura y escritura dbAdmin.</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>&gt; db.addUser(&quot;admin&quot;,&quot;123&quot;)</span></span>
+<span class="code-line"><span class="code-line">{</span></span>
+<span class="code-line"><span class="code-line"> &quot;user&quot; : &quot;admin&quot;,</span></span>
+<span class="code-line"><span class="code-line"> &quot;readOnly&quot; : false,</span></span>
+<span class="code-line"><span class="code-line"> &quot;pwd&quot; : &quot;9f3121efccbe3fef09a799d5e63077c2&quot;,</span></span>
+<span class="code-line"><span class="code-line"> &quot;_id&quot; : ObjectId(&quot;554cf1405cf1b965e6f5c10f&quot;)</span></span>
+<span class="code-line"><span class="code-line">}</span></span>
+</pre></div>
+
+
+<p>Se sale de la base de datos:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="o">&gt;</span> <span class="k">exit</span></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">bye</span></span></span>
+</pre></div>
+
+
+<p>Ahora se edita el archivo <code>/etc/mongodb.conf</code>  para habilitar la autenticación:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span># Turn on/off security.  Off is currently the default</span></span>
+<span class="code-line"><span class="code-line">#noauth = true</span></span>
+<span class="code-line"><span class="code-line">auth = true</span></span>
+</pre></div>
+
+
+<p>Se reinicia <code>mongodb</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">systemctl</span><span class="w"> </span><span class="n">stop</span><span class="w">  </span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">systemctl</span><span class="w"> </span><span class="n">stop</span><span class="w">  </span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">systemctl</span><span class="w"> </span><span class="n">status</span><span class="w">   </span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="err">●</span><span class="w"> </span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">An</span><span class="w"> </span><span class="n">object</span><span class="o">/</span><span class="n">document</span><span class="o">-</span><span class="n">oriented</span><span class="w"> </span><span class="n">database</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">   </span><span class="n">Loaded</span><span class="p">:</span><span class="w"> </span><span class="n">loaded</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="p">;</span><span class="w"> </span><span class="n">enabled</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">   </span><span class="n">Active</span><span class="p">:</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="p">(</span><span class="n">running</span><span class="p">)</span><span class="w"> </span><span class="n">since</span><span class="w"> </span><span class="n">vie</span><span class="w"> </span><span class="mi">2015</span><span class="o">-</span><span class="mi">05</span><span class="o">-</span><span class="mi">08</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">44</span><span class="w"> </span><span class="n">VET</span><span class="p">;</span><span class="w"> </span><span class="mi">4</span><span class="n">s</span><span class="w"> </span><span class="n">ago</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">     </span><span class="n">Docs</span><span class="p">:</span><span class="w"> </span><span class="n">man</span><span class="p">:</span><span class="n">mongod</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="n">Main</span><span class="w"> </span><span class="n">PID</span><span class="p">:</span><span class="w"> </span><span class="mi">4188</span><span class="w"> </span><span class="p">(</span><span class="n">mongod</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">   </span><span class="n">CGroup</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="n">system</span><span class="o">.</span><span class="n">slice</span><span class="o">/</span><span class="n">mongodb</span><span class="o">.</span><span class="n">service</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">           </span><span class="err">└─</span><span class="mi">4188</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">mongod</span><span class="w"> </span><span class="o">--</span><span class="n">config</span><span class="w"> </span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">mongodb</span><span class="o">.</span><span class="n">conf</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">may</span><span class="w"> </span><span class="mi">08</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">58</span><span class="p">:</span><span class="mi">44</span><span class="w"> </span><span class="n">grievous</span><span class="w"> </span><span class="n">mongod</span><span class="p">[</span><span class="mi">4188</span><span class="p">]:</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">going</span><span class="w"> </span><span class="n">to</span><span class="p">:</span><span class="w"> </span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="nb">log</span><span class="o">/</span><span class="n">mongodb</span><span class="o">/</span><span class="n">mongodb</span><span class="o">.</span><span class="n">log</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Se ejecuta el shell de <code>mongodb</code> y se intentan visualizar las bases de datos:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="o">&gt;</span> <span class="k">show</span> <span class="nv">dbs</span></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">Fri</span> <span class="nv">May</span>  <span class="mi">8</span> <span class="mi">12</span>:<span class="mi">06</span>:<span class="mi">19</span>.<span class="mi">122</span> <span class="nv">listDatabases</span> <span class="nv">failed</span>:{ <span class="s2">&quot;</span><span class="s">ok</span><span class="s2">&quot;</span> : <span class="mi">0</span>, <span class="s2">&quot;</span><span class="s">errmsg</span><span class="s2">&quot;</span> : <span class="s2">&quot;</span><span class="s">unauthorized</span><span class="s2">&quot;</span> } <span class="nv">at</span> <span class="nv">src</span><span class="o">/</span><span class="nv">mongo</span><span class="o">/</span><span class="nv">shell</span><span class="o">/</span><span class="nv">mongo</span>.<span class="nv">js</span>:<span class="mi">46</span></span></span>
+</pre></div>
+
+
+<p>Se nota que no se tiene autorización para ver la lista de bases de datos.</p>
+<p>Para ingresar y autenticar al usuario se hace lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>&gt; use admin</span></span>
+<span class="code-line"><span class="code-line">switched to db admin</span></span>
+<span class="code-line"><span class="code-line">&gt; db.auth(&quot;admin&quot;, &quot;123&quot;)</span></span>
+<span class="code-line"><span class="code-line">1</span></span>
+</pre></div>
+
+
+<p>Listar bases de datos:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="o">&gt;</span> <span class="k">show</span> <span class="nv">dbs</span></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">admin</span> <span class="mi">0</span>.<span class="mi">203125</span><span class="nv">GB</span></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">local</span> <span class="mi">0</span>.<span class="mi">078125</span><span class="nv">GB</span></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">personasdb</span> <span class="mi">0</span>.<span class="mi">203125</span><span class="nv">GB</span></span></span>
+</pre></div>
+
+
+<p>Listar usuarios:  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>&gt; db.system.users.find()</span></span>
+<span class="code-line"><span class="code-line">{ &quot;_id&quot; : ObjectId(&quot;554ce337c597c2dbd0089d74&quot;), &quot;user&quot; : &quot;admin&quot;, &quot;pwd&quot; : &quot;95ec4261124ba5951720b199908d892b&quot;, &quot;roles&quot; : [  &quot;readWrite&quot;,  &quot;dbAdmin&quot; ] }  </span></span>
+</pre></div>
+
+
+<p>Para más información se tienen los siguientes enlaces:</p>
+<ol>
+<li><a href="http://blog.crespo.org.ve/2014/09/instalar-un-servidor-mongodb-en-debian.html">https://dezkareid.wordpress.com/2013/07/29/control-de-usuarios-en-mongodb/</a></li>
+<li><a href="https://carlosazaustre.es/blog/como-conectarte-remotamente-a-tu-base-de-datos-mongodb/">https://carlosazaustre.es/blog/como-conectarte-remotamente-a-tu-base-de-datos-mongodb/</a></li>
+<li><a href="http://docs.mongodb.org/v2.4/tutorial/add-user-to-database/">http://docs.mongodb.org/v2.4/tutorial/add-user-to-database/</a></li>
+<li><a href="http://juanvicenteherrera.es/2011/12/20/mongodb-conceptos-de-seguridad/">http://juanvicenteherrera.es/2011/12/20/mongodb-conceptos-de-seguridad/</a></li>
+<li><a href="https://alexanderae.com/mongodb-autenticacion-autorizacion.html">https://alexanderae.com/mongodb-autenticacion-autorizacion.html</a></li>
+</ol>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/canaima.html">Canaima</a>
+      <a href="http://localhost:8000/en/tag/debian.html">Debian</a>
+      <a href="http://localhost:8000/en/tag/general.html">General</a>
+      <a href="http://localhost:8000/en/tag/linux.html">Linux</a>
+      <a href="http://localhost:8000/en/tag/ubuntu.html">Ubuntu</a>
+      <a href="http://localhost:8000/en/tag/mongodb.html">Mongodb</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+  <div class="related-posts">
+    <h4>You might enjoy</h4>
+    <ul class="related-posts">
+      <li><a href="http://localhost:8000/en/internet-de-las-cosas-es  ernet de las cosas.html">Internet de las Cosas</a></li>
+    </ul>
+  </div>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

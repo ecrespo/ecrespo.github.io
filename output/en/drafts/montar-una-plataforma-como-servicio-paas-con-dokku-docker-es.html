@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con los artículos sobre Docker. En este caso se explicará como montar y usar Dokku el cual es una herramienta que facilita montar una Plataforma como Servicio (PaaS) al estilo Heroku en Linux (en este caso Debian Jessie). Para este caso no se tiene un servidor de DNS y …" />
+<meta name="keywords" content="Canaima, Debian, Linux, Ubuntu, Docker, Dokku, PaaS, DevOps">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Montar una Plataforma como servicio (PaaS) con Dokku (docker)."/>
+<meta property="og:description" content="Continuando con los artículos sobre Docker. En este caso se explicará como montar y usar Dokku el cual es una herramienta que facilita montar una Plataforma como Servicio (PaaS) al estilo Heroku en Linux (en este caso Debian Jessie). Para este caso no se tiene un servidor de DNS y …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/montar-una-plataforma-como-servicio-paas-con-dokku-docker-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-05-05 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Docker"/>
+<meta property="article:tag" content="Canaima"/>
+<meta property="article:tag" content="Debian"/>
+<meta property="article:tag" content="Linux"/>
+<meta property="article:tag" content="Ubuntu"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="Dokku"/>
+<meta property="article:tag" content="PaaS"/>
+<meta property="article:tag" content="DevOps"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Montar una Plataforma como servicio (PaaS) con Dokku (docker).</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="montar-una-plataforma-como-servicio-paas-con-dokku-docker">Montar una Plataforma como servicio (PaaS) con Dokku (docker).</h1>
+    <p>
+      Posted on jue 05 mayo 2016 in <a href="https://ecrespo.github.io/en/category/tutorial-de-docker.html">Tutorial de Docker</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Continuando con los artículos sobre Docker.</p>
+<p>En este caso se explicará como montar y usar <a href="https://github.com/dokku/dokku">Dokku</a> el cual es una herramienta que facilita montar una Plataforma como Servicio (<a href="https://es.wikipedia.org/wiki/Computaci%C3%B3n_en_la_nube#Plataforma_como_servicio">PaaS</a>) al estilo <a href="https://www.heroku.com/">Heroku</a> en Linux (en este caso Debian Jessie).</p>
+<p>Para este caso no se tiene un servidor de DNS y un nombre al equipo, se usará la IP 192.168.1.102.</p>
+<p>Los artículos anteriores sobre docker son:<br>
+1. <a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html">Instalar Docker en Debian Jessie</a>  </p>
+<ol>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html">Uso de Docker en Debian Jessie (parte 1)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html">Uso de Docker en Debian Jessie (parte 2)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo Dockerfile</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-usando-docker.html">Iniciando Django usando Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">Instalar Gitlab por medio de Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando microservicios con docker usando docker-compose</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/docker-en-docker-dind.html">Docker en Docker (DinD)</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html">Iniciando Django con docker usando docker-compose con postgresql como microservicio.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/importar-un-contenedor-docker-en-python.html#importar-un-contenedor-docker-en-python">Importar un contenedor Docker en Python.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar">Compartir imagenes Docker por medio de archivos tar</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado">Crear un registro de imagenes Docker privado.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-anaconda-desde-un-contenedor-docker.html#usar-anaconda-desde-un-contenedor-docker">Usar Anaconda desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html#crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs">Crear un entorno de Integración y Despligue continue con Docker para node.js.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-jupyter-notebook-desde-un-contenedor-de-docker.html#usar-jupyter-notebook-desde-un-contenedor-de-docker">Usar Jupyter Notebook desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker">Ejecutar una prueba de doctest con un contenedor Docker</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker.html#ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker">Ejecutar una prueba de unittest en Python con un contenedor Docker.</a> </p>
+</li>
+</ol>
+<p>Para instalar y usar <code>Dokku</code> estaré trabajando con una máquina virtual (para no usar directamente mí equipo), para ello se instalo en dicha máquina virtual docker (<a href="http://blog.crespo.org.ve/2015/12/instalar-docker-en-debian-jessie.html">ver artículo 1</a>).</p>
+<p>El procedimiento de instalación de <code>Dokku</code> lo pueden encontrar en su proyecto en <a href="https://github.com/dokku/dokku">github</a> o en el siguiente <a href="http://dokku.viewdocs.io/dokku/getting-started/advanced-installation/">enlace</a>.</p>
+<p>Instalación (para este procedimiento se instala <code>docker-engine</code>):</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>wget https://raw.githubusercontent.com/dokku/dokku/v0.5.6/bootstrap.sh</span></span>
+<span class="code-line"><span class="code-line">chmod a+x bootstrap.sh</span></span>
+<span class="code-line"><span class="code-line">sudo DOKKU_TAG=v0.5.6 bash bootstrap.sh</span></span>
+</pre></div>
+
+
+<p>Otra opción para instalar es bajarse el repositorio de <code>dokku</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="nt">git</span><span class="w"> </span><span class="nt">clone</span><span class="w"> </span><span class="nt">https</span><span class="o">://</span><span class="nt">github</span><span class="p">.</span><span class="nc">com</span><span class="o">/</span><span class="nt">progrium</span><span class="o">/</span><span class="nt">dokku</span><span class="p">.</span><span class="nc">git</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="nt">cd</span><span class="w"> </span><span class="nt">dokku</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="nt">sudo</span><span class="w"> </span><span class="nt">make</span><span class="w"> </span><span class="nt">install</span><span class="w"> </span><span class="o">;</span><span class="w"> </span><span class="p">#</span><span class="nn">es</span><span class="w"> </span><span class="nt">necesario</span><span class="w"> </span><span class="nt">tener</span><span class="w"> </span><span class="nt">make</span><span class="w"> </span><span class="nt">instalado</span><span class="o">;</span><span class="w"> </span><span class="nt">sudo</span><span class="w"> </span><span class="nt">apt-get</span><span class="w"> </span><span class="nt">install</span><span class="w"> </span><span class="nt">make</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Para ver que versión se tiene:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>dokku version</span></span>
+<span class="code-line"><span class="code-line">v0.5.6-7-g851ca59</span></span>
+</pre></div>
+
+
+<p>Configurar la llave ssh:<br>
+1. Ir a la máquina local, ir al directorio <code>.ssh</code>, si no se tiene una llave RSA generada, se genera una:  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>cd .ssh</span></span>
+<span class="code-line"><span class="code-line">ssh-keygen -t rsa</span></span>
+</pre></div>
+
+
+<ol>
+<li>Ver la llave pública:</li>
+</ol>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>cat id_rsa.pub</span></span>
+</pre></div>
+
+
+<ol>
+<li>Se copia el contenido de la llave.  </li>
+<li>En el servidor, como un usuario se ejecuta lo siguiente:  </li>
+</ol>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">echo</span><span class="w"> </span><span class="ss">&quot;ssh-rsa ..... ernesto@crespo.org.ve&quot;</span><span class="o">|</span><span class="w"> </span><span class="n">sudo</span><span class="w"> </span><span class="n">sshcommand</span><span class="w"> </span><span class="n">acl</span><span class="o">-</span><span class="k">add</span><span class="w"> </span><span class="n">dokku</span><span class="w"> </span><span class="n">ernesto</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Subir una aplicación de <code>node.js</code> y <code>express.js</code>:
+Para ello se tiene un repositorio github con una aplicación en node.js y express.js que tiene una página con un hola mundo.</p>
+<p>Se clonan el repo (desde el equipo local):</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>git clone https://github.com/ecrespo/prueba-nodeexpress.git</span></span>
+</pre></div>
+
+
+<p>La estructura de archivos y directorios son:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>prueba-nodeexpress/</span></span>
+<span class="code-line"><span class="code-line">├── app.json</span></span>
+<span class="code-line"><span class="code-line">├── index.js</span></span>
+<span class="code-line"><span class="code-line">├── LICENSE</span></span>
+<span class="code-line"><span class="code-line">└── package.json</span></span>
+</pre></div>
+
+
+<p>En el siguiente <a href="https://github.com/ecrespo/prueba-nodeexpress">enlace</a> se tiene el repositorio de github.</p>
+<p>Se agrega el repo remoto de <code>dokku</code> (192.168.1.102):</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">git</span><span class="w"> </span><span class="n">remote</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">dokku</span><span class="w"> </span><span class="n">dokku</span><span class="mf">@192.168.1.102</span><span class="o">:</span><span class="n">prueba</span><span class="o">-</span><span class="n">nodeexpress</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Se modifica el archivo <code>index.html</code>, y se sube al repositorio de <code>dokku</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">git</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">public</span><span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">html</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">git</span><span class="w"> </span><span class="n">commit</span><span class="w"> </span><span class="o">-</span><span class="n">m</span><span class="s">&quot;Agregado texto&quot;</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">git</span><span class="w"> </span><span class="n">push</span><span class="w"> </span><span class="n">dokku</span><span class="w"> </span><span class="n">master</span><span class="w"> </span></span></span>
+</pre></div>
+
+
+<p>Al hacer push se tiene la siguiente salida:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="p">....</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Discovering</span><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">types</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="n">Default</span><span class="w"> </span><span class="n">types</span><span class="w"> </span><span class="k">for</span><span class="w">  </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">web</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Releasing</span><span class="w"> </span><span class="n">prueba</span><span class="o">-</span><span class="n">nodeexpress</span><span class="w"> </span><span class="p">(</span><span class="n">dokku</span><span class="o">/</span><span class="n">prueba</span><span class="o">-</span><span class="n">nodeexpress</span><span class="o">:</span><span class="n">latest</span><span class="p">)...</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Deploying</span><span class="w"> </span><span class="n">prueba</span><span class="o">-</span><span class="n">nodeexpress</span><span class="w"> </span><span class="p">(</span><span class="n">dokku</span><span class="o">/</span><span class="n">prueba</span><span class="o">-</span><span class="n">nodeexpress</span><span class="o">:</span><span class="n">latest</span><span class="p">)...</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Attempting</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">scripts</span><span class="p">.</span><span class="n">dokku</span><span class="p">.</span><span class="n">predeploy</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">json</span><span class="w"> </span><span class="p">(</span><span class="k">if</span><span class="w"> </span><span class="n">defined</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">App</span><span class="w"> </span><span class="n">Procfile</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="p">(</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">dokku</span><span class="o">/</span><span class="n">prueba</span><span class="o">-</span><span class="n">nodeexpress</span><span class="o">/</span><span class="n">DOKKU_PROCFILE</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">DOKKU_SCALE</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="n">image</span><span class="p">.</span><span class="w"> </span><span class="n">Generating</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">Procfile</span><span class="p">...</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">New</span><span class="w"> </span><span class="n">DOKKU_SCALE</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">generated</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">=====&gt;</span><span class="w"> </span><span class="n">web</span><span class="o">=</span><span class="mi">1</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Running</span><span class="w"> </span><span class="n">pre</span><span class="o">-</span><span class="n">flight</span><span class="w"> </span><span class="n">checks</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="n">For</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">efficient</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="n">downtime</span><span class="w"> </span><span class="n">deployments</span><span class="p">,</span><span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">CHECKS</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="n">See</span><span class="w"> </span><span class="n">http</span><span class="o">:</span><span class="c1">//dokku.viewdocs.io/dokku/checks-examples.md for examples</span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="n">CHECKS</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">container</span><span class="o">:</span><span class="w"> </span><span class="n">Running</span><span class="w"> </span><span class="n">simple</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="n">check</span><span class="p">...</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Waiting</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="n">seconds</span><span class="w"> </span><span class="p">...</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Default</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="n">check</span><span class="w"> </span><span class="n">successful</span><span class="o">!</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Running</span><span class="w"> </span><span class="n">post</span><span class="o">-</span><span class="n">deploy</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Attempting</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">scripts</span><span class="p">.</span><span class="n">dokku</span><span class="p">.</span><span class="n">postdeploy</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">json</span><span class="w"> </span><span class="p">(</span><span class="k">if</span><span class="w"> </span><span class="n">defined</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">=====&gt;</span><span class="w"> </span><span class="n">renaming</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="n">dacd928c2bb</span><span class="p">)</span><span class="w"> </span><span class="n">clever_tesla</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">prueba</span><span class="o">-</span><span class="n">nodeexpress</span><span class="p">.</span><span class="n">web</span><span class="mf">.1</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">=====&gt;</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">global</span><span class="w"> </span><span class="n">VHOST</span><span class="w"> </span><span class="n">set</span><span class="p">.</span><span class="w"> </span><span class="n">disabling</span><span class="w"> </span><span class="n">vhost</span><span class="w"> </span><span class="n">support</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Setting</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="n">vars</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="nl">NO_VHOST</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">nginx</span><span class="w"> </span><span class="n">port</span><span class="w"> </span><span class="n">set</span><span class="p">.</span><span class="w"> </span><span class="n">setting</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">high</span><span class="w"> </span><span class="n">port</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Setting</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="n">vars</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="nl">DOKKU_NGINX_PORT</span><span class="p">:</span><span class="w"> </span><span class="mi">53541</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Creating</span><span class="w"> </span><span class="n">http</span><span class="w"> </span><span class="n">nginx</span><span class="p">.</span><span class="n">conf</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Running</span><span class="w"> </span><span class="n">nginx</span><span class="o">-</span><span class="n">pre</span><span class="o">-</span><span class="n">reload</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="n">Reloading</span><span class="w"> </span><span class="n">nginx</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">-----&gt;</span><span class="w"> </span><span class="n">Setting</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="n">vars</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="nl">DOKKU_APP_RESTORE</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">=====&gt;</span><span class="w"> </span><span class="n">Application</span><span class="w"> </span><span class="n">deployed</span><span class="o">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">       </span><span class="nl">http</span><span class="p">:</span><span class="c1">//192.168.1.102:53541 (nginx)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">To</span><span class="w"> </span><span class="n">dokku</span><span class="mf">@192.168.1.102</span><span class="o">:</span><span class="n">prueba</span><span class="o">-</span><span class="n">nodeexpress</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">[</span><span class="n">new</span><span class="w"> </span><span class="n">branch</span><span class="p">]</span><span class="w">      </span><span class="n">master</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">master</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Al abrir el navegador en http://192.168.1.102:53541 se tiene lo siguiente:</p>
+<p><img alt="" src="./images/montarunaplataformacomoserviciopaascondokkudocker-1.png"></p>
+<p>Para la instalación de plugins se puede revisar el siguiente <a href="http://dokku.viewdocs.io/dokku/community/plugins/">enlace</a>.</p>
+<p>Existen otras herramientas parecidas a <code>dokku</code>:</p>
+<ul>
+<li><a href="https://flynn.io/">flynn.io</a>.  </li>
+<li><a href="https://azure.microsoft.com/en-us/services/kubernetes-service/">deis.io</a>.  </li>
+<li><a href="https://github.com/dokku-alt/dokku-alt">dokku-alt</a></li>
+</ul>
+<p>De esta forma se hace una pequeña demostración de como tener un entorno de despliegue parecido a Heroku.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/canaima.html">Canaima</a>
+      <a href="https://ecrespo.github.io/en/tag/debian.html">Debian</a>
+      <a href="https://ecrespo.github.io/en/tag/linux.html">Linux</a>
+      <a href="https://ecrespo.github.io/en/tag/ubuntu.html">Ubuntu</a>
+      <a href="https://ecrespo.github.io/en/tag/docker.html">Docker</a>
+      <a href="https://ecrespo.github.io/en/tag/dokku.html">Dokku</a>
+      <a href="https://ecrespo.github.io/en/tag/paas.html">PaaS</a>
+      <a href="https://ecrespo.github.io/en/tag/devops.html">DevOps</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+  <div class="related-posts">
+    <h4>You might enjoy</h4>
+    <ul class="related-posts">
+      <li><a href="https://ecrespo.github.io/en/internet-de-las-cosas-es  ernet de las cosas.html">Internet de las Cosas</a></li>
+    </ul>
+  </div>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

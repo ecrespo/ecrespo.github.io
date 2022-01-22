@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En artículos anteriores se explicó como usar gitlab-ce y gitlab-runner por medio de contenedores y conectarlos para la integración continua. Para que funcione docker por medio de gitlab-runner es necesario modificar la configuración del runner agregando el nombre y la ip de la máquina como se muestra a continuación (archivo …" />
+<meta name="keywords" content="CI/CD, Gitlab-ci, Gitlab-runner, Docker">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Ejecutar una prueba de integración continua con gitlab-ci y gitlab-runner."/>
+<meta property="og:description" content="En artículos anteriores se explicó como usar gitlab-ce y gitlab-runner por medio de contenedores y conectarlos para la integración continua. Para que funcione docker por medio de gitlab-runner es necesario modificar la configuración del runner agregando el nombre y la ip de la máquina como se muestra a continuación (archivo …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/ejecutar-una-prueba-de-integracion-continua-con-gitlab-ci-y-gitlab-runner-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-06-16 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de integración continua"/>
+<meta property="article:tag" content="CI/CD"/>
+<meta property="article:tag" content="Gitlab-ci"/>
+<meta property="article:tag" content="Gitlab-runner"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Ejecutar una prueba de integración continua con gitlab-ci y gitlab-runner.</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="ejecutar-una-prueba-de-integracion-continua-con-gitlab-ci-y-gitlab-runner">Ejecutar una prueba de integración continua con gitlab-ci y gitlab-runner.</h1>
+    <p>
+      Posted on jue 16 junio 2016 in <a href="http://localhost:8000/en/category/tutorial-de-integracion-continua.html">Tutorial de integración continua</a>
+
+        &#8226; 2 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>En artículos anteriores se explicó como usar <a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">gitlab-ce</a> y <a href="https://www.seraph.to/instalar-gitlab-runner-de-gitlab-ci-por-medio-de-docker.html">gitlab-runner</a> por medio de contenedores y conectarlos para la integración continua.</p>
+<p>Para que funcione docker por medio de gitlab-runner es necesario modificar la configuración del runner agregando el nombre y la ip de la máquina como se muestra a continuación (archivo <code>/etc/gitlab-runner/config.toml</code>):</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">concurrent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="o">[</span><span class="n">[runners</span><span class="o">]</span><span class="err">]</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;Sample gitlab-ci cpp project&quot;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;http://12.168.0.60:9080t/ci&quot;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="n">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;5faac16d0aaf8f97fd66f5f586ed9f5f&quot;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;docker&quot;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="o">[</span><span class="n">runners.docker</span><span class="o">]</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">tls_verify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="nc">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">&quot;debian&quot;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">privileged</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">disable_cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">&quot;/cache&quot;</span><span class="o">]</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">extra_hosts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">&quot;culata.dst:192.168.0.60&quot;</span><span class="o">]</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="o">[</span><span class="n">runners.cache</span><span class="o">]</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">Insecure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Luego de modificar el archivo se ejecuta:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>gitlab-runner restart</span></span>
+</pre></div>
+
+
+<p>En el artículo del runner se tiene registrado un proyecto llamado <code>sample-gitlabci-cpp-project</code> tomado de <a href="https://github.com/olindata/sample-gitlabci-cpp-project">github</a>.</p>
+<p>Contiene lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>sample-gitlabci-cpp-project</span></span>
+<span class="code-line"><span class="code-line">├── helloworld.cpp</span></span>
+<span class="code-line"><span class="code-line">├── README.md</span></span>
+<span class="code-line"><span class="code-line">└── verify.sh</span></span>
+</pre></div>
+
+
+<p>El archivo <code>helloworld.cpp</code> tiene lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1">// &#39;Hello World!&#39; program </span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="cp"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kr">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">{</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Hello World!&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">}</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>El archivo <code>verify.sh</code> es el que genera la construcción:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="code-line"><span class="code-line"><span class="normal"> 1</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 2</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 3</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 4</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 5</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 6</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 7</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 8</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 9</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">10</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">11</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">12</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">13</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">14</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">15</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">16</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">17</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">18</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">19</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">20</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">21</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">22</span></pre></div></td><td class="code"><div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/bin/bash</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nb">echo</span> <span class="s2">&quot;Starting sample CI verification script&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nb">echo</span> <span class="s2">&quot;Trying to execute ./helloworld&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">OUTPUT</span><span class="o">=</span><span class="sb">`</span>./helloworld<span class="sb">`</span></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">RETVAL</span><span class="o">=</span><span class="nv">$?</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="o">[</span> <span class="nv">$RETVAL</span> -eq <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="nb">echo</span> <span class="s2">&quot;Retval is 0, OK&quot;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">else</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="nb">echo</span> <span class="s2">&quot;Retval is not 0, FAIL&quot;</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="nb">exit</span> <span class="m">1</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">fi</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$OUTPUT</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;Hello World!&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="nb">echo</span> <span class="s2">&quot;Output is correct, OK&quot;</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">else</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="nb">echo</span> <span class="s2">&quot;Output is not right, FAIL&quot;</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="nb">exit</span> <span class="m">1</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">fi</span></span></span>
+</pre></div>
+</td></tr></table>
+
+<p>Se tiene otro archivo que está oculto con nombre <code>.gitlab-ci.yml</code>, que contiene el proceso de construcción del contenedor docker con la ejecución del <code>verify.sh</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="c1"># Specify the docker image to use (only used if using docker runners)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># See: http://doc.gitlab.com/ee/ci/docker/using_docker_images.html</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">image</span><span class="p">:</span><span class="w"> </span><span class="n">debian</span><span class="w">      </span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># Define commands that run before each job&#39;s script</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">before_script</span><span class="p">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">apt</span><span class="o">-</span><span class="n">get</span><span class="w"> </span><span class="n">update</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">apt</span><span class="o">-</span><span class="n">get</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">gcc</span><span class="w"> </span><span class="n">g</span><span class="o">++</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># Try to compile our sample hello world app</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">compile</span><span class="p">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="n">script</span><span class="p">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="c1"># Compile our app</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="n">g</span><span class="o">++</span><span class="w"> </span><span class="n">helloworld</span><span class="o">.</span><span class="n">cpp</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">helloworld</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="c1"># Verify that our compiled app works properly with a custom &quot;test&quot; script</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="o">-</span><span class="w"> </span><span class="o">./</span><span class="n">verify</span><span class="o">.</span><span class="n">sh</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="c1"># Save the compiled output from the above for downloading via GitLab and in Gitlab 8.6 to use in future build steps</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="n">artifacts</span><span class="p">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">paths</span><span class="p">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="o">-</span><span class="w"> </span><span class="n">helloworld</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Ahora sólo queda ir a la sección build del proyecto y ejecutar un build, la siguiente figura muestra la ejecución del build como tal:</p>
+<p><img alt="" src="./images/ejecutarunapruebadeintegracioncontinuacongitlabciygitlabrunner-1.png"></p>
+<p>Como se ve en la figura la construción se dió sin problemas.</p>
+<p>En siguientes artículos se mostrará el uso con node.js con Django.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/cicd.html">CI/CD</a>
+      <a href="http://localhost:8000/en/tag/gitlab-ci.html">Gitlab-ci</a>
+      <a href="http://localhost:8000/en/tag/gitlab-runner.html">Gitlab-runner</a>
+      <a href="http://localhost:8000/en/tag/docker.html">Docker</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

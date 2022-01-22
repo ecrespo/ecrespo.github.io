@@ -11,16 +11,16 @@ EMAIL = 'ecrespo@gmail.com'
 SITEDESCRIPTION = ' Software Libre, Ciencia de Datos y Python'
 SITELOGO = '//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120'
 PATH = 'content'
-BROWSER_COLOR = '#333333'
-# BROWSER_COLOR = '#e5e5ff'
+#BROWSER_COLOR = '#333333'
+BROWSER_COLOR = '#e5e5ff'
 
 TIMEZONE = 'America/Caracas'
 
 DEFAULT_LANG = 'es'
-I18N_TEMPLATES_LANG = 'es'
+I18N_TEMPLATES_LANG = 'en'
 DEFAULT_LANG = 'es'
-#OG_LOCALE = 'es_VE'
-#LOCALE = 'es_VE'
+OG_LOCALE = 'es_VE'
+LOCALE = ("es_VE", "es_VE.utf8")
 
 DATE_FORMATS = {
     'en': '%B %d, %Y',
@@ -36,13 +36,6 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 MARKUP = ('md', 'ipynb')
-
-
-# MARKDOWN = {
-#  'extension_configs': {
-#    'pyembed.markdown': {}
-#  }
-# }
 
 
 COMPILERS = {
@@ -99,8 +92,9 @@ DEFAULT_PAGINATION = 10
 #RELATIVE_URLS = True
 
 
-THEME = '/home/ernesto/proyectos/ecrespo.github.io/themes/Flex'
+THEME = '/home/ernesto/proyectos/pelican-themes/Flex'
 PYGMENTS_STYLE = 'monokai'
+JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
 
 GOOGLE_ANALYTICS = 'UA-131517246-1'
 #DISQUS_SITENAME = 'seraphto'
@@ -109,6 +103,7 @@ DISQUS_SITENAME = "https://seraphto.disqus.com"
 #DISQUS_PUBLIC_KEY= u""
 PLUGIN_PATHS = ['./plugins', '/home/ernesto/proyectos/pelican-plugins']
 PLUGINS = ['i18n_subsites',
+           'better_codeblock_line_numbering',
            # 'sitemap',
            'related_posts',
            'tag_cloud',
@@ -116,7 +111,7 @@ PLUGINS = ['i18n_subsites',
            'share_post',
            'neighbors',
            # 'pelican-ert',
-           'github_activity',
+#           'github_activity',
            # 'pelican-ipynb.markup',
            # 'disqus_static',
            # 'pelican-gist',
@@ -127,13 +122,13 @@ PLUGINS = ['i18n_subsites',
            'post_stats']  # You may have more plugins
 IGNORE_FILES = [".ipynb_checkpoints"]
 # Show my last activity on GitHub
-GITHUB_USER = 'ecrespo@gmail.com'
-COPYRIGHT_YEAR = 2021
-GITHUB_ACTIVITY_FEED = ''
-GITHUB_ACTIVITY_MAX_ENTRIES = 10
-GITHUB_USER_TYPE = "owner"
-GITHUB_SORT_BY = "created"
-GITHUB_DIRECTION = "desc"
+# GITHUB_USER = 'ecrespo@gmail.com'
+COPYRIGHT_YEAR = 2022
+# GITHUB_ACTIVITY_FEED = 'https://github.com/ecrespo.atom'
+# GITHUB_ACTIVITY_MAX_ENTRIES = 10
+# GITHUB_USER_TYPE = "owner"
+# GITHUB_SORT_BY = "created"
+# GITHUB_DIRECTION = "desc"
 
 SIDEBAR_LINKS = [
     '<a href="/about/">About</a>',
@@ -167,3 +162,36 @@ TOC = {
 
     'TOC_INCLUDE_TITLE': 'true',     # If 'true' include title in toc
 }
+
+# MD_EXTENSIONS = [
+#     'codehilite(css_class=highlight,linenums=False)',
+#     'extra'
+#     ]
+
+
+# MARKDOWN = {
+#  'extension_configs': {
+#    'pyembed.markdown': {}
+#  }
+# }
+
+I18N_SUBSITES = {
+    'en': {
+        'SITENAME': 'Seraph\'s Blog',
+        }
+    }
+
+GOOGLE_ADSENSE = {
+    'ca_id': 'pub-0261001661746989',    # Your AdSense ID
+    'page_level_ads': True,          # Allow Page Level Ads (mobile)
+    'ads': {
+        'aside': '1234561',          # Side bar banner (all pages)
+        'main_menu': '1234562',      # Banner before main menu (all pages)
+        'index_top': '1234563',      # Banner after main menu (index only)
+        'index_bottom': '1234564',   # Banner before footer (index only)
+        'article_top': '1234565',    # Banner after article title (article only)
+        'article_bottom': '1234566', # Banner after article content (article only)
+    }
+}
+
+GOOGLE_GLOBAL_SITE_TAG = 'G-300366206' 

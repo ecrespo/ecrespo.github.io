@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En el artículo anterior se explica como usar memory_profiler para evaluar el consumo de memoria de un programa Python, a continuación se explicará como graficar ese consumo utilizando matplotlib. Este artículo se basa en el artículo Memory plots with memory_profiler. Se hará una pequeña modificación al programa que cálcula la …" />
+<meta name="keywords" content="General, numpy, Python">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Graficar consumo de memoria con memory_profiler"/>
+<meta property="og:description" content="En el artículo anterior se explica como usar memory_profiler para evaluar el consumo de memoria de un programa Python, a continuación se explicará como graficar ese consumo utilizando matplotlib. Este artículo se basa en el artículo Memory plots with memory_profiler. Se hará una pequeña modificación al programa que cálcula la …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/graficar-consumo-de-memoria-con-memory_profiler-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2013-02-03 10:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="numpy"/>
+<meta property="article:tag" content="Python"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Graficar consumo de memoria con memory_profiler</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="graficar-consumo-de-memoria-con-memory_profiler">Graficar consumo de memoria con memory_profiler</h1>
+    <p>
+      Posted on dom 03 febrero 2013 in <a href="http://localhost:8000/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>En el <a href="https://www.seraph.to/monitorear-el-uso-de-memoria-de-un-programa-python-con-memory_profiler.html#monitorear-el-uso-de-memoria-de-un-programa-python-con-memory_profiler">artículo anterior</a> se explica como usar memory_profiler para evaluar el consumo de memoria de un programa Python, a continuación se explicará como graficar ese consumo utilizando matplotlib.</p>
+<p>Este artículo se basa en el artículo <a href="http://fseoane.net/blog/2013/memory-plots-with-memory_profiler/">Memory plots with memory_profiler</a>.</p>
+<p>Se hará una pequeña modificación al programa que cálcula la matriz inversa:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># -*- coding: utf-8 -*-</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Importar de memory_profiler a memory_usage</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">memory_profiler</span> <span class="kn">import</span> <span class="n">memory_usage</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa numpy como np</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea la funcion que calcula la matriz inversa</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">Inversa</span><span class="p">(</span><span class="n">n</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">))</span><span class="o">.</span><span class="n">I</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#rando = np.random.rand(n, n)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#a = np.matrix(rando)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#inversa = a.I</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">return</span> <span class="n">inversa</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define una lista de  tamaños de la matriz</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">tamagno</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se calcula la memoria usada de la funcion Inversa pasando el ultimo tamaño de la lista generada</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">mem_usage</span> <span class="o">=</span> <span class="n">memory_usage</span><span class="p">((</span><span class="n">Inversa</span><span class="p">,(</span><span class="n">tamagno</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],)),</span><span class="n">interval</span><span class="o">=</span><span class="mf">.01</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se imprime la lista que contiene la información de la memoria usada</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span> <span class="n">mem_usage</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se importa pylab</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">pl</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se genera la gráfica</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mem_usage</span><span class="p">))</span> <span class="o">*</span> <span class="mf">.01</span><span class="p">,</span> <span class="n">mem_usage</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Matriz Inversa&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">pl</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Tiempo (seg)&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">pl</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Consumo de memoria (MB)&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">pl</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></span></span>
+</pre></div>
+
+
+<p>El resultado de la ejecución es el siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>[11.39453125, 13.39453125, 15.45703125, 17.51953125, 19.83984375, 21.90234375, 23.96484375, 26.02734375, 28.34765625, 30.41015625, 32.73046875, 34.79296875, 36.85546875, 38.91796875, 41.23828125, 43.30078125, 53.80859375, 64.37890625, 74.94921875, 48.70703125, 60.30859375, 71.91015625, 77.8046875, 81.15625, 85.0234375, 88.890625, 92.5, 96.109375, 99.71875, 103.5859375, 107.453125, 111.04296875, 114.39453125, 118.00390625, 121.61328125, 125.22265625, 128.83203125, 132.44140625, 134.76171875, 138.11328125, 139.6328125, 139.6328125, 140.5703125, 140.5703125, 140.5703125, 140.5703125, 140.5703125, 140.5703125, 140.5703125, 140.4609375, 140.4609375, 140.4609375, 139.953125, 140.4609375, 140.4609375, 140.4609375, 140.4609375, 140.4609375, 140.4609375, 140.4609375, 140.4609375, 140.20703125, 140.20703125, 139.953125, 140.20703125, 140.20703125, 140.4609375, 140.4609375, 140.4609375, 140.4609375, 140.4609375, 140.4609375, 140.6640625, 140.6640625, 140.6640625, 140.05078125, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.625, 140.625, 140.625, 140.625, 140.05078125, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.05078125, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.05078125, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.55859375, 140.359375, 140.61328125, 140.61328125, 140.61328125, 140.61328125, 140.61328125, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.7265625, 140.75, 140.75, 140.75, 140.75, 140.75, 140.75, 140.75, 140.75, 140.75, 140.75, 140.75, 140.75, 141.26171875, 141.26171875, 141.26171875, 141.26171875, 140.75, 140.75, 141.26171875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 144.8671875, 142.80859375, 140.75, 140.75, 140.75, 141.26171875, 141.26171875, 141.26171875, 141.26171875, 140.8359375, 149.08203125, 149.08203125, 153.4609375, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 157.328125, 149.08203125, 149.08203125, 140.8359375, 140.8359375, 141.34765625, 141.34765625, 141.34765625, 141.34765625, 141.34765625, 142.89453125, 142.89453125, 143.6640625, 144.953125, 144.953125, 144.953125, 144.953125, 144.953125, 144.953125, 144.953125, 144.953125, 144.953125, 144.953125, 144.953125, 142.89453125, 142.89453125, 142.89453125, 142.89453125, 140.8359375, 140.8359375, 140.8359375, 140.8359375, 140.8359375, 140.8359375, 140.8359375, 140.8359375, 140.8359375, 140.8359375, 140.8359375, 141.34375, 141.34375, 141.34375, 140.83984375, 140.83984375, 140.83984375, 142.8984375, 143.41015625, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 144.95703125, 142.8984375, 142.8984375, 140.84375, 140.84375, 140.84375, 141.35546875, 141.35546875, 141.35546875, 141.35546875, 140.84375, 144.96484375, 148.83203125, 156.3046875, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 157.078125, 149.08984375, 149.08984375, 140.84375, 140.84375, 141.35546875, 141.35546875, 141.35546875, 141.35546875, 140.84375, 142.90234375, 142.90234375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 144.9609375, 142.90234375, 142.90234375, 140.84375, 140.84375, 140.84375, 141.35546875, 141.35546875, 141.35546875, 141.35546875, 140.84375, 140.84375, 141.765625, 150.015625, 160.84375, 161.35546875, 76.8515625, 12.84375]</span></span>
+</pre></div>
+
+
+<p>La gráfica que se genera es la siguiente:</p>
+<p><img alt="gráfica consumo de memoria" src="./images/2013-grafica-memoria.png"></p>
+<p>Se puede notar en la gráfica que se incrementa el consumo de memoria rápidamente en menos de 1 segundo a aproximadamente 140MB, luego viene una estabilización con pequeños aumentos y disminuciones al valor constante hasta que se genera una caída a 12MB a los 5 segundos de ejecución.</p>
+<p>Si desea ver más ejemplos de como graficar el consumo de memoria puede revisar el artículo el cual se baso este.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/general.html">General</a>
+      <a href="http://localhost:8000/en/tag/numpy.html">numpy</a>
+      <a href="http://localhost:8000/en/tag/python.html">Python</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

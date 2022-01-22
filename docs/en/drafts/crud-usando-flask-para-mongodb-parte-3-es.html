@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con la serie de artículos sobre acceso a mongodb desde Flask. Los artículos anteriores son: Consulta a MongoDB desde Flask (parte 1) Consulta a MongoDB desde Flask (parte 2 - paginación) Para revisar los artículos relacionados a este artículo pueden ver: Artículos sobre Docker Artículos sobre MongoDB Artículos sobre Flask …" />
+<meta name="keywords" content="Python, MongoDB, Flask, Docker, CRUD">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="CRUD usando Flask para MongoDB (parte 3)."/>
+<meta property="og:description" content="Continuando con la serie de artículos sobre acceso a mongodb desde Flask. Los artículos anteriores son: Consulta a MongoDB desde Flask (parte 1) Consulta a MongoDB desde Flask (parte 2 - paginación) Para revisar los artículos relacionados a este artículo pueden ver: Artículos sobre Docker Artículos sobre MongoDB Artículos sobre Flask …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/crud-usando-flask-para-mongodb-parte-3-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-09-28 11:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="MongoDB"/>
+<meta property="article:tag" content="Flask"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="CRUD"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; CRUD usando Flask para MongoDB (parte 3).</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="crud-usando-flask-para-mongodb-parte-3">CRUD usando Flask para MongoDB (parte 3).</h1>
+    <p>
+      Posted on mié 28 septiembre 2016 in <a href="http://localhost:8000/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Continuando con la serie de artículos sobre acceso a mongodb desde Flask. </p>
+<p>Los artículos anteriores son:</p>
+<ul>
+<li><a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-1.html">Consulta a MongoDB desde Flask (parte 1)</a> </li>
+<li><a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-2-paginacion.html">Consulta a MongoDB desde Flask (parte 2 - paginación)</a></li>
+</ul>
+<p>Para revisar los artículos relacionados a este artículo pueden ver:</p>
+<ul>
+<li><a href="https://www.seraph.to/tag/docker.html">Artículos sobre Docker</a></li>
+<li><a href="https://www.seraph.to/tag/mongodb.html">Artículos sobre MongoDB</a></li>
+<li><a href="https://www.seraph.to/tag/flask.html">Artículos sobre Flask</a></li>
+</ul>
+<p>En la base de datos mongodb se tiene lo siguientes datos de los empleados:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>[{&quot;edad&quot;: 29, &quot;nombre&quot;: &quot;Jane Doe&quot;, &quot;dni&quot;: 8, &quot;sexo&quot;: &quot;Femenino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebbce45fd2bbeffc51330b&quot;}}, {&quot;edad&quot;: 39, &quot;nombre&quot;: &quot;John Doe&quot;, &quot;dni&quot;: 7, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebbd195fd2bbeffc51330c&quot;}}, {&quot;edad&quot;: 55, &quot;nombre&quot;: &quot;Pedro Perez&quot;, &quot;dni&quot;: 6, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebbd505fd2bbeffc51330d&quot;}}, {&quot;edad&quot;: 65, &quot;nombre&quot;: &quot;Petra&quot;, &quot;dni&quot;: 5, &quot;sexo&quot;: &quot;Femenino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebbd6b5fd2bbeffc51330e&quot;}}, {&quot;edad&quot;: 18, &quot;nombre&quot;: &quot;Luis Gonzalez&quot;, &quot;dni&quot;: 4, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebc34d5fd2bbeffc51330f&quot;}}, {&quot;edad&quot;: 28, &quot;nombre&quot;: &quot;Carolina&quot;, &quot;dni&quot;: 3, &quot;sexo&quot;: &quot;Femenino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebc3715fd2bbeffc513310&quot;}}, {&quot;edad&quot;: 34, &quot;nombre&quot;: &quot;Luissana&quot;, &quot;dni&quot;: 2, &quot;sexo&quot;: &quot;Femenino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebc3935fd2bbeffc513311&quot;}}, {&quot;edad&quot;: 43, &quot;nombre&quot;: &quot;Neg&quot;, &quot;dni&quot;: 1, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebc4b85fd2bbeffc513312&quot;}}]</span></span>
+</pre></div>
+
+
+<p>Para este artículo se va a desarrollar y probar un CRUD con Flask usando como base de datos mongodb.</p>
+<h4>Insertar un empleado en la colección</h4>
+<p>El código para insertar un empleado se muestra a continuación:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">#Se</span><span class="w"> </span><span class="n">define</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">funcion</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="n">metodo</span><span class="w"> </span><span class="k">get</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">@app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/add&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=[</span><span class="n">&#39;GET&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">def</span><span class="w"> </span><span class="k">add</span><span class="p">()</span><span class="err">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">toma</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">nombre</span><span class="p">,</span><span class="w"> </span><span class="n">sexo</span><span class="p">,</span><span class="w"> </span><span class="n">edad</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">dni</span><span class="w"> </span><span class="n">como</span><span class="w"> </span><span class="n">argumentos</span><span class="w"> </span><span class="n">del</span><span class="w"> </span><span class="n">url</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">nombre</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">args</span><span class="o">[</span><span class="n">&#39;nombre&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">sexo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">args</span><span class="o">[</span><span class="n">&#39;sexo&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">edad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">int</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">args</span><span class="o">[</span><span class="n">&#39;edad&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">dni</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">int</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">args</span><span class="o">[</span><span class="n">&#39;dni&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">usa</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">coleccin</span><span class="w"> </span><span class="n">empleados</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleados</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mongo</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">empleados</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">inserta</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">documento</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">coleccion</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleados</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span><span class="err">{</span><span class="s1">&#39;nombre&#39;</span><span class="err">:</span><span class="n">nombre</span><span class="p">,</span><span class="s1">&#39;sexo&#39;</span><span class="err">:</span><span class="n">sexo</span><span class="p">,</span><span class="s1">&#39;edad&#39;</span><span class="err">:</span><span class="n">edad</span><span class="p">,</span><span class="s1">&#39;dni&#39;</span><span class="err">:</span><span class="n">dni</span><span class="err">}</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">retorna</span><span class="w"> </span><span class="n">que</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">usuario</span><span class="w"> </span><span class="n">fue</span><span class="w"> </span><span class="n">agregado</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">jsonify</span><span class="p">(</span><span class="err">{</span><span class="s1">&#39;resultado&#39;</span><span class="err">:</span><span class="w"> </span><span class="s1">&#39;Usuario agregado&#39;</span><span class="w"> </span><span class="err">}</span><span class="p">)</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<h4>Buscar un empleado en la colección</h4>
+<p>El código para buscar un empleado en la colección se muestra a continuación:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">#Se</span><span class="w"> </span><span class="n">crea</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">funcion</span><span class="w"> </span><span class="n">find</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="n">metodo</span><span class="w"> </span><span class="k">get</span><span class="p">.</span><span class="w"> </span><span class="nv">@app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/find&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=[</span><span class="n">&#39;GET&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"> </span><span class="n">def</span><span class="w"> </span><span class="n">find</span><span class="p">()</span><span class="err">:</span><span class="w">     </span><span class="n">#Se</span><span class="w"> </span><span class="n">obtiene</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">nombre</span><span class="w"> </span><span class="n">como</span><span class="w"> </span><span class="n">argumento</span><span class="w"> </span><span class="n">del</span><span class="w"> </span><span class="n">url</span><span class="p">.</span><span class="w">     </span><span class="n">nombre</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">args</span><span class="o">[</span><span class="n">&#39;nombre&#39;</span><span class="o">]</span><span class="p">)</span><span class="w">     </span><span class="n">#Se</span><span class="w"> </span><span class="n">conecta</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">coleccion</span><span class="w"> </span><span class="n">empleados</span><span class="p">.</span><span class="w">     </span><span class="n">empleados</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mongo</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">empleados</span><span class="w">     </span><span class="n">#Se</span><span class="w"> </span><span class="n">busca</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">nombre</span><span class="w"> </span><span class="n">en</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">coleccion</span><span class="p">.</span><span class="w">     </span><span class="n">resultado</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">empleados</span><span class="p">.</span><span class="n">find_one</span><span class="p">(</span><span class="err">{</span><span class="s1">&#39;nombre&#39;</span><span class="err">:</span><span class="n">nombre</span><span class="err">}</span><span class="p">)</span><span class="w">     </span><span class="n">#Y</span><span class="w"> </span><span class="n">se</span><span class="w"> </span><span class="n">devuelve</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">resultado</span><span class="p">.</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">dumps</span><span class="p">(</span><span class="n">resultado</span><span class="p">)</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<h4>Actualizar un empleado en la colección</h4>
+<p>El código para actualizar un empleado se muestra a continuación:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">#Se</span><span class="w"> </span><span class="n">define</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">funcion</span><span class="w"> </span><span class="k">update</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="n">metodo</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">que</span><span class="w"> </span><span class="n">actualiza</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="n">documento</span><span class="w"> </span><span class="n">de</span><span class="w"> </span><span class="n">la</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">#coleccion</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">@app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=[</span><span class="n">&#39;GET&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">def</span><span class="w"> </span><span class="k">update</span><span class="p">()</span><span class="err">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">toma</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">nombre</span><span class="p">,</span><span class="n">edad</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">dni</span><span class="w"> </span><span class="n">como</span><span class="w"> </span><span class="n">argumentos</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">nombre</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">str</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">args</span><span class="o">[</span><span class="n">&#39;nombre&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">edad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">int</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">args</span><span class="o">[</span><span class="n">&#39;edad&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">dni</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">int</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">args</span><span class="o">[</span><span class="n">&#39;dni&#39;</span><span class="o">]</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">conecta</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">coleccion</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleados</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mongo</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">empleados</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">busca</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">nombre</span><span class="w"> </span><span class="n">en</span><span class="w"> </span><span class="n">los</span><span class="w"> </span><span class="n">documentos</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleado</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">empleados</span><span class="p">.</span><span class="n">find_one</span><span class="p">(</span><span class="err">{</span><span class="s1">&#39;nombre&#39;</span><span class="err">:</span><span class="n">nombre</span><span class="err">}</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">actuliza</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">edad</span><span class="p">,</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">dni</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleado</span><span class="o">[</span><span class="n">&#39;edad&#39;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">edad</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleado</span><span class="o">[</span><span class="n">&#39;dni&#39;</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dni</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">salva</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">empleado</span><span class="w"> </span><span class="n">en</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">coleccion</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleados</span><span class="p">.</span><span class="k">save</span><span class="p">(</span><span class="n">empleado</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">devuelve</span><span class="w"> </span><span class="n">que</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">usuario</span><span class="w"> </span><span class="n">ha</span><span class="w"> </span><span class="n">sido</span><span class="w"> </span><span class="n">actualizado</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">dumps</span><span class="p">(</span><span class="err">{</span><span class="s1">&#39;resultado&#39;</span><span class="err">:</span><span class="w"> </span><span class="s1">&#39;Usuario actualizado&#39;</span><span class="err">}</span><span class="p">)</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<h4>Remover un empleado de la colección</h4>
+<p>El código para remover un empleado de la colección es el siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">#Se</span><span class="w"> </span><span class="n">define</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">funcion</span><span class="w"> </span><span class="k">delete</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">#donde</span><span class="w"> </span><span class="n">en</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">url</span><span class="w"> </span><span class="n">se</span><span class="w"> </span><span class="n">pasa</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">nombre</span><span class="w"> </span><span class="n">del</span><span class="w"> </span><span class="n">empleado</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">borrar</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nv">@app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/delete/&lt;nombre&gt;&#39;</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">def</span><span class="w"> </span><span class="k">delete</span><span class="p">(</span><span class="n">nombre</span><span class="p">)</span><span class="err">:</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">conecta</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">coleccion</span><span class="w"> </span><span class="n">empleados</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleados</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mongo</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="n">empleados</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">busca</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">documento</span><span class="w"> </span><span class="n">del</span><span class="w"> </span><span class="n">empleado</span><span class="w"> </span><span class="n">por</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">nombre</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleado</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">empleados</span><span class="p">.</span><span class="n">find_one</span><span class="p">(</span><span class="err">{</span><span class="s1">&#39;nombre&#39;</span><span class="err">:</span><span class="n">nombre</span><span class="err">}</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">remueve</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">empleado</span><span class="w"> </span><span class="n">de</span><span class="w"> </span><span class="n">la</span><span class="w"> </span><span class="n">coleccion</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">empleados</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">empleado</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="n">#Se</span><span class="w"> </span><span class="n">devuelve</span><span class="w"> </span><span class="n">el</span><span class="w"> </span><span class="n">resultado</span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">dumps</span><span class="p">(</span><span class="err">{</span><span class="s1">&#39;resultado&#39;</span><span class="err">:</span><span class="w"> </span><span class="s1">&#39;Usuario removido&#39;</span><span class="err">}</span><span class="p">)</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Noten que la forma de pasar argumentos a la función delete es diferente de las demás funciones.</p>
+<p>Construcción de la imagen Docker y ejecución de los contenedores
+Los archivos Dockerfile y docker-compose.yml se explicaron en el primer artículo de esta sección ( se encuentran en el inicio de este artículo los enlaces).</p>
+<p>Para construir la imagen docker se ejecuta:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>docker-compose build</span></span>
+</pre></div>
+
+
+<p>Para ejecutar los contenedores de la aplicación y de mongodb se ejecuta:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>docker-compose up</span></span>
+</pre></div>
+
+
+<p>Prueba del CRUD</p>
+<p>Para crear un empleado se abre el siguiente URL en el navegador:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/add?nombre=Ernesto&amp;dni=33&amp;edad=11&amp;sexo=Masculino</span></span>
+</pre></div>
+
+
+<p>Devuelve un json:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="p">{</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="s">&quot;resultado&quot;</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;Usuario agregado&quot;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">}</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Para buscar el empleado que se incorporó anteriormente se abre el navegador en el URL:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/find?nombre=Ernesto</span></span>
+</pre></div>
+
+
+<p>Devuelve el siguiente json:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>{&quot;_id&quot;: {&quot;$oid&quot;: &quot;57ec8714b7cd2f00565e8784&quot;}, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;edad&quot;: 11, &quot;nombre&quot;: &quot;Ernesto&quot;, &quot;dni&quot;: 33}</span></span>
+</pre></div>
+
+
+<p>Para actualizar al empleado Ernesto se abre el navegador en el siguiente URL:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/update?nombre=Ernesto&amp;edad=45&amp;dni=50</span></span>
+</pre></div>
+
+
+<p>Acá se actualiza la edad y el dni.</p>
+<p>Esto devuelve el siguiente json:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>{&quot;resultado&quot;: &quot;Usuario actualizado&quot;}</span></span>
+</pre></div>
+
+
+<p>Por último se va a eliminar al empleado abriendo el navegador en el siguiente URL:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>http://localhost:5000/delete/Ernesto</span></span>
+</pre></div>
+
+
+<p>Esto devuelve el siguiente json:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>{&quot;resultado&quot;: &quot;Usuario removido&quot;}</span></span>
+</pre></div>
+
+
+<p>Se nota que para el delete la forma de pasar el URL es distinta a las demás que se han ejecutado.</p>
+<p>El código fuente de este artículo se encuentra en la rama <a href="https://gitlab.com/ecrespo/tutorial-flask/tree/mongo3/">mongo3 de gitlab.com</a></p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/python.html">Python</a>
+      <a href="http://localhost:8000/en/tag/mongodb.html">MongoDB</a>
+      <a href="http://localhost:8000/en/tag/flask.html">Flask</a>
+      <a href="http://localhost:8000/en/tag/docker.html">Docker</a>
+      <a href="http://localhost:8000/en/tag/crud.html">CRUD</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

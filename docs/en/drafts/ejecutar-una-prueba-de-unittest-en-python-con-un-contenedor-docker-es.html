@@ -1,0 +1,437 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="En este artículo prácticamente se hará lo mismo que el artículo anterior, pero se creará un archivo donde se define una clase la cual hará las pruebas unitarias. La parte de pruebas unitarias se basa de un post anterior que se llama Pruebas unitarias con unittest en Python. Los artículos …" />
+<meta name="keywords" content="Python, unittest, Docker">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Ejecutar una prueba de unittest en Python con un contenedor Docker."/>
+<meta property="og:description" content="En este artículo prácticamente se hará lo mismo que el artículo anterior, pero se creará un archivo donde se define una clase la cual hará las pruebas unitarias. La parte de pruebas unitarias se basa de un post anterior que se llama Pruebas unitarias con unittest en Python. Los artículos …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-03-27 11:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="unittest"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Ejecutar una prueba de unittest en Python con un contenedor Docker.</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="ejecutar-una-prueba-de-unittest-en-python-con-un-contenedor-docker">Ejecutar una prueba de unittest en Python con un contenedor Docker.</h1>
+    <p>
+      Posted on dom 27 marzo 2016 in <a href="http://localhost:8000/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>En este artículo prácticamente se hará lo mismo que el artículo <a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker">anterior</a>, pero se creará un archivo donde se define una clase la cual hará las pruebas unitarias.</p>
+<p>La parte de pruebas unitarias se basa de un post anterior que se llama <a href="https://www.seraph.to/pruebas-unitarias-en-python-con-unittest.html">Pruebas unitarias con unittest en Python</a>.</p>
+<p>Los artículos anteriores sobre docker son:<br>
+1. <a href="https://www.seraph.to/instalar-docker-en-debian-jessie.html">Instalar Docker en Debian Jessie</a>  </p>
+<ol>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-1.html">Uso de Docker en Debian Jessie (parte 1)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/uso-de-docker-en-debian-jessie-parte-2.html">Uso de Docker en Debian Jessie (parte 2)</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-una-imagen-docker-a-partir-de-un-archivo-dockerfile.html">Crear una imagen Docker a partir de un archivo Dockerfile</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-usando-docker.html">Iniciando Django usando Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/instalar-gitlab-por-medio-de-docker.html">Instalar Gitlab por medio de Docker</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutando-micros-servicios-con-docker-usando-docker-compose.html">Ejecutando microservicios con docker usando docker-compose</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/docker-en-docker-dind.html">Docker en Docker (DinD)</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/iniciando-django-con-docker-usando-docker-compose-con-postgresql-como-microservicio.html">Iniciando Django con docker usando docker-compose con postgresql como microservicio.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/importar-un-contenedor-docker-en-python.html#importar-un-contenedor-docker-en-python">Importar un contenedor Docker en Python.</a> </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/compartir-imagenes-docker-por-medio-de-archivos-tar.html#compartir-imagenes-docker-por-medio-de-archivos-tar">Compartir imagenes Docker por medio de archivos tar</a>.</p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-registro-de-imagenes-docker-privado.html#crear-un-registro-de-imagenes-docker-privado">Crear un registro de imagenes Docker privado.</a></p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-anaconda-desde-un-contenedor-docker.html#usar-anaconda-desde-un-contenedor-docker">Usar Anaconda desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs.html#crear-un-entorno-de-integracion-y-despligue-continue-con-docker-para-nodejs">Crear un entorno de Integración y Despligue continue con Docker para node.js.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/usar-jupyter-notebook-desde-un-contenedor-de-docker.html#usar-jupyter-notebook-desde-un-contenedor-de-docker">Usar Jupyter Notebook desde un contenedor Docker.</a>  </p>
+</li>
+<li>
+<p><a href="https://www.seraph.to/ejecutar-una-prueba-de-doctest-con-un-contenedor-docker.html#ejecutar-una-prueba-de-doctest-con-un-contenedor-docker">Ejecutar una prueba de doctest con un contenedor Docker</a>.</p>
+</li>
+</ol>
+<p>Ahora se tendrán los siguientes archivos en el directorio <code>pruebas-doctest</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>pruebas-doctest</span></span>
+<span class="code-line"><span class="code-line">├── Dockerfile</span></span>
+<span class="code-line"><span class="code-line">├── raizcuadrada.py</span></span>
+<span class="code-line"><span class="code-line">├── raizcuadrada_test.py</span></span>
+<span class="code-line"><span class="code-line">└── raizcuadrada.txt</span></span>
+</pre></div>
+
+
+<p>El Dockerfile, <code>raizcuadrada.py</code> y <code>raizcuadrada.txt</code> son los mismos del artículo <a href="http://blog.crespo.org.ve/2016/03/ejecutar-una-prueba-de-doctest-con-un.html">anterior</a>.</p>
+<p>El archivo <code>raizcuadrada_test.py</code> tiene lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># -*- coding: utf-8 -*-</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa el módulo unittest y math</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">unittest</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa la funcion Raiz del modulo raizcuadrada</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">raizcuadrada</span> <span class="kn">import</span> <span class="n">Raiz</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">RaizTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">test_Raiz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="sd">&quot;&quot;&quot;Test para la raiz de nueve que devuelve 3 que debe pasar.&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">Raiz</span><span class="p">(</span><span class="mi">9</span><span class="p">))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">test_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="sd">&quot;&quot;&quot;Test para la raiz de 0 que devuelve 0, que debe pasar.&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Raiz</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">test_negative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="sd">&quot;&quot;&quot;Test para la raiz de un número negativo, que debe fallar.&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1"># Este debe devolver un ValueError, pero se espera un IndexError.</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">Raiz</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se ejecuta la prueba unitaria</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span></span></span>
+</pre></div>
+
+
+<p>Ahora se reconstruye  la imagen de Docker:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">docker</span><span class="w"> </span><span class="kr">build</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="w"> </span><span class="n">pruebas</span><span class="o">-</span><span class="n">doctest</span><span class="w"> </span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Sending</span><span class="w"> </span><span class="kr">build</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Docker</span><span class="w"> </span><span class="n">daemon</span><span class="w">  </span><span class="mf">7.68</span><span class="w"> </span><span class="n">kB</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">FROM</span><span class="w"> </span><span class="n">python</span><span class="o">:</span><span class="mf">3.4</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">c40d327867e9</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">MAINTAINER</span><span class="w"> </span><span class="n">Ernesto</span><span class="w"> </span><span class="n">Crespo</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">Using</span><span class="w"> </span><span class="n">cache</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">3</span><span class="n">b1aced33b5e</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">WORKDIR</span><span class="w"> </span><span class="o">/</span><span class="n">app</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">Using</span><span class="w"> </span><span class="n">cache</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">7</span><span class="n">dd09842cf61</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">COPY</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="o">/</span><span class="n">app</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">842</span><span class="n">cd3bd051f</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Removing</span><span class="w"> </span><span class="n">intermediate</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="mi">140</span><span class="n">eaaf7935f</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Successfully</span><span class="w"> </span><span class="n">built</span><span class="w"> </span><span class="mi">842</span><span class="n">cd3bd051f</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Y se ejecuta la prueba:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="nf">docker</span><span class="w"> </span><span class="no">run</span><span class="w"> </span><span class="no">pruebas-doctest</span><span class="w"> </span><span class="no">python</span><span class="w"> </span><span class="no">raizcuadrada_test.py</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="na">.E.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="err">======================================================================</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="nl">ERROR:</span><span class="w"> </span><span class="nf">test_negative</span><span class="w"> </span><span class="p">(</span><span class="no">__main__.RaizTest</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="nf">Test</span><span class="w"> </span><span class="no">para</span><span class="w"> </span><span class="no">la</span><span class="w"> </span><span class="no">raiz</span><span class="w"> </span><span class="no">de</span><span class="w"> </span><span class="no">un</span><span class="w"> </span><span class="no">número</span><span class="w"> </span><span class="no">negativo</span><span class="p">,</span><span class="w"> </span><span class="no">que</span><span class="w"> </span><span class="no">debe</span><span class="w"> </span><span class="no">fallar.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="err">----------------------------------------------------------------------</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="nf">Traceback</span><span class="w"> </span><span class="p">(</span><span class="no">most</span><span class="w"> </span><span class="no">recent</span><span class="w"> </span><span class="no">call</span><span class="w"> </span><span class="no">last</span><span class="p">):</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="nf">File</span><span class="w"> </span><span class="err">&quot;</span><span class="no">raizcuadrada_test.py</span><span class="err">&quot;</span><span class="p">,</span><span class="w"> </span><span class="no">line</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="no">test_negative</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="nf">self.assertRaises</span><span class="p">(</span><span class="no">IndexError</span><span class="p">,</span><span class="w"> </span><span class="no">Raiz</span><span class="p">(-</span><span class="mi">10</span><span class="p">))</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">  </span><span class="nf">File</span><span class="w"> </span><span class="err">&quot;/</span><span class="no">app</span><span class="err">/</span><span class="no">raizcuadrada.py</span><span class="err">&quot;</span><span class="p">,</span><span class="w"> </span><span class="no">line</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="no">Raiz</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w">    </span><span class="nf">raise</span><span class="w"> </span><span class="no">ValueError</span><span class="p">(</span><span class="err">&quot;</span><span class="no">a</span><span class="w"> </span><span class="no">debe</span><span class="w"> </span><span class="no">ser</span><span class="w"> </span><span class="err">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="err">&quot;</span><span class="p">)</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="nl">ValueError:</span><span class="w"> </span><span class="nf">a</span><span class="w"> </span><span class="no">debe</span><span class="w"> </span><span class="no">ser</span><span class="w"> </span><span class="err">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="err">----------------------------------------------------------------------</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="nf">Ran</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="no">tests</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="mi">0</span><span class="no">.002s</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nf">FAILED</span><span class="w"> </span><span class="p">(</span><span class="no">errors</span><span class="err">=</span><span class="mi">1</span><span class="p">)</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>Está primera prueba se preparó para que fallara, ahora se comenta el método de prueba negativa, se reconstruye la imagen y se vuelve a ejecutar:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">docker</span><span class="w"> </span><span class="kr">build</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="w"> </span><span class="n">pruebas</span><span class="o">-</span><span class="n">doctest</span><span class="w"> </span><span class="p">.</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Sending</span><span class="w"> </span><span class="kr">build</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Docker</span><span class="w"> </span><span class="n">daemon</span><span class="w">  </span><span class="mf">7.68</span><span class="w"> </span><span class="n">kB</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">FROM</span><span class="w"> </span><span class="n">python</span><span class="o">:</span><span class="mf">3.4</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">c40d327867e9</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">MAINTAINER</span><span class="w"> </span><span class="n">Ernesto</span><span class="w"> </span><span class="n">Crespo</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">Using</span><span class="w"> </span><span class="n">cache</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">3</span><span class="n">b1aced33b5e</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">WORKDIR</span><span class="w"> </span><span class="o">/</span><span class="n">app</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="n">Using</span><span class="w"> </span><span class="n">cache</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">7</span><span class="n">dd09842cf61</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Step</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">COPY</span><span class="w"> </span><span class="p">.</span><span class="w"> </span><span class="o">/</span><span class="n">app</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="w"> </span><span class="o">---&gt;</span><span class="w"> </span><span class="mi">609702415974</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Removing</span><span class="w"> </span><span class="n">intermediate</span><span class="w"> </span><span class="n">container</span><span class="w"> </span><span class="n">e2174beb4f7c</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Successfully</span><span class="w"> </span><span class="n">built</span><span class="w"> </span><span class="mi">609702415974</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">docker</span><span class="w"> </span><span class="n">run</span><span class="w"> </span><span class="n">pruebas</span><span class="o">-</span><span class="n">doctest</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="n">raizcuadrada_test</span><span class="p">.</span><span class="n">py</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">..</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="o">----------------------------------------------------------------------</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Ran</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">tests</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="mf">0.001</span><span class="n">s</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">OK</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p><img alt="" src="./images/ejecutarunapruebadeunittestenpythonconuncontenedordocker-1.png"></p>
+<p>Se ejecutaron 2 test y pasaron. </p>
+<p>Ya con esta imagen de Docker se puede reusar en varios computadores teniendo el mismo ambiente de desarrollo. </p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/python.html">Python</a>
+      <a href="http://localhost:8000/en/tag/unittest.html">unittest</a>
+      <a href="http://localhost:8000/en/tag/docker.html">Docker</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

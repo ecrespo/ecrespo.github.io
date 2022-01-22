@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Hace un tiempo escribí un artículo de pruebas unitarias con python usando Docker. En ese artículo se muestras las distintas opciones de métodos para hacer pruebas unitarias, este caso se enfoca en hacer un mocking de datos (simulación de datos). Este artículo se basa en el artículo del sitio semaphoreci …" />
+<meta name="keywords" content="Numpy, Python, Mocking, Docker, Pruebas unitarias">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Pruebas unitarias en Python usando mocking y docker"/>
+<meta property="og:description" content="Hace un tiempo escribí un artículo de pruebas unitarias con python usando Docker. En ese artículo se muestras las distintas opciones de métodos para hacer pruebas unitarias, este caso se enfoca en hacer un mocking de datos (simulación de datos). Este artículo se basa en el artículo del sitio semaphoreci …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/pruebas-unitarias-en-python-usando-mocking-y-docker-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-03-11 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Numpy"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Mocking"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="Pruebas unitarias"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Pruebas unitarias en Python usando mocking y docker</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="pruebas-unitarias-en-python-usando-mocking-y-docker">Pruebas unitarias en Python usando mocking y docker</h1>
+    <p>
+      Posted on sáb 11 marzo 2017 in <a href="https://ecrespo.github.io/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Hace un tiempo escribí un artículo de <a href="https://www.seraph.to/pruebas-unitarias-con-unitest-en-python-usando-nosetests-y-dockerdocker-compose.html">pruebas unitarias con python usando Docker</a>.  En ese artículo se muestras las distintas opciones de métodos para hacer pruebas unitarias, este caso se enfoca en hacer un mocking de datos (simulación de datos).</p>
+<p>Este artículo se basa en el artículo del sitio <a href="http://semaphoreci.com/">semaphoreci</a>, el artículo se llama <a href="http://semaphoreci.com/community/tutorials/getting-started-with-mocking-in-python">Getting Started with Mocking in Python</a>.</p>
+<p>A continuación dejo el código inicial del <code>Dockerfile</code>, de la <code>calculadora.py</code> y de la prueba:</p>
+<p>Archivo <code>Dockerfile</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">FROM</span> <span class="n">python</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">WORKDIR</span> <span class="o">/</span><span class="n">code</span><span class="o">/</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">nose</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">nose</span><span class="o">-</span><span class="n">cov</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">rednose</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">pytest</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">pytest</span><span class="o">-</span><span class="n">cov</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">RUN</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">mock</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#EXPOSE 5000</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">ADD</span> <span class="o">.</span> <span class="o">/</span><span class="n">code</span><span class="o">/</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">COPY</span> <span class="o">.</span> <span class="o">/</span><span class="n">code</span><span class="o">/</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#CMD nosetests  --with-coverage</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#CMD nosetests -sv --rednose</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">CMD</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">unittest</span></span></span>
+</pre></div>
+
+
+<p>Archivo <code>docker-compose.yml</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">pruebas</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">  <span class="n">build</span><span class="p">:</span> <span class="o">.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">  <span class="n">volumes</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="o">-</span> <span class="s2">&quot;.:/code&quot;</span></span></span>
+</pre></div>
+
+
+<p>Archivo <code>calculadora.py</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa sqrt de math</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Clase calculadora</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">Calculadora</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Metodo suma de x y y, se evalua si son enteros si no, devuelve error.</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">suma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">else</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Invalid type: </span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">type</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span></span></span>
+</pre></div>
+
+
+<p>Archivo <code>calculadora_test.py</code>:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python3</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">app.calculadora</span> <span class="kn">import</span> <span class="n">Calculadora</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">TestCalculadora</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">Calculadora</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">test_suma_retorna_resultado_correcto</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">##Asegura que sea igual la operacion de suma 2+2 a 4</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">respuesta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">suma</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">respuesta</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>Al ejecutar <code>docker-compose up</code> se tiene:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="n">up</span> </span></span>
+<span class="code-line"><span class="code-line"><span class="n">Starting</span> <span class="n">tutorialespruebas_pruebas_1</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Attaching</span> <span class="n">to</span> <span class="n">tutorialespruebas_pruebas_1</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="o">.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">Name</span>                 <span class="n">Stmts</span>   <span class="n">Miss</span>  <span class="n">Cover</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="o">----------------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">app</span><span class="o">.</span><span class="n">py</span>                   <span class="mi">0</span>      <span class="mi">0</span>   <span class="mi">100</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">app</span><span class="o">/</span><span class="n">calculadora</span><span class="o">.</span><span class="n">py</span>       <span class="mi">6</span>      <span class="mi">0</span>   <span class="mi">100</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">unit</span><span class="o">.</span><span class="n">py</span>                  <span class="mi">0</span>      <span class="mi">0</span>   <span class="mi">100</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="o">----------------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">TOTAL</span>                    <span class="mi">6</span>      <span class="mi">0</span>   <span class="mi">100</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="o">----------------------------------------------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">Ran</span> <span class="mi">1</span> <span class="n">test</span> <span class="ow">in</span> <span class="mf">0.022</span><span class="n">s</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> </span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">OK</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">tutorialespruebas_pruebas_1</span> <span class="n">exited</span> <span class="k">with</span> <span class="n">code</span> <span class="mi">0</span></span></span>
+</pre></div>
+
+
+<p>Ahora se hará un cambio. En vez de llamar a suma a partir de la calculadora se hará una simulación del resultado usando <code>mocking</code>. Para ello el único cambio que se hará es el de <code>calculadora_test.py</code>.</p>
+<p>A continuación el código del archivo:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python3</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">app.calculadora</span> <span class="kn">import</span> <span class="n">Calculadora</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">TestCalculadora</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nd">@patch</span><span class="p">(</span><span class="s1">&#39;app.calculadora.Calculadora.suma&#39;</span><span class="p">,</span> <span class="n">return_value</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">test_suma_retorna_resultado_correcto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">suma</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">suma</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="mi">9</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>Se importa <code>patch</code> a partir de <code>mock</code>, y se llama al decorador <code>patch</code>  pasando como argumento el método suma de calculadora, donde se le define que va a devolver el valor de 9 sin importar los argumentos de entrada de dicho método.  Luego se ejecuta el método <code>test_suma_retorna_resultado_correcto</code> donde se le pasa suma y se asegura que la suma de 2 y 3 da 9. </p>
+<p>Al ejecutar <code>docker-compose up</code> se tiene el siguiente resultado:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="n">up</span> </span></span>
+<span class="code-line"><span class="code-line"><span class="n">Starting</span> <span class="n">tutorialespruebas_pruebas_1</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Attaching</span> <span class="n">to</span> <span class="n">tutorialespruebas_pruebas_1</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="o">.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">Name</span>                 <span class="n">Stmts</span>   <span class="n">Miss</span>  <span class="n">Cover</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="o">----------------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">app</span><span class="o">.</span><span class="n">py</span>                   <span class="mi">0</span>      <span class="mi">0</span>   <span class="mi">100</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">app</span><span class="o">/</span><span class="n">calculadora</span><span class="o">.</span><span class="n">py</span>       <span class="mi">7</span>      <span class="mi">0</span>   <span class="mi">100</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">unit</span><span class="o">.</span><span class="n">py</span>                  <span class="mi">0</span>      <span class="mi">0</span>   <span class="mi">100</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">unittest</span><span class="o">/</span><span class="n">mock</span><span class="o">.</span><span class="n">py</span>      <span class="mi">1278</span>   <span class="mi">1278</span>     <span class="mi">0</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="o">----------------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">TOTAL</span>                 <span class="mi">1285</span>   <span class="mi">1278</span>     <span class="mi">1</span><span class="o">%</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="o">----------------------------------------------------------------------</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">Ran</span> <span class="mi">1</span> <span class="n">test</span> <span class="ow">in</span> <span class="mf">0.100</span><span class="n">s</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> </span></span>
+<span class="code-line"><span class="code-line"><span class="n">pruebas_1</span> <span class="o">|</span> <span class="n">OK</span></span></span>
+</pre></div>
+
+
+<p>Como se muestra, la prueba pasa sin probemas, la razón es que se está pasando vía mocking el valor que tiene que devolver la suma sin importar la entrada de datos del método a ejecutar.</p>
+<p>El código de los distintos archivos se pueden ver en el <a href="http://gitlab.com/ecrespo/tutoriales-pruebas/tree/mocking">repositorio de gitlab en la rama mocking</a>.</p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/numpy.html">Numpy</a>
+      <a href="https://ecrespo.github.io/en/tag/python.html">Python</a>
+      <a href="https://ecrespo.github.io/en/tag/mocking.html">Mocking</a>
+      <a href="https://ecrespo.github.io/en/tag/docker.html">Docker</a>
+      <a href="https://ecrespo.github.io/en/tag/pruebas-unitarias.html">Pruebas unitarias</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

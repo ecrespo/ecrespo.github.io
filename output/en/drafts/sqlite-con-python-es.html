@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="https://ecrespo.github.io/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="https://ecrespo.github.io/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="https://ecrespo.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="El programa pysms-send tendrá algunas mejoras, entre ellas manejará libreta de contactos. Para ello se probará con sqlite3 o con mongoDB. Para esté artículo se trabajará con sqlite3. Se crearán 2 tablas, una de contactos y otra de grupos. La de contactos tiene los campos de id, nombre del contacto …" />
+<meta name="keywords" content="General, Python">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Sqlite con python"/>
+<meta property="og:description" content="El programa pysms-send tendrá algunas mejoras, entre ellas manejará libreta de contactos. Para ello se probará con sqlite3 o con mongoDB. Para esté artículo se trabajará con sqlite3. Se crearán 2 tablas, una de contactos y otra de grupos. La de contactos tiene los campos de id, nombre del contacto …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="https://ecrespo.github.io/en/drafts/sqlite-con-python-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2012-04-04 09:00:00-04:30"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://ecrespo.github.io/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial de Python"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Python"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Sqlite con python</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="https://ecrespo.github.io/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="https://ecrespo.github.io/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="https://ecrespo.github.io/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="https://ecrespo.github.io/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="https://ecrespo.github.io/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="sqlite-con-python">Sqlite con python</h1>
+    <p>
+      Posted on mié 04 abril 2012 in <a href="https://ecrespo.github.io/en/category/tutorial-de-python.html">Tutorial de Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>El programa <code>pysms-send</code> tendrá algunas mejoras, entre ellas manejará libreta de contactos.</p>
+<p>Para ello se probará con <code>sqlite3</code> o con <code>mongoDB</code>. Para esté artículo se trabajará con <code>sqlite3</code>. Se crearán 2 tablas, una de contactos y otra de grupos. La de contactos tiene los campos de id, nombre del contacto, telefono y grupo. La tabla grupo tendrá los campos id, nombre del grupo y descripción del grupo.</p>
+<p>En la tabla contactos el campo grupo es una referencia al id de la tabla grupo de esa forma cada contacto está relacionado a un grupo.</p>
+<p>El archivo <code>contactos.sql</code> contiene lo siguiente:  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>create table contactos (</span></span>
+<span class="code-line"><span class="code-line">id integer primary key,</span></span>
+<span class="code-line"><span class="code-line">nombre text not null,</span></span>
+<span class="code-line"><span class="code-line">grupo integer references grupos(id)</span></span>
+<span class="code-line"><span class="code-line">on delete restrict</span></span>
+<span class="code-line"><span class="code-line">deferrable initially deferred,</span></span>
+<span class="code-line"><span class="code-line">telefono text not null default &#39;Desconocido&#39;,</span></span>
+<span class="code-line"><span class="code-line">unique (nombre,telefono));</span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">create table grupos (</span></span>
+<span class="code-line"><span class="code-line">id integer primary key,</span></span>
+<span class="code-line"><span class="code-line">nombre text not null,  </span></span>
+<span class="code-line"><span class="code-line">descripcion text not null CHECK(descripcion !=&#39;&#39;),</span></span>
+<span class="code-line"><span class="code-line">unique (nombre)); </span></span>
+</pre></div>
+
+
+<p>En la tabla <code>contactos</code> se tiene el campo id que es entero y clave primaria, luego el campo nombre es no nulo, el campo grupo hace referencia a la tabla grupos al campo id, el campo telefono es un texto no nulo con valor por defecto desconocido, los valores únicos son el nombre y el teléfono, con eso se evita que existan números de teléfonos repetidos.</p>
+<p>En la tabla <code>grupos</code> tiene el campo id es un entero y es clave primaria, el campo nombre es texto no nulo, el campo descripción es no nulo y se verifica que no sea un string vacio, el campo único es el nombre.</p>
+<p>Para generar la base de datos se ejecuta la siguiente instrucción:  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>sqlite3 sms.db &lt; sms.sql</span></span>
+</pre></div>
+
+
+<p>De está manera se crea la base de datos <code>sqlite</code> en el archivo <code>sms.db</code>.</p>
+<p>Si se desea interactuar con la base de datos se ejecuta <code>sqlite3</code> con el nombre de la base de datos, se abrirá un interprete:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">ecrespo</span><span class="nv">@jewel</span><span class="err">:</span><span class="o">~/</span><span class="n">bin</span><span class="o">/</span><span class="n">python</span><span class="err">$</span><span class="w"> </span><span class="n">sqlite3</span><span class="w"> </span><span class="n">sms</span><span class="p">.</span><span class="n">db</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">SQLite</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="mf">3.7.11</span><span class="w"> </span><span class="mi">2012</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">20</span><span class="w"> </span><span class="mi">11</span><span class="err">:</span><span class="mi">35</span><span class="err">:</span><span class="mi">50</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Enter</span><span class="w"> </span><span class="ss">&quot;.help&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">instructions</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Enter</span><span class="w"> </span><span class="k">SQL</span><span class="w"> </span><span class="n">statements</span><span class="w"> </span><span class="n">terminated</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ss">&quot;;&quot;</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">sqlite</span><span class="o">&gt;</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<p>A continuación se agrega un grupo a la tabla <code>grupos</code>:  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>sqlite&gt; insert into grupos (nombre,descripcion) values (&#39;Guacara&#39;,&#39;Ciudad del Estado Carabobo&#39;);</span></span>
+</pre></div>
+
+
+<p>Ahora se agrega un contacto a la tabla <code>contactos</code>:  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>insert into contactos (nombre,grupo,telefono) values (&#39;Ernesto Crespo&#39;,1,&#39;04315633119&#39;);</span></span>
+</pre></div>
+
+
+<p>Se consulta a la tabla <code>grupos</code> y luego a la tabla <code>contactos</code>:  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>sqlite&gt; select * from grupos;</span></span>
+<span class="code-line"><span class="code-line">1|Guacara|Ciudad del Estado Carabobo</span></span>
+<span class="code-line"><span class="code-line">sqlite&gt; select * from contactos ;</span></span>
+<span class="code-line"><span class="code-line">1|Ernesto Crespo|1|04315633119</span></span>
+</pre></div>
+
+
+<p>Para eliminar el <code>contacto</code> se ejecuta:  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>sqlite&gt; delete from contactos where id=1;</span></span>
+</pre></div>
+
+
+<p>Se uso el id para eliminar el contacto.</p>
+<p>A continuación  se crearán una serie de scripts en python que permitirán insertar datos a la base de datos, consultar datos y eliminarlos (las acciones básicas en una base de datos).</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="code-line"><span class="code-line"><span class="normal"> 1</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 2</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 3</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 4</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 5</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 6</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 7</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 8</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal"> 9</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">10</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">11</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">12</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">13</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">14</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">15</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">16</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">17</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">18</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">19</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">20</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">21</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">22</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">23</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">24</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">25</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">26</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">27</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">28</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">29</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">30</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">31</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">32</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">33</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">34</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">35</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">36</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">37</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">38</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">39</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">40</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">41</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">42</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">43</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">44</span></span></span>
+<span class="code-line"><span class="code-line"><span class="normal">45</span></pre></div></td><td class="code"><div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1"># -*- coding: utf-8 -*-</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa el modulo sqlite3</span></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">import</span> <span class="nn">sqlite3</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea la funcion main</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">main</span><span class="p">():</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se establece la instancia connect a la base de datos sms.db</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;sms.db&quot;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea el cursor que permite la ejecucion de instrucciones sql</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">cur</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se crea una lista con tuplas como sus elementos.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Las tuplas contienen los datos a insertar en la tabla grupos.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">datos</span> <span class="o">=</span><span class="p">[(</span><span class="s1">&#39;valencia&#39;</span> <span class="p">,</span><span class="s1">&#39;Capital Estado Carabobo&#39;</span><span class="p">),</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">(</span><span class="s1">&#39;Maracay&#39;</span><span class="p">,</span><span class="s1">&#39;Capital Estado Aragua&#39;</span><span class="p">),</span></span></span>
+<span class="code-line"><span class="code-line"><span class="p">(</span><span class="s1">&#39;Barquisimeto&#39;</span><span class="p">,</span><span class="s1">&#39;Capital del Estado Lara&#39;</span><span class="p">),]</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se recorre la lista</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">datos</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;insert into grupos (nombre,descripcion) values (?,?)&#39;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se realiza la transaccion.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">con</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Ahora se lista los datos de la tabla grupos</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;select * from grupos&#39;</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se captura uno</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">fila</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se recorre cada fila</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">while</span> <span class="n">fila</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se muestra los elementos nombre y descripcion.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="nb">print</span> <span class="n">fila</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">fila</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se pasa a la siguiente fila</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">fila</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se cierra el cursor</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se cierra la conexion.</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">con</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se sale de la funcion .</span></span></span>
+<span class="code-line"><span class="code-line"><span class="k">return</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">main</span><span class="p">()</span></span></span>
+</pre></div>
+</td></tr></table>
+
+<p>Al ejecutar el script devuelve la lista de <code>grupos</code> con su descripción:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="n">ecrespo</span><span class="nv">@jewel</span><span class="err">:</span><span class="o">~/</span><span class="n">bin</span><span class="o">/</span><span class="n">python</span><span class="err">$</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="n">grupos</span><span class="o">-</span><span class="n">sms</span><span class="p">.</span><span class="n">py</span><span class="w"> </span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Guacara</span><span class="w"> </span><span class="n">Ciudad</span><span class="w"> </span><span class="n">del</span><span class="w"> </span><span class="n">Estado</span><span class="w"> </span><span class="n">Carabobo</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">valencia</span><span class="w"> </span><span class="n">Capital</span><span class="w"> </span><span class="n">Estado</span><span class="w"> </span><span class="n">Carabobo</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Maracay</span><span class="w"> </span><span class="n">Capital</span><span class="w"> </span><span class="n">Estado</span><span class="w"> </span><span class="n">Aragua</span><span class="w"></span></span></span>
+<span class="code-line"><span class="code-line"><span class="n">Barquisimeto</span><span class="w"> </span><span class="n">Capital</span><span class="w"> </span><span class="n">del</span><span class="w"> </span><span class="n">Estado</span><span class="w"> </span><span class="n">Lara</span><span class="w"></span></span></span>
+</pre></div>
+
+
+<h2></h2>
+<p>===
+¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://ecrespo.github.io/en/tag/general.html">General</a>
+      <a href="https://ecrespo.github.io/en/tag/python.html">Python</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "https://ecrespo.github.io/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

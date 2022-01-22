@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con la serie de estructuras de datos, en el artículo anterior se trato de la estructura de datos Nodo, en este artículo se usará el Nodo por medio de composición en la lista enlazada. Este artículo se basa del tutorial en youtube llamado Python:Linked Lists donde pasan el …" />
+<meta name="keywords" content="General, Python">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Estructura de datos en Python (Lista Enlazada)"/>
+<meta property="og:description" content="Continuando con la serie de estructuras de datos, en el artículo anterior se trato de la estructura de datos Nodo, en este artículo se usará el Nodo por medio de composición en la lista enlazada. Este artículo se basa del tutorial en youtube llamado Python:Linked Lists donde pasan el …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/estructura-de-datos-en-python-lista-enlazada-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-03-11 09:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="General"/>
+<meta property="article:tag" content="Python"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Estructura de datos en Python (Lista Enlazada)</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="estructura-de-datos-en-python-lista-enlazada">Estructura de datos en Python (Lista Enlazada)</h1>
+    <p>
+      Posted on sáb 11 marzo 2017 in <a href="http://localhost:8000/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Continuando con la serie de estructuras de datos, en el artículo anterior se trato de la <a href="https://www.seraph.to/estructura-de-datos-en-python-nodo.html">estructura de datos Nodo</a>, en este artículo se usará el Nodo por medio de composición en la lista enlazada.</p>
+<p>Este artículo se basa del tutorial en youtube llamado <a href="http://www.youtube.com/watch?v=Ast5sKQXxEU">Python:Linked Lists</a> donde pasan el enlace al <a href="http://github.com/joeyajames/Python/blob/master/LinkedLists.py">código en github</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Ast5sKQXxEU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p>La lista enlazada se basa en el <code>Nodo</code>, como recordarán el Nodo tiene el dato y lo que apunta al próximo nodo.  En el caso de la lista enlazada contendrá lo siguiente:</p>
+<ul>
+<li>Argumentos:<ul>
+<li>Nodo: Al crear la lista enlazada se crea un Nodo sin datos y que apunte a None.</li>
+<li>primero: variable privada que apunta al primer nodo.</li>
+<li>ultimo: variable privada que apunta al último nodo.</li>
+<li>tamagno: variable privada que lleva la cantidad de nodos que maneja la lista.</li>
+</ul>
+</li>
+<li>Métodos:<ul>
+<li>obtenerTamagno: Devuelve el tamaño de la lista.</li>
+<li>add: Agrega un nodo a la lista enlazada.</li>
+<li>remove: Remueve un nodo de la lista enlazada.</li>
+<li>find:Busca un dato en la lista, devuelve el dato o False.</li>
+</ul>
+</li>
+</ul>
+<p>El código de la lista enlazada se muestra a continuación:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python3</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa Nodo de nodos.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">nodos</span> <span class="kn">import</span> <span class="n">Nodo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">class</span> <span class="nc">ListaEnlazada</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">primero</span> <span class="o">=</span> <span class="n">Nodo</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="kc">None</span><span class="p">)):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="sd">&quot;&quot;&quot;Se asigna como Nodo inicial a primero y ultimo por que apuntan al mismo nodo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="sd">        y se define el tamagno de la lista en cero&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__primero</span> <span class="o">=</span> <span class="n">primero</span> </span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__ultimo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__primero</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__tamagno</span> <span class="o">=</span> <span class="mi">0</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">obtenerTamagno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="sd">&quot;&quot;&quot;Devuelve el tamagno de la lista&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tamagno</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="sd">&quot;&quot;&quot;Agrega un nodo a la lista enlazada&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se crea una instancia de nodo donde se le pasa el dato d y se coloca</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#como proximo nodo el primer nodo.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">nodoNuevo</span> <span class="o">=</span> <span class="n">Nodo</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">__primero</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#El primer nodo apunta al nodo nuevo y se incrementa el tamagno.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__primero</span> <span class="o">=</span> <span class="n">nodoNuevo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">__tamagno</span> <span class="o">+=</span> <span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="sd">&quot;&quot;&quot;Se elimina el nodo que tenga el dato d&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Al nodo actual se le asigna el primer nodo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">nodoActual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__primero</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Y al nodo anterior se le asigna None.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">nodoAnterior</span> <span class="o">=</span> <span class="kc">None</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Mientras exista el nodo actual-</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">while</span> <span class="n">nodoActual</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="c1">#Si el dato de nodo actual es igual al dato que se esta buscando.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">if</span> <span class="n">nodoActual</span><span class="o">.</span><span class="n">dato</span> <span class="o">==</span> <span class="n">d</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="c1">#Si existe nodo anterior</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="k">if</span> <span class="n">nodoAnterior</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                    <span class="c1">#Se asigna  al apuntador proximo del nodo anterior el proximo de nodo actual</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                    <span class="n">nodoAnterior</span><span class="o">.</span><span class="n">proximo</span> <span class="o">=</span> <span class="n">nodoActual</span><span class="o">.</span><span class="n">proximo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="k">else</span><span class="p">:</span> </span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                    <span class="c1">#A primero se le asigna el apuntador al proximo nodo del nodo actual</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                    <span class="bp">self</span><span class="o">.</span><span class="n">__primero</span> <span class="o">=</span> <span class="n">nodoActual</span><span class="o">.</span><span class="n">proximo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="c1">#En cualquiera de los dos casos se decrementa el tamagno de la lista.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="bp">self</span><span class="o">.</span><span class="n">__tamagno</span> <span class="o">-=</span> <span class="mi">1</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="c1">#Devuelve True por que se elimino.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="k">return</span> <span class="kc">True</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">else</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="c1">#Se asigna al nodo anterior el nodo actual</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="n">nodoAnterior</span> <span class="o">=</span> <span class="n">nodoActual</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="c1">#Se asigna al nodo actual, el nodo proximo del nodo actual</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="n">nodoActual</span> <span class="o">=</span> <span class="n">nodoActual</span><span class="o">.</span><span class="n">proximo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="sd">&quot;&quot;&quot;Se busca d en la lista enlazada, si existe devuelve d, si no devuelve None&quot;&quot;&quot;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#a nodo actual se le asigna el primer nodo.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">nodoActual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__primero</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Mientras exista el nodo actual.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">while</span> <span class="n">nodoActual</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="c1">#Si el dato de nodo actual es igual a d, devuelve d</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">if</span> <span class="n">nodoActual</span><span class="o">.</span><span class="n">dato</span> <span class="o">==</span> <span class="n">d</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="k">return</span> <span class="n">d</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="k">else</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="c1">#Si no, el nodo actual apunta al proximo nodo.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">                <span class="n">nodoActual</span> <span class="o">=</span> <span class="n">nodoActual</span><span class="o">.</span><span class="n">proximo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Si no se encuentra devuelve None.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="kc">None</span> </span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">miLista</span> <span class="o">=</span> <span class="n">ListaEnlazada</span><span class="p">()</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">miLista</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">miLista</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">miLista</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;size: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miLista</span><span class="o">.</span><span class="n">obtenerTamagno</span><span class="p">()))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span> <span class="p">(</span><span class="n">miLista</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">miLista</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;size: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miLista</span><span class="o">.</span><span class="n">obtenerTamagno</span><span class="p">()))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span><span class="p">(</span><span class="n">miLista</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">12</span><span class="p">))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;size:</span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miLista</span><span class="o">.</span><span class="n">obtenerTamagno</span><span class="p">()))</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="nb">print</span><span class="p">(</span><span class="n">miLista</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span></span></span>
+</pre></div>
+
+
+<p>Al ejecutar el script se tiene lo siguiente:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>python listas.py </span></span>
+<span class="code-line"><span class="code-line">size: 3</span></span>
+<span class="code-line"><span class="code-line">8</span></span>
+<span class="code-line"><span class="code-line">size: 2</span></span>
+<span class="code-line"><span class="code-line">True</span></span>
+<span class="code-line"><span class="code-line">size: 1</span></span>
+<span class="code-line"><span class="code-line">None</span></span>
+</pre></div>
+
+
+<p>Como se puede ver se agregan 3 elementos a la lista, luego se muestra el tamaño de la lista, se va eliminando cada elemento de la lista, donde se muestra el <code>tamagno</code> de la lista mientras se van eliminando elementos, y por último se busca el valor de 5 en la lista donde devuelve <code>None</code>. </p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/general.html">General</a>
+      <a href="http://localhost:8000/en/tag/python.html">Python</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

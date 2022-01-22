@@ -1,0 +1,525 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="http://localhost:8000/en/../theme/pygments/monokai.min.css">
+
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/en/../theme/font-awesome/css/solid.css">
+
+
+    <link href="http://localhost:8000/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Seraph's Blog Atom">
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-131517246-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#e5e5ff">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#e5e5ff">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Microsoft EDGE -->
+    <meta name="msapplication-TileColor" content="#e5e5ff">
+
+<meta name="author" content="Ernesto Crespo" />
+<meta name="description" content="Continuando con la serie de artículos sobre acceso a mongodb desde Flask. El artículo anterior hace una consulta incial a la base de datos. Para revisar los artículos relacionados a este artículo pueden ver: Artículos sobre Docker Artículos sobre MongoDB Artículos sobre Flask En la base de datos mongodb se …" />
+<meta name="keywords" content="Python, Docker, Flask, MongoDB">
+
+
+<meta property="og:site_name" content="Seraph's Blog"/>
+<meta property="og:title" content="Consulta a MongoDB desde Flask (parte 2 - paginación)"/>
+<meta property="og:description" content="Continuando con la serie de artículos sobre acceso a mongodb desde Flask. El artículo anterior hace una consulta incial a la base de datos. Para revisar los artículos relacionados a este artículo pueden ver: Artículos sobre Docker Artículos sobre MongoDB Artículos sobre Flask En la base de datos mongodb se …"/>
+<meta property="og:locale" content="es_VE"/>
+<meta property="og:url" content="http://localhost:8000/en/drafts/consulta-a-mongodb-desde-flask-parte-2-paginacion-es.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-09-28 10:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="http://localhost:8000/en/author/ernesto-crespo.html">
+<meta property="article:section" content="Tutorial Python"/>
+<meta property="article:tag" content="Python"/>
+<meta property="article:tag" content="Docker"/>
+<meta property="article:tag" content="Flask"/>
+<meta property="article:tag" content="MongoDB"/>
+<meta property="og:image" content="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120">
+
+  <title>Seraph's Blog &ndash; Consulta a MongoDB desde Flask (parte 2 - paginación)</title>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "pub-0261001661746989",
+      enable_page_level_ads: true
+    });
+  </script>
+</head>
+<body class="light-theme">
+  <aside>
+    <div>
+      <a href="http://localhost:8000/en">
+        <img src="//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120" alt="Ernesto Crespo" title="Ernesto Crespo">
+      </a>
+
+      <h1>
+        <a href="http://localhost:8000/en">Ernesto Crespo</a>
+      </h1>
+
+<p>Data Scientist </p>
+
+      <nav>
+        <ul class="list">
+
+
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/About.html#About">
+                  Acerca
+                </a>
+              </li>
+              <li>
+                <a target="_self"
+                   href="http://localhost:8000/en/pages/Contacto.html#Contacto">
+                  Contacto
+                </a>
+              </li>
+
+        </ul>
+      </nav>
+
+      <ul class="social">
+          <li>
+            <a  class="sc-medium" href="https://medium.com/@_seraph1" target="_blank">
+              <i class="fab fa-medium"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-linkedin" href="http://ve.linkedin.com/in/ernestocrespo" target="_blank">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-github" href="https://github.com/ecrespo" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-google" href="https://google.com/+ErnestoCrespo" target="_blank">
+              <i class="fab fa-google"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-twitter" href="https://twitter.com/_seraph1" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-facebook" href="https://www.facebook.com/ernesto.crespo" target="_blank">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-gitlab" href="https://gitlab.com/ecrespo" target="_blank">
+              <i class="fab fa-gitlab"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-soundcloud" href="https://soundcloud.com/ernesto-crespo" target="_blank">
+              <i class="fab fa-soundcloud"></i>
+            </a>
+          </li>
+          <li>
+            <a  class="sc-rss" href="//www.seraph.to/feeds/all.atom.xml" target="_blank">
+              <i class="fas fa-rss"></i>
+            </a>
+          </li>
+      </ul>
+    </div>
+
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-aside"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234561"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+  </aside>
+  <main>
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <ins class="adsbygoogle ads-responsive"
+           data-ad-client="pub-0261001661746989"
+           data-ad-slot="1234562"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+    <nav>
+      <a href="http://localhost:8000/en">Home</a>
+
+      <a href="/archives.html">Archives</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/tags.html">Tags</a>
+
+      <a href="http://localhost:8000/feeds/all.atom.xml">Atom</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="consulta-a-mongodb-desde-flask-parte-2-paginacion">Consulta a MongoDB desde Flask (parte 2 - paginación)</h1>
+    <p>
+      Posted on mié 28 septiembre 2016 in <a href="http://localhost:8000/en/category/tutorial-python.html">Tutorial Python</a>
+
+        &#8226; 3 min read
+    </p>
+  </header>
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234565"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+  <div>
+    <p>Continuando con la serie de artículos sobre acceso a mongodb desde Flask. </p>
+<p>El artículo anterior <a href="https://www.seraph.to/consulta-a-mongodb-desde-flask-parte-1.html">hace una consulta incial a la base de datos.</a></p>
+<p>Para revisar los artículos relacionados a este artículo pueden ver:</p>
+<ul>
+<li><a href="https://www.seraph.to/tag/docker.html">Artículos sobre Docker</a></li>
+<li><a href="https://www.seraph.to/tag/mongodb.html">Artículos sobre MongoDB</a></li>
+<li><a href="https://www.seraph.to/tag/flask.html">Artículos sobre Flask</a></li>
+</ul>
+<p>En la base de datos mongodb se tiene lo siguientes datos de los empleados:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>[{&quot;edad&quot;: 29, &quot;nombre&quot;: &quot;Jane Doe&quot;, &quot;dni&quot;: 8, &quot;sexo&quot;: &quot;Femenino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebbce45fd2bbeffc51330b&quot;}}, {&quot;edad&quot;: 39, &quot;nombre&quot;: &quot;John Doe&quot;, &quot;dni&quot;: 7, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebbd195fd2bbeffc51330c&quot;}}, {&quot;edad&quot;: 55, &quot;nombre&quot;: &quot;Pedro Perez&quot;, &quot;dni&quot;: 6, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebbd505fd2bbeffc51330d&quot;}}, {&quot;edad&quot;: 65, &quot;nombre&quot;: &quot;Petra&quot;, &quot;dni&quot;: 5, &quot;sexo&quot;: &quot;Femenino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebbd6b5fd2bbeffc51330e&quot;}}, {&quot;edad&quot;: 18, &quot;nombre&quot;: &quot;Luis Gonzalez&quot;, &quot;dni&quot;: 4, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebc34d5fd2bbeffc51330f&quot;}}, {&quot;edad&quot;: 28, &quot;nombre&quot;: &quot;Carolina&quot;, &quot;dni&quot;: 3, &quot;sexo&quot;: &quot;Femenino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebc3715fd2bbeffc513310&quot;}}, {&quot;edad&quot;: 34, &quot;nombre&quot;: &quot;Luissana&quot;, &quot;dni&quot;: 2, &quot;sexo&quot;: &quot;Femenino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebc3935fd2bbeffc513311&quot;}}, {&quot;edad&quot;: 43, &quot;nombre&quot;: &quot;Neg&quot;, &quot;dni&quot;: 1, &quot;sexo&quot;: &quot;Masculino&quot;, &quot;_id&quot;: {&quot;$oid&quot;: &quot;57ebc4b85fd2bbeffc513312&quot;}}]</span></span>
+</pre></div>
+
+
+<p>Ahora se agregó un campo llamado dni, y se tienen 8 empleados. </p>
+<p>El código fuente de este artículo lo pueden ver en la rama <a href="https://gitlab.com/ecrespo/tutorial-flask/tree/mongo2">mongo2 de gitlab</a>.  </p>
+<p>Estructura de directorios y archivos  </p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>tutorial-flask</span></span>
+<span class="code-line"><span class="code-line">├── app</span></span>
+<span class="code-line"><span class="code-line">│   └── run.py</span></span>
+<span class="code-line"><span class="code-line">├── docker-compose.yml</span></span>
+<span class="code-line"><span class="code-line">├── Dockerfile</span></span>
+<span class="code-line"><span class="code-line">└── README.md</span></span>
+</pre></div>
+
+
+<p>Esta es la misma estructura del artículo anterior.</p>
+<h3>Archivo Dockerfile y docker-compose.yml</h3>
+<p>Estos archivos son los mismos del artículo anterior.</p>
+<h4>Script app/run.py</h4>
+<p>Este script permite paginar según una variable llamada dni, el cual se usará para realizar la consulta paginada. </p>
+<p>A continuación el código de run.py:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa Flask, reqest y jsonify</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span><span class="n">jsonify</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa pyMOngo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">flask_pymongo</span> <span class="kn">import</span>  <span class="n">PyMongo</span><span class="p">,</span> <span class="n">pymongo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se importa dumps</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="kn">from</span> <span class="nn">bson.json_util</span> <span class="kn">import</span> <span class="n">dumps</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se instancia la clase de Flask, se configura el acceso</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#a la base de datos mongodb a empleados</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MONGO_DBNAME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;empleados&#39;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;MONGO_URI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;mongodb://mongo:27017/empleados&#39;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se asocia la app a pymongo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="n">mongo</span> <span class="o">=</span> <span class="n">PyMongo</span><span class="p">(</span><span class="n">app</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="c1">#Se define la ruta /dnis con metodo GET</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/dnis&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">def</span> <span class="nf">dni</span><span class="p">():</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se consutla la coleccion empleados</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">empleados</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">empleados</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se toma los argumentos del url offset y limite</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">offset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">limite</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;limite&#39;</span><span class="p">])</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define el decremento como la diferencia entre offset y el limite</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">decremento</span> <span class="o">=</span> <span class="n">offset</span><span class="o">-</span><span class="n">limite</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se define el incremento como la suma entre offset y limite</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">incremento</span> <span class="o">=</span> <span class="n">offset</span><span class="o">+</span><span class="n">limite</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Mientras no de error de indice</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">try</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se define el dni inicial, el ultimo</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">dniInicio</span> <span class="o">=</span> <span class="n">empleados</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;dni&#39;</span><span class="p">,</span><span class="n">pymongo</span><span class="o">.</span><span class="n">ASCENDING</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">dniUltimo</span> <span class="o">=</span> <span class="n">dniInicio</span><span class="p">[</span><span class="n">offset</span><span class="p">][</span><span class="s1">&#39;dni&#39;</span><span class="p">]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se hace la consulta a la base de datos</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">empleados</span>  <span class="o">=</span> <span class="n">empleados</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;dni&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$gte&#39;</span><span class="p">:</span> <span class="n">dniUltimo</span><span class="p">}})</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;dni&#39;</span><span class="p">,</span><span class="n">pymongo</span><span class="o">.</span><span class="n">ASCENDING</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limite</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se crea el listado de donde se almacena los diccionarios.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">listado</span> <span class="o">=</span> <span class="p">[]</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se agrega a listado os dni y nombres de los empleados.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">empleados</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">listado</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;dni&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;dni&#39;</span><span class="p">],</span><span class="s1">&#39;nombre&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">]})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se define el url previo y siguiente, donde se juega con el offset para avanzar o regresar</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">prev_url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:5000/dnis?limite=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">limite</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;offset=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">decremento</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">next_url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:5000/dnis?limite=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">limite</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;offset=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">incremento</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Si decremento es negativo se coloca el url en blanco.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">if</span>  <span class="p">(</span> <span class="n">decremento</span> <span class="o">&lt;</span>  <span class="mi">0</span><span class="p">)</span> <span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">            <span class="n">prev_url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se retorna el json con los resultados y los urls.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:</span> <span class="n">listado</span><span class="p">,</span><span class="s1">&#39;prev_url&#39;</span><span class="p">:</span><span class="n">prev_url</span><span class="p">,</span><span class="s1">&#39;next_url&#39;</span><span class="p">:</span><span class="n">next_url</span> <span class="p">})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,):</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Si hay error de indice se defin el url siguiente en blanco, el url previo se mantiene.</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">next_url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="n">prev_url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:5000/dnis?limite=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">limite</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&amp;offset=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">decremento</span><span class="p">)</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="c1">#Se retorna un json con el resultado y urls .</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;resultado&#39;</span><span class="p">:</span> <span class="s1">&#39;FIN&#39;</span><span class="p">,</span><span class="s1">&#39;prev_url&#39;</span><span class="p">:</span><span class="n">prev_url</span><span class="p">,</span><span class="s1">&#39;next_url&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span> <span class="p">})</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="c1">#Se corre la aplicacion en modo debug</span></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line"></span></span>
+<span class="code-line"><span class="code-line">    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></span></span>
+</pre></div>
+
+
+<p>Creación de la imagen docker y ejecución de los contenedores</p>
+<p>Para crear la imagen docker se ejecuta:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>docker-compose build</span></span>
+</pre></div>
+
+
+<p>Para ejecutar los contenedores:</p>
+<div class="highlight"><pre><span class="code-line"><span class="code-line"><span></span>docker-compose up</span></span>
+</pre></div>
+
+
+<p>A continuación se muestra una imagen de la salida de la ejecución:</p>
+<p><img alt="" src="./images/consultaamongodbdesdeflask2-1.png"></p>
+<p>A continuación se muestran los documentos por medio de la aplicación robomongo:</p>
+<p><img alt="" src="./images/consultaamongodbdesdeflask2-2.png"></p>
+<p>Al abrir el url (http://localhost:5000/dnis?limite=3&amp;offset=0 ), donde limite es la cantidad de objetos a mostrar por página, el offset es el desplazamiento.</p>
+<p>La primera figura muestra el primer grupo de empleados (no se tiene url para regresar):</p>
+<p><img alt="" src="./images/consultaamongodbdesdeflask2-3.png"></p>
+<p>Al darle click al siguiente url se tiene a continuación los dni 4,5 y 6 (aparece el url de regresar y avanzar):</p>
+<p><img alt="" src="./images/consultaamongodbdesdeflask2-4.png"></p>
+<p>Al darle click a avanzar se tienen los empleados de dni 7 y 8:</p>
+<p><img alt="" src="./images/consultaamongodbdesdeflask2-5.png"></p>
+<p>Como se tienen 8 elementos, se llegó al dni 8, al darle avanzar muestra que se terminó el json y que sólo se tiene enlace para regresar:</p>
+<p><img alt="" src="./images/consultaamongodbdesdeflask2-6.png"></p>
+<h2></h2>
+<p>¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
+<p>O Escaneando el código QR desde la billetera:</p>
+<p><img alt="17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV" src="./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png"></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="http://localhost:8000/en/tag/python.html">Python</a>
+      <a href="http://localhost:8000/en/tag/docker.html">Docker</a>
+      <a href="http://localhost:8000/en/tag/flask.html">Flask</a>
+      <a href="http://localhost:8000/en/tag/mongodb.html">MongoDB</a>
+    </p>
+  </div>
+
+
+  <div class="neighbors">
+  </div>
+
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle ads-responsive"
+         data-ad-client="pub-0261001661746989"
+         data-ad-slot="1234566"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+<!-- Disqus -->
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'https://seraphto.disqus.com';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+    Please enable JavaScript to view comments.
+</noscript>
+<!-- End Disqus -->
+</article>
+
+    <footer>
+<p>&copy; 2022 </p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p>    </footer>
+  </main>
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Seraph's Blog ",
+  "url" : "http://localhost:8000/en",
+  "image": "//s.gravatar.com/avatar/7fab2070e149e57fe99da94d7ccbad6b?s=120",
+  "description": " Software Libre, Ciencia de Datos y Python"
+}
+</script>
+
+
+</body>
+</html>

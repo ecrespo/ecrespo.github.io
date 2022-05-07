@@ -93,6 +93,7 @@ DEFAULT_PAGINATION = 10
 
 
 THEME = '/home/ernesto/proyectos/pelican-themes/Flex'
+#THEME = '/home/ernesto/proyectos/pelican-themes/bold'
 PYGMENTS_STYLE = 'monokai'
 JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
 
@@ -175,11 +176,11 @@ TOC = {
 #  }
 # }
 
-I18N_SUBSITES = {
-    'en': {
-        'SITENAME': 'Seraph\'s Blog',
-    }
-}
+#I18N_SUBSITES = {
+#    'en': {
+#        'SITENAME': 'Seraph\'s Blog',
+#    }
+#}
 
 GOOGLE_ADSENSE = {
     'ca_id': 'pub-0261001661746989',    # Your AdSense ID

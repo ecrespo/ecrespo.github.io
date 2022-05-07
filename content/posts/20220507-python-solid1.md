@@ -1,0 +1,312 @@
+Title: Principios S.O.L.I.D. - 1. Principio de responsabilidad única (SRP - Single Responsible Principle) 
+Date:  2022-05-07 12:00
+Category: Tutorial Python
+Tags: python,solid
+lang: es
+translation: true
+Slug: python_typing
+Authors: Ernesto Crespo
+Summary: Primer artículo sobre los principios SOLID, en este caso el principio de responsabilidad única.
+
+En ingeniería de software existe el principio [S.O.L.I.D](https://es.wikipedia.org/wiki/SOLID). Los principios SOLID son guías que pueden ser aplicadas en el desarrollo de software para eliminar malos diseños provocando que el programador tenga que refactorizar hasta que sea legible y extensible. 
+
+Sus principios son:
+
+* Single responsability principle - Principio de responsabilidad única.
+* Open/closed principle - Principio abierto/cerrado.
+* Liskov substitution principle - Principio de sustitución Liskov.
+* Interface segregation principle - Principio de segregación de la interfaz.
+* Dependency inversion principle - Principio de inversión de la dependencia.
+
+
+A continuación dejo un vídeo de [ArjanCodes](https://www.youtube.com/watch?v=pTB30aXS77U&t=1s) que explica con código python los principios S.O.L.I.D:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/pTB30aXS77U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+El [principio de responsabilidad única](https://es.wikipedia.org/wiki/Principio_de_responsabilidad_%C3%BAnica) estable que cada módulo o clase debe tener una responsabilidad sobre una sola parte de la funcionalidad proporcionada, y esta responsabilidad debe estar encapsulada en su totalidad por la clase. Todos sus servicios deben estar estrechamente alineados con esa responsabilidad. 
+
+
+Voy a usar el ejemplo de código de Arjan y luego muestro un código de un generador de código QR en python y como cumpliendo el principio S.O.L.I.D. se va mejorando su legilibilidad y extensibilidad.
+
+1. Clase Order que tiene items, quantities, precios y estatus. Con métodos add_item (agregar item), total_price (precio total) y pay (pago). 
+
+```python
+
+class Order:
+
+    def __init__(self):
+
+        self.items = []
+        self.quantities = []
+        self.prices = []
+        self.status = "open"
+
+    def add_item(self, name, quantity, price):
+        # Agrega un item con la cantidad y precio a la orden.
+        self.items.append(name)
+        self.quantities.append(quantity)
+        self.prices.append(price)
+
+    def total_price(self):
+        # Retorna el precio total a pagar.
+        total = 0
+        for i in range(len(self.prices)):
+            total += self.quantities[i] * self.prices[i]
+        return total
+
+    def pay(self, payment_type, security_code):
+        # Genera el pago según la forma de pago, debito o crédito.
+        if payment_type == "debit":
+            print("Processing debit payment type")
+            print(f"Verifying security code: {security_code}")
+            self.status = "paid"
+        elif payment_type == "credit":
+            print("Processing credit payment type")
+            print(f"Verifying security code: {security_code}")
+            self.status = "paid"
+        else:
+            raise Exception(f"Unknown payment type: {payment_type}")
+
+
+# Se instancia la orden con los items, sus cantidades y precios.
+order = Order()
+order.add_item("Teclado", 1, 50)
+order.add_item("Memoria", 1, 150)
+order.add_item("Cable USB", 2, 5)
+
+# Imprime el precio total de la orden
+print(order.total_price())
+
+# Se define la forma de pago.
+order.pay("debit", "0372846")
+
+```
+
+La salida que se genera es el monto total a pagar y luego la forma de pago:
+
+```bash
+210
+Processing debit payment type
+Verifying security code: 0372846
+```
+
+En la clase order se tiene el inconveniente que si se quiere incorporar otra forma de pago, toca modificar dicha clase que es de la orden, que ha dicha clase no debería importarle el método de pago, simplemente debe generar la Orden.  
+
+Para mejorar esto, se va a crear una clase llamada PaymentProcessor (procesador de pago), el cual es el que manejará las diferentes formas de pago.
+
+A continuación el código:
+
+```python
+
+# Ahora se tiene una clase que sólo manejará métodos de la orden y se separa el método de pago en otra clase llamada PaymentProcessor
+
+
+class Order:
+
+    def __init__(self):
+        self.items = []
+        self.quantities = []
+        self.prices = []
+        self.status = "open"
+
+    def add_item(self, name, quantity, price):
+        self.items.append(name)
+        self.quantities.append(quantity)
+        self.prices.append(price)
+
+    def total_price(self):
+        total = 0
+        for i in range(len(self.prices)):
+            total += self.quantities[i] * self.prices[i]
+        return total
+
+
+# Clase PaymentProcessor con los métodos: pago con debito y pago a credito. 
+
+class PaymentProcessor:
+    def pay_debit(self, order, security_code):
+        print("Processing debit payment type")
+        print(f"Verifying security code: {security_code}")
+        order.status = "paid"
+
+    def pay_credit(self, order, security_code):
+        print("Processing credit payment type")
+        print(f"Verifying security code: {security_code}")
+        order.status = "paid"
+
+
+
+# Ahora se instancia la clase Order, y se agrega los items a comprar en la orden.
+
+order = Order()
+order.add_item("Teclado", 1, 50)
+order.add_item("Memoria", 1, 150)
+order.add_item("Cable USB", 2, 5)
+
+# Imprime el precio total de la orden
+print(order.total_price())
+
+# Instancia la clase de procesador de pago y se llama al método pagar con debito pasando como argumento la orden y el código de seguridad de la tarjeta.
+
+processor = PaymentProcessor()
+processor.pay_debit(order, "0372846")
+
+```
+
+Esto devuelve lo mismo que en el código anterior.
+
+```bash 
+
+210
+Processing debit payment type
+Verifying security code: 0372846
+
+```
+
+La ventaja que da esta nueva versión es que si se necesita incorporar un nuevo método de pago, por ejemplo pago con criptomonedas o por paypal, no es necesario tocar la clase Order, si no la clase PaymentProcessor.
+
+2. Generador de código QR.
+
+Se tiene  librerías para generar código QR: MyQR, qrcode y amzqr.
+
+
+
+```python
+
+from MyQR import myqr
+import qrcode as qrc
+from amzqr import amzqr
+
+class GenQR:
+    def __init__(self, version, *args, **kwargs):
+        self.__version = version
+        self.__box_size = kwargs.get("box_size", None)
+        self.__border = kwargs.get("border", None)
+        self.__fit = kwargs.get("fit", None)
+        self.__fill = kwargs.get("fill", None)
+        self.__back_color = kwargs.get("back_color", None)
+        self.__colorize = kwargs.get("colorize", None)
+        self.__picture = kwargs.get("picture", None)
+        self.__save_dir = kwargs.get("save_dir", None)
+
+    def generate(self, library="MyQR", text, save_name):
+        # Genera código QR y lo guarda en un archivo
+        #Se genera el código dependiendo de la librería.
+        if library == "MyQR":
+            if not self.__picture:
+                resp = myqr.run(words=text, version=self.__version, save_name=save_name,
+                                save_dir=self.__save_dir, colorized=self.__colorize, contrast=1.0, brightness=1.0, save_format='PNG')
+            else:
+                resp = myqr.run(words=text, version=self.__version, save_name=save_name, picture=self.__picture,
+                                save_dir=self.__save_dir, colorized=self.__colorize, contrast=1.0, brightness=1.0, save_format='PNG')
+            return resp
+
+        self.__qr = qrc.QRCode(
+            version=self.__version,
+            )
+        self.__qr.add(text)
+        self.__qr.make(fit=self.__fit)
+        self.__img = self.__qr.make_image(
+            fill=self.__fill, back_color=self.__back_color)
+        self.__img.save(save_name)
+
+# Se crea la instancia 
+
+genqr = GenQR(version=1)
+genqr.generate(library='MyQR',text='Hola mundo!',save_name='hola.png')
+
+```
+
+Acá el inconveniente es que se tiene un método que depende de la librería que se use se genera el código QR, pero si toca agregar una nueva librería, toca probablemente  modificar los argumentos que se reciben y agregar código para la nueva librería en ese método. La solución es crear métodos para cada librería. 
+
+```python
+
+class GenerateQR:
+    
+    def __init__(self,version):
+        self.version = version
+    
+    def myqr(self,my_qr,text,save_name,colorize,save_dir,picture=None):
+        if not picture: 
+            return myqr.run(words=text, version=my_qr.version, save_name=save_name,
+                            save_dir=save_dir, colorized=colorize, contrast=1.0, brightness=1.0)
+            
+        return myqr.run(words=text, version=my_qr.version, save_name=save_name, picture=picture,
+                        save_dir=save_dir, colorized=colorize, contrast=1.0, brightness=1.0)
+
+    
+    def qrcode(self,my_qr,text,save_name,box_size,border,fit,fill,back_color):
+        self.qr = qrc.QRCode(
+            version=my_qr.version,
+            box_size=box_size,
+            border=border
+        )
+        self.qr.add_data(text)
+        self.qr.make(fit=fit)
+        self.img = self.qr.make_image(
+            fill=fill, back_color=back_color)
+        self.img.save(save_name)
+
+gen_qr = GenerateQR(version=1)
+# Generar QR con myqr
+gen_qr.myqr(my_qr,"hola mundo!","hola.png",True,"./")
+# generar qr con qrcode
+gen_qr.qrcode(my_qr,"hola mundo2!",'hola2.png',10,5,True,'black','white')
+
+```
+
+Otra opción es crear una clase para cada librería. 
+
+En el siguiente artículo se explicará el principio abierto/cerrado.
+
+
+
+Aplicando el principio de responsabilidad única:
+Se crea dos métodos uno para myqr y otro para qrcode.
+
+```python 
+
+class GenerateQR:
+    
+    def __init__(self,version):
+        self.version = version
+    
+    def myqr(self,my_qr,text,save_name,colorize,save_dir,picture=None):
+        if not picture: 
+            return myqr.run(words=text, version=my_qr.version, save_name=save_name,
+                            save_dir=save_dir, colorized=colorize, contrast=1.0, brightness=1.0)
+            
+        return myqr.run(words=text, version=my_qr.version, save_name=save_name, picture=picture,
+                        save_dir=save_dir, colorized=colorize, contrast=1.0, brightness=1.0)
+
+    
+    def qrcode(self,my_qr,text,save_name,box_size,border,fit,fill,back_color):
+        self.qr = qrc.QRCode(
+            version=my_qr.version,
+            box_size=box_size,
+            border=border
+        )
+        self.qr.add_data(text)
+        self.qr.make(fit=fit)
+        self.img = self.qr.make_image(
+            fill=fill, back_color=back_color)
+        self.img.save(save_name)
+
+```
+
+
+
+
+
+
+---
+¡Haz tu donativo!
+Si te gustó el artículo puedes realizar un donativo con Bitcoin (BTC)
+usando la billetera digital de tu preferencia a la siguiente
+dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV
+
+O Escaneando el código QR desde la billetera:
+
+![17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV](./images/17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV.png)

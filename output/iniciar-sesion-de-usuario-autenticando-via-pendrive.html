@@ -214,46 +214,40 @@
     <p>Cuando no se pasa uno a modo paranoico se le ocurren ideas de como validar usuarios al ingresar en una sesión de escritorio vía GDM.</p>
 <p>En Debian/Ubuntu/Canaima existe los paquetes libpam-usb y pamusb-tools, estos permiten crear una llave, dicha llave se guarda en el pendrive. Luego se configura pam para que se pida la llave al momento de ingresar usuario y clave en el GDM del equipo; si no se conecta el pendrive el GDM colocará un mensaje que clave invalida.</p>
 <p>Para instalar estos paquetes se ejecuta aptitude:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="n">aptitude</span> <span class="n">install</span> <span class="n">libpam</span><span class="o">-</span><span class="n">usb</span> <span class="n">pamusb</span><span class="o">-</span><span class="n">tools</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">aptitude</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="n">libpam</span><span class="o">-</span><span class="n">usb</span><span class="w"> </span><span class="n">pamusb</span><span class="o">-</span><span class="n">tools</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <p>Luego se conecta el pendrive en el equipo y se agrega el dispositivo en /etc/pamusb.conf con el comando pamusb-conf:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>pamusb-conf --add-device /media/F060-785C/</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>pamusb-conf --add-device /media/F060-785C/</span>
+<span class="code-line"></code></pre></div>
 
 <p>Donde /media/F060-785C/ es la ruta del pendrive.</p>
 <p>Se agrega el usuario en /etc/pamusb.conf el cual iniciará sesión en el equipo:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>pamusb-conf --add-user ecrespo</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>pamusb-conf --add-user ecrespo</span>
+<span class="code-line"></code></pre></div>
 
 <p>Se verifica la configuración de pamusb con el usuario agregado:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="nv">pamusb</span><span class="o">-</span><span class="nv">check</span> <span class="nv">ecrespo</span></span>
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="nv">pamusb</span><span class="o">-</span><span class="nv">check</span> <span class="nv">ecrespo</span></span>
 <span class="code-line"><span class="o">*</span> <span class="nv">Authentication</span> <span class="nv">request</span> <span class="k">for</span> <span class="nv">user</span> <span class="s2">&quot;</span><span class="s">ecrespo</span><span class="s2">&quot;</span> <span class="ss">(</span><span class="nv">pamusb</span><span class="o">-</span><span class="nv">check</span><span class="ss">)</span></span>
 <span class="code-line"><span class="o">*</span> <span class="nv">Device</span> <span class="s2">&quot;</span><span class="s">/media/F060-785C/</span><span class="s2">&quot;</span> <span class="nv">is</span> <span class="nv">connected</span> <span class="ss">(</span><span class="nv">good</span><span class="ss">)</span>.</span>
 <span class="code-line"><span class="o">*</span> <span class="nv">Performing</span> <span class="nv">one</span> <span class="nv">time</span> <span class="nv">pad</span> <span class="nv">verification</span>...</span>
 <span class="code-line"><span class="o">*</span> <span class="nv">Regenerating</span> <span class="nv">new</span> <span class="nv">pads</span>...</span>
 <span class="code-line"><span class="o">*</span> <span class="nv">Unable</span> <span class="nv">to</span> <span class="nv">update</span> <span class="nv">pads</span>.</span>
 <span class="code-line"><span class="o">*</span> <span class="nv">Access</span> <span class="nv">granted</span>.</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Al devolver el programa acceso garantizado ya se tiene todo listo para usar el pendrive en el momento de inicio de sesión, sólo falta modificar pam para que permita la autenticación con el pendrive.</p>
 <p>Se edita el archivo /etc/pam.d/common-aut y se agrega la siguiente línea:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>auth sufficient pam_usb.so</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>auth sufficient pam_usb.so</span>
+<span class="code-line"></code></pre></div>
 
 <p>Con esta línea el GDM verifica el token de la llave, si se quiere que pida tanto la contraseña como el token se cambia sufficient a required.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>auth required pam_usb.so</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>auth required pam_usb.so</span>
+<span class="code-line"></code></pre></div>
 
 <p>A partir de ahora al iniciar sesión se necesita la contraseña y el token.</p>
 <p>A continuación se muestra el mensaje que envía la consola al ejecutar sudo -s :</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="o">[</span><span class="n">sudo</span><span class="o">]</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nl">ecrespo</span><span class="p">:</span><span class="w"> </span></span>
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="o">[</span><span class="n">sudo</span><span class="o">]</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nl">ecrespo</span><span class="p">:</span><span class="w"> </span></span>
 <span class="code-line"><span class="o">*</span><span class="w"> </span><span class="n">pam_usb</span><span class="w"> </span><span class="n">v0</span><span class="mf">.4.2</span><span class="w"></span></span>
 <span class="code-line"><span class="o">*</span><span class="w"> </span><span class="n">Authentication</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="ss">&quot;ecrespo&quot;</span><span class="w"> </span><span class="p">(</span><span class="n">sudo</span><span class="p">)</span><span class="w"></span></span>
 <span class="code-line"><span class="o">*</span><span class="w"> </span><span class="n">Device</span><span class="w"> </span><span class="ss">&quot;/media/F060-785C/&quot;</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="n">connected</span><span class="w"> </span><span class="p">(</span><span class="n">good</span><span class="p">).</span><span class="w"></span></span>
@@ -261,8 +255,7 @@
 <span class="code-line"><span class="o">*</span><span class="w"> </span><span class="n">Regenerating</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">pads</span><span class="p">...</span><span class="w"></span></span>
 <span class="code-line"><span class="o">*</span><span class="w"> </span><span class="n">Unable</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">update</span><span class="w"> </span><span class="n">pads</span><span class="p">.</span><span class="w"></span></span>
 <span class="code-line"><span class="o">*</span><span class="w"> </span><span class="n">Access</span><span class="w"> </span><span class="n">granted</span><span class="p">.</span><span class="w"></span></span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>===</p>
 <p>¡Haz tu donativo!

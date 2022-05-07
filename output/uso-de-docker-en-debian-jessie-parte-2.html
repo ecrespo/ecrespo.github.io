@@ -216,111 +216,97 @@
 </ol>
 <p>En este artículo se explicará como mantener ejecutando una instancia, como iniciar las instancias automáticamente, acceder a los servicios que se ejecutan en el contenedor y ejecutar la imagen desde diferentes máquinas al registrar el contenedor.</p>
 <p>Del artículo anterior se tiene 2 imagenes en el equipo, una de Debian y la otra creada por mi persona que viene del repositorio de docker hub:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker images</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker images</span>
 <span class="code-line">REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE</span>
 <span class="code-line">ecrespo/empaquetadodebian   latest              ee5883957d64        <span class="m">18</span> hours ago        <span class="m">656</span>.9 MB</span>
 <span class="code-line">debian                      latest              8b9a99209d5c        <span class="m">3</span> weeks ago         <span class="m">125</span>.1 MB</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Para ejecutar <code>apache</code> y que quede funcionando en primer plano de la imagen que se construyo, se usa la opción <code>-D</code> y la <code>-d</code> para que se ejecute sin adjuntar.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$docker run -d   ecrespo/empaquetadodebian /usr/sbin/apache2ctl -D FOREGROUND</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$docker run -d   ecrespo/empaquetadodebian /usr/sbin/apache2ctl -D FOREGROUND</span>
 <span class="code-line">eeb8041b4331e572b3e452fc00da5d364115ba8a08ad015aa05eb1d243a1bf4b</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Como se nota devuelve un hash. Ahora se revisan los procesos del docker y se tiene el contenedor con <code>apachectl</code> ejecutandose:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker ps</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker ps</span>
 <span class="code-line">CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS               NAMES</span>
 <span class="code-line">eeb8041b4331        ecrespo/empaquetadodebian   <span class="s2">&quot;/usr/sbin/apache2ctl&quot;</span>   <span class="m">4</span> minutes ago       Up <span class="m">4</span> minutes                            tender_goodall</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Para detener un proceso se toma el id del contenedor ejecutando <code>docker stop</code>:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker stop eeb8041b4331</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker stop eeb8041b4331</span>
 <span class="code-line">eeb8041b4331</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Al volver a listar los procesos se tiene que ya no hay contenedores corriendo:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker ps</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker ps</span>
 <span class="code-line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span>
 <span class="code-line"></span>
 <span class="code-line">$ docker run -d -p <span class="m">80</span>:80 ecrespo/empaquetadodebian /usr/sbin/apache2ctl -D FOREGROUND</span>
 <span class="code-line">8c7d49ac2e671e0f7dd1bbfb038f5a23ff06e3120d07d059c0cde99dc76f1a79</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Al volver a listar los procesos  se tiene el contenedor corriendo <code>apache2ctl</code> en el puerto 80:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker ps</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker ps</span>
 <span class="code-line">CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                NAMES</span>
 <span class="code-line">8c7d49ac2e67        ecrespo/empaquetadodebian   <span class="s2">&quot;/usr/sbin/apache2ctl&quot;</span>   <span class="m">51</span> seconds ago      Up <span class="m">45</span> seconds       <span class="m">0</span>.0.0.0:80-&gt;80/tcp   stupefied_darwin</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>A continuación se abre el navegador a localhost (ojo el servicio apache debe estar apagado en el equipo) y se tiene apache corriendo como se muestra a continuación:</p>
 <p><img alt="" src="./images/usodedockerendebianjessie2-1.png"></p>
 <p>Se sube la imagen a los repositorios con el comando <code>docker push</code>:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker push ecrespo/empaquetadodebian</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker push ecrespo/empaquetadodebian</span>
 <span class="code-line">The push refers to a repository <span class="o">[</span>docker.io/ecrespo/empaquetadodebian<span class="o">]</span> <span class="o">(</span>len: <span class="m">1</span><span class="o">)</span></span>
 <span class="code-line">ee5883957d64: Pushed</span>
 <span class="code-line">8b9a99209d5c: Pushed</span>
 <span class="code-line">6d1ae97ee388: Pushed</span>
 <span class="code-line">latest: digest: sha256:893cb08536430d5555434bb4b120fb54e9f21da7cd87325120c1698aa57e2882 size: <span class="m">4009</span></span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>También se puede probar una aplicación como por ejemplo <code>sonarqube</code> el cual es una aplicación web hace métricas de calidad de software. <a href="https://hub.docker.com/_/sonarqube/">La imagen la encuentran en el docker hub de sonarqube.</a></p>
 <p>Se puede ejecutar <code>sonarqube</code> con los puertos 9000 y 9092 de la siguiente forma:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker run -d --name sonarqube -p <span class="m">9000</span>:9000 -p <span class="m">9092</span>:9092 sonarqube</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker run -d --name sonarqube -p <span class="m">9000</span>:9000 -p <span class="m">9092</span>:9092 sonarqube</span>
+<span class="code-line"></code></pre></div>
 
 <p>Al terminar de descargar se ejecuta docker images y se nota que se tiene la imagen de sonarqube:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker images</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker images</span>
 <span class="code-line">REPOSITORY                  TAG                 IMAGE ID            CREATED             VIRTUAL SIZE</span>
 <span class="code-line">ecrespo/empaquetadodebian   latest              ee5883957d64        <span class="m">23</span> hours ago        <span class="m">656</span>.9 MB</span>
 <span class="code-line">debian                      latest              8b9a99209d5c        <span class="m">3</span> weeks ago         <span class="m">125</span>.1 MB</span>
 <span class="code-line">sonarqube                   latest              dd47274097f7        <span class="m">7</span> weeks ago         <span class="m">942</span>.5 MB</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Se revisan los contenedores:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker ps</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker ps</span>
 <span class="code-line">CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                            NAMES</span>
 <span class="code-line">f44317723253        sonarqube                   <span class="s2">&quot;./bin/run.sh&quot;</span>           <span class="m">8</span> minutes ago       Up <span class="m">7</span> minutes        <span class="m">0</span>.0.0.0:9000-&gt;9000/tcp, <span class="m">0</span>.0.0.0:9092-&gt;9092/tcp   sonarqube</span>
 <span class="code-line">8c7d49ac2e67        ecrespo/empaquetadodebian   <span class="s2">&quot;/usr/sbin/apache2ctl&quot;</span>   <span class="m">3</span> hours ago         Up <span class="m">3</span> hours          <span class="m">0</span>.0.0.0:80-&gt;80/tcp                               stupefied_darwin</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Se tiene sonarqube corriendo en el puerto 9000, al abrir el navegador en localhost:9000 se tiene lo siguiente:</p>
 <p><img alt="" src="./images/usodedockerendebianjessie2-2.png"></p>
 <p>Se detiene el contenedor de sonarqube:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker stop f44317723253</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker stop f44317723253</span>
 <span class="code-line">f44317723253</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Se revisan los procesos y ya no aparece <code>sonarqube</code>:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker ps</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker ps</span>
 <span class="code-line">CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                NAMES</span>
 <span class="code-line">8c7d49ac2e67        ecrespo/empaquetadodebian   <span class="s2">&quot;/usr/sbin/apache2ctl&quot;</span>   <span class="m">3</span> hours ago         Up <span class="m">3</span> hours          <span class="m">0</span>.0.0.0:80-&gt;80/tcp   stupefied_darwin</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Si se quiere iniciar <code>sonarqube</code> se ejecuta <code>docker start</code> con el id del contenedor:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker start f44317723253</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker start f44317723253</span>
 <span class="code-line">f44317723253</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Se lista de nuevo:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker ps</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker ps</span>
 <span class="code-line">CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                                            NAMES</span>
 <span class="code-line">f44317723253        sonarqube                   <span class="s2">&quot;./bin/run.sh&quot;</span>           <span class="m">22</span> minutes ago      Up About a minute   <span class="m">0</span>.0.0.0:9000-&gt;9000/tcp, <span class="m">0</span>.0.0.0:9092-&gt;9092/tcp   sonarqube</span>
 <span class="code-line">8c7d49ac2e67        ecrespo/empaquetadodebian   <span class="s2">&quot;/usr/sbin/apache2ctl&quot;</span>   <span class="m">3</span> hours ago         Up <span class="m">3</span> hours          <span class="m">0</span>.0.0.0:80-&gt;80/tcp                               stupefied_darwin</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Se nota que sonarqube vuelve a levantar ya con los puertos definidos.</p>
 <p>En el próximo artículo se explicará como construir una imagen por medio del archivo dockerfile.</p>

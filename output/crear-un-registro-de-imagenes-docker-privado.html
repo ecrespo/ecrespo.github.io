@@ -246,85 +246,74 @@
 </li>
 </ol>
 <p>Lo primero que se hará es bajar la imagen Docker del registro, se tiene la versión oficial que es la 2 o la última.</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="n">$docker</span> <span class="n">pull</span> <span class="nl">registry:</span><span class="mh">2</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">$docker</span><span class="w"> </span><span class="n">pull</span><span class="w"> </span><span class="nl">registry:</span><span class="mh">2</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <p>ó</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="n">$docker</span> <span class="n">pull</span> <span class="n">registry</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">$docker</span><span class="w"> </span><span class="n">pull</span><span class="w"> </span><span class="n">registry</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <p>Se inicia el contenedor en el puerto 5000:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker run -d -p <span class="m">5000</span>:5000 registry:2 </span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker run -d -p <span class="m">5000</span>:5000 registry:2 </span>
 <span class="code-line">3c0719746d75f46220328c08209b3e716c8e883ad6f3df7bbae0d70e50656a45</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Para verificar que el registro está corriendo se prueba con curl conectarse a localhost al puerto 5000 a v2/:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ curl -i http://localhost:5000/v2/</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ curl -i http://localhost:5000/v2/</span>
 <span class="code-line">HTTP/1.1 <span class="m">200</span> OK</span>
 <span class="code-line">Content-Length: <span class="m">2</span></span>
 <span class="code-line">Content-Type: application/json<span class="p">;</span> <span class="nv">charset</span><span class="o">=</span>utf-8</span>
 <span class="code-line">Docker-Distribution-Api-Version: registry/2.0</span>
 <span class="code-line">X-Content-Type-Options: nosniff</span>
 <span class="code-line">Date: Thu, <span class="m">25</span> Feb <span class="m">2016</span> <span class="m">18</span>:40:25 GMT</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Ahora se puede probar subir una imagen al sistema privado de registro, se prueba con <code>busybox</code>:</p>
 <p>Se crea un tag:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$docker tag busybox localhost:5000/busy</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>$docker tag busybox localhost:5000/busy</span>
+<span class="code-line"></code></pre></div>
 
 <p>Se sube la imagen:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker push localhost:5000/busy</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker push localhost:5000/busy</span>
 <span class="code-line">The push refers to a repository <span class="o">[</span>localhost:5000/busy<span class="o">]</span></span>
 <span class="code-line">5f70bf18a086: Pushed </span>
 <span class="code-line">9508eff2c687: Pushed </span>
 <span class="code-line">latest: digest: sha256:b58c00d636b25f40fc7605b1b807af81c1a79a7bbb2179b4753b9dc7e0d1dcd7 size: <span class="m">711</span></span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Para poder acceder de manera insegura al registro privado se tiene que modificar el archivo <code>/etc/default/docker</code> y agregar la siguiente línea (tomar en cuenta que el contenedor está corriendo en localhost):</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="n">DOCKER_OPTS</span><span class="o">=</span><span class="s">&quot;--insecure-registry localhost:5000&quot;</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">DOCKER_OPTS</span><span class="o">=</span><span class="s">&quot;--insecure-registry localhost:5000&quot;</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <p>Se reinicia el servicio de docker:</p>
-<div class="highlight"><pre><span class="code-line"><span></span># service docker restart</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code># service docker restart</span>
+<span class="code-line"></code></pre></div>
 
 <p>Para más información de las opciones del registro de Docker pueden revisar el siguiente <a href="https://github.com/docker/distribution">enlace</a>.</p>
 <p>Para revisar las imagenes almacenadas en el sistema de registro privado se ejecuta:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>curl http://localhost:5000/v2/_catalog</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>curl http://localhost:5000/v2/_catalog</span>
 <span class="code-line">{&quot;repositories&quot;:[&quot;busy&quot;]}</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p><img alt="" src="./images/crearunregistrodeimagenesdockerprivado-1.png"></p>
 <p>El catalogo muestra que se tiene la imagen busy.</p>
 <p>Se puede crear otra tag de <code>busybox</code> con nombre <code>busy1</code> y se sube al servidor:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$docker tag busybox localhost:5000/busy1</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$docker tag busybox localhost:5000/busy1</span>
 <span class="code-line"></span>
 <span class="code-line">$ docker push localhost:5000/busy1</span>
 <span class="code-line">The push refers to a repository [localhost:5000/busy1]</span>
 <span class="code-line">5f70bf18a086: Mounted from busy </span>
 <span class="code-line">9508eff2c687: Mounted from busy </span>
 <span class="code-line">latest: digest: sha256:b58c00d636b25f40fc7605b1b807af81c1a79a7bbb2179b4753b9dc7e0d1dcd7 size: 711</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Al volver a consultar el catalogo se tienen dos imagenes:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$curl http://localhost:5000/v2/_catalog</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$curl http://localhost:5000/v2/_catalog</span>
 <span class="code-line">{&quot;repositories&quot;:[&quot;busy&quot;,&quot;busy1&quot;]}</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Cada imagen tiene un manifiesto:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$curl http://localhost:5000/v2/busy1/manifests/latest</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$curl http://localhost:5000/v2/busy1/manifests/latest</span>
 <span class="code-line"></span>
 <span class="code-line">$ curl http://localhost:5000/v2/busy1/manifests/latest</span>
 <span class="code-line">{</span>
@@ -365,25 +354,22 @@
 <span class="code-line">      }</span>
 <span class="code-line">   ]</span>
 <span class="code-line">}</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Para listar todos los tags de una imagen se tiene:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ curl http://localhost:5000/v2/busy1/tags/list</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ curl http://localhost:5000/v2/busy1/tags/list</span>
 <span class="code-line"><span class="o">{</span><span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;busy1&quot;</span>,<span class="s2">&quot;tags&quot;</span>:<span class="o">[</span><span class="s2">&quot;latest&quot;</span><span class="o">]}</span></span>
 <span class="code-line">$ curl http://localhost:5000/v2/busy/tags/list</span>
 <span class="code-line"><span class="o">{</span><span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;busy&quot;</span>,<span class="s2">&quot;tags&quot;</span>:<span class="o">[</span><span class="s2">&quot;latest&quot;</span><span class="o">]}</span></span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Se puede hacer un pull del sistema de registro local para verificar que la imagen está actualizada:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker pull localhost:5000/busy1</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker pull localhost:5000/busy1</span>
 <span class="code-line">Using default tag: latest</span>
 <span class="code-line">latest: Pulling from busy1</span>
 <span class="code-line">Digest: sha256:b58c00d636b25f40fc7605b1b807af81c1a79a7bbb2179b4753b9dc7e0d1dcd7</span>
 <span class="code-line">Status: Image is up to date <span class="k">for</span> localhost:5000/busy1:latest</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Para más información del despliegue del sistema de registro pueden revisar el siguiente <a href="https://docs.docker.com/registry/deploying/">enlace</a>.</p>
 <h2></h2>

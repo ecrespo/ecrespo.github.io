@@ -213,78 +213,70 @@
 <p>También se puede agregar equipos con su IP como de un servidor de DNS con Bind9 en funcionamiento.</p>
 <p>Se tiene una máquina virtual de nombre grievous e IP 192.168.10.53.</p>
 <p>Para instalr dnsmasq se ejecuta apt-get.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>apt-get install dnsmasq</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>apt-get install dnsmasq</span>
+<span class="code-line"></code></pre></div>
 
 <p>Configurar dnsmasq como DNS cache y local.</p>
 <p>Se define la ruta del archivo resolv.conf que hace consultas al servidor de DNS externo.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>resolv-file=/etc/resolv-orig.conf</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>resolv-file=/etc/resolv-orig.conf</span>
+<span class="code-line"></code></pre></div>
 
 <p>Definir respuestas de peticiones locales dadas por el archivo /etc/hosts.</p>
-<div class="highlight"><pre><span class="code-line"><span></span> local=/localnet/</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code> local=/localnet/</span>
+<span class="code-line"></code></pre></div>
 
 <p>Y eso es todo lo que hay que cambiarse en el archivo /etc/dnsmasq.conf para resolver nombres de equipos locales por medio de /etc/hosts.</p>
 <p>Agregar los equipos en el archivo /etc/hosts.</p>
 <p>En este caso se tiene el equipo grievous:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="mf">192.168.10.53</span>   <span class="n">grievous</span>        <span class="n">grievous</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="mf">192.168.10.53</span><span class="w">   </span><span class="n">grievous</span><span class="w">        </span><span class="n">grievous</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <p>Si se necesita agregar más equipos al servidor de DNS simplemente se edita el archivo /etc/hosts agregando los equipos en dicho archivo.</p>
 <p>Se crea el archivo /etc/resolv-orig.conf donde se encuentra las IPs de los servidores de DNS externos.
 En este caso se está usando los servidores de DNS de Google, OpenDNS y de la red del trabajo.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>nameserver 8.8.8.8 </span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>nameserver 8.8.8.8 </span>
 <span class="code-line">nameserver 8.8.4.4</span>
 <span class="code-line">nameserver 208.67.222.222</span>
 <span class="code-line">nameserver 208.67.220.220</span>
 <span class="code-line">nameserver 192.168.32.254</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Ya se tiene configurado el servidor de DNS, sólo falta que el equipo realice las consultas por medio del archivo /etc/resolv.conf, el cual debe apuntar al servidor local de DNS (127.0.0.1).</p>
-<div class="highlight"><pre><span class="code-line"><span></span>nameserver 127.0.0.1</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>nameserver 127.0.0.1</span>
+<span class="code-line"></code></pre></div>
 
 <p>Ahora se puede probar la resolución de nombres en el equipo.</p>
 <p>Probar que devuelve respuestas el servidor DNS al consultar el nombre del equipo grievous:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="nt">host</span> <span class="nt">grievous</span></span>
-<span class="code-line"><span class="nt">grievous</span> <span class="nt">has</span> <span class="nt">address</span> <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">10</span><span class="p">.</span><span class="nc">53</span></span>
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="nt">host</span><span class="w"> </span><span class="nt">grievous</span><span class="w"></span></span>
+<span class="code-line"><span class="nt">grievous</span><span class="w"> </span><span class="nt">has</span><span class="w"> </span><span class="nt">address</span><span class="w"> </span><span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">10</span><span class="p">.</span><span class="nc">53</span><span class="w"></span></span>
 <span class="code-line"></span>
 <span class="code-line"></span>
-<span class="code-line"><span class="nt">dig</span> <span class="nt">grievous</span></span>
+<span class="code-line"><span class="nt">dig</span><span class="w"> </span><span class="nt">grievous</span><span class="w"></span></span>
 <span class="code-line"></span>
-<span class="code-line"><span class="o">;</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">DiG</span> <span class="nt">9</span><span class="p">.</span><span class="nc">7</span><span class="p">.</span><span class="nc">3</span> <span class="o">&lt;&lt;&gt;&gt;</span> <span class="nt">grievous</span></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">global</span> <span class="nt">options</span><span class="o">:</span> <span class="o">+</span><span class="nt">cmd</span></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">Got</span> <span class="nt">answer</span><span class="o">:</span></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">-</span><span class="o">&gt;&gt;</span><span class="nt">HEADER</span><span class="o">&lt;&lt;</span><span class="nt">-</span> <span class="nt">opcode</span><span class="o">:</span> <span class="nt">QUERY</span><span class="o">,</span> <span class="nt">status</span><span class="o">:</span> <span class="nt">NOERROR</span><span class="o">,</span> <span class="nt">id</span><span class="o">:</span> <span class="nt">19819</span></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">flags</span><span class="o">:</span> <span class="nt">qr</span> <span class="nt">aa</span> <span class="nt">rd</span> <span class="nt">ra</span><span class="o">;</span> <span class="nt">QUERY</span><span class="o">:</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">ANSWER</span><span class="o">:</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">AUTHORITY</span><span class="o">:</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">ADDITIONAL</span><span class="o">:</span> <span class="nt">0</span></span>
-<span class="code-line"></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">QUESTION</span> <span class="nt">SECTION</span><span class="o">:</span></span>
-<span class="code-line"><span class="o">;</span><span class="nt">grievous</span><span class="o">.</span>          <span class="nt">IN</span>  <span class="nt">A</span></span>
+<span class="code-line"><span class="o">;</span><span class="w"> </span><span class="o">&lt;&lt;&gt;&gt;</span><span class="w"> </span><span class="nt">DiG</span><span class="w"> </span><span class="nt">9</span><span class="p">.</span><span class="nc">7</span><span class="p">.</span><span class="nc">3</span><span class="w"> </span><span class="o">&lt;&lt;&gt;&gt;</span><span class="w"> </span><span class="nt">grievous</span><span class="w"></span></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">global</span><span class="w"> </span><span class="nt">options</span><span class="o">:</span><span class="w"> </span><span class="o">+</span><span class="nt">cmd</span><span class="w"></span></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">Got</span><span class="w"> </span><span class="nt">answer</span><span class="o">:</span><span class="w"></span></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">-</span><span class="o">&gt;&gt;</span><span class="nt">HEADER</span><span class="o">&lt;&lt;</span><span class="nt">-</span><span class="w"> </span><span class="nt">opcode</span><span class="o">:</span><span class="w"> </span><span class="nt">QUERY</span><span class="o">,</span><span class="w"> </span><span class="nt">status</span><span class="o">:</span><span class="w"> </span><span class="nt">NOERROR</span><span class="o">,</span><span class="w"> </span><span class="nt">id</span><span class="o">:</span><span class="w"> </span><span class="nt">19819</span><span class="w"></span></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">flags</span><span class="o">:</span><span class="w"> </span><span class="nt">qr</span><span class="w"> </span><span class="nt">aa</span><span class="w"> </span><span class="nt">rd</span><span class="w"> </span><span class="nt">ra</span><span class="o">;</span><span class="w"> </span><span class="nt">QUERY</span><span class="o">:</span><span class="w"> </span><span class="nt">1</span><span class="o">,</span><span class="w"> </span><span class="nt">ANSWER</span><span class="o">:</span><span class="w"> </span><span class="nt">1</span><span class="o">,</span><span class="w"> </span><span class="nt">AUTHORITY</span><span class="o">:</span><span class="w"> </span><span class="nt">0</span><span class="o">,</span><span class="w"> </span><span class="nt">ADDITIONAL</span><span class="o">:</span><span class="w"> </span><span class="nt">0</span><span class="w"></span></span>
 <span class="code-line"></span>
 <span class="code-line"></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">ANSWER</span> <span class="nt">SECTION</span><span class="o">:</span></span>
-<span class="code-line"><span class="nt">grievous</span><span class="o">.</span>       <span class="nt">0</span>   <span class="nt">IN</span>  <span class="nt">A</span>   <span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">10</span><span class="p">.</span><span class="nc">53</span></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">QUESTION</span><span class="w"> </span><span class="nt">SECTION</span><span class="o">:</span><span class="w"></span></span>
+<span class="code-line"><span class="o">;</span><span class="nt">grievous</span><span class="o">.</span><span class="w">          </span><span class="nt">IN</span><span class="w">  </span><span class="nt">A</span><span class="w"></span></span>
 <span class="code-line"></span>
 <span class="code-line"></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">Query</span> <span class="nt">time</span><span class="o">:</span> <span class="nt">6</span> <span class="nt">msec</span></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">SERVER</span><span class="o">:</span> <span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="p">#</span><span class="nn">53</span><span class="o">(</span><span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="o">)</span></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">WHEN</span><span class="o">:</span> <span class="nt">Sat</span> <span class="nt">Aug</span> <span class="nt">20</span> <span class="nt">10</span><span class="p">:</span><span class="nd">06</span><span class="p">:</span><span class="nd">45</span> <span class="nt">2011</span></span>
-<span class="code-line"><span class="o">;;</span> <span class="nt">MSG</span> <span class="nt">SIZE</span>  <span class="nt">rcvd</span><span class="o">:</span> <span class="nt">42</span></span>
-</pre></div>
-
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">ANSWER</span><span class="w"> </span><span class="nt">SECTION</span><span class="o">:</span><span class="w"></span></span>
+<span class="code-line"><span class="nt">grievous</span><span class="o">.</span><span class="w">       </span><span class="nt">0</span><span class="w">   </span><span class="nt">IN</span><span class="w">  </span><span class="nt">A</span><span class="w">   </span><span class="nt">192</span><span class="p">.</span><span class="nc">168</span><span class="p">.</span><span class="nc">10</span><span class="p">.</span><span class="nc">53</span><span class="w"></span></span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">Query</span><span class="w"> </span><span class="nt">time</span><span class="o">:</span><span class="w"> </span><span class="nt">6</span><span class="w"> </span><span class="nt">msec</span><span class="w"></span></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">SERVER</span><span class="o">:</span><span class="w"> </span><span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="p">#</span><span class="nn">53</span><span class="o">(</span><span class="nt">127</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">0</span><span class="p">.</span><span class="nc">1</span><span class="o">)</span><span class="w"></span></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">WHEN</span><span class="o">:</span><span class="w"> </span><span class="nt">Sat</span><span class="w"> </span><span class="nt">Aug</span><span class="w"> </span><span class="nt">20</span><span class="w"> </span><span class="nt">10</span><span class="p">:</span><span class="nd">06</span><span class="p">:</span><span class="nd">45</span><span class="w"> </span><span class="nt">2011</span><span class="w"></span></span>
+<span class="code-line"><span class="o">;;</span><span class="w"> </span><span class="nt">MSG</span><span class="w"> </span><span class="nt">SIZE</span><span class="w">  </span><span class="nt">rcvd</span><span class="o">:</span><span class="w"> </span><span class="nt">42</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <p>Ahora se puede verificar los rendimientos de los servidores de DNS con NameBench. Para instalarlo se ejecuta apt-get.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>apt-get install  namebench</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>apt-get install  namebench</span>
+<span class="code-line"></code></pre></div>
 
 <p>En la siguiente figura se muestra la ejecución de namebench donde se le define el servidor de Nombres a utilizar.</p>
 <p><img alt="namebench" src="./images/namebench.png"></p>

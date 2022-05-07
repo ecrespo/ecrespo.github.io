@@ -4,7 +4,7 @@ Category: Tutorial Python
 Tags: python,solid
 lang: es
 translation: true
-Slug: python_typing
+Slug: python_solid
 Authors: Ernesto Crespo
 Summary: Primer artículo sobre los principios SOLID, en este caso el principio de responsabilidad única.
 

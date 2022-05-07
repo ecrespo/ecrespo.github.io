@@ -219,15 +219,14 @@
 <p>En este artículo se muestra como construir una imagen Docker a partir de un archivo llamado Dockerfile.</p>
 <p>Se usará una imagen de Debian como base que a partir de allí se tendrá una con apache corriendo, en el directorio <code>/var/www/html</code> se tendrá un archivo index.html con dos encabezados html que mostrarán que se tiene corriendo apache por medio de docker.</p>
 <p>Lo primero que se tiene que hacer es crear el archivo Dockerfile en un directorio por ejemplo dockerbuilds, el archivo contendrá lo siguiente:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>FROM debian</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>FROM debian</span>
 <span class="code-line">MAINTAINER Ernesto Crespo</span>
 <span class="code-line">RUN apt-get update</span>
 <span class="code-line">RUN apt-get install apache2 -y --force-yes</span>
 <span class="code-line">RUN echo &quot;<span class="nt">&lt;h1&gt;</span>Apache con docker<span class="nt">&lt;/h1&gt;</span> <span class="nt">&lt;h2&gt;</span>Prueba hecha por Seraph1<span class="nt">&lt;/h2&gt;</span>&quot; &gt; /var/www/html/index.html</span>
 <span class="code-line">EXPOSE 80</span>
 <span class="code-line">ENTRYPOINT apache2ctl -D FOREGROUND</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Descripción del archivo:</p>
 <ul>
@@ -238,13 +237,12 @@
 <li>Se indica que se ejecute apache en primer plano cada vez que se inicie el contenedor.  </li>
 </ul>
 <p>Luego de tener el archivo listo, se ejecuta el comando para la creación de la imagen usando dicho archivo:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker build -t ecrespo/apache .</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker build -t ecrespo/apache .</span>
+<span class="code-line"></code></pre></div>
 
 <p>Se define que el nombre de la imagen será <code>ecrespo/apache</code>.</p>
 <p>Al terminar de realizar el proceso de construcción se tendrá la imagen en el equipo:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$docker images</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$docker images</span>
 <span class="code-line">REPOSITORY                                      TAG                 IMAGE ID            CREATED              VIRTUAL SIZE</span>
 <span class="code-line">ecrespo/apache                                  latest              ae0d4610be9d        About a minute ago   197.8 MB</span>
 <span class="code-line">debian-django                                   latest              36896e115e32        2 weeks ago          601.1 MB</span>
@@ -252,21 +250,18 @@
 <span class="code-line">debian                                          latest              8b9a99209d5c        6 weeks ago          125.1 MB</span>
 <span class="code-line">sonarqube                                       latest              dd47274097f7        10 weeks ago         942.5 MB</span>
 <span class="code-line">debian                                          8.1                 f05335696a9b        4 months ago         125.2 MB</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Se tiene la imagen de 197.8MB. </p>
 <p>Para terminar se ejecuta la imagen que se llama <code>ecrespo/apache</code>, la instancia se llamará apache1, se captura el puerto local 80 y lo muestra en el equipo como puerto 90.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker run --name apache1 -d -p 90:80 ecrespo/apache</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker run --name apache1 -d -p 90:80 ecrespo/apache</span>
+<span class="code-line"></code></pre></div>
 
 <p>Se lista los procesos de docker y se tiene el contenedor de apache corriendo:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="err">$</span><span class="n">docker</span> <span class="n">ps</span></span>
-<span class="code-line"><span class="n">CONTAINER</span> <span class="n">ID</span>        <span class="n">IMAGE</span>               <span class="n">COMMAND</span>                  <span class="n">CREATED</span>             <span class="n">STATUS</span>              <span class="n">PORTS</span>                <span class="n">NAMES</span></span>
-<span class="code-line"><span class="mo">01</span><span class="mi">95</span><span class="n">ebf31328</span>        <span class="n">ecrespo</span><span class="o">/</span><span class="n">apache</span>      <span class="s">&quot;/bin/sh -c &#39;</span><span class="n">apache2c</span><span class="s">&quot;   44 minutes ago      Up 44 minutes       0.0.0.0:90-&gt;80/tcp   apache1</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="err">$</span><span class="n">docker</span><span class="w"> </span><span class="n">ps</span><span class="w"></span></span>
+<span class="code-line"><span class="n">CONTAINER</span><span class="w"> </span><span class="n">ID</span><span class="w">        </span><span class="n">IMAGE</span><span class="w">               </span><span class="n">COMMAND</span><span class="w">                  </span><span class="n">CREATED</span><span class="w">             </span><span class="n">STATUS</span><span class="w">              </span><span class="n">PORTS</span><span class="w">                </span><span class="n">NAMES</span><span class="w"></span></span>
+<span class="code-line"><span class="mo">01</span><span class="mi">95</span><span class="n">ebf31328</span><span class="w">        </span><span class="n">ecrespo</span><span class="o">/</span><span class="n">apache</span><span class="w">      </span><span class="s">&quot;/bin/sh -c &#39;</span><span class="n">apache2c</span><span class="s">&quot;   44 minutes ago      Up 44 minutes       0.0.0.0:90-&gt;80/tcp   apache1</span></span>
+<span class="code-line"></code></pre></div>
 
 <p>El nombre es <code>ecrespo/apache</code>, el comando que se ejecuta es el de <code>apachectl</code>, tiempo de creado 44 minutos y arriba desde hace 44 minutos, el nombre de la instancia es <code>apache1</code> y redirecciona el puerto 90 al puerto 80.</p>
 <p>Con <code>docker stats</code> pasando el id del contenedor se puede tener información de consumo de recursos de dicho contenedor.</p>
@@ -274,16 +269,14 @@
 <p>Ahora se abre el navegador con localhost:90 y se tiene lo que muestra el mensaje que veremos en la siguiente figura:</p>
 <p><img alt="" src="./images/crearunaimagendockerapartirdeunarchivodockerfile-2.png"></p>
 <p>Para detener el contenedor se ejecuta <code>docker stop</code> con el id del contenedor:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker stop 0195ebf31328</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker stop 0195ebf31328</span>
 <span class="code-line">0195ebf31328</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Al listar los procesos se nota que ya no se tiene el contenedor <code>apache1</code> corriendo.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>$ docker ps</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>$ docker ps</span>
 <span class="code-line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>En este artículo se muestra una pequeña personalización del apache, poco a poco se irá aumentando el nivel de personalización de los contenedores para tener servicios reales en funcionamiento. </p>
 <h2></h2>

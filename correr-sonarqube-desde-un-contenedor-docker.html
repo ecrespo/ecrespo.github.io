@@ -306,26 +306,23 @@
 </ol>
 <p>La guía de configuración y uso de  contenedores Docker para sonarqube lo pueden ver en el enalce de <a href="https://hub.docker.com/_/sonarqube/">Docker hub</a>.</p>
 <p>Lo primero que se hará es iniciar un contenedor de postgreSQL:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker run -d --name postgres2 --restart always  -e POSTGRES_PASSWORD=sonar -e POSTGRES_USER=sonar postgres</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker run -d --name postgres2 --restart always  -e POSTGRES_PASSWORD=sonar -e POSTGRES_USER=sonar postgres</span>
+<span class="code-line"></code></pre></div>
 
 <p>Se define que el usuario de la base de datos es sonar y su clave es sonar.</p>
 <p>Ahora se inicia el contenedor de sonarqube:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker run -d --name sonarqube --restart always -p 9000:9000 -p 9092:9092 -e SONARQUBE_JDBC_USERNAME=sonar -e SONARQUBE_JDBC_PASSWORD=sonar -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres2/sonar --link postgres2:postgres sonarqube</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker run -d --name sonarqube --restart always -p 9000:9000 -p 9092:9092 -e SONARQUBE_JDBC_USERNAME=sonar -e SONARQUBE_JDBC_PASSWORD=sonar -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgres2/sonar --link postgres2:postgres sonarqube</span>
+<span class="code-line"></code></pre></div>
 
 <p>Se le pasan los puertos donde estará sonarqube (9000 y 9092), se le pasa la configuración de la base de datos a sonarqube (usuario, clave y url de conexión que usará el nombre del contenedor de postgres) y se enlace con el contenedor de postgres.</p>
 <p>A continuación se muestra una captura de pantalla del contenedor corriendo:</p>
 <p><img alt="" src="./images/corrersonarqubedesdeuncontenedordocker-1.png"></p>
 <p>Para terminar se muestran los contenedores corriendo:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="n">docker</span> <span class="n">ps</span> </span>
-<span class="code-line"><span class="n">CONTAINER</span> <span class="n">ID</span>        <span class="n">IMAGE</span>                     <span class="n">COMMAND</span>                  <span class="n">CREATED</span>             <span class="n">STATUS</span>              <span class="n">PORTS</span>                                                          <span class="n">NAMES</span></span>
-<span class="code-line"><span class="n">e20d4108f54f</span>        <span class="n">sonarqube</span>                 <span class="s">&quot;./bin/run.sh&quot;</span>           <span class="mi">29</span> <span class="n">minutes</span> <span class="n">ago</span>      <span class="n">Up</span> <span class="mi">29</span> <span class="n">minutes</span>       <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">9092</span><span class="o">-&gt;</span><span class="mi">9092</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span> <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">49000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span>                <span class="n">sonarqube</span></span>
-<span class="code-line"><span class="n">e3387c2754d1</span>        <span class="n">postgres</span>                  <span class="s">&quot;/docker-entrypoint.s&quot;</span>   <span class="mi">6</span> <span class="n">hours</span> <span class="n">ago</span>         <span class="n">Up</span> <span class="mi">6</span> <span class="n">hours</span>          <span class="mi">5432</span><span class="o">/</span><span class="n">tcp</span>                                                       <span class="n">postgres2</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">docker</span><span class="w"> </span><span class="n">ps</span><span class="w"> </span></span>
+<span class="code-line"><span class="n">CONTAINER</span><span class="w"> </span><span class="n">ID</span><span class="w">        </span><span class="n">IMAGE</span><span class="w">                     </span><span class="n">COMMAND</span><span class="w">                  </span><span class="n">CREATED</span><span class="w">             </span><span class="n">STATUS</span><span class="w">              </span><span class="n">PORTS</span><span class="w">                                                          </span><span class="n">NAMES</span><span class="w"></span></span>
+<span class="code-line"><span class="n">e20d4108f54f</span><span class="w">        </span><span class="n">sonarqube</span><span class="w">                 </span><span class="s">&quot;./bin/run.sh&quot;</span><span class="w">           </span><span class="mi">29</span><span class="w"> </span><span class="n">minutes</span><span class="w"> </span><span class="n">ago</span><span class="w">      </span><span class="n">Up</span><span class="w"> </span><span class="mi">29</span><span class="w"> </span><span class="n">minutes</span><span class="w">       </span><span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">9092</span><span class="o">-&gt;</span><span class="mi">9092</span><span class="o">/</span><span class="n">tcp</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">49000</span><span class="o">-&gt;</span><span class="mi">9000</span><span class="o">/</span><span class="n">tcp</span><span class="w">                </span><span class="n">sonarqube</span><span class="w"></span></span>
+<span class="code-line"><span class="n">e3387c2754d1</span><span class="w">        </span><span class="n">postgres</span><span class="w">                  </span><span class="s">&quot;/docker-entrypoint.s&quot;</span><span class="w">   </span><span class="mi">6</span><span class="w"> </span><span class="n">hours</span><span class="w"> </span><span class="n">ago</span><span class="w">         </span><span class="n">Up</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="n">hours</span><span class="w">          </span><span class="mi">5432</span><span class="o">/</span><span class="n">tcp</span><span class="w">                                                       </span><span class="n">postgres2</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <h2></h2>
 <p>¡Haz tu donativo!

@@ -223,12 +223,11 @@
 <p>Sólo se necesita un equipo con <code>Fabric</code>, se usa Debian Stretch por que en esta versión de Debian no es tan complicado de instalar Fabric, en Debian Jessie me ha dado algo de problemas, se logra instalar pero da errores en la ejecución (por lo que he investigado, el problema es la librería <code>paramiko</code>).</p>
 <p>Instalación de <code>Fabric</code>:
 Con pip:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="c1">#pip install fabric</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="c1">#pip install fabric</span></span>
+<span class="code-line"></code></pre></div>
 
 <p>Ahora se crea un archivo <code>fabfile.py</code> co el siguiente contenido:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="ch">#!/usr/bin/env python</span></span>
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="ch">#!/usr/bin/env python</span></span>
 <span class="code-line"></span>
 <span class="code-line"><span class="c1">#de la api de fabric de importa run, sudo, task, get y put</span></span>
 <span class="code-line"></span>
@@ -285,50 +284,43 @@ Con pip:</p>
 <span class="code-line"><span class="k">def</span> <span class="nf">host_type</span><span class="p">():</span></span>
 <span class="code-line"></span>
 <span class="code-line">        <span class="n">run</span><span class="p">(</span><span class="s1">&#39;uname -s&#39;</span><span class="p">)</span></span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Para ejecutar las tareaas se usa el comando <code>fab</code> (se define una variable de entorno llamada clave la cual maneja la clave del usuario):</p>
 <p>Ejecución de <code>ps</code> en dos equipos en paralelo:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>fab -H 192.168.1.2,192.168.1.6 -p $clave -P cmdrum:&quot;ps -ef|wc -l&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>fab -H 192.168.1.2,192.168.1.6 -p $clave -P cmdrum:&quot;ps -ef|wc -l&quot;</span>
+<span class="code-line"></code></pre></div>
 
 <p><img alt="" src="./images/fabriccomounsshconesteroidesendebianstretch-1.png"></p>
 <p>Devuelve la ejecución del <code>ps</code> y la cantidad de líneas que resulta en cada equipo.</p>
 <p>Se averigua el tipo de host de cada equipo remoto con <code>host_type</code>:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>fab -H 192.168.1.2,192.168.1.6 -p $clave   host_type</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>fab -H 192.168.1.2,192.168.1.6 -p $clave   host_type</span>
+<span class="code-line"></code></pre></div>
 
 <p><img alt="" src="./images/fabriccomounsshconesteroidesendebianstretch-2.png"></p>
 <p>Acá se muestra de manera secuencial la ejecución de los comandos en los equipos, para que sea de manera paralela se usa la opción <code>-P</code>.</p>
-<div class="highlight"><pre><span class="code-line"><span></span>fab -H 192.168.1.2,192.168.1.6 -p $clave  -P host_type</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>fab -H 192.168.1.2,192.168.1.6 -p $clave  -P host_type</span>
+<span class="code-line"></code></pre></div>
 
 <p><img alt="" src="./images/fabriccomounsshconesteroidesendebianstretch-3.png"></p>
 <p>Ya la ejecución no se hace de manera secuencial en cada equipo.</p>
 <p>Se ejecuta <code>fdisk</code> por medio de <code>sudo</code>:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>fab -H 192.168.1.2,192.168.1.6 -p $clave -P sudo:&quot;fdisk -l| grep sda&quot;</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>fab -H 192.168.1.2,192.168.1.6 -p $clave -P sudo:&quot;fdisk -l| grep sda&quot;</span>
+<span class="code-line"></code></pre></div>
 
 <p><img alt="" src="./images/fabriccomounsshconesteroidesendebianstretch-4.png"></p>
 <p>El comando devuelve las particiones <code>sda</code> que tiene cada equipo.</p>
 <p>Se sube un arhivo <code>sources.list</code> al equipo 192.168.1.2, por medio de <code>upload</code> y se pasa como argumento el archivo local y la ruta remota:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="n">fab</span> <span class="o">-</span><span class="n">h</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.2</span> <span class="o">-</span><span class="n">p</span> <span class="o">$</span><span class="n">clave</span> <span class="n">upload</span><span class="p">:</span><span class="s2">&quot;sources.list&quot;</span><span class="p">,</span><span class="s2">&quot;/tmp/&quot;</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">fab</span><span class="w"> </span><span class="o">-</span><span class="n">h</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.2</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">$</span><span class="n">clave</span><span class="w"> </span><span class="n">upload</span><span class="p">:</span><span class="s2">&quot;sources.list&quot;</span><span class="p">,</span><span class="s2">&quot;/tmp/&quot;</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <p><img alt="" src="./images/fabriccomounsshconesteroidesendebianstretch-5.png"></p>
 <p>La figura muestra que la subida del archivo se realizó sin problemas, ahora se revisa en el directorio <code>/tmp/</code>:
 La figura muestra que el archivo <code>sources.list</code> se encuentra en <code>/tmp/</code></p>
 <p><img alt="" src="./images/fabriccomounsshconesteroidesendebianstretch-6.png"></p>
 <p>Se baja el archivo <code>prueba.txt</code> del equipo 192.168.1.2, por medio de download, pasando la ruta remota del archivo, este archivo se descarga por defecto en <code>/tmp/</code>:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="n">fab</span> <span class="o">-</span><span class="n">H</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">1.2</span> <span class="o">-</span><span class="n">p</span> <span class="o">$</span><span class="n">clave</span> <span class="n">upload</span><span class="p">:</span><span class="s2">&quot;sources.list&quot;</span><span class="p">,</span><span class="s2">&quot;/tmp/&quot;</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">fab</span><span class="w"> </span><span class="o">-</span><span class="n">H</span><span class="w"> </span><span class="mf">192.168</span><span class="o">.</span><span class="mf">1.2</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="o">$</span><span class="n">clave</span><span class="w"> </span><span class="n">upload</span><span class="p">:</span><span class="s2">&quot;sources.list&quot;</span><span class="p">,</span><span class="s2">&quot;/tmp/&quot;</span><span class="w"></span></span>
+<span class="code-line"></code></pre></div>
 
 <p><img alt="" src="./images/fabriccomounsshconesteroidesendebianstretch-7.png"></p>
 <p>En este caso se descargo el archivo <code>/home/ernesto/prueba.txt</code> a <code>/tmp/</code>, luego se listo localmente el archivo para verificar que se encuentra en dicho directorio.</p>

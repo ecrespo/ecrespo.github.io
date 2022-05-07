@@ -278,13 +278,12 @@
 </ol>
 <p>Este artículo se basa en una parte en el procedimiento del <a href="https://hub.docker.com/search/?isAutomated=0&amp;isOfficial=0&amp;page=1&amp;pullCount=0&amp;q=jenkins&amp;starCount=0">repositorio oficial de Jenkins en Docker Hub</a>. </p>
 <p>Basicamente para instalar jenkins de la imagen Docker oficial se ejecuta:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker run -p 8080:8080 -p 50000:50000 jenkins</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker run -p 8080:8080 -p 50000:50000 jenkins</span>
+<span class="code-line"></code></pre></div>
 
 <p>Pero en este caso se va a usar un archivo <code>Dockerfile</code> donde se instalará maven2, openjdk, docker, ant y jenkins. A fin de tener un soporte suficiente para los plugins que trae jenkins.</p>
 <p>El archivo <code>Dockerfile</code> es el siguiente:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="k">FROM</span><span class="w"> </span><span class="n">debian</span><span class="w"></span></span>
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="k">FROM</span><span class="w"> </span><span class="n">debian</span><span class="w"></span></span>
 <span class="code-line"><span class="n">MAINTAINER</span><span class="w"> </span><span class="n">Ernesto</span><span class="w"> </span><span class="n">Crespo</span><span class="w"> </span><span class="o">&lt;</span><span class="n">ecrespo</span><span class="nv">@gmail</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span><span class="w"></span></span>
 <span class="code-line"><span class="n">RUN</span><span class="w"> </span><span class="n">apt</span><span class="o">-</span><span class="k">get</span><span class="w"> </span><span class="k">update</span><span class="w"></span></span>
 <span class="code-line"><span class="n">RUN</span><span class="w"> </span><span class="n">apt</span><span class="o">-</span><span class="k">get</span><span class="w"> </span><span class="n">install</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">apt</span><span class="o">-</span><span class="n">transport</span><span class="o">-</span><span class="n">https</span><span class="w"></span></span>
@@ -306,40 +305,34 @@
 <span class="code-line"><span class="n">EXPOSE</span><span class="w"> </span><span class="mi">8080</span><span class="w"> </span><span class="mi">50000</span><span class="w"> </span><span class="mi">22</span><span class="w"></span></span>
 <span class="code-line"><span class="n">ENTRYPOINT</span><span class="w"> </span><span class="o">[</span><span class="n">&quot;java&quot;,&quot;-jar&quot;,&quot;/usr/share/jenkins/jenkins.war&quot;</span><span class="o">]</span><span class="w"></span></span>
 <span class="code-line"><span class="n">CMD</span><span class="w"> </span><span class="o">[</span><span class="n">&quot;&quot;</span><span class="o">]</span><span class="w"></span></span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Como se ve, se está usando una imagen Debian y se le instala lo necesario para tener jenkins con algunas herramientas adicionales como Docker, maven2, ant y jenkins. </p>
 <p>Para construir la imagen se ejecuta:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker build -t docker-jenkins . </span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker build -t docker-jenkins . </span>
+<span class="code-line"></code></pre></div>
 
 <p>Esto genera la imagen como se ve a continuación:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker images</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker images</span>
 <span class="code-line">REPOSITORY             TAG                 IMAGE ID            CREATED             SIZE</span>
 <span class="code-line">docker-jenkins         latest              844985a7b6ad        54 minutes ago      855.3 MB</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Para crear el contenedor se ejecuta:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker run -p 8080:8080 -p 50000:50000 -p 8022:22 -P  -d docker-jenkins</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker run -p 8080:8080 -p 50000:50000 -p 8022:22 -P  -d docker-jenkins</span>
+<span class="code-line"></code></pre></div>
 
 <p>Esto genera la siguiente figura abriendo el navegador en localhost:8080:</p>
 <p><img alt="" src="./images/instalarjenkinspormediodedockerycrearunaimagendockerdejenkins-1.png"></p>
 <p>Acá se ejecuta docker exec a fin de ver el contenido del archivo que contiene la llave para autenticar el jenkins:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="nv">docker</span> <span class="k">exec</span> <span class="o">-</span><span class="nv">ti</span> <span class="nv">naughty_darwin</span> <span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">bash</span></span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="nv">docker</span> <span class="k">exec</span> <span class="o">-</span><span class="nv">ti</span> <span class="nv">naughty_darwin</span> <span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">bash</span></span>
+<span class="code-line"></code></pre></div>
 
 <p>Se busca el archivo dentro del contenedor:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>cd /root/.jenkins/secrets/</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>cd /root/.jenkins/secrets/</span>
 <span class="code-line">cat initialAdminPassword </span>
 <span class="code-line">4280c91df94a43308a731c008c6abb3d</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Ya con eso se pregunta si se quiere seleccionar los plugins o si se instalan los recomendados:</p>
 <p><img alt="" src="./images/instalarjenkinspormediodedockerycrearunaimagendockerdejenkins-2.png"></p>
@@ -356,24 +349,21 @@
 <p>El archivo Dockerfile utilizado para el artículo se encuentra en github en el siguiente <a href="https://github.com/ecrespo/docker-jenkins">enlace</a>.</p>
 <p>Para terminar se suben los cambios a docker hub:</p>
 <p>Primero se hace login en docker hub:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="nv">docker</span> <span class="nv">login</span> </span>
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="nv">docker</span> <span class="nv">login</span> </span>
 <span class="code-line"><span class="nv">Login</span> <span class="nv">with</span> <span class="nv">your</span> <span class="nv">Docker</span> <span class="nv">ID</span> <span class="nv">to</span> <span class="nv">push</span> <span class="nv">and</span> <span class="nv">pull</span> <span class="nv">images</span> <span class="nv">from</span> <span class="nv">Docker</span> <span class="nv">Hub</span>. <span class="k">If</span> <span class="nv">you</span> <span class="nv">don</span><span class="s1">&#39;</span><span class="s">t have a Docker ID, head over to https://hub.docker.com to create one.</span></span>
 <span class="code-line"><span class="nv">Username</span>: <span class="nv">ecrespo</span></span>
 <span class="code-line"><span class="nv">Password</span>: </span>
 <span class="code-line"><span class="nv">Login</span> <span class="nv">Succeeded</span></span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Luego se hace commit:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker commit 91594bea7711 ecrespo/docker-jenkins</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker commit 91594bea7711 ecrespo/docker-jenkins</span>
 <span class="code-line">sha256:561e411227e6c0d5e74ef85f6d533c44cb1e66b68ef2da6eec66d228de173fc2</span>
-</pre></div>
-
+<span class="code-line"></code></pre></div>
 
 <p>Se hace push:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>docker push ecrespo/docker-jenkins</span>
-</pre></div>
-
+<div class="highlight"><pre><span class="code-line"><span></span><code>docker push ecrespo/docker-jenkins</span>
+<span class="code-line"></code></pre></div>
 
 <p>A continuación se muestra una imagen del sitio ecrespo/jenkins de docker hub:</p>
 <p><img alt="" src="./images/instalarjenkinspormediodedockerycrearunaimagendockerdejenkins-8.png"></p>

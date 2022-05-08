@@ -6,7 +6,7 @@ lang: es
 translation: true
 Slug: python_solid2
 Authors: Ernesto Crespo
-Summary: Primer artículo sobre los principios SOLID, en este caso el principio de abierto cerrado.
+Summary: Segundo artículo sobre los principios SOLID, en este caso el principio de abierto cerrado.
 
 En ingeniería de software existe el principio [S.O.L.I.D](https://es.wikipedia.org/wiki/SOLID). Los principios SOLID son guías que pueden ser aplicadas en el desarrollo de software para eliminar malos diseños provocando que el programador tenga que refactorizar hasta que sea legible y extensible. 
 
@@ -23,7 +23,7 @@ A continuación dejo un vídeo de [ArjanCodes](https://www.youtube.com/watch?v=p
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/pTB30aXS77U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-El [artículo anterior](https://www.seraph.to/python_solid.html#python_solid) sobre el principio de responsabilidad única.
+El [artículo anterior](https://www.seraph.to/python_solid1.html#python_solid1) sobre el principio de responsabilidad única.
 
 
 El [principio abierto/cerrado](https://es.wikipedia.org/wiki/Principio_de_abierto/cerrado) establece que una entidad de software (clase, módulo, función, etc) debe quedarse abierta para su extensión, pero cerrado para su modificación. Es decir, se debe poner extender el comportamiento de tal entidad pero sin modificar su código fuente.  

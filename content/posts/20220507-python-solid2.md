@@ -1,5 +1,5 @@
 Title: Principios S.O.L.I.D. - 2. Principio abierto/cerrado. (OCP - Open/closed principle) 
-Date:  2022-05-07 12:00
+Date:  2022-05-07 13:00
 Category: Tutorial Python
 Tags: python,solid
 lang: es

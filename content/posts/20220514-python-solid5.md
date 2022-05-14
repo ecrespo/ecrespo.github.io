@@ -1,12 +1,12 @@
-Title: Principios S.O.L.I.D. - 4. Principio de segregación de la interfaz. (ISP - Interface segregation principle) 
-Date:  2022-05-08 14:00
+Title: Principios S.O.L.I.D. - 5. Principio de inversión de la dependencia. (DIP - Dependency inversion principle) 
+Date:  2022-05-14 14:00
 Category: Tutorial Python
 Tags: python,solid
 lang: es
 translation: true
-Slug: python_solid4
+Slug: python_solid5
 Authors: Ernesto Crespo
-Summary: Cuarto artículo sobre los principios SOLID, en este caso el Principio de segregación de la interfaz.
+Summary: Quinto y último artículo sobre los principios SOLID, en este caso el Principio de inversión de la dependencia.
 
 En ingeniería de software existe el principio [S.O.L.I.D](https://es.wikipedia.org/wiki/SOLID). Los principios SOLID son guías que pueden ser aplicadas en el desarrollo de software para eliminar malos diseños provocando que el programador tenga que refactorizar hasta que sea legible y extensible. 
 
@@ -27,302 +27,20 @@ Los artículos anteriores:
 * [Principio de responsabilidad única](https://www.seraph.to/python_solid1.html#python_solid1).
 * [Principio abierto/cerrado](https://www.seraph.to/python_solid2.html#python_solid2).
 * [Principio de sustitución Liskov](https://www.seraph.to/python_solid3.html#python_solid3).
+* [Principio de segregación de la interfaz](https://www.seraph.to/python_solid4.html#python_solid4.
 
+El [Principio de inversión de la dependencia](https://es.wikipedia.org/wiki/Principio_de_inversi%C3%B3n_de_la_dependencia) es una forma específica de desacoplar módulos de software. Al seguir el principio, las relaciones de dependencia convencionales establecidas desde los módulos de alto nivel de establecimiento de políticas a los módulos de depencia de bajo nivel se invierten, lo que hace que los módulos de alto nivel sean independientes de los detalles de implementación del módulo de bajo nivel, el principio establece: 
+ 
+1. Los módulos de alto nivel no deberían depender de los módulos de bajo nivel. Ambos deberían depender de abstracciones (p.ej., interfaces).
+2. Las abstracciones no deberían depender de los detalles. Los detalles (implementaciones concretas) deben depender de abstracciones.
 
-El [Principio de segregación de la interfaz](https://es.wikipedia.org/wiki/Principio_de_segregaci%C3%B3n_de_la_interfaz) establece que los clientes de un programa dado solo deberían conocer de este aquellos métodos que realmente usan y no aquellos que no necesitan usar. El ISP se aplica a una interfaz amplia y compleja para escindirla en otras más pequeñas y específicas, de tal forma que cada cliente use solo aquella que necesite, pudiendo así ignorar al resto. A este tipo de interfaz reducida se le llama interfaces de rol.
+La dependencia debe estar en abstracciones, no en concreciones. Los módulos de alto nivel no deben depender de módulos de bajo nivel. Tanto las clases de nivel bajo como las de alto nivel deberían depender de las mismas abstracciones. Las abstracciones no deberían depender de los detalles. Los detalles deben depender de abstracciones.
 
 
-El Principio de Segregación de Interfaz establece que los clientes no deberían ser forzados a depender de métodos que no utilizan y, por tanto, sugiere la creación de interfaces o clases específicas para dichos clientes.
 
+1. Se tiene el código del artículo anterior sobre el Principio de segregación de interfaz. Con solución usando composición.
 
-
-1. Del principio de sustitución de Livkov se tiene el códgio de procesamiento de pagos. A continuación el código.
-
-
-```python
-
-from abc import ABC, abstractmethod
-
-# La clase Order se mantiene igual así que en el siguiente código no se mostrará.
-class Order:
-
-    def __init__(self):
-        self.items = []
-        self.quantities = []
-        self.prices = []
-        self.status = "open"
-
-    def add_item(self, name, quantity, price):
-        self.items.append(name)
-        self.quantities.append(quantity)
-        self.prices.append(price)
-
-    def total_price(self):
-        total = 0
-        for i in range(len(self.prices)):
-            total += self.quantities[i] * self.prices[i]
-        return total
-
-
-# La clase abstracta con el método de pago que ya no maneja el código de seguridad.
-class PaymentProcessor(ABC):
-    @abstractmethod
-    def pay(self,order):
-        pass 
-
-
-# Se define las clases de pago a debito y crédito y se le define el código de seguridad.
-class DebitPaymentProcessor(PaymentProcessor):
-    
-    def __init__(self,security_code):
-        self.security_code = security_code
-    
-    def pay(self,order):
-        print("Processing debit payment type")
-        print(f"Verifying security code: {self.security_code}")
-        order.status = "paid"
-
-class CreditPaymentProcessor(PaymentProcessor):
-    
-    def __init__(self,security_code):
-        self.security_code = security_code
-    
-    def pay(self,order):
-        print("Processing credit payment type")
-        print(f"Verifying security code: {self.security_code}")
-        order.status = "paid"
-
-# Para el caso de paypal se define el correo electrónico.
-class PaypalPaymentProcessor(PaymentProcessor):
-    
-    def __init__(self,email_address):
-        self.email_address = email_address
-        
-    
-    def pay(self,order):
-        print("Processing paypal payment type")
-        print(f"Verifying email address: {self.email_address}")
-        order.status = "paid"
-
-# Ahora se instancia la clase Order, y se agrega los items a comprar en la orden.
-
-order = Order()
-order.add_item("Teclado", 1, 50)
-order.add_item("Memoria", 1, 150)
-order.add_item("Cable USB", 2, 5)
-
-# Imprime el precio total de la orden
-print(order.total_price())
-
-
-# Se define el método de pago debito
-
-processor = DebitPaymentProcessor("0372846")
-processor.pay(order)
-
-# Se define el método de pago TC
-
-processor = CreditPaymentProcessor("0372846")
-processor.pay(order)
-
-
-
-# Se define el método de pago paypal
-processor = PaypalPaymentProcessor("h@h.com")
-processor.pay(order)
-
-```
-
-La salida genera lo siguiente: 
-
-```bash 
-
-210
-Processing debit payment type
-Verifying security code: 0372846
-
-Processing debit payment type
-Verifying security code: 0372846
-
-Processing credit payment type
-Verifying security code: 0372846
-
-Processing paypal payment type
-Verifying email address: h@h.com
-```
-
-
-### Primera mejora
-
-Para cumplir con el método de segregación la mejora que se hará es en la clase abstracta, en vez de tener un sólo método (pago), ahora tendrá uno de autenticación vía SMS.
-
-A continuación el código:
-
-```python 
-
-from abc import ABC, abstractmethod
-
-
-# La clase abstracta de procesamiento de pago
-# tiene los métodos pay y auth_sms
-
-class PaymentProcessor(ABC):
-    @abstractmethod
-    def pay(self,order):
-        pass 
-    @abstractmethod
-    def auth_sms(self,code):
-        pass 
-
-
-# La clase DebitPaymentProcessor hereda de la clase abstracta.
-class DebitPaymentProcessor(PaymentProcessor):
-    
-    def __init__(self,security_code):
-        self.security_code = security_code
-        self.verified = false
-    
-    def pay(self,order):
-        if not self.verified:
-            raise Exception("Not authorized")
-        print("Processing debit payment type")
-        print(f"Verifying security code: {self.security_code}")
-        order.status = "paid"
-        
-    def auth_sms(self,code):
-        print(f"Verifying SMS code {code}")
-        self.verified = True
-
-
-# La clase CreditPaymentProcessor hereda de la clase abstracta
-# El problema acá es que pago con TC no necesita enviar un SMS de autenticación
-# pero toca usarlo por la clase abstracta, al enviar un mensaje de error, pero 
-# al hacer esto se está violando el principio de sustitución de Liskov. 
-class CreditPaymentProcessor(PaymentProcessor):
-    
-    def __init__(self,security_code):
-        self.security_code = security_code
-        
-    
-    def pay(self,order):
-        print("Processing credit payment type")
-        print(f"Verifying security code: {self.security_code}")
-        order.status = "paid"
-        
-    # Esta es una violacion del principio de sustitución de Liskov
-    def auth_sms(self,code):
-        raise Exception("Credit card payments don't support SMS code authorizations")
-
-# La clase de procesamiento de pago por paypal hereda de la clase abstracta.
-class PaypalPaymentProcessor(PaymentProcessor):
-    
-    def __init__(self,email_address):
-        self.email_address = email_address
-        self.verified = False
-        
-    
-    def pay(self,order):
-        if not self.verified:
-            raise Exception("Not authorized")
-        print("Processing paypal payment type")
-        print(f"Verifying email address: {self.email_address}")
-        order.status = "paid"
-        
-        
-    def auth_sms(self,code):
-        print(f"Verifying SMS code {code}")
-        self.verified = True
-
-```
-
-
-### Segunda mejora
-
-
-Para resolver el incumplimiento del principio de sustitución de Liskov se va a crear 2 clases abstractas, una para autenticación vía SMS
-y otra para validar lo que no usan SMS.
-
-```python 
-
-# Clase abstracta procesador de pago que ahora sólo tiene el método pay
-class PaymentProcessor(ABC):
-    @abstractmethod
-    def pay(self,order):
-        pass 
-
-
-# Ahora se tiene una clase abstracta de procesamiento de pago SMS que hereda de
-# la clase anterior. 
-# Con sólo el método de auth_sms por que ya el de pago lo hereda de la clase abstracta anterior.
-class PaymentProcessor_SMS(PaymentProcessor):
-
-    @abstractmethod
-    def auth_sms(self,code):
-        pass 
-
-
-# Clase procesamiento de tarjeta de debito que hereda de la 
-# clase abstracta de pago SMS.
-class DebitPaymentProcessor(PaymentProcessor_SMS):
-    
-    def __init__(self,security_code):
-        self.security_code = security_code
-        self.verified = false
-    
-    def pay(self,order):
-        if not self.verified:
-            raise Exception("Not authorized")
-        print("Processing debit payment type")
-        print(f"Verifying security code: {self.security_code}")
-        order.status = "paid"
-        
-    def auth_sms(self,code):
-        print(f"Verifying SMS code {code}")
-        self.verified = True
-
-
-# Clase de procesamiento de TC que hereda de la clase raíz.
-class CreditPaymentProcessor(PaymentProcessor):
-    
-    def __init__(self,security_code):
-        self.security_code = security_code
-        
-    
-    def pay(self,order):
-        print("Processing credit payment type")
-        print(f"Verifying security code: {self.security_code}")
-        order.status = "paid"
-
-
-# Clase de procesamiento vía paypal que hereda de la Clase abstracta 
-# que soporta SMS
-
-class PaypalPaymentProcessor(PaymentProcessor_SMS):
-    
-    def __init__(self,email_address):
-        self.email_address = email_address
-        self.verified = False
-        
-    
-    def pay(self,order):
-        if not self.verified:
-            raise Exception("Not authorized")
-        print("Processing paypal payment type")
-        print(f"Verifying email address: {self.email_address}")
-        order.status = "paid"
-        
-        
-    def auth_sms(self,code):
-        print(f"Verifying SMS code {code}")
-        self.verified = True
-
-```
-
-Ya se tiene las diferentes clases con sólo los métodos que necesitan bien separados cumpliendo con el principio
-de segregación. 
-
-Existe otra solución y es usando commposición, se creará la clase SMSAuth que tendrá el método de verificación de código SMS y si está autorizado. La clase abstracta de procesamiento de pago sólo tendrá el método pay, 
-
+En este caso, al pasar como argumento de un método un objeto, ya viola este principio.
 
 ```python 
 
@@ -447,7 +165,169 @@ Verifying email address: h@h.com
 
 ```
 
-Lo bueno de la composición es que se elimina la creación de una clase abstracta adicional.
+### Solución
+Para cumplir el principio de la inversión de la dependencia se crea una clase  abstracta que maneje si se verifica la autenticación junto con la clase AuthSMS, en las respectivas clases del procesamiento de pago que se necesite verificar por SMS, en vez de pasar como argumento el objeto, se pasa la clase abstracta. 
+
+A continuación el código: 
+
+```python
+
+from abc import ABC, abstractmethod
+
+# La clase Order 
+class Order:
+
+    def __init__(self):
+        self.items = []
+        self.quantities = []
+        self.prices = []
+        self.status = "open"
+
+    def add_item(self, name, quantity, price):
+        self.items.append(name)
+        self.quantities.append(quantity)
+        self.prices.append(price)
+
+    def total_price(self):
+        total = 0
+        for i in range(len(self.prices)):
+            total += self.quantities[i] * self.prices[i]
+        return total
+
+# Clase abstracta authorizer con método que devuelve si está autorizado o no. 
+class Authorizer(ABC):
+    @abstractmethod
+    def is_authorized(self) ->bool:
+        pass
+
+
+# Clase abstracta de procesamiento de pago
+class PaymentProcessor(ABC):
+    @abstractmethod
+    def pay(self,order):
+        pass 
+
+# Clase SMSAutho que hereda de la clase abstracta authorizer
+class SMSAuth(Authorizer):
+    authorized = False
+    
+    def verify_code(self,code):
+        print(f"Verifying code {code}")
+        self.authorized = True
+        
+    def is_authorized(self) -> bool:
+        return self.authorized
+
+# clase pago por tarjeta de debito que recibe en el init authorizer que es la clase abstracta.
+class DebitPaymentProcessor(PaymentProcessor):
+    
+    def __init__(self,security_code, authorizer: Authorizer):
+
+        self.authorizer = authorizer
+        self.security_code = security_code
+    
+    def pay(self,order):
+        # Se consulta si no está autorizado el pago
+        # al no tener autorización devuelve una excepción.
+        if not self.authorizer.is_authorized():
+            raise Exception("Not authorized")
+        print("Processing debit payment type")
+        print(f"Verifying security code: {self.security_code}")
+        order.status = "paid"
+
+# La clase de procesamiento de TC se mantiene igual.
+class CreditPaymentProcessor(PaymentProcessor):
+    
+    def __init__(self,security_code):
+        self.security_code = security_code
+        
+    
+    def pay(self,order):
+        print("Processing credit payment type")
+        print(f"Verifying security code: {self.security_code}")
+        order.status = "paid"
+
+
+# clase dde procesamiento de pago por paypal
+# Se le pasa como argumento la clase abstracta.
+class PaypalPaymentProcessor(PaymentProcessor):
+    
+    def __init__(self,email_address,authorizer:Authorizer):
+        self.authorizer = authorizer
+        self.email_address = email_address
+        self.verified = False
+        
+    
+    def pay(self,order):
+        # Se valida si se tiene autorización para realizar el pago.
+        if not self.authorizer.is_authorized():
+            raise Exception("Not authorized")
+        print("Processing paypal payment type")
+        print(f"Verifying email address: {self.email_address}")
+        order.status = "paid"
+
+# Ahora se instancia la clase Order, y se agrega los items a comprar en la orden.
+
+order = Order()
+order.add_item("Teclado", 1, 50)
+order.add_item("Memoria", 1, 150)
+order.add_item("Cable USB", 2, 5)
+
+# Imprime el precio total de la orden
+print(order.total_price())
+
+# Se define el autorizador.
+authorizer = SMSAuth()
+
+# Se define el método de pago debito
+# ahora se le pasa el código y el autorizador.
+
+processor = DebitPaymentProcessor("0372846",authorizer)
+# Se verifica el pago
+authorizer.verify_code(454545)
+
+# Realiza el pago de la orden.
+processor.pay(order)
+
+# Se define el método de pago TC
+# Para este caso se mantiene igual.
+processor = CreditPaymentProcessor("0372846")
+processor.pay(order)
+
+
+
+# Se define el método de pago paypal
+# Se le pasa el correo y el autorizador.
+processor = PaypalPaymentProcessor("h@h.com",authorizer)
+# Se realiza el pago de la orden.
+processor.pay(order)
+```
+
+La salida es la siguiente: 
+
+```bash 
+
+210
+Verifying code 454545
+Processing debit payment type
+Verifying security code: 0372846
+
+Processing debit payment type
+Verifying security code: 0372846
+
+Processing credit payment type
+Verifying security code: 0372846
+
+Processing paypal payment type
+Verifying email address: h@h.com
+
+
+
+```
+
+Lo que se logro es ocultar la implementación de la composición que se pasa como argumento en los procesadores de pago que tiene que validar vía SMS.
+
+En próximo artículo 
 
 
 Referencias: 

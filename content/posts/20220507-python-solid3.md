@@ -6,7 +6,7 @@ lang: es
 translation: true
 Slug: python_solid3
 Authors: Ernesto Crespo
-Summary: Terceer artículo sobre los principios SOLID, en este caso el Principio de sustitución Liskov.
+Summary: Tercer artículo sobre los principios SOLID, en este caso el Principio de sustitución Liskov.
 
 En ingeniería de software existe el principio [S.O.L.I.D](https://es.wikipedia.org/wiki/SOLID). Los principios SOLID son guías que pueden ser aplicadas en el desarrollo de software para eliminar malos diseños provocando que el programador tenga que refactorizar hasta que sea legible y extensible. 
 

@@ -75,6 +75,8 @@ SOCIAL = (('medium', 'https://medium.com/@_seraph1'),
           ('facebook', 'https://www.facebook.com/ernesto.crespo'),
           ('gitlab', 'https://gitlab.com/ecrespo'),
           ('soundcloud', 'https://soundcloud.com/ernesto-crespo'),
+          ('deepnote', 'https://deepnote.com/@ernesto-crespo'),
+          ('kaggle', 'https://www.kaggle.com/ecrespoa'),
           ('rss', '//www.seraph.to/feeds/all.atom.xml'))
 
 

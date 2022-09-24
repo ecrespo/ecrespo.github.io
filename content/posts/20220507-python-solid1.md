@@ -263,40 +263,7 @@ En el siguiente artículo se explicará el principio abierto/cerrado.
 
 
 
-Aplicando el principio de responsabilidad única:
-Se crea dos métodos uno para myqr y otro para qrcode.
 
-```python 
-
-class GenerateQR:
-    
-    def __init__(self,version):
-        self.version = version
-    
-    def myqr(self,my_qr,text,save_name,colorize,save_dir,picture=None):
-        if not picture: 
-            return myqr.run(words=text, version=my_qr.version, save_name=save_name,
-                            save_dir=save_dir, colorized=colorize, contrast=1.0, brightness=1.0)
-            
-        return myqr.run(words=text, version=my_qr.version, save_name=save_name, picture=picture,
-                        save_dir=save_dir, colorized=colorize, contrast=1.0, brightness=1.0)
-
-    
-    def qrcode(self,my_qr,text,save_name,box_size,border,fit,fill,back_color):
-        self.qr = qrc.QRCode(
-            version=my_qr.version,
-            box_size=box_size,
-            border=border
-        )
-        self.qr.add_data(text)
-        self.qr.make(fit=fit)
-        self.img = self.qr.make_image(
-            fill=fill, back_color=back_color)
-        self.img.save(save_name)
-
-```
-
-Ya se tiene cada método con el uso cada una de su librerías respectiva sin otra responsabilidad. 
 
 Referencias: 
 

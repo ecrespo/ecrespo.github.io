@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Ernesto Crespo'
 SITENAME = "Página de Seraph"
-SITEURL = 'http://localhost:8000'
+SITEURL = 'https://blog.seraph.to'
 SITETITLE = AUTHOR
 SITESUBTITLE = 'Data Scientist '
 EMAIL = 'ecrespo@gmail.com'
@@ -77,7 +77,7 @@ SOCIAL = (('medium', 'https://medium.com/@_seraph1'),
           ('soundcloud', 'https://soundcloud.com/ernesto-crespo'),
           ('deepnote', 'https://deepnote.com/@ernesto-crespo'),
           ('kaggle', 'https://www.kaggle.com/ecrespoa'),
-          ('rss', '//www.seraph.to/feeds/all.atom.xml'))
+          ('rss', '//blog.seraph.to/feeds/all.atom.xml'))
 
 
 MENUITEMS = (('Archives', '/archives.html'),

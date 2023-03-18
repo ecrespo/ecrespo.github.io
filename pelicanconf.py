@@ -94,7 +94,7 @@ DEFAULT_PAGINATION = 10
 #RELATIVE_URLS = True
 
 
-THEME = '/home/ernesto/proyectos/pelican-themes/Flex'
+THEME = '/home/ernesto/projects/pelican-themes/Flex'
 #THEME = '/home/ernesto/proyectos/pelican-themes/bold'
 PYGMENTS_STYLE = 'monokai'
 JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}

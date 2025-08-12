@@ -245,7 +245,7 @@
       
     <h1 id="manejo-de-colas-de-rabbitmq-en-django-con-django-celery">Manejo de colas de RabbitMQ en Django con Django-Celery</h1>
     <p>
-      Posted on mar 29 abril 2014 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
+      Posted on Tue 29 April 2014 in <a href="https://ecrespo.github.io/category/tutorial-python.html">Tutorial Python</a>
 
         &#8226; 5 min read
     </p>
@@ -390,30 +390,30 @@ Se crea el directorio django en <code>/srv/</code></p>
 
 <p>En este directorio se crea el archivo <code>tasks.py</code> con el siguiente contenido: </p>
 <div class="highlight"><pre><span class="code-line"><span></span><code><span class="c1">#Se importa Celery</span></span>
-<span class="code-line"><span class="kn">from</span> <span class="nn">celery</span> <span class="kn">import</span> <span class="n">Celery</span></span>
+<span class="code-line"><span class="kn">from</span><span class="w"> </span><span class="nn">celery</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">Celery</span></span>
 <span class="code-line"><span class="c1">#Se instancia Celery importando tasks, se define el broker (quien recibe los procesos en este </span></span>
 <span class="code-line"><span class="c1">#caso rabbitMQ con el protocolo amgp) y se define el backend (quien recibe los resultado</span></span>
 <span class="code-line"><span class="c1">#del proceso encolado en este caso con rabbitMQ y el protocolo amgp) </span></span>
-<span class="code-line"><span class="n">app</span> <span class="o">=</span> <span class="n">Celery</span><span class="p">(</span><span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="n">broker</span><span class="o">=</span><span class="s1">&#39;amqp://&#39;</span><span class="p">,</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;amqp&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Celery</span><span class="p">(</span><span class="s1">&#39;tasks&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">broker</span><span class="o">=</span><span class="s1">&#39;amqp://&#39;</span><span class="p">,</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;amqp&#39;</span><span class="p">)</span></span>
 <span class="code-line"></span>
 <span class="code-line"><span class="c1">#Se usa el decorador task de app y se define la suma.</span></span>
 <span class="code-line"><span class="nd">@app</span><span class="o">.</span><span class="n">task</span></span>
-<span class="code-line"><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span></span>
-<span class="code-line">    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span></span>
+<span class="code-line"><span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">):</span></span>
+<span class="code-line"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span></span>
 <span class="code-line"></code></pre></div>
 
 <p>Lo que se va a hacer es manejar la suma por medio de la cola de <code>rabbitMQ</code>.</p>
 <p>Ahora se revisa el contenido del archivo <code>settings.py</code> (lo más relevante): </p>
 <p>Se va a trabajar por los momentos con la base de datos <code>sqlite</code>:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><code><span class="nv">DATABASES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>{</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;default&#39;</span>:<span class="w"> </span>{</span>
-<span class="code-line"><span class="w">        </span><span class="s1">&#39;ENGINE&#39;</span>:<span class="w"> </span><span class="s1">&#39;django.db.backends.sqlite3&#39;</span>,<span class="w"> </span>#<span class="w"> </span><span class="nv">Add</span><span class="w"> </span><span class="s1">&#39;postgresql_psycopg2&#39;</span>,<span class="w"> </span><span class="s1">&#39;mysql&#39;</span>,<span class="w"> </span><span class="s1">&#39;sqlite3&#39;</span><span class="w"> </span><span class="nv">or</span><span class="w"> </span><span class="s1">&#39;oracle&#39;</span>.</span>
-<span class="code-line"><span class="w">        </span><span class="s1">&#39;NAME&#39;</span>:<span class="w"> </span><span class="s1">&#39;pasarela.db&#39;</span>,<span class="w">                      </span>#<span class="w"> </span><span class="nv">Or</span><span class="w"> </span><span class="nv">path</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">database</span><span class="w"> </span><span class="nv">file</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">using</span><span class="w"> </span><span class="nv">sqlite3</span>.</span>
-<span class="code-line"><span class="w">        </span><span class="s1">&#39;USER&#39;</span>:<span class="w"> </span><span class="s1">&#39;&#39;</span>,<span class="w">                      </span>#<span class="w"> </span><span class="nv">Not</span><span class="w"> </span><span class="nv">used</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">sqlite3</span>.</span>
-<span class="code-line"><span class="w">        </span><span class="s1">&#39;PASSWORD&#39;</span>:<span class="w"> </span><span class="s1">&#39;&#39;</span>,<span class="w">                  </span>#<span class="w"> </span><span class="nv">Not</span><span class="w"> </span><span class="nv">used</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">sqlite3</span>.</span>
-<span class="code-line"><span class="w">        </span><span class="s1">&#39;HOST&#39;</span>:<span class="w"> </span><span class="s1">&#39;&#39;</span>,<span class="w">                      </span>#<span class="w"> </span><span class="nv">Set</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">empty</span><span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">localhost</span>.<span class="w"> </span><span class="nv">Not</span><span class="w"> </span><span class="nv">used</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">sqlite3</span>.</span>
-<span class="code-line"><span class="w">        </span><span class="s1">&#39;PORT&#39;</span>:<span class="w"> </span><span class="s1">&#39;&#39;</span>,<span class="w">                      </span>#<span class="w"> </span><span class="nv">Set</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">empty</span><span class="w"> </span><span class="nv">string</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">default</span>.<span class="w"> </span><span class="nv">Not</span><span class="w"> </span><span class="nv">used</span><span class="w"> </span><span class="nv">with</span><span class="w"> </span><span class="nv">sqlite3</span>.</span>
-<span class="code-line"><span class="w">    </span>}</span>
+<div class="highlight"><pre><span class="code-line"><span></span><code>DATABASES = {</span>
+<span class="code-line">    &#39;default&#39;: {</span>
+<span class="code-line">        &#39;ENGINE&#39;: &#39;django.db.backends.sqlite3&#39;, # Add &#39;postgresql_psycopg2&#39;, &#39;mysql&#39;, &#39;sqlite3&#39; or &#39;oracle&#39;.</span>
+<span class="code-line">        &#39;NAME&#39;: &#39;pasarela.db&#39;,                      # Or path to database file if using sqlite3.</span>
+<span class="code-line">        &#39;USER&#39;: &#39;&#39;,                      # Not used with sqlite3.</span>
+<span class="code-line">        &#39;PASSWORD&#39;: &#39;&#39;,                  # Not used with sqlite3.</span>
+<span class="code-line">        &#39;HOST&#39;: &#39;&#39;,                      # Set to empty string for localhost. Not used with sqlite3.</span>
+<span class="code-line">        &#39;PORT&#39;: &#39;&#39;,                      # Set to empty string for default. Not used with sqlite3.</span>
+<span class="code-line">    }</span>
 <span class="code-line">}</span>
 <span class="code-line"></code></pre></div>
 
@@ -426,20 +426,20 @@ Se crea el directorio django en <code>/srv/</code></p>
 <span class="code-line"></code></pre></div>
 
 <p>Se agrega la aplicación <code>djcelery</code> y <code>sms</code>:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><code><span class="nv">INSTALLED_APPS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">(</span></span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;django.contrib.auth&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;django.contrib.contenttypes&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;django.contrib.sessions&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;django.contrib.sites&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;django.contrib.messages&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;django.contrib.staticfiles&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span>#<span class="w"> </span><span class="nv">Uncomment</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="k">next</span><span class="w"> </span><span class="nv">line</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">enable</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="nv">admin</span>:</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;django.contrib.admin&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;djcelery&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span><span class="s1">&#39;pasarela.apps.sms&#39;</span>,</span>
-<span class="code-line"><span class="w">    </span>#<span class="w"> </span><span class="nv">Uncomment</span><span class="w"> </span><span class="nv">the</span><span class="w"> </span><span class="k">next</span><span class="w"> </span><span class="nv">line</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="nv">enable</span><span class="w"> </span><span class="nv">admin</span><span class="w"> </span><span class="nv">documentation</span>:</span>
-<span class="code-line"><span class="w">    </span>#<span class="w"> </span><span class="s1">&#39;django.contrib.admindocs&#39;</span>,</span>
-<span class="code-line"><span class="ss">)</span></span>
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="nx">INSTALLED_APPS</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">django</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">auth</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">django</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">contenttypes</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">django</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">sessions</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">django</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">sites</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">django</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">messages</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">django</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">staticfiles</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="nx">Uncomment</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">enable</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">admin</span><span class="p">:</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">django</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">admin</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">djcelery</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">&#39;</span><span class="nx">pasarela</span><span class="p">.</span><span class="nx">apps</span><span class="p">.</span><span class="nx">sms</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="nx">Uncomment</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">next</span><span class="w"> </span><span class="nx">line</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">enable</span><span class="w"> </span><span class="nx">admin</span><span class="w"> </span><span class="nx">documentation</span><span class="p">:</span></span>
+<span class="code-line"><span class="w">    </span><span class="err">#</span><span class="w"> </span><span class="err">&#39;</span><span class="nx">django</span><span class="p">.</span><span class="nx">contrib</span><span class="p">.</span><span class="nx">admindocs</span><span class="err">&#39;</span><span class="p">,</span></span>
+<span class="code-line"><span class="p">)</span></span>
 <span class="code-line"></code></pre></div>
 
 <p>Ahora queda sincronizar la base de datos (acá se crea la base de datos para django, lo necesario para django celery y la cuenta del administrador de la aplicación):</p>
@@ -477,23 +477,23 @@ Se inicia <code>manage.py</code> de django diciéndole que va a iniciar celery e
 
 <p>En otra consola se inicia el shell del <code>manage.py</code> de django: 
 Se importa la función add que se definió en el archivo <code>tasks.py</code>.</p>
-<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">ernesto</span><span class="nd">@pruebas</span><span class="p">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="err">$</span> <span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">shell</span></span>
-<span class="code-line"><span class="n">Python</span> <span class="mf">2.7.3</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Mar</span> <span class="mi">13</span> <span class="mi">2014</span><span class="p">,</span> <span class="mi">11</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">55</span><span class="p">)</span> </span>
-<span class="code-line"><span class="p">[</span><span class="n">GCC</span> <span class="mf">4.7.2</span><span class="p">]</span> <span class="n">on</span> <span class="n">linux2</span></span>
-<span class="code-line"><span class="n">Type</span> <span class="s2">&quot;help&quot;</span><span class="p">,</span> <span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;credits&quot;</span> <span class="ow">or</span> <span class="s2">&quot;license&quot;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span></span>
+<div class="highlight"><pre><span class="code-line"><span></span><code><span class="n">ernesto</span><span class="nd">@pruebas</span><span class="p">:</span><span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">django</span><span class="o">/</span><span class="n">pasarela</span><span class="err">$</span><span class="w"> </span><span class="n">python</span><span class="w"> </span><span class="n">manage</span><span class="o">.</span><span class="n">py</span><span class="w"> </span><span class="n">shell</span></span>
+<span class="code-line"><span class="n">Python</span><span class="w"> </span><span class="mf">2.7.3</span><span class="w"> </span><span class="p">(</span><span class="n">default</span><span class="p">,</span><span class="w"> </span><span class="n">Mar</span><span class="w"> </span><span class="mi">13</span><span class="w"> </span><span class="mi">2014</span><span class="p">,</span><span class="w"> </span><span class="mi">11</span><span class="p">:</span><span class="mi">03</span><span class="p">:</span><span class="mi">55</span><span class="p">)</span><span class="w"> </span></span>
+<span class="code-line"><span class="p">[</span><span class="n">GCC</span><span class="w"> </span><span class="mf">4.7.2</span><span class="p">]</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">linux2</span></span>
+<span class="code-line"><span class="n">Type</span><span class="w"> </span><span class="s2">&quot;help&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;copyright&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;credits&quot;</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s2">&quot;license&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">more</span><span class="w"> </span><span class="n">information</span><span class="o">.</span></span>
 <span class="code-line"><span class="p">(</span><span class="n">InteractiveConsole</span><span class="p">)</span></span>
 <span class="code-line"></span>
-<span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pasarela.apps.sms.tasks</span> <span class="kn">import</span> <span class="n">add</span></span>
+<span class="code-line"><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="kn">from</span><span class="w"> </span><span class="nn">pasarela.apps.sms.tasks</span><span class="w"> </span><span class="kn">import</span><span class="w"> </span><span class="n">add</span></span>
 <span class="code-line"><span class="c1">#Se realiza la suma de 11+19</span></span>
-<span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">add</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">19</span><span class="p">)</span></span>
+<span class="code-line"><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">add</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">)</span></span>
 <span class="code-line"><span class="c1">#Se obtiene el resultado:</span></span>
-<span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></span>
+<span class="code-line"><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></span>
 <span class="code-line"><span class="mi">30</span></span>
 <span class="code-line"><span class="c1">#Se verifica si ya celery está listo para recibir más procesos:</span></span>
-<span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">ready</span><span class="p">()</span></span>
+<span class="code-line"><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">result</span><span class="o">.</span><span class="n">ready</span><span class="p">()</span></span>
 <span class="code-line"><span class="kc">True</span></span>
 <span class="code-line"><span class="c1">#Se verifica si ya el proceso termino.</span></span>
-<span class="code-line"><span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">successful</span><span class="p">()</span></span>
+<span class="code-line"><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">result</span><span class="o">.</span><span class="n">successful</span><span class="p">()</span></span>
 <span class="code-line"><span class="kc">True</span></span>
 <span class="code-line"></code></pre></div>
 
@@ -522,6 +522,29 @@ dirección: 17MtNybhdkA9GV3UNS6BTwPcuhjXoPrSzV</p>
       <a href="https://ecrespo.github.io/tag/django-celery.html">Django-Celery</a>
     </p>
   </div>
+
+<section>
+  <p id="post-share-links">
+    Share on:
+    <a href="mailto:?subject=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery&amp;body=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" title="Share via Email">Email</a>
+    |
+    <a href="https://sharetodiaspora.github.io/?title=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery&url=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" title="Share on Diaspora">Diaspora</a>
+    |
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" title="Share on Facebook">Facebook</a>
+    |
+    <a href="https://news.ycombinator.com/submitlink?t=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery&u=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" title="Share on Hacker News">Hacker News</a>
+    |
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html&title=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery&summary=Hace%20un%20tiempo%20escrib%C3%AD%20unos%203%20art%C3%ADculos%20sobre%20Django%2C%20ahora%20se%20tocar%C3%A1%20un%20tema%20algo%20m%C3%A1s%20complejo%20pero%20%C3%BAtil%20cuando%20se%20requiere%20rendimiento%20en%20procesos.%0AA%20continuaci%C3%B3n%20paso%20a%20explicar%20un%20proceso%20sencillo%20de%20manejo%20de%20colas%20de%20RabbitMQ%20por%20medio%20de%20Django-Celery.%0ALa%20idea%20es%20realizar%20una%20instalaci%C3%B3n%20y%20%E2%80%A6&source=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html" title="Share on LinkedIn">LinkedIn</a>
+    |
+    <a href="" title="Share on Mastodon">Mastodon</a>
+    |
+    <a href="https://www.reddit.com/submit?url=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html&title=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery" title="Share via Reddit">Reddit</a>
+    |
+    <a href="https://twitter.com/intent/tweet?text=Manejo%20de%20colas%20de%20RabbitMQ%20en%20Django%20con%20Django-Celery&url=https%3A//ecrespo.github.io/manejo-de-colas-de-rabbitmq-en-django-con-django-celery.html&hashtags=canaima,debian,python,ubuntu,django,django-celery" title="Share on Twitter">Twitter</a>
+    |
+    <a href="" title="Share on Bluesky">Bluesky</a>
+  </p>
+</section>
 
 
   <div class="neighbors">

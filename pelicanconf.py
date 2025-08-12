@@ -126,7 +126,7 @@ PLUGINS = ['i18n_subsites',
 IGNORE_FILES = [".ipynb_checkpoints"]
 # Show my last activity on GitHub
 # GITHUB_USER = 'ecrespo@gmail.com'
-COPYRIGHT_YEAR = 2022
+COPYRIGHT_YEAR = 2025
 # GITHUB_ACTIVITY_FEED = 'https://github.com/ecrespo.atom'
 # GITHUB_ACTIVITY_MAX_ENTRIES = 10
 # GITHUB_USER_TYPE = "owner"
